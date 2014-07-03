@@ -42,7 +42,12 @@ public class PhoenixDialect extends JdbcDialectImpl {
     return true;
   }
 
-  @Override
+    @Override
+    public boolean allowsJoinOn() {
+        return true;
+    }
+
+    @Override
   public boolean allowsCompoundCountDistinct() {
     return false;
   }
@@ -89,12 +94,12 @@ public class PhoenixDialect extends JdbcDialectImpl {
 
   @Override
   public boolean allowsSelectNotInGroupBy() {
-    return true;
+    return false;
   }
 
   @Override
   public String getQuoteIdentifierString() {
-    return "\"";
+    return "\""; // can remove if running on phoenix-2.2 or later
   }
 
   @Override
@@ -114,7 +119,7 @@ public class PhoenixDialect extends JdbcDialectImpl {
 
   @Override
   public boolean requiresUnionOrderByExprToBeInSelectClause() {
-    return false;
+    return true;// phoenix doesn't support UNION
   }
 
   @Override

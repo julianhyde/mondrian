@@ -177,6 +177,8 @@ public class DialectTest extends TestCase {
                 INFOBRIGHT_UNSUPPORTED,
                 // neoview
                 ".* ERROR\\[3129\\] Function COUNT DISTINCT accepts exactly one operand\\. .*",
+                // phoenix
+                "ERROR 604 \\(42P00\\): Syntax error. Unknown function: \"DISTINCT_COUNT\".",
                 // postgres
                 "ERROR: function count\\(integer, integer\\) does not exist.*",
                 // LucidDb
@@ -264,7 +266,7 @@ public class DialectTest extends TestCase {
         Statement stmt = null;
         try {
             String dropSql = dialectize("drop table [foo]");
-            String createSql = dialectize("create table [foo] ([i] integer)");
+            String createSql = dialectize("create table [foo] ([i] integer /*not null primary key*/)");
             stmt = getConnection().createStatement();
 
             // drop previously existing table, and ignore any errors
@@ -306,7 +308,11 @@ public class DialectTest extends TestCase {
         if (getDialect().allowsFromQuery()) {
             assertQuerySucceeds(sql);
         } else {
-            assertQueryFails(sql, new String[] {});
+            final String[] errs = {
+                // phoenix
+                "java.sql.SQLFeatureNotSupportedException",
+            };
+            assertQueryFails(sql, errs);
         }
     }
 
@@ -420,6 +426,8 @@ public class DialectTest extends TestCase {
                 "(?s)Cannot be in ORDER BY clause in statement .*",
                 // neoview
                 NEOVIEW_SYNTAX_ERROR,
+                // phoenix
+                "ERROR 602 \\(42P00\\): Syntax error. Missing \"EOF\" at line 3, column 7.",
                 // oracle
                 "ORA-01785: ORDER BY item must be the number of a SELECT-list "
                 + "expression\n",
@@ -501,6 +509,8 @@ public class DialectTest extends TestCase {
                 NEOVIEW_SYNTAX_ERROR,
                 // netezza
                 "(?s).*found \"SETS\" \\(at char 135\\) expecting `EXCEPT' or `FOR' or `INTERSECT' or `ORDER' or `UNION'.*",
+                // phoenix
+                "ERROR 604 \\(42P00\\): Syntax error. Unknown function: \"GROUPING\".",
                 // Vertica
                 "line 3, There is no such function as \\'grouping\\'\\.",
                 // monetdb
@@ -809,6 +819,11 @@ public class DialectTest extends TestCase {
             s = s.replace(']', '"');
             s = s.replaceAll(" as ", "");
             break;
+        case PHOENIX:
+            s = s.replace('[', '"');
+            s = s.replace(']', '"');
+            s = s.replaceAll("/\\*not null primary key\\*/", "not null primary key");
+            break;
         default:
             s = s.replace('[', '"');
             s = s.replace(']', '"');
@@ -860,6 +875,9 @@ public class DialectTest extends TestCase {
             } catch (SQLException e2) {
                 // execution failed - good
                 String message = e2.getMessage();
+                if (message == null) {
+                    message = e2.getClass().getCanonicalName();
+                }
                 for (String pattern : patterns) {
                     if (message.matches(pattern)) {
                         return;
@@ -930,6 +948,8 @@ public class DialectTest extends TestCase {
                 // neoview
                 ".* ERROR\\[4005\\] Column reference \"the_month\" must be a "
                 + "grouping column or be specified within an aggregate. .*",
+                // phoenix
+                "ERROR 1018 \\(42Y27\\): Aggregate may not contain columns not in GROUP BY. the_month",
                 // teradata
                 ".*Selected non-aggregate values must be part of the "
                 + "associated group.",

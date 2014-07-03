@@ -578,7 +578,7 @@ public class SqlQuery {
         final String first = distinct ? "select distinct " : "select ";
         select.toBuffer(buf, generateFormattedSql, prefix, first, ", ", "", "");
         groupingFunctionsToBuffer(buf, prefix);
-        String fromSep = joinCount > 0 ? " join " : ", ";
+        String fromSep = joinCount > 0 ? " inner join " : ", ";
         if (dialect.allowsJoinOn() && from.size() > 1) {
             if (joinCount <= 0) {
                 throw new AssertionError();

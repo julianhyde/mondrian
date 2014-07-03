@@ -56,7 +56,7 @@ case ${hostname} in
   jdkList="jdk1.4 jdk1.5 jdk1.6 openjdk1.6"
   ;;
 (marmite)
-  databaseList="derby hsqldb monetdb mysql oracle"
+  databaseList="derby hsqldb monetdb mysql oracle phoenix"
   jdkList="jdk1.4 jdk1.5 jdk1.6 jdk1.7 jdk1.8 openjdk1.6 openjdk1.7 ibmjdk1.6"
   ;;
 (*)
@@ -251,6 +251,16 @@ doTest2() {
       echo mondrian.foodmart.jdbcURL=${jdbcURL}
       echo mondrian.jdbcDrivers=${jdbcDrivers}
       echo driver.classpath=/usr/local/mysql-connector-java-3.1.12/mysql-connector-java-3.1.12-bin.jar
+      echo "mondrian.test.connectString=Provider=mondrian;Jdbc=${jdbcURL};JdbcUser=foodmart;JdbcPassword=foodmart;Catalog=${MONDRIAN_DIR}/demo/FoodMart.xml;JdbcDrivers=${jdbcDrivers};RoleXX='California manager';"
+    ) >> megatest.properties
+    ;;
+  phoenix)
+    (
+      jdbcDrivers=com.salesforce.phoenix.jdbc.PhoenixDriver
+      export jdbcURL='jdbc:phoenix:localhost'
+      echo mondrian.foodmart.jdbcURL=${jdbcURL}
+      echo mondrian.jdbcDrivers=${jdbcDrivers}
+      echo driver.classpath=$HOME/.m2/repository/com/salesforce/phoenix/2.2.0-SNAPSHOT/phoenix-2.2.0-SNAPSHOT-client.jar:/usr/local/hbase-0.94.13/lib/snappy-java-1.0.3.2.jar
       echo "mondrian.test.connectString=Provider=mondrian;Jdbc=${jdbcURL};JdbcUser=foodmart;JdbcPassword=foodmart;Catalog=${MONDRIAN_DIR}/demo/FoodMart.xml;JdbcDrivers=${jdbcDrivers};RoleXX='California manager';"
     ) >> megatest.properties
     ;;
@@ -476,6 +486,7 @@ olap4j() {
     $ANT_HOME/bin/ant test-nobuild
     ;;
   (*)
+    export CLASSPATH=$HOME/.m2/repository/com/salesforce/phoenix/2.2.0-SNAPSHOT/phoenix-2.2.0-SNAPSHOT-client.jar:/usr/local/hbase-0.94.13/lib/snappy-java-1.0.3.2.jar
     $ANT_HOME/bin/ant $ANT_FLAGS test
     ;;
   esac
@@ -772,7 +783,7 @@ doRandom() {
 }
 
 doQuick() {
-  doTest jdk1.7 mysql
+  doTest jdk1.7 phoenix #mondrian.test.Class=mondrian.test.BasicQueryTest
 }
 
 # Runs the tests that are believed to be working.

@@ -63,9 +63,7 @@
       </profile>
     </annotationProcessing>
   </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
-  </component>
+  <component name="CopyrightManager" default="" />
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
@@ -400,6 +398,8 @@
         <root url="jar:///usr/local/mysql-connector-java-3.1.12/mysql-connector-java-3.1.12-bin.jar!/" />
         <root url="jar://$PROJECT_DIR$/../lib/derby.jar!/" />
         <root url="jar://$PROJECT_DIR$/../testlib/ojdbc14.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/salesforce/phoenix/2.2.0-SNAPSHOT/phoenix-2.2.0-SNAPSHOT-client.jar!/" />
+        <root url="jar:///usr/local/hbase-0.94.13/lib/snappy-java-1.0.3.2.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

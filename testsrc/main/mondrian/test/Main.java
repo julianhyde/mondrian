@@ -250,7 +250,7 @@ public class Main extends TestSuite {
             addTest(suite, SolveOrderScopeIsolationTest.class);
             addTest(suite, ParentChildHierarchyTest.class);
             addTest(suite, ClosureSqlTest.class);
-            addTest(suite, Olap4jTckTest.class, "suite");
+//            addTest(suite, Olap4jTckTest.class, "suite");
             addTest(suite, MondrianServerTest.class);
             addTest(suite, XmlaBasicTest.class);
             addTest(suite, XmlaMetaDataConstraintsTest.class);
