@@ -5,7 +5,7 @@
 // You must accept the terms of that agreement to use this software.
 //
 // Copyright (C) 1998-2005 Julian Hyde
-// Copyright (C) 2005-2012 Pentaho and others
+// Copyright (C) 2005-2016 Pentaho and others
 // All Rights Reserved.
 */
 package mondrian.olap;
@@ -303,10 +303,7 @@ public class Id
             if (subSegmentList.size() < 1) {
                 throw new IllegalArgumentException();
             }
-            this.subSegmentList =
-                new UnmodifiableArrayList<NameSegment>(
-                    subSegmentList.toArray(
-                        new NameSegment[subSegmentList.size()]));
+            this.subSegmentList = UnmodifiableArrayList.copyOf(subSegmentList);
         }
 
         public boolean equals(final Object o) {

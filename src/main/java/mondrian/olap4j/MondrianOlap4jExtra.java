@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2010-2013 Pentaho
+// Copyright (C) 2010-2016 Pentaho
 // All Rights Reserved.
 */
 package mondrian.olap4j;
@@ -14,7 +14,7 @@ import mondrian.olap.Property;
 import mondrian.olap.fun.FunInfo;
 import mondrian.rolap.*;
 import mondrian.xmla.*;
-import mondrian.xmla.RowsetDefinition.MdschemaFunctionsRowset.VarType;
+import mondrian.xmla.Rowsets.MdschemaFunctionsRowset.VarType;
 
 import org.olap4j.*;
 import org.olap4j.Cell;
@@ -24,6 +24,7 @@ import org.olap4j.metadata.Hierarchy;
 import org.olap4j.metadata.Level;
 import org.olap4j.metadata.Member;
 import org.olap4j.metadata.Schema;
+import org.olap4j.xmla.XmlaPropertyDefinition;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +40,7 @@ import java.util.*;
 class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
     static final MondrianOlap4jExtra INSTANCE = new MondrianOlap4jExtra();
 
-    public ResultSet executeDrillthrough(
+    @Override public ResultSet executeDrillthrough(
         OlapStatement olapStatement,
         String mdx,
         boolean advanced,
@@ -53,15 +54,15 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
             rowCountSlot);
     }
 
-    public void setPreferList(OlapConnection connection) {
+    @Override public void setPreferList(OlapConnection connection) {
         ((MondrianOlap4jConnection) connection).setPreferList(true);
     }
 
-    public Date getSchemaLoadDate(Schema schema) {
+    @Override public Date getSchemaLoadDate(Schema schema) {
         return ((MondrianOlap4jSchema) schema).schema.getSchemaLoadDate();
     }
 
-    public int getLevelCardinality(Level level) throws OlapException {
+    @Override public int getLevelCardinality(Level level) throws OlapException {
         if (level instanceof MondrianOlap4jLevel) {
             // Improved implementation if the provider is mondrian.
             final MondrianOlap4jLevel olap4jLevel = (MondrianOlap4jLevel) level;
@@ -88,7 +89,7 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         }
     }
 
-    public void getSchemaFunctionList(
+    @Override public void getSchemaFunctionList(
         List<FunctionDefinition> funDefs,
         Schema schema,
         org.olap4j.xmla.server.impl.Util.Predicate1<String> functionFilter)
@@ -148,7 +149,7 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
                                 v & Category.Mask));
                     }
 
-                    RowsetDefinition.MdschemaFunctionsRowset.VarType varType =
+                    VarType varType =
                         categoryToVarType(returnCategory);
                     funDefs.add(
                         new FunctionDefinition(
@@ -204,7 +205,7 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         return VarType.Empty;
     }
 
-    public int getHierarchyCardinality(Hierarchy hierarchy)
+    @Override public int getHierarchyCardinality(Hierarchy hierarchy)
         throws OlapException
     {
         final MondrianOlap4jHierarchy olap4jHierarchy =
@@ -230,13 +231,13 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
             schemaReader, olap4jHierarchy.hierarchy);
     }
 
-    public int getHierarchyStructure(Hierarchy hierarchy) {
+    @Override public int getHierarchyStructure(Hierarchy hierarchy) {
         final MondrianOlap4jHierarchy olap4jHierarchy =
             (MondrianOlap4jHierarchy) hierarchy;
         return ((HierarchyBase) olap4jHierarchy.hierarchy).isRagged() ? 1 : 0;
     }
 
-    public boolean isHierarchyParentChild(Hierarchy hierarchy) {
+    @Override public boolean isHierarchyParentChild(Hierarchy hierarchy) {
         Level nonAllFirstLevel = hierarchy.getLevels().get(0);
         if (nonAllFirstLevel.getLevelType() == Level.Type.ALL) {
             nonAllFirstLevel = hierarchy.getLevels().get(1);
@@ -246,36 +247,34 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         return ((RolapLevel) olap4jLevel.level).isParentChild();
     }
 
-    public int getMeasureAggregator(Member member) {
+    @Override public Measure.Aggregator getMeasureAggregator(Member member) {
         MondrianOlap4jMeasure olap4jMeasure =
             (MondrianOlap4jMeasure) member;
         Object aggProp =
-            olap4jMeasure.member.getPropertyValue(
-                Property.AGGREGATION_TYPE);
+            olap4jMeasure.member.getPropertyValue(Property.AGGREGATION_TYPE);
         if (aggProp == null) {
-            return
-                RowsetDefinition.MdschemaMeasuresRowset
-                    .MDMEASURE_AGGR_CALCULATED;
+            return Measure.Aggregator.CALCULATED;
         }
         RolapAggregator agg = (RolapAggregator) aggProp;
         if (agg == RolapAggregator.Sum) {
-            return RowsetDefinition.MdschemaMeasuresRowset.MDMEASURE_AGGR_SUM;
+            return Measure.Aggregator.SUM;
         } else if (agg == RolapAggregator.Count) {
-            return RowsetDefinition.MdschemaMeasuresRowset.MDMEASURE_AGGR_COUNT;
+            return Measure.Aggregator.COUNT;
         } else if (agg == RolapAggregator.Min) {
-            return RowsetDefinition.MdschemaMeasuresRowset.MDMEASURE_AGGR_MIN;
+            return Measure.Aggregator.MIN;
         } else if (agg == RolapAggregator.Max) {
-            return RowsetDefinition.MdschemaMeasuresRowset.MDMEASURE_AGGR_MAX;
+            return Measure.Aggregator.MAX;
         } else if (agg == RolapAggregator.Avg) {
-            return RowsetDefinition.MdschemaMeasuresRowset.MDMEASURE_AGGR_AVG;
+            return Measure.Aggregator.AVG;
         } else {
             // TODO: what are VAR and STD
-            return RowsetDefinition.MdschemaMeasuresRowset
-                .MDMEASURE_AGGR_UNKNOWN;
+            return Measure.Aggregator.UNKNOWN;
         }
     }
 
-    public void checkMemberOrdinal(Member member) throws OlapException {
+    @Override public void checkMemberOrdinal(Member member)
+        throws OlapException
+    {
         if (member.getOrdinal() == -1) {
             MondrianOlap4jMember olap4jMember =
                 (MondrianOlap4jMember) member;
@@ -287,7 +286,7 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         }
     }
 
-    public boolean shouldReturnCellProperty(
+    @Override public boolean shouldReturnCellProperty(
         CellSet cellSet,
         org.olap4j.metadata.Property cellProperty,
         boolean evenEmpty)
@@ -300,38 +299,38 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
             || query.hasCellProperty(cellProperty.getName());
     }
 
-    public List<String> getSchemaRoleNames(Schema schema) {
+    @Override public List<String> getSchemaRoleNames(Schema schema) {
         MondrianOlap4jSchema olap4jSchema = (MondrianOlap4jSchema) schema;
         // TODO: this returns ALL roles, not the current user's roles
         return new ArrayList<String>(olap4jSchema.schema.roleNames());
     }
 
-    public String getCubeType(Cube cube) {
-        return
-            RowsetDefinition.MdschemaCubesRowset.MD_CUBTYPE_CUBE;
+    @Override public Cube.Type getCubeType(Cube cube) {
+        return Cube.Type.CUBE;
     }
 
-    public boolean isLevelUnique(Level level) {
+    @Override public boolean isLevelUnique(Level level) {
         MondrianOlap4jLevel olap4jLevel = (MondrianOlap4jLevel) level;
         return (olap4jLevel.level instanceof RolapLevel)
             && ((RolapLevel) olap4jLevel.level).isUnique();
     }
 
-    public List<org.olap4j.metadata.Property> getLevelProperties(Level level) {
+    @Override public List<org.olap4j.metadata.Property>
+    getLevelProperties(Level level) {
         MondrianOlap4jLevel olap4jLevel = (MondrianOlap4jLevel) level;
         return olap4jLevel.getProperties(false);
     }
 
-    public boolean isPropertyInternal(org.olap4j.metadata.Property property) {
+    @Override public boolean
+    isPropertyInternal(org.olap4j.metadata.Property property) {
         MondrianOlap4jProperty olap4jProperty =
             (MondrianOlap4jProperty) property;
         return olap4jProperty.property.isInternal();
     }
 
-    public List<Map<String, Object>> getDataSources(OlapConnection connection)
-        throws OlapException
-    {
-        MondrianOlap4jConnection olap4jConnection =
+    @Override public List<Map<String, Object>>
+    getDataSources(OlapConnection connection) throws OlapException {
+      MondrianOlap4jConnection olap4jConnection =
             (MondrianOlap4jConnection) connection;
         MondrianServer server =
             MondrianServer.forConnection(
@@ -339,9 +338,8 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         return server.getDatabases(olap4jConnection.getMondrianConnection());
     }
 
-    public Map<String, Object> getAnnotationMap(MetadataElement element)
-        throws SQLException
-    {
+    @Override public Map<String, Object>
+    getAnnotationMap(MetadataElement element) throws SQLException {
         if (element instanceof OlapWrapper) {
             OlapWrapper wrapper = (OlapWrapper) element;
             if (wrapper.isWrapperFor(Annotated.class)) {
@@ -358,7 +356,7 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         return Collections.emptyMap();
     }
 
-    public String getHierarchyName(Hierarchy hierarchy) {
+    @Override public String getHierarchyName(Hierarchy hierarchy) {
         String hierarchyName = hierarchy.getName();
         if (!hierarchyName.equals(hierarchy.getDimension().getName())) {
             hierarchyName =
@@ -367,11 +365,13 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
         return hierarchyName;
     }
 
-    public boolean isTotalCountEnabled() {
+    @Override public boolean isTotalCountEnabled() {
         return MondrianProperties.instance().EnableTotalCount.booleanValue();
     }
 
-    public String getPropertyValue(PropertyDefinition propertyDefinition) {
+    @Override public String getPropertyValue(
+        XmlaPropertyDefinition propertyDefinition)
+    {
         switch (propertyDefinition) {
         case ProviderName:
             return "Mondrian XML for Analysis Provider";

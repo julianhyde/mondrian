@@ -5,7 +5,7 @@
 // You must accept the terms of that agreement to use this software.
 //
 // Copyright (C) 2001-2005 Julian Hyde
-// Copyright (C) 2005-2014 Pentaho and others
+// Copyright (C) 2005-2016 Pentaho and others
 // All Rights Reserved.
 */
 package mondrian.rolap;
@@ -2608,7 +2608,7 @@ public class RolapSchema extends OlapElementBase implements Schema {
         }
 
         public PhysPath done() {
-            return new PhysPath(UnmodifiableArrayList.of(hopList));
+            return new PhysPath(UnmodifiableArrayList.copyOf(hopList));
         }
 
         @SuppressWarnings({

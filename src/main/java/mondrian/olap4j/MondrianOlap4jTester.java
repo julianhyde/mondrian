@@ -4,10 +4,10 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2010-2010 Pentaho
+// Copyright (C) 2010-2016 Pentaho
 // All Rights Reserved.
 */
-package mondrian.test;
+package mondrian.olap4j;
 
 /**
  * Implementation of {@link org.olap4j.test.TestContext.Tester} for Mondrian's

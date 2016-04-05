@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2011-2014 Pentaho and others
+// Copyright (C) 2011-2016 Pentaho and others
 // All Rights Reserved.
 */
 package mondrian.rolap.agg;
@@ -225,7 +225,7 @@ public class SegmentBuilder {
         // store the map values in a list to assure the first header
         // loaded here is consistent w/ the first segment processed below.
         List<Map.Entry<SegmentHeader, SegmentBody>>  segments =
-            UnmodifiableArrayList.of(map.entrySet());
+            UnmodifiableArrayList.copyOf(map.entrySet());
         final SegmentHeader firstHeader = segments.get(0).getKey();
         final AxisInfo[] axes =
             new AxisInfo[keepColumns.size()];

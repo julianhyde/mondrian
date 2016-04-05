@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2007-2013 Pentaho
+// Copyright (C) 2007-2016 Pentaho
 // All Rights Reserved.
 */
 package mondrian.olap4j;
@@ -69,6 +69,10 @@ class MondrianOlap4jMeasure
             }
         }
         return Datatype.STRING;
+    }
+
+    public String getDisplayFolder() {
+        return null; // TODO:
     }
 }
 

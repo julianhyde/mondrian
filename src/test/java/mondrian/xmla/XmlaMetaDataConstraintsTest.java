@@ -5,7 +5,7 @@
 // You must accept the terms of that agreement to use this software.
 //
 // Copyright (C) 2002-2005 Julian Hyde
-// Copyright (C) 2005-2013 Pentaho and others
+// Copyright (C) 2005-2016 Pentaho and others
 // All Rights Reserved.
 */
 package mondrian.xmla;
@@ -15,6 +15,8 @@ import mondrian.olap.Util.PropertyList;
 import mondrian.rolap.RolapConnectionProperties;
 import mondrian.test.DiffRepository;
 import mondrian.test.TestContext;
+
+import org.olap4j.xmla.RowsetDefinition;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

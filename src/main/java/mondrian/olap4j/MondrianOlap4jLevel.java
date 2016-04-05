@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2007-2013 Pentaho
+// Copyright (C) 2007-2016 Pentaho
 // All Rights Reserved.
 */
 package mondrian.olap4j;
@@ -193,6 +193,30 @@ class MondrianOlap4jLevel
 
     protected OlapElement getOlapElement() {
         return level;
+    }
+
+    public String getOrderingProperty() {
+        return null; // TODO:
+    }
+
+    public String getAttributeHierarchyName() {
+        return null; // TODO:
+    }
+
+    public List<Datatype> getKeyTypes() {
+        return null; // TODO:
+    }
+
+    public String getNameSqlColumnName() {
+        return null; // TODO:
+    }
+
+    public String getKeySqlColumnName() {
+        return null; // TODO:
+    }
+
+    public String getUniqueNameSqlColumnName() {
+        return null; // TODO:
     }
 }
 

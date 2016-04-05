@@ -4,10 +4,12 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2010-2010 Pentaho
+// Copyright (C) 2010-2016 Pentaho
 // All Rights Reserved.
 */
-package mondrian.test;
+package mondrian.olap4j;
+
+import mondrian.olap.MondrianProperties;
 
 import org.olap4j.test.TestContext;
 
@@ -16,7 +18,7 @@ import java.util.Properties;
 
 /**
  * Abstract implementation of the {@link org.olap4j.test.TestContext.Tester}
- * callback required by olap4j's Test Compatability Kit (TCK).
+ * callback required by olap4j's Test Compatibility Kit (TCK).
  *
  * @author Julian Hyde
  */
@@ -77,6 +79,10 @@ abstract class AbstractMondrianOlap4jTester implements TestContext.Tester {
 
     public Flavor getFlavor() {
         return flavor;
+    }
+
+    public void setTimeout(int seconds) {
+        MondrianProperties.instance().QueryTimeout.set(seconds);
     }
 
     public TestContext.Wrapper getWrapper() {

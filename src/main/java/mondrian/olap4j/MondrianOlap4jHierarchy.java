@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2007-2013 Pentaho
+// Copyright (C) 2007-2016 Pentaho
 // All Rights Reserved.
 */
 package mondrian.olap4j;
@@ -131,6 +131,46 @@ class MondrianOlap4jHierarchy
 
     protected OlapElement getOlapElement() {
         return hierarchy;
+    }
+
+    public Member getAllMember() throws OlapException {
+        return null; // TODO:
+    }
+
+    public boolean isReadWrite() {
+        return false; // TODO:
+    }
+
+    public int getOrdinal() {
+        return 0; // TODO:
+    }
+
+    public Structure getStructure() {
+        return null; // TODO:
+    }
+
+    public StructureType getStructureType() {
+        return null; // TODO:
+    }
+
+    public int getCardinality() {
+        return 0; // TODO:
+    }
+
+    public String getDisplayFolder() {
+        return null; // TODO:
+    }
+
+    public InstanceSelection getInstanceSelection() {
+        return null; // TODO:
+    }
+
+    public GroupingBehavior getGroupingBehavior() {
+        return null; // TODO:
+    }
+
+    public Origin getOrigin() {
+        return null; // TODO:
     }
 }
 

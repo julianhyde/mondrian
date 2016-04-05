@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2005-2013 Pentaho and others
+// Copyright (C) 2005-2016 Pentaho and others
 // All Rights Reserved.
 */
 package mondrian.tui;
@@ -16,14 +16,21 @@ import mondrian.server.StringRepositoryContentFinder;
 import mondrian.spi.CatalogLocator;
 import mondrian.spi.impl.CatalogLocatorImpl;
 import mondrian.util.LockBox;
-import mondrian.xmla.*;
-import mondrian.xmla.Enumeration;
+import mondrian.xmla.DataSourcesConfig;
+import mondrian.xmla.XmlaConstants;
+import mondrian.xmla.XmlaHandler;
+import mondrian.xmla.XmlaRequest;
+import mondrian.xmla.XmlaResponse;
+import mondrian.xmla.XmlaServlet;
 import mondrian.xmla.impl.*;
 
 import org.apache.log4j.Logger;
 
 import org.eigenbase.xom.*;
 import org.eigenbase.xom.Parser;
+
+import org.olap4j.metadata.XmlaConstants.ResponseMimeType;
+import org.olap4j.xmla.XmlaPropertyDefinition;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -1077,12 +1084,12 @@ public class XmlaSupport {
         XmlaRequest request =
             new DefaultXmlaRequest(requestElem, roleName, null, null, null);
 
-        Enumeration.ResponseMimeType responseMimeType =
-            Enumeration.ResponseMimeType.MAP.get(
+        ResponseMimeType responseMimeType =
+            ResponseMimeType.MAP.get(
                 request.getProperties().get(
-                    PropertyDefinition.ResponseMimeType.name()));
+                    XmlaPropertyDefinition.ResponseMimeType.name()));
         if (responseMimeType == null) {
-            responseMimeType = Enumeration.ResponseMimeType.SOAP;
+            responseMimeType = ResponseMimeType.SOAP;
         }
 
         // make response
