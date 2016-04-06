@@ -12,9 +12,13 @@ package mondrian.olap4j;
 import mondrian.olap.OlapElement;
 
 import org.olap4j.OlapWrapper;
+import org.olap4j.metadata.Annotated;
+import org.olap4j.metadata.Annotation;
 import org.olap4j.metadata.MetadataElement;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Basic features of metadata elements in Mondrian's olap4j driver.
@@ -36,11 +40,18 @@ abstract class MondrianOlap4jMetadataElement
             return iface.cast(this);
         }
         final OlapElement element = getOlapElement();
-        if (element != null && iface.isInstance(element)) {
-            return iface.cast(element);
-        } else {
-            return null;
+        if (element != null) {
+            if (iface.isInstance(element)) {
+                return iface.cast(element);
+            }
+            if (iface == Annotated.class) {
+                if (element instanceof mondrian.olap.Annotated) {
+                    return iface.cast(
+                        new MyAnnotated((mondrian.olap.Annotated) element));
+                }
+            }
         }
+        return null;
     }
 
     /**
@@ -63,8 +74,34 @@ abstract class MondrianOlap4jMetadataElement
         return unwrapImpl(iface) != null;
     }
 
-    public Object getAnnotations() {
-      return null;
+    /** Adapts a Mondrian annotated to an olap4j annotated. */
+    private static class MyAnnotated implements Annotated {
+        private final mondrian.olap.Annotated element;
+
+        MyAnnotated(mondrian.olap.Annotated element) {
+            this.element = element;
+        }
+
+        public Map<String, Annotation> getAnnotationMap() {
+            final Map<String, Annotation> map =
+                new HashMap<String, Annotation>();
+            for (final Map.Entry<String, mondrian.olap.Annotation> entry
+                : element.getAnnotationMap().entrySet())
+            {
+                map.put(
+                    entry.getKey(),
+                    new Annotation() {
+                        public String getName() {
+                            return entry.getKey();
+                        }
+
+                        public Object getValue() {
+                            return entry.getValue().getValue();
+                        }
+                    });
+            }
+            return map;
+        }
     }
 }
 

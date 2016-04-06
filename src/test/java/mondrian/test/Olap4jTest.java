@@ -4,13 +4,12 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2011-2013 Pentaho and others
+// Copyright (C) 2011-2016 Pentaho and others
 // All Rights Reserved.
 */
 package mondrian.test;
 
 import mondrian.olap.*;
-import mondrian.olap4j.MondrianOlap4jDriver;
 
 import org.olap4j.*;
 import org.olap4j.Cell;
@@ -20,6 +19,8 @@ import org.olap4j.mdx.IdentifierNode;
 import org.olap4j.mdx.SelectNode;
 import org.olap4j.mdx.parser.*;
 import org.olap4j.metadata.*;
+import org.olap4j.metadata.Annotated;
+import org.olap4j.metadata.Annotation;
 import org.olap4j.metadata.Cube;
 import org.olap4j.metadata.Hierarchy;
 import org.olap4j.metadata.Level;
@@ -146,10 +147,6 @@ public class Olap4jTest extends FoodMartTestCase {
             "Ventes",
             ((OlapWrapper) salesCube).unwrap(OlapElement.class)
                 .getLocalized(LocalizedProperty.CAPTION, Locale.FRANCE));
-
-        final Map<String, Object> map =
-            MondrianOlap4jDriver.EXTRA.getAnnotationMap(salesCube);
-        assertEquals("Ventes", map.get("caption+fr_FR"));
     }
 
     public void testFormatString() throws SQLException {

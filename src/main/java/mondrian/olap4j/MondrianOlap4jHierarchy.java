@@ -9,15 +9,24 @@
 */
 package mondrian.olap4j;
 
+import mondrian.olap.HierarchyBase;
 import mondrian.olap.LocalizedProperty;
 import mondrian.olap.OlapElement;
-import mondrian.rolap.RolapCubeHierarchy;
+import mondrian.rolap.RolapHierarchy;
+import mondrian.rolap.RolapLevel;
 
 import org.olap4j.OlapException;
 import org.olap4j.impl.*;
 import org.olap4j.metadata.*;
+import org.olap4j.metadata.Annotated;
+import org.olap4j.metadata.Annotation;
+import org.olap4j.metadata.Dimension;
+import org.olap4j.metadata.Hierarchy;
+import org.olap4j.metadata.Level;
+import org.olap4j.metadata.Member;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of {@link org.olap4j.metadata.Hierarchy}
@@ -146,7 +155,9 @@ class MondrianOlap4jHierarchy
     }
 
     public Structure getStructure() {
-        return null; // TODO:
+        return ((HierarchyBase) hierarchy).isRagged()
+            ? Structure.RAGGEDBALANCED
+            : Structure.FULLYBALANCED;
     }
 
     public StructureType getStructureType() {
@@ -158,20 +169,38 @@ class MondrianOlap4jHierarchy
     }
 
     public String getDisplayFolder() {
-        return null; // TODO:
+        final Annotated annotated = unwrapImpl(Annotated.class);
+        if (annotated != null) {
+            final Annotation annotation =
+                annotated.getAnnotationMap().get("displayFolder");
+            if (annotation != null) {
+                return (String) annotation.getValue();
+            }
+        }
+        return null;
     }
 
     public InstanceSelection getInstanceSelection() {
-        return null; // TODO:
+        return InstanceSelection.NONE;
     }
 
     public GroupingBehavior getGroupingBehavior() {
-        return null; // TODO:
+        return GroupingBehavior.EncourageGrouping;
     }
 
-    public Origin getOrigin() {
-        return null; // TODO:
+    public Set<Origin> getOrigin() {
+        return isParentChild() ? Origin.PARENT_CHILD : Origin.ONLY_USER_DEFINED;
     }
+
+    public boolean isParentChild() {
+      final List<? extends RolapLevel> levels =
+          ((RolapHierarchy) hierarchy).getLevelList();
+      RolapLevel nonAllFirstLevel = levels.get(0);
+      if (nonAllFirstLevel.getLevelType() == Level.Type.ALL) {
+        nonAllFirstLevel = levels.get(1);
+      }
+      return nonAllFirstLevel.isParentChild();
+  }
 }
 
 // End MondrianOlap4jHierarchy.java

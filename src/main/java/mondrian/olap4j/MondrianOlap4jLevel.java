@@ -195,6 +195,10 @@ class MondrianOlap4jLevel
         return level;
     }
 
+    public Set<Origin> getOrigin() {
+        return EnumSet.of(Origin.USER_DEFINED);
+    }
+
     public String getOrderingProperty() {
         return null; // TODO:
     }

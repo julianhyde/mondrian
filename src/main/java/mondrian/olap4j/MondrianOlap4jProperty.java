@@ -124,9 +124,14 @@ class MondrianOlap4jProperty implements Property, Named {
         return ContentType.REGULAR;
     }
 
-    public Object getAnnotations() {
-        return null; // TODO:
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface.isInstance(this);
     }
+
+    public <T> T unwrap(Class<T> iface) {
+        return iface.cast(this);
+    }
+
 }
 
 // End MondrianOlap4jProperty.java

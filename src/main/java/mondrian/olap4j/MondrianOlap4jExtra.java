@@ -14,7 +14,7 @@ import mondrian.olap.Property;
 import mondrian.olap.fun.FunInfo;
 import mondrian.rolap.*;
 import mondrian.xmla.*;
-import mondrian.xmla.Rowsets.MdschemaFunctionsRowset.VarType;
+import mondrian.xmla.Rowsets.VarType;
 
 import org.olap4j.*;
 import org.olap4j.Cell;
@@ -231,22 +231,6 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
             schemaReader, olap4jHierarchy.hierarchy);
     }
 
-    @Override public int getHierarchyStructure(Hierarchy hierarchy) {
-        final MondrianOlap4jHierarchy olap4jHierarchy =
-            (MondrianOlap4jHierarchy) hierarchy;
-        return ((HierarchyBase) olap4jHierarchy.hierarchy).isRagged() ? 1 : 0;
-    }
-
-    @Override public boolean isHierarchyParentChild(Hierarchy hierarchy) {
-        Level nonAllFirstLevel = hierarchy.getLevels().get(0);
-        if (nonAllFirstLevel.getLevelType() == Level.Type.ALL) {
-            nonAllFirstLevel = hierarchy.getLevels().get(1);
-        }
-        MondrianOlap4jLevel olap4jLevel =
-            (MondrianOlap4jLevel) nonAllFirstLevel;
-        return ((RolapLevel) olap4jLevel.level).isParentChild();
-    }
-
     @Override public Measure.Aggregator getMeasureAggregator(Member member) {
         MondrianOlap4jMeasure olap4jMeasure =
             (MondrianOlap4jMeasure) member;
@@ -336,24 +320,6 @@ class MondrianOlap4jExtra extends XmlaHandler.XmlaExtraImpl {
             MondrianServer.forConnection(
                 olap4jConnection.getMondrianConnection());
         return server.getDatabases(olap4jConnection.getMondrianConnection());
-    }
-
-    @Override public Map<String, Object>
-    getAnnotationMap(MetadataElement element) throws SQLException {
-        if (element instanceof OlapWrapper) {
-            OlapWrapper wrapper = (OlapWrapper) element;
-            if (wrapper.isWrapperFor(Annotated.class)) {
-                final Annotated annotated = wrapper.unwrap(Annotated.class);
-                final Map<String, Object> map = new HashMap<String, Object>();
-                for (Map.Entry<String, Annotation> entry
-                    : annotated.getAnnotationMap().entrySet())
-                {
-                    map.put(entry.getKey(), entry.getValue().getValue());
-                }
-                return map;
-            }
-        }
-        return Collections.emptyMap();
     }
 
     @Override public String getHierarchyName(Hierarchy hierarchy) {
