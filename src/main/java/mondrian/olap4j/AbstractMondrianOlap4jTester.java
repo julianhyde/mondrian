@@ -12,6 +12,7 @@ package mondrian.olap4j;
 import mondrian.olap.MondrianProperties;
 
 import org.olap4j.test.TestContext;
+import org.olap4j.test.TestEnv;
 
 import java.sql.*;
 import java.util.Properties;
@@ -23,25 +24,25 @@ import java.util.Properties;
  * @author Julian Hyde
  */
 abstract class AbstractMondrianOlap4jTester implements TestContext.Tester {
-    private final TestContext testContext;
+    private final TestEnv env;
     private final String driverUrlPrefix;
     private final String driverClassName;
     private final Flavor flavor;
 
     protected AbstractMondrianOlap4jTester(
-        TestContext testContext,
+        TestEnv env,
         String driverUrlPrefix,
         String driverClassName,
         Flavor flavor)
     {
-        this.testContext = testContext;
+        this.env = env;
         this.driverUrlPrefix = driverUrlPrefix;
         this.driverClassName = driverClassName;
         this.flavor = flavor;
     }
 
-    public TestContext getTestContext() {
-        return testContext;
+    public TestEnv env() {
+        return env;
     }
 
     public Connection createConnection() throws SQLException {
@@ -73,7 +74,7 @@ abstract class AbstractMondrianOlap4jTester implements TestContext.Tester {
     public String getURL() {
         // This property is usually defined in build.properties. See
         // examples in that file.
-        return testContext.getProperties().getProperty(
+        return env.getProperties().getProperty(
             TestContext.Property.CONNECT_URL.path);
     }
 

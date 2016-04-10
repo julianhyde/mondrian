@@ -9,6 +9,8 @@
 */
 package mondrian.olap4j;
 
+import org.olap4j.test.TestEnv;
+
 /**
  * Implementation of {@link org.olap4j.test.TestContext.Tester} for Mondrian's
  * olap4j driver.
@@ -21,11 +23,11 @@ public class MondrianOlap4jTester extends AbstractMondrianOlap4jTester
      * Public constructor with {@link org.olap4j.test.TestContext} parameter as
      * required by {@link org.olap4j.test.TestContext.Tester} API.
      *
-     * @param testContext Test context
+     * @param env Test context
      */
-    public MondrianOlap4jTester(org.olap4j.test.TestContext testContext) {
+    public MondrianOlap4jTester(TestEnv env) {
         super(
-            testContext,
+            env,
             DRIVER_URL_PREFIX,
             DRIVER_CLASS_NAME,
             Flavor.MONDRIAN);
