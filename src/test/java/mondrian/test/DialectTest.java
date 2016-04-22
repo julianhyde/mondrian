@@ -429,6 +429,7 @@ public class DialectTest extends TestCase {
                 "Java exception: ': java.lang.NullPointerException'.",
                 // hsqldb
                 "(?s)Cannot be in ORDER BY clause in statement .*",
+                "invalid ORDER BY expression",
                 // neoview
                 NEOVIEW_SYNTAX_ERROR,
                 // oracle
@@ -500,6 +501,7 @@ public class DialectTest extends TestCase {
                 "(?s).*line 6:18 mismatched input 'SETS' expecting EOF.*",
                 // hsqldb
                 "(?s)Unexpected token: GROUPING in statement .*",
+                "user lacks privilege or object not found: GROUPING",
                 // mysql
                 "(?s)You have an error in your SQL syntax; check .*",
                 // access

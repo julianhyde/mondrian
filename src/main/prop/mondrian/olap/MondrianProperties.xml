@@ -120,6 +120,10 @@ functionality enabled.
         <Path>mondrian.foodmart.jdbcURL</Path>
         <Category>Testing</Category>
         <Description>
+<p>Deprecated. The test suite now reads the URL of the Foodmart database
+from the property "mondrian.test.${db}.foodmart.url",
+where "${db}" is the value of "mondrian.test.db" property.</p>
+
 <p>Property containing the JDBC URL of the FoodMart database.
 The default value is to connect to an ODBC data source called
 "MondrianFoodMart".</p>
@@ -258,7 +262,7 @@ mondrian.foodmart.jdbcPassword=<i>password</i><br/>
 mondrian.jdbcDrivers=com.vertica.Driver<br/>
 driver.classpath=/some/path/vertica.jar</code></blockquote>
 
-<h3>Vertorwise</h3>
+<h3>Vectorwise</h3>
 <blockquote><code>
 mondrian.foodmart.jdbcURL=jdbc:ingres://xxx.xxx.xxx.xxx<i>port</i>/<i>dbName</i><br/>
 mondrian.foodmart.jdbcUser=<i>user</i><br/>
@@ -271,10 +275,36 @@ driver.classpath=/some/path/iijdbc.jar</code></blockquote>
         <Default>jdbc:odbc:MondrianFoodMart</Default>
     </PropertyDefinition>
     <PropertyDefinition>
+        <Name>TestPropertiesFile</Name>
+        <Path>mondrian.test.properties.file</Path>
+        <Category>Testing</Category>
+        <Description>
+Name or URL of a file that contains properties for testing.
+        </Description>
+        <Type>String</Type>
+    </PropertyDefinition>
+    <PropertyDefinition>
+        <Name>TestDb</Name>
+        <Path>mondrian.test.db</Path>
+        <Category>Testing</Category>
+        <Description>
+Tag of the database to be tested.
+From this, we get other properties:
+mondrian.test.${db}.jdbcURL,
+mondrian.test.${db}.jdbcUser,
+mondrian.test.${db}.jdbcPassword.
+        </Description>
+        <Type>String</Type>
+    </PropertyDefinition>
+    <PropertyDefinition>
         <Name>TestJdbcUser</Name>
         <Path>mondrian.foodmart.jdbcUser</Path>
         <Category>Testing</Category>
         <Description>
+<p>Deprecated. The test suite now gets the user of the Foodmart database
+from the property "mondrian.test.${db}.foodmart.user",
+where "${db}" is the value of "mondrian.test.db" property.</p>
+
 Property containing the JDBC user of a test database.
 The default value is null, to cope with DBMSs that don't need this.
         </Description>
@@ -285,8 +315,15 @@ The default value is null, to cope with DBMSs that don't need this.
         <Path>mondrian.foodmart.jdbcPassword</Path>
         <Category>Testing</Category>
         <Description>
+<p>Deprecated. The test suite now gets the password of the Foodmart database
+from the property "mondrian.test.${db}.foodmart.password",
+where "${db}" is the value of "mondrian.test.db" property.</p>
+
 Property containing the JDBC password of a test database.
 The default value is null, to cope with DBMSs that don't need this.
+
+Deprecated. We use "mondrian.test.${db}.jdbcPassword",
+where "${db}" is the database tag from "mondrian.test.db".
         </Description>
         <Type>String</Type>
     </PropertyDefinition>

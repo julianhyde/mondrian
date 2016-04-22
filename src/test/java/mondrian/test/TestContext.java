@@ -22,7 +22,6 @@ import mondrian.resource.MondrianResource;
 import mondrian.rolap.*;
 import mondrian.spi.*;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
-import mondrian.util.DelegatingInvocationHandler;
 import mondrian.util.Pair;
 
 import junit.framework.*;
@@ -37,7 +36,6 @@ import org.olap4j.layout.TraditionalCellSetFormatter;
 import java.io.*;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.*;
@@ -320,25 +318,37 @@ public class TestContext {
      * </ul>
      */
     public static String getDefaultConnectString() {
-        String connectString =
-            MondrianProperties.instance().TestConnectString.get();
-        final Util.PropertyList connectProperties;
-        if (connectString == null || connectString.equals("")) {
-            connectProperties = new Util.PropertyList();
-            connectProperties.put("Provider", "mondrian");
-        } else {
-            connectProperties = Util.parseConnectString(connectString);
+        final Util.PropertyList connectProperties = new Util.PropertyList();
+        connectProperties.put("Provider", "mondrian");
+        final MondrianProperties p = MondrianProperties.instance();
+
+        final String propFile = p.TestPropertiesFile.get();
+        if (propFile != null) {
+            try {
+                p.load(new FileInputStream(propFile));
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot read " + propFile, e);
+            }
         }
-        String jdbcURL = MondrianProperties.instance().FoodmartJdbcURL.get();
+
+        final String db = p.TestDb.get();
+
+        Util.discard(p.FoodmartJdbcURL);
+        String jdbcURL = p.getProperty("mondrian.test." + db + ".foodmart.url");
         if (jdbcURL != null) {
             connectProperties.put("Jdbc", jdbcURL);
         }
-        String jdbcUser = MondrianProperties.instance().TestJdbcUser.get();
+
+        Util.discard(p.TestJdbcUser);
+        String jdbcUser =
+            p.getProperty("mondrian.test." + db + ".foodmart.user");
         if (jdbcUser != null) {
             connectProperties.put("JdbcUser", jdbcUser);
         }
+
+        Util.discard(p.TestJdbcPassword);
         String jdbcPassword =
-            MondrianProperties.instance().TestJdbcPassword.get();
+            p.getProperty("mondrian.test." + db + ".foodmart.password");
         if (jdbcPassword != null) {
             connectProperties.put("JdbcPassword", jdbcPassword);
         }
@@ -347,7 +357,7 @@ public class TestContext {
         // is specified and is valid. Otherwise, reference FoodMart.mondrian.xml
         // assuming we are at the root of the source tree.
         URL catalogURL = null;
-        String catalog = connectProperties.get("catalog");
+        String catalog = p.CatalogURL.get();
         if (catalog != null) {
             try {
                 catalogURL = new URL(catalog);
@@ -1042,12 +1052,10 @@ public class TestContext {
 
     /**
      * Massages the actual result of executing a query to handle differences in
-     * unique names betweeen old and new behavior.
+     * unique names between old and new behavior.
      *
      * <p>Since the new naming is now the default, reference logs
      * should be in terms of the new naming.
-     *
-     * @see mondrian.olap.MondrianProperties#SsasCompatibleNaming
      *
      * @param actual Actual result
      * @return Expected result massaged for backwards compatibility
@@ -1167,8 +1175,6 @@ public class TestContext {
      * <p>So, {@code upgradeQuery("[Gender]")} returns
      * "[Gender].[Gender]" for old behavior,
      * "[Gender].[Gender].[Gender]" for new behavior.</p>
-     *
-     * @see mondrian.olap.MondrianProperties#SsasCompatibleNaming
      *
      * @param queryString Original query
      * @return Massaged query for backwards compatibility
@@ -2107,9 +2113,17 @@ public class TestContext {
             if (jdbcDrivers != null) {
                 RolapUtil.loadDrivers(jdbcDrivers);
             }
-            final String jdbcDriversProp =
-                MondrianProperties.instance().JdbcDrivers.get();
-            RolapUtil.loadDrivers(jdbcDriversProp);
+            final MondrianProperties p = MondrianProperties.instance();
+            final String jdbcDriversProp = p.JdbcDrivers.get();
+            if (jdbcDriversProp != null) {
+                RolapUtil.loadDrivers(jdbcDriversProp);
+            }
+            final String db = p.TestDb.get();
+            final String testDriversProp =
+                p.getProperty("mondrian.test." + db + ".jdbcDrivers");
+            if (testDriversProp != null) {
+                RolapUtil.loadDrivers(testDriversProp);
+            }
 
             jdbcConn = java.sql.DriverManager.getConnection(
                 connectProperties.get(RolapConnectionProperties.Jdbc.name()),

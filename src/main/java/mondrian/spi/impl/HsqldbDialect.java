@@ -12,10 +12,12 @@ package mondrian.spi.impl;
 import mondrian.olap.Util;
 
 import java.sql.*;
-import java.util.List;
 
 /**
  * Implementation of {@link mondrian.spi.Dialect} for the Hsqldb database.
+ *
+ * <p>We assume that you are using version 2.0 and higher, which includes the
+ * VALUES keyword.
  *
  * @author wgorman
  * @since Aug 20, 2009
@@ -28,7 +30,7 @@ public class HsqldbDialect extends JdbcDialectImpl {
             DatabaseProduct.HSQLDB);
 
     /**
-     * Creates a FirebirdDialect.
+     * Creates an HsqldbDialect.
      *
      * @param connection Connection
      */
@@ -45,18 +47,6 @@ public class HsqldbDialect extends JdbcDialectImpl {
         Util.singleQuoteString(value, buf);
     }
 
-    public String generateInline(
-        List<String> columnNames,
-        List<String> columnTypes,
-        List<String[]> valueList)
-    {
-        // Fall back to using the FoodMart 'days' table, because
-        // HQLDB's SQL has no way to generate values not from a table.
-        // (Same as Access.)
-        return generateInlineGeneric(
-            columnNames, columnTypes, valueList,
-            " from \"days\" where \"day\" = 1", false);
-    }
 }
 
 // End HsqldbDialect.java

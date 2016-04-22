@@ -54,6 +54,13 @@
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <mondrian.test.db>hsqldb</mondrian.test.db>
+    <mondrian.test.properties.file>${project.basedir}/build.properties</mondrian.test.properties.file>
+    <mondrian.test.foodmart.catalogURL>file:${project.basedir}/demo/FoodMart.mondrian.xml</mondrian.test.foodmart.catalogURL>
+
+    <!-- Versions, in alphabetical order -->
+    <foodmart-data-hsqldb.version>0.4</foodmart-data-hsqldb.version>
+    <hsqldb.version>2.3.1</hsqldb.version>
   </properties>
   <dependencies>
     <dependency>
@@ -125,6 +132,21 @@
       <groupId>eigenbase</groupId>
       <artifactId>eigenbase-resgen</artifactId>
       <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+    </dependency>
+    <dependency>
+      <groupId>net.hydromatic</groupId>
+      <artifactId>foodmart-data-hsqldb</artifactId>
+      <version>${foodmart-data-hsqldb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>${hsqldb.version}</version>
     </dependency>
     <dependency>
       <groupId>org.olap4j</groupId>
@@ -437,11 +459,8 @@
             <include>mondrian/test/Main.java</include>
           </includes>
           <systemPropertyVariables>
-            <log4j.configuration>${log4j.configuration}</log4j.configuration>
-            <mondrian.jdbcDrivers>${mondrian.jdbcDrivers}</mondrian.jdbcDrivers>
-            <mondrian.foodmart.jdbcURL>${mondrian.foodmart.jdbcURL}</mondrian.foodmart.jdbcURL>
-            <mondrian.test.foodmart.catalogURL>${mondrian.test.foodmart.catalogURL}</mondrian.test.foodmart.catalogURL>
-            <mondrian.test.connectString>${mondrian.test.connectString}</mondrian.test.connectString>
+            <mondrian.test.properties.file>${mondrian.test.properties.file}</mondrian.test.properties.file>
+            <mondrian.test.db>${mondrian.test.db}</mondrian.test.db>
             <user.language>en</user.language>
             <user.region>US</user.region>
           </systemPropertyVariables>
