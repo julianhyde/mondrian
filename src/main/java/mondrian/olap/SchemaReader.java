@@ -26,7 +26,7 @@ import javax.sql.DataSource;
  *
  * <p>SchemaReader is deprecated for code outside of mondrian. For new code,
  * use the metadata provided by olap4j, for example
- * {@link mondrian.olap4j.MondrianOlap4jSchema#getCubes()}.
+ * {@link org.olap4j.metadata.Schema#getCubes()}.
  *
  * <p>If you use a SchemaReader from outside of a mondrian statement, you may
  * get a {@link java.util.EmptyStackException} indicating that mondrian cannot
@@ -54,16 +54,18 @@ public interface SchemaReader {
     /**
      * Returns the accessible dimensions of a cube.
      *
-     * @pre dimension != null
-     * @post return != null
+     * @param cube Cube (never null)
+     *
+     * @return Dimensions, never null
      */
     List<Dimension> getCubeDimensions(Cube cube);
 
     /**
      * Returns the accessible hierarchies of a dimension.
      *
-     * @pre dimension != null
-     * @post return != null
+     * @param dimension Dimension (never null)
+     *
+     * @return List of accessible hierarchies (never null)
      */
     List<Hierarchy> getDimensionHierarchies(Dimension dimension);
 
@@ -103,8 +105,9 @@ public interface SchemaReader {
 
     /**
      * Returns direct children of <code>member</code>.
-     * @pre member != null
-     * @post return != null
+     *
+     * @param member Member (never null)
+     * @return Children of member (never null)
      */
     List<Member> getMemberChildren(Member member);
 
@@ -118,7 +121,7 @@ public interface SchemaReader {
      * If <code>context</code> is not null, the resulting members
      * <em>may</em> be restricted to those members that have a
      * non empty row in the fact table for <code>context</code>.
-     * Wether or not optimization is possible depends
+     * Whether or not optimization is possible depends
      * on the SchemaReader implementation.
      */
     List<Member> getMemberChildren(Member member, Evaluator context);
@@ -126,11 +129,8 @@ public interface SchemaReader {
     /**
      * Returns direct children of each element of <code>members</code>.
      *
-     * @param members Array of members
-     * @return array of child members
-     *
-     * @pre members != null
-     * @post return != null
+     * @param members Array of members (never null)
+     * @return List of child members (never null)
      */
     List<Member> getMemberChildren(List<Member> members);
 
@@ -138,12 +138,9 @@ public interface SchemaReader {
      * Returns direct children of each element of <code>members</code>
      * which is not empty in <code>context</code>.
      *
-     * @param members Array of members
+     * @param members List of members (never null)
      * @param context Evaluation context for exists, or null
-     * @return array of child members
-     *
-     * @pre members != null
-     * @post return != null
+     * @return List of child members (never null)
      */
     List<Member> getMemberChildren(List<Member> members, Evaluator context);
 
@@ -151,7 +148,7 @@ public interface SchemaReader {
      * Returns a list of contributing children of a member of a parent-child
      * hierarchy.
      *
-     * @param dataMember Data member for a member of the parent-child hierarcy
+     * @param dataMember Data member for a member of the parent-child hierarchy
      * @param hierarchy Hierarchy
      * @param list List of members to populate
      */
@@ -163,8 +160,7 @@ public interface SchemaReader {
     /**
      * Returns the parent of <code>member</code>.
      *
-     * @param member Member
-     * @pre member != null
+     * @param member Member (never null)
      * @return null if member is a root member
      */
     Member getMemberParent(Member member);
@@ -240,7 +236,10 @@ public interface SchemaReader {
      * '[Products]&#46;[Product Department]&#46;[Produce]' by resolving the
      * components ('Products', and so forth) one at a time.
      *
-     * @param parent Parent element to search in
+     * <p>If not found, throws if {@code failIfNotFound}, otherwise
+     * returns null.
+     *
+     * @param parent Parent element to search in (never null)
      * @param names Exploded compound name, such as {"Products",
      *     "Product Department", "Produce"}
      * @param failIfNotFound If the element is not found, determines whether
@@ -248,9 +247,6 @@ public interface SchemaReader {
      * @param category Type of returned element, a {@link Category} value;
      *      {@link Category#Unknown} if it doesn't matter.
      * @param matchType indicates the match mode; if not specified, EXACT
-     *
-     * @pre parent != null
-     * @post !(failIfNotFound && return == null)
      */
     OlapElement lookupCompound(
         OlapElement parent,
@@ -266,16 +262,16 @@ public interface SchemaReader {
      * '[Products]&#46;[Product Department]&#46;[Produce]' by resolving the
      * components ('Products', and so forth) one at a time.
      *
-     * @param parent Parent element to search in
+     * <p>If not found, throws if {@code failIfNotFound}, otherwise
+     * returns null.
+     *
+     * @param parent Parent element to search in (never null)
      * @param names Exploded compound name, such as {"Products",
      *     "Product Department", "Produce"}
      * @param failIfNotFound If the element is not found, determines whether
      *      to return null or throw an error
      * @param category Type of returned element, a {@link Category} value;
      *      {@link Category#Unknown} if it doesn't matter.
-     *
-     * @pre parent != null
-     * @post !(failIfNotFound && return == null)
      */
     OlapElement lookupCompound(
         OlapElement parent,
@@ -329,7 +325,8 @@ public interface SchemaReader {
      * Returns a member <code>n</code> further along in the same level from
      * <code>member</code>.
      *
-     * @pre member != null
+     * @param member Member (never null)
+     * @param n Distance
      */
     Member getLeadMember(Member member, int n);
 
@@ -339,7 +336,7 @@ public interface SchemaReader {
      * is an ancestor or a earlier), is a sibling, or comes later in a prefix
      * traversal.
      * @return A negative integer if <code>m1</code> is an ancestor, an earlier
-     *   sibling of an ancestor, or a descendent of an earlier sibling, of
+     *   sibling of an ancestor, or a descendant of an earlier sibling, of
      *   <code>m2</code>;
      *   zero if <code>m1</code> is a sibling of <code>m2</code>;
      *   a positive integer if <code>m1</code> comes later in the prefix
@@ -353,7 +350,7 @@ public interface SchemaReader {
      * null if no element is found.
      *
      * @param parent Parent element to search in
-     * @param name Compound in compound name, such as "[Product]" or "&[1]"
+     * @param name Compound in compound name, such as "[Product]" or "&amp;[1]"
      * @param matchType Match type
      *
      * @return Element with given name, or null
@@ -371,7 +368,7 @@ public interface SchemaReader {
      * <code>getElementChild(parent, name, MatchType.EXACT)</code>.
      *
      * @param parent Parent element to search in
-     * @param name Compound in compound name, such as "[Product]" or "&[1]"
+     * @param name Compound in compound name, such as "[Product]" or "&amp;[1]"
      *
      * @return Element with given name, or null
      */
@@ -401,10 +398,8 @@ public interface SchemaReader {
     /**
      * Returns the accessible levels of a hierarchy.
      *
-     * @param hierarchy Hierarchy
-     *
-     * @pre hierarchy != null
-     * @post return.length >= 1
+     * @param hierarchy Hierarchy (never null)
+     * @return List of at least one hierarchy
      */
     List<Level> getHierarchyLevels(Hierarchy hierarchy);
 
@@ -463,7 +458,7 @@ public interface SchemaReader {
      * @param fun Function
      * @param args Arguments to the function
      * @param evaluator Evaluator, provides context
-     * @param calc
+     * @param calc Compiled calculation
      */
     NativeEvaluator getNativeSetEvaluator(
         FunDef fun,

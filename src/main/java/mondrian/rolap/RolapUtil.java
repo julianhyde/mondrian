@@ -320,7 +320,8 @@ public class RolapUtil {
      * @param types Suggested types of columns, or null;
      *     if present, must have one element for each SQL column;
      *     each not-null entry overrides deduced JDBC type of the column
-     * @param maxRowCount Maximum number of rows to retrieve, <= 0 if unlimited
+     * @param maxRowCount Maximum number of rows to retrieve,
+     *   &le; 0 if unlimited
      * @param firstRowOrdinal Ordinal of row to skip to (1-based), or 0 to
      *   start from beginning
      * @param locus Execution context of this statement

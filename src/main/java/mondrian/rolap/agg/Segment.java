@@ -23,7 +23,7 @@ import java.util.*;
 
 /**
  * A <code>Segment</code> is a collection of cell values parameterized by
- * a measure, and a set of (column, value) pairs. An example of a segment is</p>
+ * a measure, and a set of (column, value) pairs. An example of a segment is:
  *
  * <blockquote>
  *   <p>(Unit sales, Gender = 'F', State in {'CA','OR'}, Marital Status = <i>

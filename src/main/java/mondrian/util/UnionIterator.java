@@ -20,10 +20,10 @@ import java.util.*;
  *
  * <blockquote>
  * <code>
- * List&lt;String&gt; names;<br/>
- * List&lt;String&gt; addresses;<br/>
- * for (Sstring s : UnionIterator.over(names, addresses)) {
- * &nbsp;&nbsp;print(s);<br/>
+ * List&lt;String&gt; names;<br>
+ * List&lt;String&gt; addresses;<br>
+ * for (Sstring s : UnionIterator.over(names, addresses)) {<br>
+ * &nbsp;&nbsp;print(s);<br>
  * }
  * </code>
  * </blockquote>

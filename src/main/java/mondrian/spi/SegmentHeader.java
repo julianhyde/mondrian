@@ -29,16 +29,18 @@ import java.util.*;
  * <li>Schema Name</li>
  * <li>Cube Name</li>
  * <li>Measure Name</li>
- * <li>For each column:</li>
+ * <li>For each column:
  *   <ul>
  *   <li>Column table name</li>
  *   <li>Column physical name</li>
- *   <li>For each predicate value:</li>
+ *   <li>For each predicate value:
  *     <ul>
  *     <li>The equivalent of
  *     <code>String.valueof([value object])</code></li>
  *     </ul>
+ *   </li>
  *   </ul>
+ * </li>
  * </ul>
  *
  * @author LBoudreau

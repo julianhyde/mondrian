@@ -34,6 +34,7 @@ import java.util.concurrent.*;
  * <p>Segment states</p>
  *
  * <table>
+ *     <caption>Segment states</caption>
  *     <tr><th>State</th><th>Meaning</th></tr>
  *     <tr><td>Local</td><td>Initial state of a segment</td></tr>
  * </table>
@@ -138,7 +139,7 @@ import java.util.concurrent.*;
  * {@link mondrian.server.Execution}. Would it still be thread-local?</p>
  *
  * <p>10. Call
- * {@link mondrian.spi.DataSourceChangeListener#isAggregationChanged}.
+ * {@code mondrian.spi.DataSourceChangeListener#isAggregationChanged}.
  * Previously called from
  * {@link RolapStar}.checkAggregateModifications, now never called.</p>
  *
@@ -155,8 +156,8 @@ import java.util.concurrent.*;
  *     them when read, and write out again. But: doesn't propagate to other
  *     nodes.</li>
  *
- * <li>Option #3. (Best?) Write a mapping SegmentHeader->Restrictions into the
- *     cache.  Less I/O than #1. Method
+ * <li>Option #3. (Best?) Write a mapping SegmentHeader &rarr; Restrictions into
+ *     the cache.  Less I/O than #1. Method
  *     "SegmentCache.addRestriction(SegmentHeader, CacheRegion)"</li>
  *
  * </ol>

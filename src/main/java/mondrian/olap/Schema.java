@@ -20,9 +20,7 @@ import java.util.List;
 public interface Schema extends Annotated {
 
     /**
-     * Returns the name of this schema.
-     * @post return != null
-     * @post return.length() > 0
+     * Returns the name of this schema (a non-empty string).
      */
     String getName();
 

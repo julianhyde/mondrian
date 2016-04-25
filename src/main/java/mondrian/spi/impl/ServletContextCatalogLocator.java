@@ -16,9 +16,9 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 
 /**
- * Locates a catalog based upon a {@link ServletContext}.<p/>
+ * Locates a catalog based upon a {@link ServletContext}.
  *
- * If the catalog URI is an absolute path, it refers to a resource inside our
+ * <p>If the catalog URI is an absolute path, it refers to a resource inside our
  * WAR file, so replace the URL.
  *
  * @author Gang Chen, jhyde

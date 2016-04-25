@@ -787,7 +787,8 @@ public class Util extends XOMUtil {
     }
 
     /**
-     * Parses an MDX identifier such as <code>[Foo].[Bar].Baz.&Key&Key2</code>
+     * Parses an MDX identifier such as
+     * <code>[Foo].[Bar].Baz.&amp;Key&amp;Key2</code>
      * and returns the result as a list of segments.
      *
      * @param s MDX identifier
@@ -2320,7 +2321,7 @@ public class Util extends XOMUtil {
 
     /**
      * Computes <a href="http://en.wikipedia.org/wiki/Julian_day">Julian Day
-     * Number</a>.</p>
+     * Number</a>.
      *
      * @param year Year
      * @param month Month
@@ -3657,9 +3658,9 @@ public class Util extends XOMUtil {
      * which makes it ideal for use with the 'foreach' construct. For example,
      *
      * <blockquote><code>List&lt;Number&gt; numbers = Arrays.asList(1, 2, 3.14,
-     * 4, null, 6E23);<br/>
-     * for (int myInt : filter(numbers, Integer.class)) {<br/>
-     * &nbsp;&nbsp;&nbsp;&nbsp;print(i);<br/>
+     * 4, null, 6E23);<br>
+     * for (int myInt : filter(numbers, Integer.class)) {<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;print(i);<br>
      * }</code></blockquote>
      *
      * will print 1, 2, 4.
@@ -3974,7 +3975,7 @@ public class Util extends XOMUtil {
     }
 
     /**
-     * Checks if a String is whitespace, empty ("") or null.</p>
+     * Checks if a String is whitespace, empty ("") or null.
      *
      * <pre>
      * StringUtils.isBlank(null) = true

@@ -16,8 +16,8 @@ package mondrian.recorder;
  * This allows one to collect more than one warning/error, keep processing,
  * and then the code that initiated the processing can determine what to do
  * with the warnings/errors if they exist.
- * <p>
- * A typical usage might be:
+ *
+ * <p>A typical usage might be:
  * <pre><code>
  *    void process(MessageRecorder msgRecorder) {
  *        msgRecorder.pushContextName(getName());
@@ -32,16 +32,17 @@ package mondrian.recorder;
  *              msgRecorder.popContextName();
  *        }
  *    }
- * <code></pre>
- * <p>
- * Implementations must provide the means for extracting the error/warning
+ * </code></pre>
+ *
+ * <p>Implementations must provide the means for extracting the error/warning
  * messages.
- * <p>
- * Code that is processing should not catch the MessageRecorder.RTException.
+ *
+ * <p>Code that is processing should not catch the MessageRecorder.RTException.
  * This Exception is thrown by the MessageRecorder when too many errors have
  * been seen. Throwing this Exception is the mechanism used to stop processing
  * and return to the initiating code. The initiating code should expect to
  * catch the MessageRecorder.RTException Exception.
+ *
  * <pre><code>
  *    void initiatingCode(MessageRecorder msgRecorder) {
  *      // get MessageRecorder implementation
@@ -57,13 +58,13 @@ package mondrian.recorder;
  *          // handle warnings
  *      }
  *    }
- * <code></pre>
- * <p>
- * The reporting methods all have variations that take an "info" Object.
+ * </code></pre>
+ *
+ * <p>The reporting methods all have variations that take an "info" Object.
  * This can be used to pass something, beyond a text message, from the point
  * of warning/error to the initiating code.
- * <p>
- * Concerning logging, it is a rule that a message, if logged by the code
+ *
+ * <p>Concerning logging, it is a rule that a message, if logged by the code
  * creating the MessageRecorder implementation, is logged at is reporting level,
  * errors are logged at the error log level, warnings at the warning level and
  * info at the info level. This allows the client code to "know" what log level

@@ -91,15 +91,14 @@ public interface Connection {
     /**
      * Sets the privileges for the this connection.
      *
-     * @pre role != null
-     * @pre role.isMutable()
+     * @param role Role (not null, and mutable)
      */
     void setRole(Role role);
 
     /**
      * Returns the access-control profile for this connection.
-     * @post role != null
-     * @post role.isMutable()
+     *
+     * @return Role (not null, and mutable)
      */
     Role getRole();
 

@@ -18,28 +18,28 @@ import mondrian.olap.type.Type;
  *
  * <h3>Logical and physical expression languages</h3>
  *
- * Mondrian has two expression languages:<ul>
+ * <p>Mondrian has two expression languages:<ul>
  * <li>The logical language of parsed MDX fragments ({@link mondrian.olap.Exp}).
  * <li>The phyiscal language of compiled expressions ({@link Calc}).
- * </ul></p>
+ * </ul>
  *
- * The two languages allow us to separate logical (how an
+ * <p>The two languages allow us to separate logical (how an
  * MDX expression was specified) from physical (how it is to be evaluated).
  * The physical language is more strongly typed, and certain constructs which
  * are implicit in the logical language (such as the addition of calls
  * to the <code>&lt;Member&gt;.CurrentMember</code> function) are made
- * explicit in the physical language.<p/>
+ * explicit in the physical language.
  *
  * <h3>Compilation</h3>
  *
- * Expressions are generally created from using an expression compiler
+ * <p>Expressions are generally created from using an expression compiler
  * ({@link ExpCompiler}). There are often more than one evaluation strategy
  * for a given expression, and compilation process gives us an opportunity to
- * choose the optimal one.<p/>
+ * choose the optimal one.
  *
  * <h3>Implementing expressions</h3>
  *
- * The <code>Calc</code> interface has sub-interfaces for various types:
+ * <p>The <code>Calc</code> interface has sub-interfaces for various types:
  * {@link IntegerCalc},
  * {@link BooleanCalc},
  * {@link DoubleCalc},
@@ -47,9 +47,9 @@ import mondrian.olap.type.Type;
  * {@link MemberCalc},
  * {@link LevelCalc},
  * {@link HierarchyCalc},
- * {@link DimensionCalc} yield elements of the OLAP model.<p/>
+ * {@link DimensionCalc} yield elements of the OLAP model.
  *
- * Each of these sub-interfaces has an abstract implementation:
+ * <p>Each of these sub-interfaces has an abstract implementation:
  * {@link mondrian.calc.impl.AbstractIntegerCalc},
  * {@link mondrian.calc.impl.AbstractBooleanCalc},
  * {@link mondrian.calc.impl.AbstractDoubleCalc},
@@ -57,9 +57,10 @@ import mondrian.olap.type.Type;
  * {@link mondrian.calc.impl.AbstractMemberCalc},
  * {@link mondrian.calc.impl.AbstractLevelCalc},
  * {@link mondrian.calc.impl.AbstractHierarchyCalc},
- * {@link mondrian.calc.impl.AbstractDimensionCalc}.<p/>
+ * {@link mondrian.calc.impl.AbstractDimensionCalc}.
  *
- * {@link mondrian.calc.impl.GenericCalc} is an adapter which implements all of these interfaces
+ * <p>{@link mondrian.calc.impl.GenericCalc} is an adapter that implements
+ * all of these interfaces
  * and will try to convert any given result to the correct type. Use it
  * sparingly: if you know the expected result type, it is better to write a
  * class which implements a specific <code><em>Type</em>Calc</code> interface.
@@ -82,9 +83,11 @@ public interface Calc {
      *
      * <p>If it does not depend on the hierarchy, then re-evaluating the
      * expression with a different member of this context must produce the
-     * same answer.<p/>
+     * same answer.
      *
-     * Some examples:<ul>
+     * <p>Some examples:
+     *
+     * <ul>
      *
      * <li>The expression
      * <blockquote><code>[Measures].[Unit Sales]</code></blockquote>
@@ -96,15 +99,15 @@ public interface Calc {
      * depends on all hierarchies except [Measures] and [Time].
      *
      * <li>The list expression
-     * <blockquote><code>Filter([Store].[USA].Children,
-     * [Measures].[Unit Sales] &lt; 50)</code></pre></blockquote>
+     * <code>Filter([Store].[USA].Children,
+     * [Measures].[Unit Sales] &lt; 50)</code>
      * depends upon all hierarchies <em>except</em> [Store] and [Measures].
      * How so? Normally the scalar expression would depend upon all hierarchies
      * except [Measures], but the <code>Filter</code> function sets the [Store]
      * context before evaluating the scalar expression, so it is not inherited
      * from the surrounding context.
      *
-     * </ul><p/>
+     * </ul>
      *
      * @param hierarchy Hierarchy
      * @return Whether this expression's result depends upon the current member

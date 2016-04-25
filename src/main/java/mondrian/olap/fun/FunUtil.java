@@ -1042,7 +1042,9 @@ public class FunUtil extends Util {
      * signature into a type category.
      *
      * <p>The codes are:
+     *
      * <table border="1">
+     * <caption>Category codes</caption>
      *
      * <tr><td>a</td><td>{@link Category#Array}</td></tr>
      *
@@ -1226,8 +1228,6 @@ public class FunUtil extends Util {
      * @param members List of members
      * @param exp Expression to rank members
      * @param range Quartile (1, 2 or 3)
-     *
-     * @pre range >= 1 && range <= 3
      */
     protected static double quartile(
         Evaluator evaluator,

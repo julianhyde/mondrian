@@ -31,7 +31,7 @@ public interface TupleCalc extends Calc {
      * <p>A tuple cannot contain any null members. If any of the members is
      * null, this method must return a null.
      *
-     * @post result == null || !tupleContainsNullMember(result)
+     * <p>Post-condition: result == null || !tupleContainsNullMember(result)
      *
      * @param evaluator Evaluation context
      * @return an array of members, or null to represent the null tuple

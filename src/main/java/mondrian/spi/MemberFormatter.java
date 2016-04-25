@@ -20,32 +20,30 @@ import mondrian.olap.Member;
  *
  * <blockquote>
  * <code>
- * public class TimeMemberFormatter implements MemberFormatter {<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;public String formatMember(Member member) {<br/>
+ * public class TimeMemberFormatter implements MemberFormatter {<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;public String formatMember(Member member) {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SimpleDateFormat
- * inFormat =<br/>
+ * inFormat =<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new
- * SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");<br/>
+ * SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SimpleDateFormat
- * outFormat =<br/>
+ * outFormat =<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new
- * SimpleDateFormat("dd-MMM-yyyy");<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br/>
+ * SimpleDateFormat("dd-MMM-yyyy");<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date
- * date = inFormat.parse(in.getName());<br/>
+ * date = inFormat.parse(in.getName());<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * return outFormat.format(data);<br/>
+ * return outFormat.format(data);<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch
- * (ParseException e) {<br/>
+ * (ParseException e) {<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * e.printStackTrace();<br/>
+ * e.printStackTrace();<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * return "error";<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;}<br/>
- * }<br/>
- * </code>
- * </blockquote>
+ * return "error";<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+ * }</code></blockquote>
  *
  * @author hhaas
  * @since 6 October, 2004

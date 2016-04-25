@@ -79,7 +79,7 @@ public interface Resolver {
 
     /**
      * Returns a string describing the syntax of this function, for example
-     * <pre><code>StrToSet(<String Expression>)</code></pre>
+     * <pre><code>StrToSet(&lt;String Expression&gt;)</code></pre>
      */
     String getSignature();
 

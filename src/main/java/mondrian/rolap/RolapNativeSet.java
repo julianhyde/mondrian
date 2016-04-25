@@ -33,7 +33,7 @@ import static mondrian.spi.DataServicesLocator.*;
 /**
  * Analyses set expressions and executes them in SQL if possible.
  * Supports crossjoin, member.children, level.members and member.descendants -
- * all in non empty mode, i.e. there is a join to the fact table.<p/>
+ * all in non empty mode, i.e. there is a join to the fact table.
  *
  * <p>TODO: the order of the result is different from the order of the
  * enumeration. Should sort.

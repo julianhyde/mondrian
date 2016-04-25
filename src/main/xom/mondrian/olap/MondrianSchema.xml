@@ -3524,7 +3524,7 @@ PARENT&#160;&#160;&#160;&#160;CHILD&#160;&#160;&#160;&#160;DISTANCE<br/>
             The resource file is substituted with the locale.</p>
 
             <p>For example, given
-            <code>&lt;Translation path='sales_resource_${locale}.properties'/&gt;</code>,
+            <code>&amp;lt;Translation path='sales_resource_${locale}.properties'/&amp;gt;</code>,
             if the current locale is 'fr-FR', Mondrian will look for a file
             named 'sales_resource_fr_FR.properties'.</p>
         </Doc>

@@ -29,17 +29,16 @@ import org.apache.log4j.Logger;
  * <p>This particular function is useful in Six Sigma calculations, for
  * example,
  *
- * <blockquote><code><pre>
- * WITH MEMBER [Measures].[Yield]
- *         AS '([Measures].[Number of Failures] / [Measures].[Population])',
- *         FORMAT_STRING = "0.00%"
- *     MEMBER [Measures].[Sigma]
- *         AS 'IIf([Measures].[Yield] <&gt; 0,
- *                 IIf([Measures].[Yield] &gt; 0.5,
- *                     0,
- *                     InverseNormal(1 - ([Measures].[Yield])) + 1.5), 6)',
- *         FORMAT_STRING = "0.0000"
- * </pre></code></blockquote>
+ * <blockquote><code>
+ * WITH MEMBER [Measures].[Yield]<br>
+ *         AS '([Measures].[Number of Failures] / [Measures].[Population])',<br>
+ *         FORMAT_STRING = "0.00%"<br>
+ *     MEMBER [Measures].[Sigma]<br>
+ *         AS 'IIf([Measures].[Yield] &lt;&gt; 0,<br>
+ *                 IIf([Measures].[Yield] &gt; 0.5,<br>
+ *                     0,<br>
+ *                     InverseNormal(1 - ([Measures].[Yield])) + 1.5), 6)',<br>
+ *         FORMAT_STRING = "0.0000"</code></blockquote>
  */
 public class InverseNormalUdf implements UserDefinedFunction {
     private static final Logger LOGGER =

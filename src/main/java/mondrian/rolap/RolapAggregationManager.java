@@ -762,8 +762,7 @@ public abstract class RolapAggregationManager {
     /**
      * Retrieves the value of a cell from the cache.
      *
-     * @param request Cell request
-     * @pre request != null && !request.isUnsatisfiable()
+     * @param request Cell request (never null, not isUnsatisfiable)
      * @return Cell value, or null if cell is not in any aggregation in cache,
      *   or {@link Util#nullValue} if cell's value is null
      */

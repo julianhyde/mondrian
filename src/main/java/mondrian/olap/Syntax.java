@@ -255,13 +255,15 @@ public enum Syntax {
     },
 
     /**
-     * Defines syntax for expression invoked <code>object&#46;&PROPERTY</code>
+     * Defines syntax for expression invoked
+     * <code>object&#46;&amp;PROPERTY</code>
      * (a variant of {@link #Property}).
      */
     QuotedProperty,
 
     /**
-     * Defines syntax for expression invoked <code>object&#46;[&PROPERTY]</code>
+     * Defines syntax for expression invoked
+     * <code>object&#46;[&amp;PROPERTY]</code>
      * (a variant of {@link #Property}).
      */
     AmpersandQuotedProperty,
@@ -298,7 +300,8 @@ public enum Syntax {
 
     /**
      * Returns a description of the signature of a function call, for
-     * example, "CoalesceEmpty(<Numeric Expression>, <String Expression>)".
+     * example,
+     * "CoalesceEmpty(&lt;Numeric Expression&gt;, &lt;String Expression&gt;)".
      *
      * @param name Function name
      * @param returnType Function's return category

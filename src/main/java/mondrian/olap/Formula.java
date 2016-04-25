@@ -379,9 +379,6 @@ public class Formula extends QueryPart {
 
     /**
      * Returns the Member. (Not valid if this formula defines a set.)
-     *
-     * @pre isMember()
-     * @post return != null
      */
     public Member getMdxMember() {
         return mdxMember;
@@ -390,7 +387,6 @@ public class Formula extends QueryPart {
     /**
      * Returns the solve order. (Not valid if this formula defines a set.)
      *
-     * @pre isMember()
      * @return Solve order, or null if SOLVE_ORDER property is not specified
      *   or is not a number or is not constant
      */

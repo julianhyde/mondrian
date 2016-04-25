@@ -16,11 +16,11 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * A <code>CellKey<code> is used as a key in maps which access cells by their
+ * A <code>CellKey</code> is used as a key in maps which access cells by their
  * position.
  *
  * <p>CellKey is also used within
- * {@link mondrian.rolap.agg.SparseSegmentDataset} to store values within
+ * {@code mondrian.rolap.agg.SparseSegmentDataset} to store values within
  * aggregations.
  *
  * <p>It is important that CellKey is memory-efficient, and that the
@@ -94,8 +94,8 @@ public interface CellKey extends Serializable {
      * has offset
      *
      * <blockquote>
-     * (2 * mulitiplers[0]) + (3 * multipliers[1]) + (4 * multipliers[2])<br/>
-     * = (2 * 50) + (3 * 10) + (4 * 1)<br/>
+     * (2 * mulitiplers[0]) + (3 * multipliers[1]) + (4 * multipliers[2])<br>
+     * = (2 * 50) + (3 * 10) + (4 * 1)<br>
      * = 134</blockquote>
      *
      * <p>The multipliers are the product of the lengths of all later axes, in

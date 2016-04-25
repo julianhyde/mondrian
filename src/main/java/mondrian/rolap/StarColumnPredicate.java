@@ -48,7 +48,7 @@ public interface StarColumnPredicate extends StarPredicate {
      * a segment, and tests for overlap. The result might be that there
      * is no overlap, full overlap (so the constraint can be removed),
      * or partial overlap (so the constraint will need to be replaced with
-     * a stronger constraint, say 'x > 10' is replaced with 'x > 20').
+     * a stronger constraint, say 'x &gt; 10' is replaced with 'x &gt; 20').
      *
      * @param predicate Predicate
      * @return description of overlap between predicates, if any

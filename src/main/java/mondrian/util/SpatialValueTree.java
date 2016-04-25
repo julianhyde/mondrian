@@ -30,25 +30,24 @@ import java.util.Set;
  * this means that the region doesn't overlap the dimension at all. It is not
  * the same as covering all the values of the dimension axis.
  *
- * <p>
- * Example. A tree of years and states containing a X values per leaf node would
- * look something like this:
+ * <p>Example. A tree of years and states containing a X values per leaf node
+ * would look something like this:
  *
- * <p>
- * year:1997<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;state:NY<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000423<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;state:FL<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000236<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000423<br />
- * year:1998<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;state:NY<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:[EMPTY]<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;state:FL<br />
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000501<br />
+ * <blockquote>
+ * year:1997<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;state:NY<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000423<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;state:FL<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000236<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000423<br>
+ * year:1998<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;state:NY<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:[EMPTY]<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;state:FL<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value:0x000501<br>
+ * </blockquote>
  *
- * <p>
- * A region key consists of a list of dimensions included in the region along
+ * <p>A region key consists of a list of dimensions included in the region along
  * with an array of bounds for each of these dimensions. The boundaries of a
  * given region along a given dimension axis is specified by an array of
  * objects. All of these objects must be nodes of the specified dimension for a
@@ -64,25 +63,23 @@ import java.util.Set;
  * The region keys can have more than one predicate value per axis. If we use
  * the same tree as above, and we query it using the following region key:
  *
- * <p>
- * <code>[ {'year', [1997]}, {'state', ['NY','FL']} ]
+ * <blockquote>
+ * <code>[ {'year', [1997]}, {'state', ['NY','FL']} ]</code>
+ * </blockquote>
  *
- * <p>
- * ... would return { [0x000236] [0x000423] }.
+ * <p>would return <code>{ [0x000236] [0x000423] }</code>.
  *
- * <p>
- * The region key also supports wildcard values. If you want to represent
+ * <p>The region key also supports wildcard values. If you want to represent
  * all of the values of a given axis, you can put a single reference to
  * SpatialValueTree#AXIS_WILDCARD.
  *
- * <p>
+ * <blockquote>
  * <code>[ {'year', [AXIS_WILDCARD]}, {'state', ['NY','FL']} ]</code>
+ * </blockquote>
  *
- * <p>
- * ... would return { [0x000236] [0x000423] [0x000501] }.
+ * <p>would return <code>{ [0x000236] [0x000423] [0x000501] }</code>.
  *
- * <p>
- * By convention, implementations are required to compare all generic types
+ * <p>By convention, implementations are required to compare all generic types
  * using {@link Object#hashCode()} and {@link Object#equals(Object)}. Users of
  * this class should also use generic types which implement
  * {@link Object#hashCode()} and {@link Object#equals(Object)} to avoid

@@ -18,12 +18,12 @@ import java.util.*;
  *
  * <p>For example, suppose we have the 3 grouping sets (a, b, c), (a, b) and
  * (b, c).<ul>
- * <li>detailed grouping set -> (a, b, c)
- * <li>rolled-up grouping sets -> (a, b), (b, c)
- * <li>rollup columns -> c, a (c for (a, b) and a for (b, c))
- * <li>rollup columns bitkey -><br/>
- *    (a, b, c) grouping set represented as 0, 0, 0<br/>
- *    (a, b) grouping set represented as 0, 0, 1<br/>
+ * <li>detailed grouping set &rarr; (a, b, c)
+ * <li>rolled-up grouping sets &rarr; (a, b), (b, c)
+ * <li>rollup columns &rarr; c, a (c for (a, b) and a for (b, c))
+ * <li>rollup columns bitkey &rarr;<br>
+ *    (a, b, c) grouping set represented as 0, 0, 0<br>
+ *    (a, b) grouping set represented as 0, 0, 1<br>
  *    (b, c) grouping set represented as 1, 0, 0
  * </ul>
  *

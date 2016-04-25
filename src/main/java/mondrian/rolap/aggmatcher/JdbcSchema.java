@@ -1034,8 +1034,6 @@ public class JdbcSchema {
     /**
      * This forces the tables to be loaded.
      * If called a second time, this method is a no-op.
-     *
-     * @throws SQLException on error
      */
     public synchronized void load() {
         if (!allTablesLoaded) {

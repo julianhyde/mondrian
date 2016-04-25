@@ -28,8 +28,7 @@ public class HierarchyExpr extends ExpBase implements Exp {
     /**
      * Creates a hierarchy expression.
      *
-     * @param hierarchy Hierarchy
-     * @pre hierarchy != null
+     * @param hierarchy Hierarchy, not null
      */
     public HierarchyExpr(Hierarchy hierarchy) {
         Util.assertPrecondition(hierarchy != null, "hierarchy != null");
@@ -37,9 +36,7 @@ public class HierarchyExpr extends ExpBase implements Exp {
     }
 
     /**
-     * Returns the hierarchy.
-     *
-     * @post return != null
+     * Returns the hierarchy, never null.
      */
     public Hierarchy getHierarchy() {
         return hierarchy;

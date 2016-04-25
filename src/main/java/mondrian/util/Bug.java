@@ -398,27 +398,27 @@ public class Bug {
     public static final boolean BugOlap4j31Fixed = false;
 
     /**
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1338">Bug 1338</a><br/>
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1338">Bug 1338</a>
      * Mondrian isn't optimizing member fetching according to query constraints
      */
     public static final boolean FetchMembersOptimizationFixed = Enable;
 
     /**
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1337">Bug 1337</a><br/>
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1337">Bug 1337</a>
      * Handling of ReferenceLink schema elements is not yet implemented
      * in {@link RolapSchemaLoader}
      */
     public static final boolean ReferenceLinkNotImplementedFixed = Enable;
 
     /**
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1339">Bug 1339</a><br/>
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1339">Bug 1339</a>
      * Childless snowflake members are always being filtered irregardless of
      * FilterChildlessSnowflakeMembers's value
      */
     public static final boolean ShowChildlessSnowflakeMembersFixed = Enable;
 
     /**
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1340">Bug 1340</a><br/>
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1340">Bug 1340</a>
      * MemberCacheHelper#mapMemberToChildren not populated when reading level
      * members due to SqlTupleReader.Target#members never being set
      */
@@ -426,7 +426,7 @@ public class Bug {
         Enable;
 
     /**
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1375">Bug 1375:</a><br/>
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1375">Bug 1375:</a>
      * AggregationManager and native set functions not using measure groups
      * for aggregates in lagunitas.
      */
@@ -434,7 +434,7 @@ public class Bug {
 
 
     /**
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1372">Bug 1372:</a><br/>
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1372">Bug 1372:</a>
      * SqlTupleReader doesn't use aggregate tables in lagunitas
      */
     public static final boolean BugMondrian1372Fixed = Enable;

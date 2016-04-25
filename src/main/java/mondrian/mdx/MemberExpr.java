@@ -29,8 +29,7 @@ public class MemberExpr extends ExpBase implements Exp {
     /**
      * Creates a member expression.
      *
-     * @param member Member
-     * @pre member != null
+     * @param member Member, not null
      */
     public MemberExpr(Member member) {
         Util.assertPrecondition(member != null, "member != null");
@@ -38,9 +37,7 @@ public class MemberExpr extends ExpBase implements Exp {
     }
 
     /**
-     * Returns the member.
-     *
-     * @post return != null
+     * Returns the member, never null.
      */
     public Member getMember() {
         return member;

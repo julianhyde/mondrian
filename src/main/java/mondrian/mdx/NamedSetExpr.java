@@ -28,8 +28,7 @@ public class NamedSetExpr extends ExpBase implements Exp {
     /**
      * Creates a usage of a named set.
      *
-     * @param namedSet namedSet
-     * @pre NamedSet != null
+     * @param namedSet Named set, not null
      */
     public NamedSetExpr(NamedSet namedSet) {
         Util.assertPrecondition(namedSet != null, "namedSet != null");
@@ -37,9 +36,7 @@ public class NamedSetExpr extends ExpBase implements Exp {
     }
 
     /**
-     * Returns the named set.
-     *
-     * @post return != null
+     * Returns the named set, never null.
      */
     public NamedSet getNamedSet() {
         return namedSet;

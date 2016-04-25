@@ -66,7 +66,6 @@ public class RoleImpl implements Role {
 
     /**
      * Prevents any further modifications.
-     * @post !isMutable()
      */
     public void makeImmutable() {
         mutable = false;
@@ -82,13 +81,8 @@ public class RoleImpl implements Role {
     /**
      * Defines access to all cubes and dimensions in a schema.
      *
-     * @param schema Schema whose access to grant/deny.
-     * @param access An {@link Access access code}
-     *
-     * @pre schema != null
-     * @pre access == Access.ALL || access == Access.NONE
-     * || access == Access.ALL_DIMENSIONS
-     * @pre isMutable()
+     * @param schema Schema whose access to grant/deny (never null)
+     * @param access An {@link Access access code} (ALL, NONE, ALL_DIMENSIONS)
      */
     public void grant(Schema schema, Access access) {
         assert schema != null;
@@ -120,12 +114,8 @@ public class RoleImpl implements Role {
     /**
      * Defines access to a cube.
      *
-     * @param cube Cube whose access to grant/deny.
-     * @param access An {@link Access access code}
-     *
-     * @pre cube != null
-     * @pre access == Access.ALL || access == Access.NONE
-     * @pre isMutable()
+     * @param cube Cube whose access to grant/deny (never null)
+     * @param access An {@link Access access code} (ALL or NONE)
      */
     public void grant(Cube cube, Access access) {
         Util.assertPrecondition(cube != null, "cube != null");
@@ -163,13 +153,8 @@ public class RoleImpl implements Role {
     /**
      * Defines access to a dimension.
      *
-     * @param dimension Dimension whose access to grant/deny.
-     * @param access An Access instance
-     *
-     * @pre dimension != null
-     * @pre access == Access.ALL || access == Access.CUSTOM
-     * || access == Access.NONE
-     * @pre isMutable()
+     * @param dimension Dimension whose access to grant/deny (never null)
+     * @param access An Access instance (ALL, CUSTOM or NONE)
      */
     public void grant(Dimension dimension, Access access) {
         assert dimension != null;
@@ -297,7 +282,7 @@ public class RoleImpl implements Role {
     /**
      * Defines access to a hierarchy.
      *
-     * @param hierarchy Hierarchy whose access to grant/deny.
+     * @param hierarchy Hierarchy whose access to grant/deny (never null)
      * @param access An {@link Access access code}
      * @param topLevel Top-most level which can be accessed, or null if the
      *     highest level. May only be specified if <code>access</code> is
@@ -307,14 +292,6 @@ public class RoleImpl implements Role {
      *    {@link mondrian.olap.Access#CUSTOM}.
      *
      * @param rollupPolicy Rollup policy
-     *
-     * @pre hierarchy != null
-     * @pre Access.instance().isValid(access)
-     * @pre (access == Access.CUSTOM)
-     *      || (topLevel == null &amp;&amp; bottomLevel == null)
-     * @pre topLevel == null || topLevel.getHierarchy() == hierarchy
-     * @pre bottomLevel == null || bottomLevel.getHierarchy() == hierarchy
-     * @pre isMutable()
      */
     public void grant(
         Hierarchy hierarchy,
@@ -442,9 +419,7 @@ public class RoleImpl implements Role {
      *     <em>even those explicitly denied</em>, up to the top level.
      * </ol>
      *
-     * @pre member != null
-     * @pre isMutable()
-     * @pre getAccess(member.getHierarchy()) == Access.CUSTOM
+     * @param member Member (never null)
      */
     public void grant(Member member, Access access) {
         Util.assertPrecondition(member != null, "member != null");

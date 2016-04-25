@@ -321,7 +321,6 @@ public class CellRequest {
      * calling this method. May throw {@link NullPointerException} if request
      * is not satisfiable.
      *
-     * @pre !isUnsatisfiable()
      * @return Array of values for each column
      */
     public Object[] getSingleValues() {

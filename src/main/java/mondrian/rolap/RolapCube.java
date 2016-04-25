@@ -260,10 +260,9 @@ public class RolapCube extends CubeBase {
 
     /**
      * Returns the schema reader which enforces the appropriate access-control
-     * context. schemaReader is cached, and needs to stay in sync with
+     * context. The schema reader is cached, and needs to stay in sync with
      * any changes to the cube.
      *
-     * @post return != null
      * @see #getSchemaReader(Role)
      */
     public synchronized SchemaReader getSchemaReader() {

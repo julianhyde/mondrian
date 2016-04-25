@@ -99,13 +99,12 @@ public class TupleValueCalc extends GenericCalc {
     /**
      * Optimizes the scalar evaluation of a tuple. It evaluates the members
      * of the tuple, sets the context to these members, and evaluates the
-     * scalar result in one step, without generating a tuple.<p/>
+     * scalar result in one step, without generating a tuple.
      *
-     * This is useful when evaluating calculated members:<blockquote><code>
+     * <p>This is useful when evaluating calculated members:
      *
-     * <pre>WITH MEMBER [Measures].[Sales last quarter]
-     *   AS ' ([Measures].[Unit Sales], [Time].PreviousMember) '</pre>
-     *
+     * <blockquote><code>WITH MEMBER [Measures].[Sales last quarter]<br>
+     *   AS ' ([Measures].[Unit Sales], [Time].PreviousMember) '
      * </code></blockquote>
      *
      * @return optimized expression

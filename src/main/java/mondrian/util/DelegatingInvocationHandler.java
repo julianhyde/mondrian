@@ -38,7 +38,6 @@ import java.lang.reflect.*;
  *         }
  *     });</pre>
  * </blockquote>
- * </p>
  *
  * @author jhyde
  */

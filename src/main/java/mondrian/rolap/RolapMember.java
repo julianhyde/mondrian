@@ -54,7 +54,7 @@ import java.util.*;
  * {@code mondrian.rolap.RolapCubeHierarchy.CacheRolapCubeHierarchyMemberReader}
  * obsolete</li>
  *
- * <li>TODO remove {@link MondrianProperties#EnableRolapCubeMemberCache}</li>
+ * <li>TODO remove {@code MondrianProperties#EnableRolapCubeMemberCache}</li>
  *
  * <li>DONE move {@link RolapHierarchy}.memberReader down to
  * {@link RolapCubeHierarchy#memberReader}</li>
@@ -71,9 +71,9 @@ import java.util.*;
  * <li>DONE obsolete {@code MemberNoCacheHelper}</li>
  *
  * <li>DONE obsolete {@code RolapCubeHierarchy.MemberNoCacheHelper}</li>
- * </ul>
  *
  * <li>Investigate {@link RolapUtil#findBestMemberMatch}</li>
+ * </ul>
  *
  * @author jhyde
  * @since 10 August, 2001

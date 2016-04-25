@@ -231,8 +231,6 @@ public abstract class MemberBase
     /**
      * Returns the expression by which this member is calculated. The expression
      * is not null if and only if the member is not calculated.
-     *
-     * @post (return != null) == (isCalculated())
      */
     public Exp getExpression() {
         return null;

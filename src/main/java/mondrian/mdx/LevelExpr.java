@@ -28,8 +28,7 @@ public class LevelExpr extends ExpBase implements Exp {
     /**
      * Creates a level expression.
      *
-     * @param level Level
-     * @pre level != null
+     * @param level Level, never null
      */
     public LevelExpr(Level level) {
         Util.assertPrecondition(level != null, "level != null");
@@ -37,9 +36,7 @@ public class LevelExpr extends ExpBase implements Exp {
     }
 
     /**
-     * Returns the level.
-     *
-     * @post return != null
+     * Returns the level, never null.
      */
     public Level getLevel() {
         return level;

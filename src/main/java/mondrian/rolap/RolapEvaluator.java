@@ -891,9 +891,7 @@ public class RolapEvaluator implements Evaluator {
     /**
      * Returns the format string for this cell. This is computed by evaluating
      * the format expression in the current context, and therefore different
-     * cells may have different format strings.
-     *
-     * @post return != null
+     * cells may have different format strings. Return is never null.
      */
     public final String getFormatString() {
         final Exp formatExp =

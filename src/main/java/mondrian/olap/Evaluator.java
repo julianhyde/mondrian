@@ -169,10 +169,10 @@ public interface Evaluator {
      * been set before. For example,
      *
      * <blockquote>
-     * <code>int n = 0;<br/>
-     * for (Member member : members) {<br/>
-     * &nbsp;&nbsp;evaluator.setContext(member, n++ &gt; 0);<br/>
-     * }<br/></code></blockquote>
+     * <code>int n = 0;<br>
+     * for (Member member : members) {<br>
+     * &nbsp;&nbsp;evaluator.setContext(member, n++ &gt; 0);<br>
+     * }</code></blockquote>
      *
      * @param member  New member
      * @param safe    Whether to store the member of this hierarchy that was
@@ -185,9 +185,9 @@ public interface Evaluator {
      *
      * <p>Equivalent to
      *
-     * <blockquote><code>for (Member member : memberList) {<br/>
-     * &nbsp;&nbsp;setContext(member);<br/>
-     * }<br/></code></blockquote>
+     * <blockquote><code>for (Member member : memberList) {<br>
+     * &nbsp;&nbsp;setContext(member);<br>
+     * }</code></blockquote>
      *
      * @param memberList List of members
      */
@@ -199,9 +199,9 @@ public interface Evaluator {
      *
      * <p>Equivalent to
      *
-     * <blockquote><code>for (Member member : memberList) {<br/>
-     * &nbsp;&nbsp;setContext(member, safe);<br/>
-     * }<br/></code></blockquote>
+     * <blockquote><code>for (Member member : memberList) {<br>
+     * &nbsp;&nbsp;setContext(member, safe);<br>
+     * }</code></blockquote>
      *
      * @param memberList List of members
      * @param safe    Whether to store the member of each hierarchy that was
@@ -214,9 +214,9 @@ public interface Evaluator {
      *
      * <p>Equivalent to
      *
-     * <blockquote><code>for (Member member : memberList) {<br/>
-     * &nbsp;&nbsp;setContext(member);<br/>
-     * }<br/></code></blockquote>
+     * <blockquote><code>for (Member member : memberList) {<br>
+     * &nbsp;&nbsp;setContext(member);<br>
+     * }</code></blockquote>
      *
      * @param members Array of members
      */
@@ -228,9 +228,9 @@ public interface Evaluator {
      *
      * <p>Equivalent to
      *
-     * <blockquote><code>for (Member member : memberList) {<br/>
-     * &nbsp;&nbsp;setContext(member, safe);<br/>
-     * }<br/></code></blockquote>
+     * <blockquote><code>for (Member member : memberList) {<br>
+     * &nbsp;&nbsp;setContext(member, safe);<br>
+     * }</code></blockquote>
      *
      * @param members Array of members
      * @param safe    Whether to store the member of each hierarchy that was

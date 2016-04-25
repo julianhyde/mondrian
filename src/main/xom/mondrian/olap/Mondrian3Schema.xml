@@ -167,8 +167,6 @@ is the XML model for current Mondrian schemas.</p>
              * found, throws an error.
              *
              * @param schema Schema, never null
-             * @pre schema != null
-             * @post return != null
              */
             public abstract Dimension getDimension(Schema schema);]]>
         </Code>
@@ -504,7 +502,7 @@ is the XML model for current Mondrian schemas.</p>
         <Doc>
             Defines a hierarchy.
 
-            <p/>You must specify at most one <code>&lt;Relation&gt;</code>
+            <p/>You must specify at most one {@link Relation}
             or <code>memberReaderClass</code>. If you specify none, the
             hierarchy is assumed to come from the same fact table of the
             current cube.

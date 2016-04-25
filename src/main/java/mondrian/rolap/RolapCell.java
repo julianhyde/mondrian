@@ -418,7 +418,8 @@ public class RolapCell implements Cell {
      * <p>If tabFields is not null, returns the specified columns. (This option
      * is deprecated.)
      *
-     * @param maxRowCount Maximum number of rows to retrieve, <= 0 if unlimited
+     * @param maxRowCount Maximum number of rows to retrieve,
+     *   &le; 0 if unlimited
      * @param firstRowOrdinal Ordinal of row to skip to (1-based), or 0 to
      *   start from beginning
      * @param fields            List of field expressions to return as the

@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * Creates SQL from parse tree nodes. Currently it creates the SQL that
- * accesses a measure for the ORDER BY that is generated for a TopCount.<p/>
+ * accesses a measure for the ORDER BY that is generated for a TopCount.
  *
  * @author av
  * @since Nov 17, 2005

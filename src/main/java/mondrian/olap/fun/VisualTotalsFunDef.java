@@ -195,7 +195,7 @@ public class VisualTotalsFunDef extends FunDefBase {
      * <li>its name is derived from the VisualTotals pattern, e.g.
      *     "*Subtotal - Dairy" as opposed to "Dairy"
      * <li>its value is a calculation computed by aggregating all of the
-     *     members which occur following it in the list</ul></p>
+     *     members which occur following it in the list</ul>
      */
     public static class VisualTotalMember extends RolapMemberBase {
         private final RolapMember member;

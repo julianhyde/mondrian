@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * User-defined function <code>CurrentDateString<code>, which returns the
+ * User-defined function <code>CurrentDateString</code>, which returns the
  * current date value as a formatted string, based on a format string passed in
  * as a parameter.  The format string conforms to the format string implemented
  * by {@link Format}.

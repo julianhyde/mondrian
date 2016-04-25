@@ -23,10 +23,10 @@ import java.util.List;
  * Mondrian's runtime class-path, and be referenced from the schema file:
  *
  * <blockquote><code>
- * &lt;Schema&gt;<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;....<br/>
+ * &lt;Schema&gt;<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;....<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&lt;UserDefinedFunction name="MyFun"
- * class="com.acme.MyFun"&gt;<br/>
+ * class="com.acme.MyFun"&gt;<br>
  * &lt;/Schema&gt;</code></blockquote>
  *
  * @author jhyde
@@ -102,11 +102,11 @@ public interface UserDefinedFunction {
          * <p>The effect is similar to creating a calculated member in an MDX
          * query:</p>
          *
-         * <blockquote>WITH MEMBER [Measures].[Previous Period] AS<br/>
-         * &nbsp;&nbsp;([Measures].[Unit Sales], [Time].[Time].PrevMember)<br/>
-         * SELECT {[Measures].[Unit Sales],<br/>
-         * &nbsp;&nbsp;&nbsp;&nbsp;[Measures].[Previous Period]} on 0,<br/>
-         * &nbsp;&nbsp;[Time].[Time].Children on 1<br/>
+         * <blockquote>WITH MEMBER [Measures].[Previous Period] AS<br>
+         * &nbsp;&nbsp;([Measures].[Unit Sales], [Time].[Time].PrevMember)<br>
+         * SELECT {[Measures].[Unit Sales],<br>
+         * &nbsp;&nbsp;&nbsp;&nbsp;[Measures].[Previous Period]} on 0,<br>
+         * &nbsp;&nbsp;[Time].[Time].Children on 1<br>
          * FROM [Sales]</blockquote>
          *
          * <p>Note how {@code [Measures].[Previous Period]} is defined as a

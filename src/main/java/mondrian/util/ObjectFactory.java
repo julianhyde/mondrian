@@ -129,8 +129,7 @@ import java.util.Properties;
  * rather than the <code>ObjectFactory.Singleton</code>:</p>
  *
  * <pre>
- *
- *      public final class FooFactory extends ObjectFactory<Foo> {
+ *      public final class FooFactory extends ObjectFactory&lt;Foo&gt; {
  *          // The single instance of the factory
  *          private static final FooFactory factory;
  *          static {

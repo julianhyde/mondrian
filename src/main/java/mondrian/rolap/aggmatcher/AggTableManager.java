@@ -36,6 +36,7 @@ import javax.sql.DataSource;
  *     which scans the JDBC catalog and identifies aggregate tables.
  * <li>For each aggregate table, it creates an {@link AggStar} and calls
  *     {@link RolapStar#addAggStar(AggStar)}.
+ * </ul>
  *
  * @author Richard M. Emberson
  */

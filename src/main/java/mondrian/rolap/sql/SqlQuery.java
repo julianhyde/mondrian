@@ -23,7 +23,7 @@ import java.util.*;
  * <code>SqlQuery</code> allows us to build a <code>select</code>
  * statement and generate it in database-specific SQL syntax.
  *
- * <p> Notable differences in database syntax are:<dl>
+ * <p>Notable differences in database syntax are:<dl>
  *
  * <dt> Identifier quoting </dt>
  * <dd> Oracle (and all JDBC-compliant drivers) uses double-quotes,
@@ -58,11 +58,10 @@ import java.util.*;
  *
  * <dt> Datatypes </dt>
  * <dd> In Oracle, BIT is CHAR(1), TIMESTAMP is DATE.
- *      In PostgreSQL, DOUBLE is DOUBLE PRECISION, BIT is BOOL. </dd>
- * </ul>
+ *      In PostgreSQL, DOUBLE is DOUBLE PRECISION, BIT is </dd>
+ * </dl>
  *
- * <p>
- * NOTE: Instances of this class are NOT thread safe so the user must make
+ * <p>NOTE: Instances of this class are NOT thread safe so the user must make
  * sure this is accessed by only one thread at a time.
  *
  * @author jhyde

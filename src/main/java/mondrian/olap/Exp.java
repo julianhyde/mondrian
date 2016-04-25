@@ -30,7 +30,7 @@ public interface Exp {
     /**
      * Returns the {@link Category} of the expression.
      *
-     * @post Category.instance().isValid(return)
+     * <p>Post-condition: Category.instance().isValid(return)
      */
     int getCategory();
 

@@ -21,14 +21,16 @@ import java.util.*;
  * versions of the JDK.
  *
  * <p>The methods should not be called directly, only via the corresponding
- * static methods in {@link mondrian.olap.Util}, namely:<ul>
+ * static methods in {@link mondrian.olap.Util}, namely:
+ *
+ * <ul>
  * <li>{@link mondrian.olap.Util#makeBigDecimalFromDouble(double)}</li>
  * <li>{@link mondrian.olap.Util#quotePattern(String)}</li>
- * </ul></p>
+ * </ul>
  *
  * <p>This interface could in principle be extended to allow native
  * implementations of methods, or to serve as a factory for entire classes
- * which have different implementations in different environments.</p>
+ * which have different implementations in different environments.
  *
  * @author jhyde
  * @since Feb 5, 2007

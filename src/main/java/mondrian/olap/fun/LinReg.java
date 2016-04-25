@@ -35,6 +35,7 @@ import java.util.*;
  * the same range.</p>
  *
  * <table border="1" cellpadding="6" cellspacing="0">
+ *   <caption>Correlation coefficient</caption>
  *   <tr>
  *     <td>Value of r (or rs)</td>
  *     <td>Interpretation</td>

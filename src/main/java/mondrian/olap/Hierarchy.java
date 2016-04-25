@@ -22,12 +22,11 @@ public interface Hierarchy extends OlapElement, Annotated {
     Dimension getDimension();
 
     /**
-     * Returns the levels in this hierarchy.
+     * Returns the levels in this hierarchy, never null.
      *
      * <p>If a hierarchy is subject to access-control, some of the levels may
      * not be visible; use {@link SchemaReader#getHierarchyLevels} instead.
      *
-     * @post return != null
      * @deprecated Use {@link #getLevelList}; will be removed before 4.0.
      */
     Level[] getLevels();
@@ -40,29 +39,24 @@ public interface Hierarchy extends OlapElement, Annotated {
     List<? extends Level> getLevelList();
 
     /**
-     * Returns the default member of this hierarchy.
+     * Returns the default member of this hierarchy, never null.
      *
      * <p>If a hierarchy is subject to access-control, the default member may
      * not be visible, so use {@link SchemaReader#getHierarchyDefaultMember}.
-     *
-     * @post return != null
      */
     Member getDefaultMember();
 
     /**
-     * Returns the "All" member of this hierarchy.
-     *
-     * @post return != null
+     * Returns the "All" member of this hierarchy, never null.
      */
     Member getAllMember();
 
     /**
-     * Returns a special member representing the "null" value. This never
-     * occurs on an axis, but may occur if functions such as <code>Lead</code>,
-     * <code>NextMember</code> and <code>ParentMember</code> walk off the end
-     * of the hierarchy.
+     * Returns a special member representing the "null" value, never null.
      *
-     * @post return != null
+     * <p>This member never occurs on an axis, but may occur in sets if
+     * functions such as <code>Lead</code>, <code>NextMember</code> and
+     * <code>ParentMember</code> walk off the end of the hierarchy.
      */
     Member getNullMember();
 
@@ -77,8 +71,7 @@ public interface Hierarchy extends OlapElement, Annotated {
 
     /**
      * Returns the unique name of this hierarchy, always including the dimension
-     * name, e.g. "[Time].[Time]", regardless of whether
-     * {@link MondrianProperties#SsasCompatibleNaming} is enabled.
+     * name, e.g. "[Time].[Time]".
      *
      * @deprecated Will be removed in mondrian-4.0, when
      * {@link #getUniqueName()} will have this behavior.

@@ -133,7 +133,7 @@ public class Id
      * the name is quoted.
      *
      * <p>For example, the identifier
-     * <code>[Store].USA.[New Mexico].&[45]</code> has four segments:<ul>
+     * <code>[Store].USA.[New Mexico].&amp;[45]</code> has four segments:<ul>
      * <li>"Store", {@link mondrian.olap.Id.Quoting#QUOTED}</li>
      * <li>"USA", {@link mondrian.olap.Id.Quoting#UNQUOTED}</li>
      * <li>"New Mexico", {@link mondrian.olap.Id.Quoting#QUOTED}</li>

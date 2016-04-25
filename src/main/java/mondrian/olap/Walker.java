@@ -24,14 +24,15 @@ import java.util.Enumeration;
  *
  * <p>If the tree is modified during the enumeration, strange things may happen.
  *
- * <p>Example use:<code><pre>
- *    Tree t;
- *    Walker w = new Walker(t);
- *    while (w.hasMoreElements()) {
- *      Tree node = (Tree) w.nextNode();
- *      System.out.println(node.toString());
- *    }
- * </pre></code>
+ * <p>Example use:
+ *
+ * <blockquote><code>
+ *    Tree t;<br>
+ *    Walker w = new Walker(t);<br>
+ *    while (w.hasMoreElements()) {<br>
+ *      Tree node = (Tree) w.nextNode();<br>
+ *      System.out.println(node.toString());<br>
+ *    }</code></blockquote>
  */
 public class Walker implements Enumeration {
     /**

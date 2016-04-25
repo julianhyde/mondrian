@@ -1405,13 +1405,13 @@ public class RolapResult extends ResultBase {
 
     /**
      * Extension to {@link RolapEvaluatorRoot} which is capable
-     * of evaluating named sets.<p/>
+     * of evaluating named sets.
      *
-     * A given set is only evaluated once each time a query is executed; the
+     * <p>A given set is only evaluated once each time a query is executed; the
      * result is added to the {@link #namedSetEvaluators} cache on first execution
-     * and re-used.<p/>
+     * and re-used.
      *
-     * <p>Named sets are always evaluated in the context of the slicer.<p/>
+     * <p>Named sets are always evaluated in the context of the slicer.
      */
     protected static class RolapResultEvaluatorRoot
         extends RolapEvaluatorRoot

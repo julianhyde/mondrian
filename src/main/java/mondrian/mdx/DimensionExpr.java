@@ -28,8 +28,7 @@ public class DimensionExpr extends ExpBase implements Exp {
     /**
      * Creates a dimension expression.
      *
-     * @param dimension Dimension
-     * @pre dimension != null
+     * @param dimension Dimension, not null
      */
     public DimensionExpr(Dimension dimension) {
         Util.assertPrecondition(dimension != null, "dimension != null");
@@ -39,7 +38,7 @@ public class DimensionExpr extends ExpBase implements Exp {
     /**
      * Returns the dimension.
      *
-     * @post return != null
+     * <p>Post-condition: return != null
      */
     public Dimension getDimension() {
         return dimension;

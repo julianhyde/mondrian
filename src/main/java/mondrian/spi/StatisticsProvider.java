@@ -54,7 +54,7 @@ public interface StatisticsProvider {
      *
      * @param dialect Dialect
      * @param dataSource Data source
-     * @param sql Query, e.g. "select * from customers where age < 20"
+     * @param sql Query, e.g. "select * from customers where age &lt; 20"
      * @param execution Execution
      *
      * @return Estimated number of rows returned by query, or -1 if there

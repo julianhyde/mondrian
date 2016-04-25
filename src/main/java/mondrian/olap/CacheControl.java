@@ -30,7 +30,7 @@ import javax.sql.DataSource;
  * <li>{@link #createCrossjoinRegion(mondrian.olap.CacheControl.CellRegion[])}</li>
  * <li>{@link #createMeasuresRegion(Cube)}</li>
  * <li>{@link #flush(mondrian.olap.CacheControl.CellRegion)}</li>
- * </ul></p>
+ * </ul>
  *
  * <p>Methods concerning member cache:<ul>
  * <li>{@link #createMemberSet(Member, boolean)}</li>
@@ -44,7 +44,7 @@ import javax.sql.DataSource;
  * <li>{@link #createSetPropertyCommand(mondrian.olap.CacheControl.MemberSet,java.util.Map)}</li>
  * <li>{@link #flush(mondrian.olap.CacheControl.MemberSet)}</li>
  * <li>{@link #execute(mondrian.olap.CacheControl.MemberEditCommand)}</li>
- * </ul></p>
+ * </ul>
  *
  * @author jhyde
  * @since Sep 27, 2006
@@ -71,13 +71,13 @@ public interface CacheControl {
      *
      * <p>For example, given
      *
-     * <code><pre>Member member97Q3; // [Time].[1997].[Q3]
-     * Member member98Q2; // [Time].[1998].[Q2]
-     * </pre></code>
+     * <blockquote><code>Member member97Q3; // [Time].[1997].[Q3]<br>
+     * Member member98Q2; // [Time].[1998].[Q2]</code></blockquote>
      *
-     * then
+     * <p>then
      *
      * <table border="1">
+     * <caption>Cache expressions</caption>
      * <tr>
      * <th>Expression</th>
      * <th>Meaning</th>
@@ -88,10 +88,10 @@ public interface CacheControl {
      * <code>createMemberRegion(true, member97Q3, true, member98Q2,
      * false)</code>
      * </td>
-     * <td>The members between 97Q3 and 98Q2, inclusive:<br/>
-     * [Time].[1997].[Q3],<br/>
-     * [Time].[1997].[Q4],<br/>
-     * [Time].[1998].[Q1],<br/>
+     * <td>The members between 97Q3 and 98Q2, inclusive:<br>
+     * [Time].[1997].[Q3],<br>
+     * [Time].[1997].[Q4],<br>
+     * [Time].[1998].[Q1],<br>
      * [Time].[1998].[Q2]</td>
      * </tr>
      *
@@ -100,8 +100,8 @@ public interface CacheControl {
      * <code>createMemberRegion(true, member97Q3, false, member98Q2,
      * false)</code>
      * </td>
-     * <td>The members between 97Q3 and 98Q2, exclusive:<br/>
-     * [Time].[1997].[Q4],<br/>
+     * <td>The members between 97Q3 and 98Q2, exclusive:<br>
+     * [Time].[1997].[Q4],<br>
      * [Time].[1998].[Q1]</td>
      * </tr>
      *
@@ -111,18 +111,18 @@ public interface CacheControl {
      * false)</code>
      * </td>
      * <td>The members between 97Q3 and 98Q2, including their descendants, and
-     * including the lower bound but not the upper bound:<br/>
-     * [Time].[1997].[Q3],<br/>
-     * [Time].[1997].[Q3].[7],<br/>
-     * [Time].[1997].[Q3].[8],<br/>
-     * [Time].[1997].[Q3].[9],<br/>
-     * [Time].[1997].[Q4],<br/>
-     * [Time].[1997].[Q4].[10],<br/>
-     * [Time].[1997].[Q4].[11],<br/>
-     * [Time].[1997].[Q4].[12],<br/>
-     * [Time].[1998].[Q1],<br/>
-     * [Time].[1998].[Q1].[1],<br/>
-     * [Time].[1998].[Q1].[2],<br/>
+     * including the lower bound but not the upper bound:<br>
+     * [Time].[1997].[Q3],<br>
+     * [Time].[1997].[Q3].[7],<br>
+     * [Time].[1997].[Q3].[8],<br>
+     * [Time].[1997].[Q3].[9],<br>
+     * [Time].[1997].[Q4],<br>
+     * [Time].[1997].[Q4].[10],<br>
+     * [Time].[1997].[Q4].[11],<br>
+     * [Time].[1997].[Q4].[12],<br>
+     * [Time].[1998].[Q1],<br>
+     * [Time].[1998].[Q1].[1],<br>
+     * [Time].[1998].[Q1].[2],<br>
      * [Time].[1998].[Q1].[3]</td>
      * </tr>
      * </table>

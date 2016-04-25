@@ -1163,7 +1163,7 @@ public class CmdRunner {
 
     /**
      * Start of a string, read all of it even if it spans
-     * more than one line adding each line's <cr> to the
+     * more than one line adding each line's CR to the
      * buffer.
      */
     protected static int readString(
@@ -1181,10 +1181,9 @@ public class CmdRunner {
 
     /**
      * Start of a delimted block, read all of it even if it spans
-     * more than one line adding each line's <cr> to the
-     * buffer.
+     * more than one line adding each line's CR to the buffer.
      *
-     * A delimited block is a delimited comment (/\* ... *\/), or a string.
+     * <p>A delimited block is a delimited comment (/\* ... *\/), or a string.
      */
     protected static int readBlock(
         Reader reader,

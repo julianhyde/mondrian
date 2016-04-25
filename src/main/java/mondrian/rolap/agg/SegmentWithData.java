@@ -142,7 +142,7 @@ public class SegmentWithData extends Segment {
      *
      * <li>the data value otherwise</li>
      *
-     * </ul></p>
+     * </ul>
      *
      * @see mondrian.olap.Util#deprecated(Object) make package-private?
      */

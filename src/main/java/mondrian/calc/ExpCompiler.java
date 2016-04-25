@@ -315,13 +315,14 @@ public interface ExpCompiler {
         }
 
         /**
-         * Return the <code>ExpCompiler.Factory</code property name.
+         * Return the <code>ExpCompiler.Factory</code> property name.
          *
          * @return <code>ExpCompiler.Factory</code> property name
          */
         protected StringProperty getStringProperty() {
             return MondrianProperties.instance().ExpCompilerClass;
         }
+
         /**
          * The <code>ExpCompiler.Factory</code>'s implementation of the
          * <code>ObjectFactory</code>'s abstract method which returns

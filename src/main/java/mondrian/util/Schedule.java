@@ -107,12 +107,8 @@ public class Schedule {
     /**
      * Creates a calendar which fires only once.
      *
-     * @param date date and time to fire, must be UTC
-     * @param tz timezone
-     *
-     * @pre tz != null
-     * @pre date != null
-     * @post return != null
+     * @param date Date and time to fire, must be UTC (never null)
+     * @param tz Timezone (never null)
      */
     public static Schedule createOnce(Date date, TimeZone tz) {
         Calendar calendar = ScheduleUtil.createCalendar(date);
@@ -130,16 +126,12 @@ public class Schedule {
      *
      * @param begin open lower bound, may be null, must be UTC
      * @param end closed upper bound, may be null, must be UTC
-     * @param tz timezone
+     * @param tz Timezone (never null)
      * @param timeOfDay time at which to fire
      * @param period causes the schedule to fire every <code>period</code>
      *     days. If <code>period</code> is greater than 1, the cycle starts
      *     at the begin point of the schedule, or at the epoch (1 January,
-     *     1970) if <code>begin</code> is not specified.
-     *
-     * @pre tz != null
-     * @pre period > 0
-     * @post return != null
+     *     1970) if <code>begin</code> is not specified. Must be greater than 0.
      */
     public static Schedule createDaily(
         Date begin,
@@ -163,11 +155,11 @@ public class Schedule {
     /**
      * Creates a calendar which fires on particular days each week.
      *
-     * @param tz timezone
+     * @param tz timezone (never null)
      * @param daysOfWeekBitmap a bitmap of day values, for example
-     *     <code>(1 << {@link Calendar#TUESDAY}) |
-     *           (1 << {@link Calendar#THURSDAY})</code> to fire on Tuesdays
-     *     and Thursdays
+     *     <code>(1 &lt;&lt; {@link Calendar#TUESDAY}) |
+     *           (1 &lt;&lt; {@link Calendar#THURSDAY})</code> to fire on
+     *     Tuesdays and Thursdays
      * @param timeOfDay time at which to fire
      * @param begin open lower bound, may be null
      * @param end closed upper bound, may be null
@@ -175,10 +167,6 @@ public class Schedule {
      *     weeks. If <code>period</code> is greater than 1, the cycle starts
      *     at the begin point of the schedule, or at the epoch (1 January,
      *     1970) if <code>begin</code> is not specified.
-     *
-     * @pre tz != null
-     * @pre period > 0
-     * @post return != null
      */
     public static Schedule createWeekly(
         Date begin,
@@ -207,25 +195,23 @@ public class Schedule {
      *
      * <pre>createMonthlyByDay(
      *     null, null, TimeZone.getTimeZone("PST"), 1,
-     *     (1 << 12) | (1 << 14) | (1 << {@link #LAST_DAY_OF_MONTH}))</pre>
+     *     (1 &lt;&lt; 12)
+     *      | (1 &lt;&lt; 14)
+     *      | (1 &lt;&lt; {@link #LAST_DAY_OF_MONTH}))</pre>
      *
      * </blockquote> creates a schedule which fires on the 12th, 14th and last
      * day of the month.
      *
      * @param begin open lower bound, may be null
      * @param end closed upper bound, may be null
-     * @param tz timezone
+     * @param tz timezone (never null)
      * @param daysOfMonthBitmap a bitmap of day values, may include
      *     {@link #LAST_DAY_OF_MONTH}
      * @param timeOfDay time at which to fire
      * @param period causes the schedule to be active every <code>period</code>
      *     months. If <code>period</code> is greater than 1, the cycle starts
      *     at the begin point of the schedule, or at the epoch (1 January,
-     *     1970) if <code>begin</code> is not specified.
-     *
-     * @pre tz != null
-     * @pre period > 0
-     * @post return != null
+     *     1970) if <code>begin</code> is not specified. Always greater than 0.
      */
     public static Schedule createMonthlyByDay(
         Date begin,
@@ -253,28 +239,28 @@ public class Schedule {
      *
      * <pre>createMonthlyByWeek(
      *     null, null, TimeZone.getTimeZone("PST"),
-     *     (1 << Calendar.TUESDAY) | (1 << Calendar.THURSDAY),
-     *     (1 << 2) | (1 << {@link #LAST_WEEK_OF_MONTH})</pre>
+     *     (1 &lt;&lt; Calendar.TUESDAY) | (1 &lt;&lt; Calendar.THURSDAY),
+     *     (1 &lt;&lt; 2) | (1 &lt;&lt; {@link #LAST_WEEK_OF_MONTH})</pre>
      *
      * </blockquote> creates a schedule which fires on the 2nd and last Tuesday
      * and Thursday of the month.
      *
      * @param begin open lower bound, may be null
      * @param end closed upper bound, may be null
-     * @param tz timezone
+     * @param tz Timezone, never null
      * @param daysOfWeekBitmap a bitmap of day values, for example
-     *     <code>(1 << Calendar.TUESDAY) | (1 << Calendar.THURSDAY)</code>
+     *     <code>(1 &lt;&lt; Calendar.TUESDAY)
+     *         | (1 &lt;&lt; Calendar.THURSDAY)</code>
      * @param weeksOfMonthBitmap a bitmap of week values (may include
      *     {@link #LAST_WEEK_OF_MONTH}
      * @param timeOfDay time at which to fire
      * @param period causes the schedule be active every <code>period</code>
-     *     months. If <code>period</code> is greater than 1, the cycle starts
+     *     months. Must be greater than 0.
+     *     If <code>period</code> is greater than 1, the cycle starts
      *     at the begin point of the schedule, or at the epoch (1 January,
      *     1970) if <code>begin</code> is not specified.
      *
-     * @pre tz != null
-     * @pre period > 0
-     * @post return != null
+     * @return A monthly schedule
      */
     public static Schedule createMonthlyByWeek(
         Date begin,

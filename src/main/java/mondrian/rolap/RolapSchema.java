@@ -2480,15 +2480,15 @@ public class RolapSchema extends OlapElementBase implements Schema {
      *
      * <p>It connects a pair of {@link PhysRelation relations} with a sequence
      * of link traversals. In general, a path between relations R<sub>1</sub>
-     * and R<sub>n</sub> consists of the following hops:</p>
+     * and R<sub>n</sub> consists of the following hops:
      *
-     * <pre>
-     *    { Hop(R<sub>1</sub>, null),
-     *      Hop(R<sub>2</sub>, Link(R<sub>1</sub>, R<sub>2</sub>)),
-     *      Hop(R<sub>3</sub>, Link(R<sub>2</sub>, R<sub>3</sub>)),
-     *      ...
+     * <blockquote>
+     *    { Hop(R<sub>1</sub>, null),<br>
+     *      Hop(R<sub>2</sub>, Link(R<sub>1</sub>, R<sub>2</sub>)),<br>
+     *      Hop(R<sub>3</sub>, Link(R<sub>2</sub>, R<sub>3</sub>)),<br>
+     *      ...<br>
      *      Hop(R<sub>n</sub>, Link(R<sub>n-1</sub>, R<sub>n</sub>)) }
-     * </pre>
+     * </blockquote>
      *
      * <p>Paths are immutable. The best way to create them is to uSe a
      * {@link PhysPathBuilder}.</p>

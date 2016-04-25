@@ -95,8 +95,9 @@ public class SqlStatement implements DBStatement {
      * @param types Suggested types of columns, or null;
      *     if present, must have one element for each SQL column;
      *     each not-null entry overrides deduced JDBC type of the column
-     * @param maxRows Maximum rows; <= 0 means no maximum
-     * @param firstRowOrdinal Ordinal of first row to skip to; <= 0 do not skip
+     * @param maxRows Maximum rows; &le; 0 means no maximum
+     * @param firstRowOrdinal Ordinal of first row to skip to;
+     *     &le; 0 do not skip
      * @param locus Execution context of this statement
      * @param resultSetType Result set type
      * @param resultSetConcurrency Result set concurrency

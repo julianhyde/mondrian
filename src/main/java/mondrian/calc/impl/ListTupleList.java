@@ -25,12 +25,12 @@ import java.util.*;
  * l2: {a,b},{c,d},{e,f}
  *
  * externally looks like:
- *  [] <- {A,B,C,a,b}
- *  [] <- {A,B,C,c,d}
- *  [] <- {A,B,C,e,f}
- *  [] <- {D,E,F,a,b}
- *  [] <- {D,E,F,c,d}
- *  [] <- {D,E,F,e,d}
+ *  [] &larr; {A,B,C,a,b}
+ *  [] &larr; {A,B,C,c,d}
+ *  [] &larr; {A,B,C,e,f}
+ *  [] &larr; {D,E,F,a,b}
+ *  [] &larr; {D,E,F,c,d}
+ *  [] &larr; {D,E,F,e,d}
  *
  * but internally is:
  *  A,B,C,a,b,A,B,C,c,d,A,B,C,e,f,D,E,F,a,b,D,E,F,c,d,D,E,F,e,d

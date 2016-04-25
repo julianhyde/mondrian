@@ -44,7 +44,7 @@ import java.util.*;
  * <pre><code>
  * double[] values;
  * Format format = new Format("##,##0.###;(##,##0.###);;Nil");
- * for (int i = 0; i < values.length; i++) {
+ * for (int i = 0; i &lt; values.length; i++) {
  *   System.out.println("Value #" + i + " is " + format.format(values[i]));
  * }
  * </code></pre>

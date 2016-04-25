@@ -138,72 +138,72 @@ Put the JDBC driver jar into mondrian/testlib.</p>
 
 <h3>Derby: needs user and password</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:derby:demo/derby/foodmart<br/>
-mondrian.foodmart.jdbcUser=sa<br/>
-mondrian.foodmart.jdbcPassword=sa<br/>
-mondrian.jdbcDrivers=org.apache.derby.jdbc.EmbeddedDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:derby:demo/derby/foodmart
+mondrian.foodmart.jdbcUser=sa
+mondrian.foodmart.jdbcPassword=sa
+mondrian.jdbcDrivers=org.apache.derby.jdbc.EmbeddedDriver
 driver.classpath=testlib/derby.jar</code></blockquote>
 
 <h3>FireBirdSQL</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:firebirdsql:localhost/3050:/mondrian/foodmart.gdb<br/>
-mondrian.jdbcDrivers=org.firebirdsql.jdbc.FBDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:firebirdsql:localhost/3050:/mondrian/foodmart.gdb
+mondrian.jdbcDrivers=org.firebirdsql.jdbc.FBDriver
 driver.classpath=/jdbc/fb/firebirdsql-full.jar</code></blockquote>
 
 <h3>Greenplum (similar to Postgres)</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:postgresql://localhost/foodmart?user=gpadmin&amp;password=xxxx<br/>
-mondrian.foodmart.jdbcUser=foodmart<br/>
-mondrian.foodmart.jdbcPassword=foodmart<br/>
-mondrian.jdbcDrivers=org.postgresql.Driver<br/>
+mondrian.foodmart.jdbcURL=jdbc:postgresql://localhost/foodmart?user=gpadmin&amp;password=xxxx
+mondrian.foodmart.jdbcUser=foodmart
+mondrian.foodmart.jdbcPassword=foodmart
+mondrian.jdbcDrivers=org.postgresql.Driver
 driver.classpath=lib/postgresql-8.2-504.jdbc3.jar</code></blockquote>
 
 <h3>LucidDB (see <a href="http://docs.eigenbase.org/LucidDbOlap">instructions</a>)</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:luciddb:http://localhost<br/>
-mondrian.foodmart.jdbcUser=foodmart<br/>
-mondrian.jdbcDrivers=org.luciddb.jdbc.LucidDbClientDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:luciddb:http://localhost
+mondrian.foodmart.jdbcUser=foodmart
+mondrian.jdbcDrivers=org.luciddb.jdbc.LucidDbClientDriver
 driver.classpath=/path/to/luciddb/plugin/LucidDbClient.jar</code></blockquote>
 
 <h3>Oracle (needs user and password)</h3>
 <blockquote><code>
-oracle.home=G:/oracle/product/10.1.0/Db_1<br/>
-mondrian.foodmart.jdbcURL.oracle=jdbc:oracle:thin:@//<i>host</i>:<i>port</i>/<i>service_name</i><br/>
-mondrian.foodmart.jdbcURL=jdbc:oracle:thin:foodmart/foodmart@//stilton:1521/orcl<br/>
-mondrian.foodmart.jdbcURL=jdbc:oracle:oci8:foodmart/foodmart@orcl<br/>
-mondrian.foodmart.jdbcUser=FOODMART<br/>
-mondrian.foodmart.jdbcPassword=oracle<br/>
-mondrian.jdbcDrivers=oracle.jdbc.OracleDriver<br/>
+oracle.home=G:/oracle/product/10.1.0/Db_1
+mondrian.foodmart.jdbcURL.oracle=jdbc:oracle:thin:@//<i>host</i>:<i>port</i>/<i>service_name</i>
+mondrian.foodmart.jdbcURL=jdbc:oracle:thin:foodmart/foodmart@//stilton:1521/orcl
+mondrian.foodmart.jdbcURL=jdbc:oracle:oci8:foodmart/foodmart@orcl
+mondrian.foodmart.jdbcUser=FOODMART
+mondrian.foodmart.jdbcPassword=oracle
+mondrian.jdbcDrivers=oracle.jdbc.OracleDriver
 driver.classpath=/home/jhyde/open/mondrian/lib/ojdbc14.jar</code></blockquote>
 
 <h3>ODBC (Microsoft Access)</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:odbc:MondrianFoodMart<br/>
-mondrian.jdbcDrivers=sun.jdbc.odbc.JdbcOdbcDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:odbc:MondrianFoodMart
+mondrian.jdbcDrivers=sun.jdbc.odbc.JdbcOdbcDriver
 driver.classpath=</code></blockquote>
 
 <h3> Hypersonic</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:hsqldb:demo/hsql/FoodMart<br/>
-mondrian.jdbcDrivers=org.hsqldb.jdbcDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:hsqldb:demo/hsql/FoodMart
+mondrian.jdbcDrivers=org.hsqldb.jdbcDriver
 driver.classpath=xx</code></blockquote>
 
 <h3> MySQL: can have user and password set in JDBC URL</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:mysql://localhost/foodmart?user=foodmart&amp;password=foodmart<br/>
-mondrian.foodmart.jdbcURL=jdbc:mysql://localhost/foodmart<br/>
-mondrian.foodmart.jdbcUser=foodmart<br/>
-mondrian.foodmart.jdbcPassword=foodmart<br/>
-mondrian.jdbcDrivers=com.mysql.jdbc.Driver<br/>
+mondrian.foodmart.jdbcURL=jdbc:mysql://localhost/foodmart?user=foodmart&amp;password=foodmart
+mondrian.foodmart.jdbcURL=jdbc:mysql://localhost/foodmart
+mondrian.foodmart.jdbcUser=foodmart
+mondrian.foodmart.jdbcPassword=foodmart
+mondrian.jdbcDrivers=com.mysql.jdbc.Driver
 driver.classpath=D:/mysql-connector-3.1.12</code></blockquote>
 
 <h3> NuoDB</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:com.nuodb://localhost/foodmart?schema=mondrian<br/>
-mondrian.foodmart.jdbcUser=foodmart<br/>
-mondrian.foodmart.jdbcPassword=foodmart<br/>
-mondrian.jdbcDrivers=com.nuodb.jdbc.Driver<br/>
-mondrian.foodmart.jdbcSchema=mondrian<br/>
+mondrian.foodmart.jdbcURL=jdbc:com.nuodb://localhost/foodmart?schema=mondrian
+mondrian.foodmart.jdbcUser=foodmart
+mondrian.foodmart.jdbcPassword=foodmart
+mondrian.jdbcDrivers=com.nuodb.jdbc.Driver
+mondrian.foodmart.jdbcSchema=mondrian
 driver.classpath=/opt/nuodb/jar/nuodbjdbc.jar</code></blockquote>
 
 <h3>Infobright</h3>
@@ -211,63 +211,63 @@ driver.classpath=/opt/nuodb/jar/nuodbjdbc.jar</code></blockquote>
 
 <h3>Ingres</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:ingres://192.168.200.129:II7/MondrianFoodMart;LOOP=on;AUTO=multi;UID=ingres;PWD=sergni<br/>
-mondrian.jdbcDrivers=com.ingres.jdbc.IngresDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:ingres://192.168.200.129:II7/MondrianFoodMart;LOOP=on;AUTO=multi;UID=ingres;PWD=sergni
+mondrian.jdbcDrivers=com.ingres.jdbc.IngresDriver
 driver.classpath=c:/ingres2006/ingres/lib/iijdbc.jar</code></blockquote>
 
 <h3>Postgres: needs user and password</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:postgresql://localhost/FM3<br/>
-mondrian.foodmart.jdbcUser=postgres<br/>
-mondrian.foodmart.jdbcPassword=pgAdmin<br/>
+mondrian.foodmart.jdbcURL=jdbc:postgresql://localhost/FM3
+mondrian.foodmart.jdbcUser=postgres
+mondrian.foodmart.jdbcPassword=pgAdmin
 mondrian.jdbcDrivers=org.postgresql.Driver</code></blockquote>
 
 <h3>Neoview</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:hpt4jdbc://localhost:18650/:schema=PENTAHO;serverDataSource=PENTAHO_DataSource<br/>
-mondrian.foodmart.jdbcUser=<i>user</i><br/>
-mondrian.foodmart.jdbcPassword=<i>password</i><br/>
-mondrian.jdbcDrivers=com.hp.t4jdbc.HPT4Driver<br/>
+mondrian.foodmart.jdbcURL=jdbc:hpt4jdbc://localhost:18650/:schema=PENTAHO;serverDataSource=PENTAHO_DataSource
+mondrian.foodmart.jdbcUser=<i>user</i>
+mondrian.foodmart.jdbcPassword=<i>password</i>
+mondrian.jdbcDrivers=com.hp.t4jdbc.HPT4Driver
 driver.classpath=/some/path/hpt4jdbc.jar</code></blockquote>
 
 <h3>Netezza: mimics Postgres</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:netezza://127.0.1.10/foodmart<br/>
-mondrian.foodmart.jdbcUser=<i>user</i><br/>
-mondrian.foodmart.jdbcPassword=<i>password</i><br/>
-mondrian.jdbcDrivers=org.netezza.Driver<br/>
+mondrian.foodmart.jdbcURL=jdbc:netezza://127.0.1.10/foodmart
+mondrian.foodmart.jdbcUser=<i>user</i>
+mondrian.foodmart.jdbcPassword=<i>password</i>
+mondrian.jdbcDrivers=org.netezza.Driver
 driver.classpath=/some/path/nzjdbc.jar</code></blockquote>
 
 <h3>Sybase</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:jtds:sybase://xxx.xxx.xxx.xxx:<i>port</i>/<i>dbName</i><br/>
-mondrian.foodmart.jdbcUser=<i>user</i><br/>
-mondrian.foodmart.jdbcPassword=<i>password</i><br/>
-mondrian.jdbcDrivers=net.sourceforge.jtds.jdbc.Driver<br/>
+mondrian.foodmart.jdbcURL=jdbc:jtds:sybase://xxx.xxx.xxx.xxx:<i>port</i>/<i>dbName</i>
+mondrian.foodmart.jdbcUser=<i>user</i>
+mondrian.foodmart.jdbcPassword=<i>password</i>
+mondrian.jdbcDrivers=net.sourceforge.jtds.jdbc.Driver
 driver.classpath=/some/path/jtds-1.2.jar</code></blockquote>
 
 <h3>Teradata</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:teradata://DatabaseServerName/DATABASE=FoodMart<br/>
-mondrian.foodmart.jdbcUser=<i>user</i><br/>
-mondrian.foodmart.jdbcPassword=<i>password</i><br/>
-mondrian.jdbcDrivers=com.ncr.teradata.TeraDriver<br/>
+mondrian.foodmart.jdbcURL=jdbc:teradata://DatabaseServerName/DATABASE=FoodMart
+mondrian.foodmart.jdbcUser=<i>user</i>
+mondrian.foodmart.jdbcPassword=<i>password</i>
+mondrian.jdbcDrivers=com.ncr.teradata.TeraDriver
 driver.classpath=/some/path/terajdbc/classes/terajdbc4.jar</code></blockquote>
 
 <h3>Vertica</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:vertica://xxx.xxx.xxx.xxx:<i>port</i>/<i>dbName</i><br/>
-mondrian.foodmart.jdbcUser=<i>user</i><br/>
-mondrian.foodmart.jdbcPassword=<i>password</i><br/>
-mondrian.jdbcDrivers=com.vertica.Driver<br/>
+mondrian.foodmart.jdbcURL=jdbc:vertica://xxx.xxx.xxx.xxx:<i>port</i>/<i>dbName</i>
+mondrian.foodmart.jdbcUser=<i>user</i>
+mondrian.foodmart.jdbcPassword=<i>password</i>
+mondrian.jdbcDrivers=com.vertica.Driver
 driver.classpath=/some/path/vertica.jar</code></blockquote>
 
 <h3>Vectorwise</h3>
 <blockquote><code>
-mondrian.foodmart.jdbcURL=jdbc:ingres://xxx.xxx.xxx.xxx<i>port</i>/<i>dbName</i><br/>
-mondrian.foodmart.jdbcUser=<i>user</i><br/>
-mondrian.foodmart.jdbcPassword=<i>password</i><br/>
-mondrian.jdbcDrivers=com.ingres.jdbc.IngresDriver <br/>
+mondrian.foodmart.jdbcURL=jdbc:ingres://xxx.xxx.xxx.xxx<i>port</i>/<i>dbName</i>
+mondrian.foodmart.jdbcUser=<i>user</i>
+mondrian.foodmart.jdbcPassword=<i>password</i>
+mondrian.jdbcDrivers=com.ingres.jdbc.IngresDriver
 driver.classpath=/some/path/iijdbc.jar</code></blockquote>
 
         </Description>
@@ -512,12 +512,11 @@ found for the current dialect.</p>
 <li>... and any Dialect enum in SqlPattern.Dialect</li>
 </ul>
 
-<p>Specific tests can overwrite the default setting. The priority is:<ul>
+<p>Specific tests can overwrite the default setting. The priority is:</p><ul>
 <li>Settings besides "ANY" in mondrian.properties file</li>
 <li>&lt; Any setting in the test</li>
 <li>&lt; "ANY"</li>
 </ul>
-</p>
         </Description>
         <Type>String</Type>
         <Default>NONE</Default>
@@ -1273,14 +1272,14 @@ members) need to be prefixed with dimension name in MDX query.</p>
 will error out. The same queries will work when this property
 is set to false.</p>
 
-<blockquote><code>select {[M]} on 0 from sales<br/>
-select {[USA]} on 0 from sales<br/>
+<blockquote><code>select {[M]} on 0 from sales
+select {[USA]} on 0 from sales
 select {[USA].[CA].[Santa Monica]}  on 0 from sales</code></blockquote>
 
 <p>When the property is set to true, any query where elements are
 prefixed with dimension name as below will work</p>
 
-<blockquote><code>select {[Gender].[F]} on 0 from sales<br/>
+<blockquote><code>select {[Gender].[F]} on 0 from sales
 select {[Customers].[Santa Monica]} on 0 from sales</code></blockquote>
 
 <p>Please note that this property does not govern the behaviour
@@ -1406,7 +1405,7 @@ property overrides.</p>
 <p>Example:</p>
 
 <blockquote><code>
-mondrian.statistics.providers=mondrian.spi.impl.JdbcStatisticsProvider<br/>
+mondrian.statistics.providers=mondrian.spi.impl.JdbcStatisticsProvider
 mondrian.statistics.providers.MYSQL=mondrian.spi.impl.JdbcStatisticsProvider,mondrian.spi.impl.JdbcStatisticsProvider</code></blockquote>
 
 <p>This would use JDBC's statistics (via the

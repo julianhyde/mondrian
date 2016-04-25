@@ -118,10 +118,6 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
 
     /**
      * Associates a symbolic name with an ordinal value.
-     *
-     * @pre value != null
-     * @pre !isImmutable()
-     * @pre value.getName() != null
      */
     public void register(V value) {
         assert value != null : "pre: value != null";
@@ -198,8 +194,6 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
     /**
      * Returns the name associated with an ordinal; the return value
      * is null if the ordinal is not a member of the enumeration.
-     *
-     * @pre isImmutable()
      */
     public final V getValue(int ordinal) {
         Util.assertPrecondition(isImmutable());
@@ -210,8 +204,6 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
     /**
      * Returns the name associated with an ordinal; the return value
      * is null if the ordinal is not a member of the enumeration.
-     *
-     * @pre isImmutable()
      */
     public final String getName(int ordinal) {
         Util.assertPrecondition(isImmutable());
@@ -223,8 +215,6 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
     /**
      * Returns the description associated with an ordinal; the return value
      * is null if the ordinal is not a member of the enumeration.
-     *
-     * @pre isImmutable()
      */
     public final String getDescription(int ordinal)
     {
@@ -322,7 +312,7 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
         public final String description;
 
         /**
-         * @pre name != null
+         * Creates a BasicValue.
          */
         public BasicValue(String name, int ordinal, String description) {
             Util.assertPrecondition(name != null, "name != null");

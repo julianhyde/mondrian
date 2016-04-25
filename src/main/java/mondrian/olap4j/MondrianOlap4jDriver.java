@@ -30,17 +30,17 @@ import java.util.logging.Logger;
  * For example,
  *
  * <blockquote>
- * <code>import java.sql.Connection;<br/>
- * import java.sql.DriverManager;<br/>
- * import org.olap4j.OlapConnection;<br/>
- * <br/>
- * Connection connection =<br/>
- * &nbsp;&nbsp;DriverManager.getConnection(<br/>
+ * <code>import java.sql.Connection;<br>
+ * import java.sql.DriverManager;<br>
+ * import org.olap4j.OlapConnection;<br>
+ * <br>
+ * Connection connection =<br>
+ * &nbsp;&nbsp;DriverManager.getConnection(<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;"jdbc:mondrian:Jdbc=jdbc:mysql://localhost/foodmart;
  * JdbcUser=foodmart; JdbcPassword=foodmart;
  * Catalog=file:/mondrian/demo/FoodMart.mondrian.xml;
- * JdbcDrivers=com.mysql.jdbc.Driver");<br/>
- * OlapConnection olapConnection =<br/>
+ * JdbcDrivers=com.mysql.jdbc.Driver");<br>
+ * OlapConnection olapConnection =<br>
  * &nbsp;&nbsp;connection.unwrap(OlapConnection.class);</code>
  * </blockquote>
  *

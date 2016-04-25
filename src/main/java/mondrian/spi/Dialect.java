@@ -48,7 +48,7 @@ import java.util.Map;
  *     sole parameter, and the {@link DialectManager} creates an <em>implicit
  *     factory</em> that calls that constructor.</li>
  *
- * </ul></p>
+ * </ul>
  *
  * <p>Dialect factories can also be the means for caching or pooling dialects.
  * See {@link #allowsDialectSharing} and
@@ -506,7 +506,7 @@ public interface Dialect {
      * <code>SELECT x AS a, x AS b FROM t ORDER BY a, b</code>
      * </blockquote>
      *
-     * would be legal.</p>
+     * <p>would be legal.
      *
      * <p>Infobright is the only such dialect.</p>
      *
@@ -530,9 +530,9 @@ public interface Dialect {
      * <code>SELECT x, x + y AS z FROM t ORDER BY z</code>
      * </blockquote>
      *
-     * would be legal.</p>
+     * <p>would be legal.
      *
-     * <p>Ingres and Hive are examples of such dialects.</p>
+     * <p>Ingres and Hive are examples of such dialects.
      *
      * @return Whether this Dialect can include expressions in the ORDER BY
      *   clause only by adding an expression to the SELECT clause and using
@@ -554,9 +554,9 @@ public interface Dialect {
      * <code>SELECT CONCAT(x) as foo FROM t HAVING foo LIKE "%"</code>
      * </blockquote>
      *
-     * would be legal.</p>
+     * <p>would be legal.
      *
-     * <p>MySQL is an example of such dialects.</p>
+     * <p>MySQL is an example of such dialects.
      *
      * @return Whether this Dialect can include expressions in the HAVING
      *   clause only by adding an expression to the SELECT clause and using
@@ -573,10 +573,10 @@ public interface Dialect {
      * <code>SELECT x, x + y AS z FROM t ORDER BY z</code>
      * </blockquote>
      *
-     * would be legal.</p>
+     * <p>would be legal.
      *
      * <p>MySQL, DB2 and Ingres are examples of dialects where this is true;
-     * Access is a dialect where this is false.</p>
+     * Access is a dialect where this is false.
      *
      * @return Whether aliases defined in the SELECT clause can be used as
      * expressions in the ORDER BY clause.
@@ -589,19 +589,19 @@ public interface Dialect {
      *
      * <p>For example,
      *
-     * <code>SELECT x, y + z FROM t<br/>
-     * UNION ALL<br/>
-     * SELECT x, y + z FROM t<br/>
+     * <code>SELECT x, y + z FROM t<br>
+     * UNION ALL<br>
+     * SELECT x, y + z FROM t<br>
      * ORDER BY 1, 2</code>
      *
-     * is allowed but
+     * <p>is allowed but
      *
-     * <code>SELECT x, y, z FROM t<br/>
-     * UNION ALL<br/>
-     * SELECT x, y, z FROM t<br/>
+     * <code>SELECT x, y, z FROM t<br>
+     * UNION ALL<br>
+     * SELECT x, y, z FROM t<br>
      * ORDER BY x</code>
      *
-     * is not.
+     * <p>is not.
      *
      * <p>Teradata is an example of a dialect with this restriction.
      *
@@ -617,20 +617,19 @@ public interface Dialect {
      *
      * <p>For example,
      *
-     * <code>SELECT x, y + z FROM t<br/>
-     * UNION ALL<br/>
-     * SELECT x, y + z FROM t<br/>
+     * <code>SELECT x, y + z FROM t<br>
+     * UNION ALL<br>
+     * SELECT x, y + z FROM t<br>
      * ORDER BY y + z</code>
      *
-     * is allowed but
+     * <p>is allowed but
      *
-     * <code>SELECT x, y, z FROM t<br/>
-     * UNION ALL<br/>
-     * SELECT x, y, z FROM t<br/>
+     * <code>SELECT x, y, z FROM t<br>
+     * UNION ALL<br>
+     * SELECT x, y, z FROM t<br>
      * ORDER BY y + z</code>
-     * <code>SELECT x, y, z FROM t ORDER BY y + z</code>
      *
-     * is not.
+     * <p>is not.
      *
      * <p>Access is an example of a dialect with this restriction.
      *
@@ -771,22 +770,26 @@ public interface Dialect {
      * identifier, but the implementation must presume that it is already
      * escaped and fit for use. The regular expression is not escaped
      * and must be adapted to the proper dialect rules.
+     *
      * <p>Postgres / Greenplum example:
-     * <p><code>
+     *
+     * <blockquote><code>
      * generateRegularExpression(
-     *   "'foodmart'.'customer_name'", "(?i).*oo.*") ->
+     *   "'foodmart'.'customer_name'", "(?i).*oo.*") &rarr;
      *   'foodmart'.'customer_name' ~ "(?i).*oo.*"
-     * </code></p>
+     * </code></blockquote>
+     *
      * <p>Oracle example:
-     * <p><code>
+     *
+     * <blockquote><code>
      * generateRegularExpression(
-     *   "'foodmart'.'customer_name'", ".*oo.*") ->
+     *   "'foodmart'.'customer_name'", ".*oo.*") &rarr;
      *   REGEXP_LIKE('foodmart'.'customer_name', ".*oo.*")
-     * </code></p>
+     * </code></blockquote>
      *
      * <p>Dialects are allowed to return null if the dialect cannot
      * convert that particular regular expression into something that
-     * the database would support.</p>
+     * the database would support.
      *
      * @param source A String identifying the column to match against.
      * @param javaRegExp A Java regular expression to match against.
@@ -873,7 +876,7 @@ public interface Dialect {
      * <p>The default (and typical) implementation is</p>
      *
      * <blockquote>return {@link #alwaysQuoteIdentifiers}()
-     * || !{@link #hasSpecialChars}(identifier)</blockquote></blockquote>
+     * || !{@link #hasSpecialChars}(identifier)</blockquote>
      */
     boolean needToQuote(String identifier);
 

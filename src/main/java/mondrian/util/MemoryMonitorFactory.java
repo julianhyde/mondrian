@@ -136,7 +136,7 @@ public final class MemoryMonitorFactory
     }
 
     /**
-     * Return the <code>MemoryMonitorFactory</code property name.
+     * Return the <code>MemoryMonitorFactory</code> property name.
      *
      * @return <code>MemoryMonitorFactory</code> property name
      */

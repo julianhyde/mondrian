@@ -32,18 +32,17 @@ public interface Role {
     /**
      * Returns the access this role has to a given schema.
      *
-     * @pre schema != null
-     * @post return == Access.ALL
-     * || return == Access.NONE
-     * || return == Access.ALL_DIMENSIONS
+     * @param schema Schema (not null)
+     *
+     * @return Access (Access.ALL or Access.NONE or Access.ALL_DIMENSIONS)
      */
     Access getAccess(Schema schema);
 
     /**
      * Returns the access this role has to a given cube.
      *
-     * @pre cube != null
-     * @post return == Access.ALL || return == Access.NONE
+     * @param cube Cube (never null)
+     * @return access (Access.ALL or Access.NONE)
      */
     Access getAccess(Cube cube);
 
@@ -58,7 +57,7 @@ public interface Role {
          * <li>{@link Access#NONE} if member is not visible,
          * <li>{@link Access#ALL} if member and all children are visible,
          * <li>{@link Access#CUSTOM} if some of the children are not visible.
-         * </ul></p>
+         * </ul>
          *
          * <p>For these purposes, children which are below the bottom level are
          * regarded as visible.</p>
@@ -108,18 +107,17 @@ public interface Role {
     /**
      * Returns the access this role has to a given dimension.
      *
-     * @pre dimension != null
-     * @post Access.instance().isValid(return)
+     * @param dimension Dimension (never null)
+     *
+     * <p>Post-condition: Access.instance().isValid(return)
      */
     Access getAccess(Dimension dimension);
 
     /**
      * Returns the access this role has to a given hierarchy.
      *
-     * @pre hierarchy != null
-     * @post return == Access.NONE
-     *   || return == Access.ALL
-     *   || return == Access.CUSTOM
+     * @param hierarchy Hierarchy (never null)
+     * @return access (Access.ALL or Access.NONE or Access.CUSTOM)
      */
     Access getAccess(Hierarchy hierarchy);
 
@@ -127,41 +125,41 @@ public interface Role {
      * Returns the details of this hierarchy's access, or null if the hierarchy
      * has not been given explicit access.
      *
-     * @pre hierarchy != null
+     * @param hierarchy Hierarchy (never null)
      */
     HierarchyAccess getAccessDetails(Hierarchy hierarchy);
 
     /**
      * Returns the access this role has to a given level.
      *
-     * @pre level != null
-     * @post Access.instance().isValid(return)
+     * @param level Level (never null)
+     *
+     * <p>Post-condition: Access.instance().isValid(return)
      */
     Access getAccess(Level level);
 
     /**
      * Returns the access this role has to a given member.
      *
-     * @pre member != null
-     * @pre isMutable()
-     * @post return == Access.NONE
-     *    || return == Access.ALL
-     *    || return == Access.CUSTOM
+     * @param member Member (not null, and mutable)
+     *
+     * @return access (Access.ALL or Access.NONE or Access.CUSTOM)
      */
     Access getAccess(Member member);
 
     /**
      * Returns the access this role has to a given named set.
      *
-     * @pre set != null
-     * @pre isMutable()
-     * @post return == Access.NONE || return == Access.ALL
+     * @param set Named set (never null, and mutable)
+     *
+     * @return access (Access.ALL or Access.NONE)
      */
     Access getAccess(NamedSet set);
 
     /**
      * Returns whether this role is allowed to see a given element.
-     * @pre olapElement != null
+     *
+     * @param olapElement Element (never null)
      */
     boolean canAccess(OlapElement olapElement);
 

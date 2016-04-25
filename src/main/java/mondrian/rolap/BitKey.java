@@ -167,7 +167,7 @@ public interface BitKey
      * use the following loop:
      *
      * <pre>
-     * for (int i = bk.nextSetBit(0); i >= 0; i = bk.nextSetBit(i + 1)) {
+     * for (int i = bk.nextSetBit(0); i &gt;= 0; i = bk.nextSetBit(i + 1)) {
      *     // operate on index i here
      * }</pre>
      *

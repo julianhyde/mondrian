@@ -36,7 +36,7 @@ import java.util.List;
  * <code>memberReaderClass</code> attribute of the
  * <code>&lt;Hierarchy&gt;</code> element in your XML schema file; the
  * <code>properties</code> constructor parameter is populated from any
- * <ocde>&lt;Param name="..." value="..."&gt;</code> child elements.
+ * <code>&lt;Param name="..." value="..."&gt;</code> child elements.
  *
  * @see MemberReader
  * @see MemberCache

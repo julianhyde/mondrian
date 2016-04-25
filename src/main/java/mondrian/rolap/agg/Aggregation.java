@@ -35,13 +35,13 @@ import static mondrian.spi.DataServicesLocator.*;
  *
  * <p>Representation of aggregations. Sparse and dense representations are
  * necessary for different data sets. Should adapt automatically. Use an
- * interface to hold the data set, so the segment doesn't care.</p>
+ * interface to hold the data set, so the segment doesn't care.
  *
- * Suppose we have a segment {year=1997, quarter={1,2,3},
+ * <p>Suppose we have a segment {year=1997, quarter={1,2,3},
  * state={CA,WA}}. We want to roll up to a segment for {year=1997,
  * state={CA,WA}}.  We need to know that we have all quarters.  We don't.
  * Because year and quarter are independent, we know that we have all of
- * the ...</p>
+ * the ...
  *
  * <p>Suppose we have a segment specified by {region=West, state=*,
  * year=*}, which materializes to ({West}, {CA,WA,OR}, {1997,1998}).

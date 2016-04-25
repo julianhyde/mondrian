@@ -33,10 +33,10 @@ import java.util.*;
  * possible. We pack several properties into the {@link #flags} field, and
  * we store optional attributes (along with annotations, localized resources and
  * properties) in the larder. Minimizing the number of fields is also why this
- * class does not inherit from {@link OlapElementBase}.</p>
+ * class does not inherit from {@link OlapElementBase}.
  *
- * <b>Developers, please do not add fields to this
- * class without design review</b>.</p>
+ * <p><b>Developers, please do not add fields to this
+ * class without design review</b>.
  *
  * @author jhyde
  * @since 10 August, 2001
@@ -1280,7 +1280,6 @@ public class RolapMemberBase
          * are the (@link mondrian.olap.Measure} implementations, which
          * often have 4 or more undeclared properties, so if the member
          * is a measure, the factory will create a {@link java.util.HashMap}.
-         * </p>
          *
          * @param member {@inheritDoc}
          * @return {@inheritDoc}

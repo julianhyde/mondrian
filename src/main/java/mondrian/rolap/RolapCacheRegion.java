@@ -79,8 +79,8 @@ public class RolapCacheRegion {
      *
      * <p>The typical example of a multi-column predicate is a member
      * constraint. For example, the constraint "m between 1997.Q3 and
-     * 1998.Q2" translates into "year = 1997 and quarter >= Q3 or year =
-     * 1998 and quarter <= Q2".
+     * 1998.Q2" translates into "year = 1997 and quarter &ge; Q3 or year =
+     * 1998 and quarter &le; Q2".
      *
      * @param predicate Predicate
      */

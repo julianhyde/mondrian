@@ -43,9 +43,11 @@ public interface Cell {
      *       {@link Double}, {@link Integer} and {@link String}.</li>
      * </ul>
      *
-     * @post return != null
-     * @post (return instanceof Throwable) == isError()
-     * @post (return instanceof Util.NullCellValue) == isNull()
+     * <p>Post-conditions:<ul>
+     * <li>return != null
+     * <li>(return instanceof Throwable) == isError()
+     * <li>(return instanceof Util.NullCellValue) == isNull()
+     * </ul>
      */
     Object getValue();
 

@@ -23,10 +23,10 @@ import java.util.List;
  * constrains the <code>year</code> and <code>quarter</code> columns:
  *
  * <blockquote><code>
- * &nbsp;&nbsp;((year = 1997 and quarter >= 'Q3')<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;or (year > 1997))<br/>
- * and ((year = 1998 and quarter <= 'Q2')<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;or (year < 1998))</code></blockquote>
+ * &nbsp;&nbsp;((year = 1997 and quarter &ge; 'Q3')<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;or (year &gt; 1997))<br>
+ * and ((year = 1998 and quarter &le; 'Q2')<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;or (year &lt; 1998))</code></blockquote>
  *
  * @author jhyde
   * @since Jan 15, 2007
@@ -86,8 +86,7 @@ public interface StarPredicate {
      * Returns the logical inverse of this Predicate. The result is a Predicate
      * which holds whenever this predicate holds but the other does not.
      *
-     * @pre predicate != null
-     * @param predicate Predicate
+     * @param predicate Predicate (never null)
      * @return Combined predicate
      */
     StarPredicate minus(StarPredicate predicate);
@@ -96,8 +95,7 @@ public interface StarPredicate {
      * Returns this union of this Predicate with another. The result is a
      * Predicate which holds whenever either predicate holds.
      *
-     * @pre predicate != null
-     * @param predicate Predicate
+     * @param predicate Predicate (never null)
      * @return Combined predicate
      */
     StarPredicate or(StarPredicate predicate);
@@ -106,8 +104,7 @@ public interface StarPredicate {
      * Returns this intersection of this Predicate with another. The result is a
      * Predicate which holds whenever both predicates hold.
      *
-     * @pre predicate != null
-     * @param predicate Predicate
+     * @param predicate Predicate (never null)
      * @return Combined predicate
      */
     StarPredicate and(StarPredicate predicate);
