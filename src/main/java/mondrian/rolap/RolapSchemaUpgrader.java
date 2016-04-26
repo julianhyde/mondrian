@@ -211,9 +211,28 @@ public class RolapSchemaUpgrader {
                     levelList));
         }
 
+        // Figure out which ordinals have already been taken.
+        final BitSet measureOrdinals = new BitSet();
+        measureOrdinals.set(0);
+        for (Mondrian3Def.Measure xmlLegacyMeasure : xmlLegacyCube.measures) {
+            Integer ordinal = getOrdinal(xmlLegacyMeasure.memberProperties);
+            if (ordinal != null) {
+                measureOrdinals.set(ordinal);
+            }
+        }
+        for (Mondrian3Def.CalculatedMember xmlLegacyCalculatedMember
+            : xmlLegacyCube.calculatedMembers)
+        {
+            Integer ordinal = getOrdinal(xmlLegacyCalculatedMember);
+            if (ordinal != null) {
+                measureOrdinals.set(ordinal);
+            }
+        }
+
         final MondrianDef.MeasureGroup xmlMeasureGroup =
             convertCubeMeasures(
                 xmlLegacyCube,
+                measureOrdinals,
                 fact,
                 xmlCube.children.holder(
                     new MondrianDef.MeasureGroups()).list());
@@ -243,9 +262,11 @@ public class RolapSchemaUpgrader {
         for (Mondrian3Def.CalculatedMember xmlLegacyCalculatedMember
             : xmlLegacyCube.calculatedMembers)
         {
-            xmlCube.children.holder(new MondrianDef.CalculatedMembers()).list()
+            xmlCube.children.holder(new MondrianDef.CalculatedMembers())
+                .list()
                 .add(
-                    convertCalculatedMember(xmlLegacyCalculatedMember));
+                    convertCalculatedMember(
+                        xmlLegacyCalculatedMember, measureOrdinals));
         }
         for (Mondrian3Def.NamedSet xmlLegacyNamedSet : xmlLegacyCube.namedSets)
         {
@@ -284,10 +305,27 @@ public class RolapSchemaUpgrader {
         return xmlCube;
     }
 
+  private Integer getOrdinal(
+      Mondrian3Def.CalculatedMember xmlLegacyCalculatedMember) {
+    return getOrdinal(xmlLegacyCalculatedMember.memberProperties);
+  }
+
+  private static Integer getOrdinal(
+        Mondrian3Def.CalculatedMemberProperty[] memberProperties)
+    {
+        for (Mondrian3Def.CalculatedMemberProperty p : memberProperties) {
+            if (p.name.equals(Property.MEMBER_ORDINAL.name)) {
+                return Integer.valueOf(p.value);
+            }
+        }
+        return null;
+    }
+
     // Upgrade old-style cube (which has a <Measures> element) to a
     // new-style cube (which has a <MeasureGroups> element).
     private MondrianDef.MeasureGroup convertCubeMeasures(
         Mondrian3Def.Cube xmlCube,
+        BitSet measureOrdinals,
         RolapSchema.PhysRelation fact,
         NamedList<MondrianDef.MeasureGroup> xmlMeasureGroups)
     {
@@ -317,7 +355,7 @@ public class RolapSchemaUpgrader {
             xmlMeasureGroup.children.holder(new MondrianDef.Measures()).list();
         for (Mondrian3Def.Measure xmlLegacyMeasure : xmlCube.measures) {
             xmlMeasures.add(
-                convertMeasure(fact, xmlLegacyMeasure));
+                convertMeasure(fact, measureOrdinals, xmlLegacyMeasure));
         }
         return xmlMeasureGroup;
     }
@@ -2366,13 +2404,26 @@ public class RolapSchemaUpgrader {
         xmlCube.children.holder(new MondrianDef.Dimensions())
             .list().addAll(xmlDimensionMap.values());
 
+        // Figure out which ordinals have already been taken.
+        final BitSet measureOrdinals = new BitSet();
+        measureOrdinals.set(0);
+        for (Mondrian3Def.VirtualCubeMeasure xmlLegacyMeasure
+            : xmlLegacyVirtualCube.measures)
+        {
+            Integer ordinal = getOrdinal(infoMap, xmlLegacyMeasure);
+        if (ordinal != null) {
+          measureOrdinals.set(ordinal);
+        }
+      }
+
         // Create measures, looking up measures in existing cubes.
-        final Set<String> measureNames = new HashSet<String>();
+        final Set<String> calcMeasureNames = new HashSet<String>();
         for (Mondrian3Def.VirtualCubeMeasure xmlLegacyMeasure
             : xmlLegacyVirtualCube.measures)
         {
             convertVirtualCubeMeasure(
-                xmlCube, measureNames, infoMap, xmlLegacyMeasure);
+                xmlCube, measureOrdinals, calcMeasureNames, infoMap,
+                xmlLegacyMeasure);
         }
 
         for (Info info : infoMap.values()) {
@@ -2393,7 +2444,7 @@ public class RolapSchemaUpgrader {
             : xmlLegacyVirtualCube.calculatedMembers)
         {
             xmlCalcMembers.add(
-                convertCalculatedMember(xmlLegacyCalcMember));
+                convertCalculatedMember(xmlLegacyCalcMember, measureOrdinals));
         }
         for (Mondrian3Def.NamedSet xmlLegacyNamedSet
             : xmlLegacyVirtualCube.namedSets)
@@ -2405,8 +2456,26 @@ public class RolapSchemaUpgrader {
         return xmlCube;
     }
 
+    private static Integer getOrdinal(
+        Map<String, Info> infoMap,
+        Mondrian3Def.VirtualCubeMeasure xmlLegacyMeasure)
+    {
+        final Info info = infoMap.get(xmlLegacyMeasure.cubeName);
+        if (info != null) {
+            for (Mondrian3Def.Measure xmlMeasure
+                     : info.xmlLegacyCube.measures)
+            {
+                if (xmlMeasure.name.equals(xmlLegacyMeasure.name)) {
+                    return getOrdinal(xmlMeasure.memberProperties);
+                }
+            }
+        }
+        return null;
+    }
+
     private void convertVirtualCubeMeasure(
         MondrianDef.Cube xmlCube,
+        BitSet measureOrdinals,
         Set<String> calcMeasureNames,
         Map<String, Info> infoMap,
         Mondrian3Def.VirtualCubeMeasure xmlLegacyMeasure)
@@ -2421,12 +2490,21 @@ public class RolapSchemaUpgrader {
             final MondrianDef.Measure xmlMeasure =
                 convertMeasure(
                     cubeInfoMap.get(info.cubeName).fact,
+                    measureOrdinals,
                     xmlLegacyBaseMeasure);
 
             // VirtualCubeMeasure.visible overrides underlying measure's
             // visibility
             xmlMeasure.visible =
                 RolapSchemaLoader.toBoolean(xmlLegacyMeasure.visible, true);
+
+            final MondrianDef.CalculatedMemberProperty xmlProperty =
+                new MondrianDef.CalculatedMemberProperty();
+            xmlProperty.name = Property.MEMBER_ORDINAL.name;
+            final int ordinal = measureOrdinals.nextClearBit(0);
+            measureOrdinals.set(ordinal);
+            xmlProperty.value = Integer.toString(ordinal);
+            xmlMeasure.children.add(xmlProperty);
 
             // VirtualCubeMeasure's annotations override underlying measure's
             // annotations (but if underlying measure has annotations with
@@ -2445,9 +2523,20 @@ public class RolapSchemaUpgrader {
         if (xmlLegacyBaseCalcMeasure != null) {
             final MondrianDef.CalculatedMember xmlCalcMember =
                 convertCalculatedMember(
-                    xmlLegacyBaseCalcMeasure);
+                    xmlLegacyBaseCalcMeasure, measureOrdinals);
             xmlCalcMember.visible =
                 RolapSchemaLoader.toBoolean(xmlLegacyMeasure.visible, true);
+
+            if (getOrdinal(xmlLegacyBaseCalcMeasure.memberProperties) == null) {
+                final int ordinal = measureOrdinals.nextClearBit(0);
+                measureOrdinals.set(ordinal);
+                final MondrianDef.CalculatedMemberProperty xmlProperty =
+                    new MondrianDef.CalculatedMemberProperty();
+                xmlProperty.name = Property.MEMBER_ORDINAL.name;
+                xmlProperty.value = Integer.toString(ordinal);
+                xmlCalcMember.children.add(xmlProperty);
+            }
+
             xmlCube.children.holder(new MondrianDef.CalculatedMembers())
                 .list()
                 .add(xmlCalcMember);
@@ -3527,6 +3616,7 @@ public class RolapSchemaUpgrader {
 
     private MondrianDef.Measure convertMeasure(
         RolapSchema.PhysRelation fact,
+        BitSet measureOrdinals,
         Mondrian3Def.Measure xmlLegacyMeasure)
     {
         MondrianDef.Measure xmlMeasure = new MondrianDef.Measure();
@@ -3542,17 +3632,7 @@ public class RolapSchemaUpgrader {
 
         convertAnnotations(xmlMeasure.children, xmlLegacyMeasure.annotations);
 
-        for (Mondrian3Def.CalculatedMemberProperty xmlLegacyMemberProperty
-            : xmlLegacyMeasure.memberProperties)
-        {
-            // Skip MEMBER_ORDINAL. Clashes can occur when combining members
-            // from different base cubes.
-            if (!xmlLegacyMemberProperty.name.equals("MEMBER_ORDINAL")) {
-                xmlMeasure.children.add(
-                    convertMemberProperty(
-                        xmlLegacyMemberProperty));
-            }
-        }
+        convertMeasureProperties(xmlLegacyMeasure, xmlMeasure, measureOrdinals);
 
         if (xmlLegacyMeasure.cellFormatter != null) {
             xmlMeasure.children.add(
@@ -3575,8 +3655,48 @@ public class RolapSchemaUpgrader {
         return xmlMeasure;
     }
 
+    private void convertMeasureProperties(
+        Mondrian3Def.Measure xmlLegacyMeasure,
+        MondrianDef.Measure xmlMeasure,
+        BitSet measureOrdinals)
+    {
+        boolean foundOrdinal = false;
+        for (Mondrian3Def.CalculatedMemberProperty xmlLegacyMemberProperty
+            : xmlLegacyMeasure.memberProperties)
+        {
+            final MondrianDef.CalculatedMemberProperty xmlMemberProperty =
+                convertMemberProperty(xmlLegacyMemberProperty);
+            if (xmlLegacyMemberProperty.name.equals(
+                    Property.MEMBER_ORDINAL.name))
+            {
+                foundOrdinal = true;
+                if (measureOrdinals != null) {
+                    int ordinal =
+                        Integer.valueOf(xmlMemberProperty.value);
+                    if (measureOrdinals.get(ordinal)) {
+                        ordinal = measureOrdinals.nextClearBit(0);
+                        measureOrdinals.set(ordinal);
+                        xmlMemberProperty.value = Integer.toString(ordinal);
+                    }
+                    measureOrdinals.set(ordinal);
+                }
+            }
+            xmlMeasure.children.add(xmlMemberProperty);
+        }
+        if (measureOrdinals != null && !foundOrdinal) {
+            MondrianDef.CalculatedMemberProperty xmlMemberProperty =
+                new MondrianDef.CalculatedMemberProperty();
+            final int ordinal = measureOrdinals.nextClearBit(0);
+            xmlMemberProperty.name = Property.MEMBER_ORDINAL.name;
+            xmlMemberProperty.value = Integer.toString(ordinal);
+            measureOrdinals.set(ordinal);
+            xmlMeasure.children.add(xmlMemberProperty);
+        }
+    }
+
     private MondrianDef.CalculatedMember convertCalculatedMember(
-        Mondrian3Def.CalculatedMember xmlLegacyCalcMember)
+        Mondrian3Def.CalculatedMember xmlLegacyCalcMember,
+        BitSet measureOrdinals)
     {
         final MondrianDef.CalculatedMember xmlCalcMember =
             new MondrianDef.CalculatedMember();
@@ -3602,26 +3722,43 @@ public class RolapSchemaUpgrader {
             xmlLegacyCalcMember.annotations);
         convertCalcMemberProperties(
             xmlCalcMember.children,
-            xmlLegacyCalcMember.memberProperties,
-            true);
+            xmlLegacyCalcMember.memberProperties, measureOrdinals);
         return xmlCalcMember;
     }
 
     private void convertCalcMemberProperties(
         MondrianDef.Children<MondrianDef.CalculatedMemberElement> children,
         Mondrian3Def.CalculatedMemberProperty[] memberProperties,
-        boolean skipOrdinal)
+        BitSet measureOrdinals)
     {
+        boolean foundOrdinal = false;
         for (Mondrian3Def.CalculatedMemberProperty xmlLegacyMemberProperty
             : memberProperties)
         {
-            if (!skipOrdinal
-                || !xmlLegacyMemberProperty.name.equals("MEMBER_ORDINAL"))
-            {
-                children.add(
-                    convertMemberProperty(
-                        xmlLegacyMemberProperty));
+            final MondrianDef.CalculatedMemberProperty xmlMemberProperty =
+                convertMemberProperty(xmlLegacyMemberProperty);
+            if (xmlMemberProperty.name.equals(Property.MEMBER_ORDINAL.name)) {
+                foundOrdinal = true;
+                if (measureOrdinals != null) {
+                    int ordinal = Integer.valueOf(xmlMemberProperty.value);
+                    if (measureOrdinals.get(ordinal)) {
+                        ordinal = measureOrdinals.nextClearBit(0);
+                        measureOrdinals.set(ordinal);
+                        xmlMemberProperty.value = Integer.toString(ordinal);
+                    }
+                    measureOrdinals.set(ordinal);
+                }
             }
+            children.add(xmlMemberProperty);
+        }
+        if (measureOrdinals != null && !foundOrdinal) {
+            MondrianDef.CalculatedMemberProperty xmlMemberProperty =
+                new MondrianDef.CalculatedMemberProperty();
+            final int ordinal = measureOrdinals.nextClearBit(0);
+            xmlMemberProperty.name = Property.MEMBER_ORDINAL.name;
+            xmlMemberProperty.value = Integer.toString(ordinal);
+            measureOrdinals.set(ordinal);
+            children.add(xmlMemberProperty);
         }
     }
 

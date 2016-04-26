@@ -41,8 +41,9 @@ public class Olap4jTckTest extends TestCase {
         };
 
     public static TestSuite suite() {
-        final Util.PropertyList list =
-            mondrian.test.TestContext.instance().legacy()
+      final Util.PropertyList list =
+            mondrian.test.TestContext.instance()
+                .with(mondrian.test.TestContext.DataSet.OLAP4J_FOODMART)
                 .getConnectionProperties();
         final String connStr = "jdbc:mondrian:" + list;
         final String catalog = list.get("Catalog");

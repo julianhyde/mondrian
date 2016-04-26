@@ -1748,6 +1748,11 @@ public class TestContext {
                 RolapConnectionProperties.Catalog,
                 "FoodMart.mondrian.xml",
                 "FoodMart3.mondrian.xml");
+        case OLAP4J_FOODMART:
+            return withPropertiesReplace(
+                RolapConnectionProperties.Catalog,
+                "FoodMart.mondrian.xml",
+                "Olap4jTck.mondrian.xml");
         case STEELWHEELS:
             properties =
                 replaceProperties(
@@ -2831,6 +2836,7 @@ public class TestContext {
         FOODMART,
         STEELWHEELS,
         LEGACY_FOODMART,
+        OLAP4J_FOODMART,
         ADVENTURE_WORKS_DW,
     }
 

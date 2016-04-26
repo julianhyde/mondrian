@@ -17,6 +17,7 @@ import mondrian.olap.Util;
 import mondrian.resource.MondrianResource;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,6 +34,13 @@ abstract class ArrayMemberSource implements MemberSource {
 
     ArrayMemberSource(RolapCubeHierarchy hierarchy, List<RolapMember> members) {
         this.hierarchy = hierarchy;
+        Collections.sort(
+            members,
+            new Comparator<RolapMember>() {
+                public int compare(RolapMember o1, RolapMember o2) {
+                    return o1.getOrderKey().compareTo(o2.getOrderKey());
+                }
+            });
         this.members = members;
     }
 

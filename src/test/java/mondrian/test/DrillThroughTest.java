@@ -415,19 +415,27 @@ public class DrillThroughTest extends FoodMartTestCase {
             final ResultSet resultSet = statement.executeQuery(sql);
             final int columnCount = resultSet.getMetaData().getColumnCount();
             final Dialect dialect = testContext.getDialect();
-            if (dialect.getDatabaseProduct() == Dialect.DatabaseProduct.DERBY) {
+            switch (dialect.getDatabaseProduct()) {
+            case DERBY:
                 // derby counts ORDER BY columns as columns. insane!
                 assertEquals(11, columnCount);
-            } else {
+                break;
+            default:
                 assertEquals(6, columnCount);
             }
             final String columnName =
                 resultSet.getMetaData().getColumnLabel(5);
-            assertTrue(
-                columnName,
-                columnName.equals(
-                    "Education Level but with a very long name that will be too"
-                    + " long "));
+            switch (dialect.getDatabaseProduct()) {
+            case HSQLDB:
+                // hsqldb doesn't truncate column names
+                break;
+            default:
+                assertTrue(
+                    columnName,
+                    columnName.equals(
+                        "Education Level but with a very long name that will be"
+                        + " too long "));
+            }
             int n = 0;
             while (resultSet.next()) {
                 ++n;

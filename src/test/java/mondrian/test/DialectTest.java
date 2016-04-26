@@ -817,9 +817,19 @@ public class DialectTest extends TestCase {
             nameList, typeList,
             new String[]{"a", "1"});
 
-        assertInline(
-            nameList, typeList,
-            new String[]{"a", "1"}, new String[]{"bb", "2"});
+        switch (dialect.getDatabaseProduct()) {
+        case HSQLDB:
+            assertInline(
+                nameList,
+                typeList,
+                new String[]{"a ", "1"}, new String[]{"bb", "2"});
+            break;
+        default:
+            assertInline(
+                nameList,
+                typeList,
+                new String[]{"a", "1"}, new String[]{"bb", "2"});
+        }
 
         // Make sure the handling of the single quote doesn't interfere
         // with double quotes
@@ -1129,6 +1139,7 @@ public class DialectTest extends TestCase {
                 "(?s).*line 1:18 Expression Not In Group By Key `the_month`.*",
                 // hsqldb
                 "(?s)Not in aggregate function or group by clause: .*",
+                "expression not in aggregate or GROUP BY columns: .*",
                 // mysql (if sql_mode contains ONLY_FULL_GROUP_BY)
                 "ERROR 1055 (42000): 'foodmart.time_by_day.the_month' isn't in "
                 + "GROUP BY",
