@@ -75,21 +75,22 @@ abstract class Recognizer {
     /**
      * Return true if the candidate aggregate table was successfully mapped into
      * the fact table. This is the top-level checking method.
-     * <p>
-     * It first checks the ignore columns.
-     * <p>
-     * Next, the existence of a fact count column is checked.
-     * <p>
-     * Then the measures are checked. First the specified (defined,
+     *
+     * <p>It first checks the ignore columns.
+     *
+     * <p>Next, the existence of a fact count column is checked.
+     *
+     * <p>Then the measures are checked. First the specified (defined,
      * explicit) measures are all determined. There must be at least one such
      * measure. This if followed by checking for implied measures (e.g., if base
      * fact table as both sum and average of a column and the aggregate has a
      * sum measure, the there is an implied average measure in the aggregate).
-     * <p>
-     * Now the levels are checked. This is in two parts. First, foreign keys are
-     * checked followed by level columns (for collapsed dimension aggregates).
-     * <p>
-     * If eveything checks out, returns true.
+     *
+     * <p>Now the levels are checked. This is in two parts. First, foreign keys
+     * are checked followed by level columns (for collapsed dimension
+     * aggregates).
+     *
+     * <p>If everything checks out, returns true.
      */
     public boolean check() {
         checkIgnores();
@@ -250,8 +251,8 @@ abstract class Recognizer {
      * and average measures in the base fact table and the aggregate table has
      * either a sum or average, the other measure is implied and can be
      * generated from the measure and the fact_count column.
-     * <p>
-     * For each column in the fact table, get its measure usages. If there is
+     *
+     * <p>For each column in the fact table, get its measure usages. If there is
      * both an average and sum aggregator associated with the column, then
      * iterator over all of the column usage of type measure of the aggregator
      * table. If only one aggregate column usage measure is found and this
@@ -362,14 +363,14 @@ abstract class Recognizer {
 
     /**
      * This method checks the foreign key columns.
-     * <p>
-     * For each foreign key column usage in the fact table, determine how many
-     * aggregate table columns match that column usage. If there is more than
-     * one match, then that is an error. If there were no matches, then the
+     *
+     * <p>For each foreign key column usage in the fact table, determine how
+     * many aggregate table columns match that column usage. If there is more
+     * than one match, then that is an error. If there were no matches, then the
      * foreign key usage is added to the list of fact column foreign key that
      * were not in the aggregate table. This list is returned by this method.
-     * <p>
-     * This matches foreign keys that were not "lost" or "collapsed".
+     *
+     * <p>This matches foreign keys that were not "lost" or "collapsed".
      *
      * @return  list on not seen foreign key column usages
      */
@@ -417,8 +418,8 @@ abstract class Recognizer {
      * where the higher levels of some hierarchy are columns in the aggregate
      * table (and all of the lower levels are missing - it has aggregated up to
      * the first existing level).
-     * <p>
-     * Here, we do not start from the fact table, we iterator over each cube.
+     *
+     * <p>Here, we do not start from the fact table, we iterator over each cube.
      * For each of the cube's dimensions, the dimension's hirarchies are
      * iterated over. In turn, each hierarchy's usage is iterated over.
      * if the hierarchy's usage's foreign key is not in the list of not seen
@@ -430,14 +431,14 @@ abstract class Recognizer {
      * column and the hierarchy's next level is considered and so on until a
      * for a level an aggregate table column does not match. Then we continue
      * iterating over the hierarchy usages.
-     * <p>
-     * This check is different. The others mine the fact table usages. This
+     *
+     * <p>This check is different. The others mine the fact table usages. This
      * looks through the fact table's cubes' dimension, hierarchy,
      * hiearchy usages, levels to match up symbolic names for levels. The other
      * checks match on "physical" characteristics, the column name; this matches
      * on "logical" characteristics.
-     * <p>
-     * Note: Levels should not be created for foreign keys that WERE seen.
+     *
+     * <p>Note: Levels should not be created for foreign keys that WERE seen.
      * Currently, this is NOT checked explicitly. For the explicit rules any
      * extra columns MUST ge declared ignored or one gets an error.
      *
@@ -736,8 +737,8 @@ abstract class Recognizer {
      * RolapAggregator. But in the case that the fact table column's
      * RolapAggregator is the "Avg" aggregator, then the special
      * RolapAggregator.AvgFromSum is used.
-     * <p>
-     * Note: this code assumes that the aggregate table does not have an
+     *
+     * <p>Note: this code assumes that the aggregate table does not have an
      * explicit average aggregation column.
      *
      * @param aggUsage Aggregate table column usage
@@ -775,8 +776,8 @@ abstract class Recognizer {
      * </pre>
      * Note that there is no SumFromSum since that is not a special case
      * requiring a special aggregator.
-     * <p>
-     * if no new aggregator was selected, then the fact table's aggregator
+     *
+     * <p>if no new aggregator was selected, then the fact table's aggregator
      * rollup aggregator is used.
      *
      * @param aggUsage Aggregate table column usage

@@ -34,9 +34,10 @@ public class DriverManager {
      *
      * @param connectString Connect string of the form
      *   'property=value;property=value;...'.
-     *   See {@link mondrian.olap.Util#parseConnectString} for more details of the format.
-     *   See {@link mondrian.rolap.RolapConnectionProperties} for a list of
-     *   allowed properties.
+     *   See {@link mondrian.olap.Util#parseConnectString}
+     *   for more details of the format.
+     *   See {@link mondrian.rolap.RolapConnectionProperties}
+     *   for a list of allowed properties.
      * @param locator Use to locate real catalog url by a customized
      *   configuration value. If <code>null</code>, leave the catalog url
      *   unchanged.
@@ -55,7 +56,8 @@ public class DriverManager {
      *
      * @param properties Collection of properties which define the location
      *   of the connection.
-     *   See {@link mondrian.rolap.RolapConnection} for a list of allowed properties.
+     *   See {@link mondrian.rolap.RolapConnection}
+     *   for a list of allowed properties.
      * @param locator Use to locate real catalog url by a customized
      *   configuration value. If <code>null</code>, leave the catalog url
      *   unchanged.
@@ -76,7 +78,8 @@ public class DriverManager {
      *
      * @param properties Collection of properties which define the location
      *   of the connection.
-     *   See {@link mondrian.rolap.RolapConnection} for a list of allowed properties.
+     *   See {@link mondrian.rolap.RolapConnection}
+     *   for a list of allowed properties.
      * @param locator Use to locate real catalog url by a customized
      *   configuration value. If <code>null</code>, leave the catalog url
      *   unchanged.

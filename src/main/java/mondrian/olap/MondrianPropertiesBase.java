@@ -24,7 +24,8 @@ import java.util.Enumeration;
  *
  * <p>There is a method for property valid in a
  * <code>mondrian.properties</code> file. Although it is possible to retrieve
- * properties using the inherited {@link java.util.Properties#getProperty(String)}
+ * properties using the inherited
+ * {@link java.util.Properties#getProperty(String)}
  * method, we recommend that you use methods in this class.
  *
  * <h2>Note to developers</h2>

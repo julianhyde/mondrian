@@ -18,8 +18,8 @@ import javax.servlet.ServletContext;
  * enough is present to allow for communication between Mondrian's
  * XMLA code and other code in the same JVM.
  * Currently it is used in both the CmdRunner and in XMLA JUnit tests.
- * <p>
- * If you need to add to this implementation, please do so.
+ *
+ * <p>If you need to add to this implementation, please do so.
  *
  * @author <a>Richard M. Emberson</a>
  */

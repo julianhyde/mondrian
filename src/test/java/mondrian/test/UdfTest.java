@@ -825,7 +825,8 @@ public class UdfTest extends FoodMartTestCase {
             + ReverseFunctionNotStatic.class.getName()
             + "\"/>\n");
         tc.assertQueryThrows(
-            "select Reverse2([Gender].Members) on 0\n" + "from [Sales]",
+            "select Reverse2([Gender].Members) on 0\n"
+            + "from [Sales]",
             "Failed to load user-defined function 'Reverse2': class "
             + "'mondrian.test.UdfTest$ReverseFunctionNotStatic' must be "
             + "public "

@@ -391,7 +391,8 @@ public class JdbcDialectImpl implements Dialect {
     }
 
     /**
-     * Helper method for {@link mondrian.spi.Dialect#quoteDateLiteral(StringBuilder, java.sql.Date)}.
+     * Helper method for
+     * {@link mondrian.spi.Dialect#quoteDateLiteral(StringBuilder, java.sql.Date)}.
      *
      * @param buf Buffer to append to
      * @param value Value as string
@@ -1201,7 +1202,8 @@ public class JdbcDialectImpl implements Dialect {
             .toString();
     }
 
-    /** Implementation of {@link Dialect#quoteIdentifier(StringBuilder, String...)}. */
+    /** Implementation of
+     * {@link Dialect#quoteIdentifier(StringBuilder, String...)}. */
     static StringBuilder quoteIdentifierImpl(
         String q,
         Util.Predicate1<String> shouldQuote,
@@ -1224,7 +1226,8 @@ public class JdbcDialectImpl implements Dialect {
         return buf;
     }
 
-    /** Implementation of {@link Dialect#quoteIdentifier(String, StringBuilder)}. */
+    /** Implementation of
+     * {@link Dialect#quoteIdentifier(String, StringBuilder)}. */
     static StringBuilder quoteIdentifierImpl(
         String q,
         Util.Predicate1<String> shouldQuote,

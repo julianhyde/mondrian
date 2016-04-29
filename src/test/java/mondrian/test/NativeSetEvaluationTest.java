@@ -15,8 +15,6 @@ import mondrian.spi.Dialect.DatabaseProduct;
 
 /**
  * Test native evaluation of supported set operations.
- *
- * <p>
  */
 public class NativeSetEvaluationTest extends BatchTestCase {
 

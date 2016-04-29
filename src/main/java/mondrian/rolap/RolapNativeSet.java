@@ -493,4 +493,3 @@ public abstract class RolapNativeSet extends RolapNative {
 }
 
 // End RolapNativeSet.java
-

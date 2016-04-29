@@ -501,7 +501,8 @@ public class DiffRepository
     }
 
     /**
-     * Calls {@link #assertEquals(String, String, String, mondrian.olap.Util.Function1)}
+     * Calls
+     * {@link #assertEquals(String, String, String, mondrian.olap.Util.Function1)}
      * with a null filter.
      *
      * @param tag Tag

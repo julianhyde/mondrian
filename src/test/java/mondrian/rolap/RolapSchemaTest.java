@@ -81,9 +81,10 @@ public class RolapSchemaTest extends TestCase {
                 anyString(), anyString(), anyString(), any(Execution.class)))
             .thenReturn(TABLE_CARD_VAL);
         Dialect spyDialect = spy(new JdbcDialectImpl());
-        when(statsProv.getQueryCardinality(
-            any(Dialect.class), any(DataSource.class),
-            anyString(), any(Execution.class))).thenReturn(QUERY_CARD_VAL);
+        when(
+            statsProv.getQueryCardinality(
+                any(Dialect.class), any(DataSource.class),
+                anyString(), any(Execution.class))).thenReturn(QUERY_CARD_VAL);
         when(spyDialect.getDatabaseProduct()).thenReturn(
             Dialect.DatabaseProduct.MYSQL);
         List<StatisticsProvider> statsProvs =

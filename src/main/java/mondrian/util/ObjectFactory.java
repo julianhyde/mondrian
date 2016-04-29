@@ -356,8 +356,8 @@ public abstract class ObjectFactory<V> {
      * Constructs an object where the <code>parameterTypes</code> and
      * <code>parameterValues</code> are constructor parameters and
      * Properties parameter is used to look up a class name.
-     * <p>
-     * This returns a new instance of the Object each time its
+     *
+     * <p>This returns a new instance of the Object each time its
      * called (assuming that if the method <code>getDefault</code>,
      * which derived classes implement), if called, creates a new
      * object each time.
@@ -451,8 +451,8 @@ public abstract class ObjectFactory<V> {
      * Returns the name of a class to use to create an object.
      * The default implementation returns null but derived
      * classes can return a class name.
-     * <p>
-     * This method is the primary mechanism for supporting Unit testing.
+     *
+     * <p>This method is the primary mechanism for supporting Unit testing.
      * A derived class can have, as an example, this method return
      * the value of a <code>ThreadLocal</code>. For testing it
      * return a class name while for normal use it returns <code>null</code>.
@@ -565,8 +565,8 @@ public abstract class ObjectFactory<V> {
          * the <code>parameterTypes</code> and
          * <code>parameterValues</code> are constructor parameters and
          * Properties parameter is used to look up a class name.
-         * <p>
-         * This returns a same instance of the Object each time its
+         *
+         * <p>This returns a same instance of the Object each time its
          * called except if the <code>getClassName</code> method
          * returns a non-null class name which should only
          * happen as needed for unit testing.
@@ -639,8 +639,8 @@ public abstract class ObjectFactory<V> {
 
     /**
      * This is for testing only.
-     * <p>
-     * <code>Context</code> contain the Factory implementation specific
+     *
+     * <p><code>Context</code> contain the Factory implementation specific
      * non-default values and mechanism for overriding the default
      * instance type returned by the Factory.
      * Factory implementation can extend the <code>Context</code> interface

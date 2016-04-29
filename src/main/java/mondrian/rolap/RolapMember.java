@@ -40,7 +40,8 @@ import java.util.*;
  *
  * <li>DONE remove {@code RolapAllCubeMember}</li>
  *
- * <li>DONE reparent {@link mondrian.rolap.RolapHierarchy.LimitedRollupMember}</li>
+ * <li>DONE reparent
+ * {@link mondrian.rolap.RolapHierarchy.LimitedRollupMember}</li>
  *
  * <li>DONE remove {@link RolapCubeHierarchy}.bootstrapLookup</li>
  *

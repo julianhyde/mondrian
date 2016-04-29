@@ -21,10 +21,9 @@ import java.util.Set;
  * <p>You can think of a SpatialValueTree as a multi dimensional list where
  * collections of values are stored in each possible tuple.
  *
- * <p>
- * When performing operations on the tree, such as adding values or retrieving
- * them, we use a {@link SpatialRegion}. Each region can cover more than one
- * bound per dimension.
+ * <p>When performing operations on the tree, such as adding values or
+ * retrieving them, we use a {@link SpatialRegion}. Each region can cover more
+ * than one bound per dimension.
  *
  * <p>When evaluating a region, if a dimension is omitted form a region,
  * this means that the region doesn't overlap the dimension at all. It is not
@@ -53,14 +52,11 @@ import java.util.Set;
  * objects. All of these objects must be nodes of the specified dimension for a
  * region to be valid within a tree context. As an example, the following key:
  *
- * <p>
- * <code>[ {'year', [1997]}, {'state', ['FL']} ]</code>
+ * <p><code>[ {'year', [1997]}, {'state', ['FL']} ]</code>
  *
- * <p>
- * ... would return { [0x000236] [0x000423] }.
+ * <p>... would return { [0x000236] [0x000423] }.
  *
- *<p>
- * The region keys can have more than one predicate value per axis. If we use
+ *<p>The region keys can have more than one predicate value per axis. If we use
  * the same tree as above, and we query it using the following region key:
  *
  * <blockquote>
@@ -85,12 +81,9 @@ import java.util.Set;
  * {@link Object#hashCode()} and {@link Object#equals(Object)} to avoid
  * performance and consistency issues.
  *
- * @param <K>
- *            Type of the dimensions.
- * @param <E>
- *            Type of the dimension bounds.
- * @param <V>
- *            Type of the values to store.
+ * @param <K> Type of the dimensions
+ * @param <E> Type of the dimension bounds
+ * @param <V> Type of the values to store
  */
 public interface SpatialValueTree
         <K extends Object, E extends Object, V extends Object>

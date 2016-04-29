@@ -368,4 +368,3 @@ public class CustomizedParserTest extends FoodMartTestCase {
 }
 
 // End CustomizedParserTest.java
-

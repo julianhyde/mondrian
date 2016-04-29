@@ -257,8 +257,8 @@ public final class TupleCollections {
     }
 
     /**
-     * Converts a {@link mondrian.calc.TupleIterable} to an old-style iterable that
-     * creates an iterator over member arrays.
+     * Converts a {@link mondrian.calc.TupleIterable} to an old-style
+     * iterable that creates an iterator over member arrays.
      *
      * @param tupleIterable Tuple iterable
      * @return Iterable that creates an iterator over tuples represented as

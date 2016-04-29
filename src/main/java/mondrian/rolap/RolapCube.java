@@ -805,4 +805,3 @@ public class RolapCube extends CubeBase {
 }
 
 // End RolapCube.java
-

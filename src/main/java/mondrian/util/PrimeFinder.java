@@ -29,15 +29,14 @@ import java.util.Arrays;
  * Not of interest for users; only for implementors of hashtables.
  * Used to keep hash table capacities prime numbers.
  *
- * <p>
- * Choosing prime numbers as hash table capacities is a good idea to keep
+ * <p>Choosing prime numbers as hash table capacities is a good idea to keep
  * them working fast, particularly under hash table expansions.
- * <p>
- * However, JDK 1.2, JGL 3.1 and many other toolkits do nothing to
+ *
+ * <p>However, JDK 1.2, JGL 3.1 and many other toolkits do nothing to
  * keep capacities prime.
  * This class provides efficient means to choose prime capacities.
- * <p>
- * Choosing a prime is <tt>O(log 300)</tt> (binary search in a list of
+ *
+ * <p>Choosing a prime is <tt>O(log 300)</tt> (binary search in a list of
  * 300 int's).
  * Memory requirements: 1 KB static memory.
  *

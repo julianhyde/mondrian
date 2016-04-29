@@ -150,8 +150,8 @@ public interface MemoryMonitor {
          * then this method is called with the current memory usage,
          * <code>usedMemory</code>, and the maximum memory (which
          * is a constant per JVM invocation).
-         * <p>
-         * This method is called (in the case of Java5) by a system
+         *
+         * <p>This method is called (in the case of Java5) by a system
          * thread associated with the garbage collection activity.
          * When this method is called, the client should quickly do what
          * it needs to to communicate with an application thread and
@@ -174,8 +174,8 @@ public interface MemoryMonitor {
      * This is an interface that a <code>MemoryMonitor</code> may optionally
      * implement. These methods give the tester access to some of the
      * internal, white-box data.
-     * <p>
-     * During testing Mondrian has a default
+     *
+     * <p>During testing Mondrian has a default
      * <code>MemoryMonitor</code> which might be replaced with a test
      * <code>MemoryMonitor</code>s using the <code>ThreadLocal</code>
      * mechanism. After the test using the test

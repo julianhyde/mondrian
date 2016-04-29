@@ -1333,13 +1333,13 @@ public class RolapSchemaUpgrader {
      *                     |       |
      *                   Quarter  Year
      * </pre>
-     * <p>
-     * When the relation looks like the above, then the fact table joins to the
-     * lowest level table (the Day table) which joins to the next level (the
+     *
+     * <p>When the relation looks like the above, then the fact table joins to
+     * the lowest level table (the Day table) which joins to the next level (the
      * Month table) which joins to the next (the Quarter table) which joins to
      * the top level table (the Year table).
-     * <p>
-     * This method supports the transformation of a subset of all possible
+     *
+     * <p>This method supports the transformation of a subset of all possible
      * join/table relation trees (and anyone who whats to generalize it is
      * welcome to). It will take any of the following and convert them to
      * the canonical.
@@ -1381,8 +1381,8 @@ public class RolapSchemaUpgrader {
      *                   Quarter  Year
      *
      * </pre>
-     * <p>
-     * In addition, at any join node, it can exchange the left and right
+     *
+     * <p>In addition, at any join node, it can exchange the left and right
      * child relations so that the lower level depth is to the left.
      * For example, it can also transform the following:
      * <pre>
@@ -1395,9 +1395,9 @@ public class RolapSchemaUpgrader {
      *              |       |
      *             Year   Quarter
      * </pre>
-     * <p>
-     * What it can not handle are cases where on both the left and right side of
-     * a join there are child joins:
+     *
+     * <p>What it can not handle are cases where on both the left and right side
+     * of a join there are child joins:
      * <pre>
      *                |
      *         ----------------
@@ -1413,11 +1413,11 @@ public class RolapSchemaUpgrader {
      *      |       |     |        |
      *    Year     Day   Month   Quarter
      * </pre>
-     * <p>
-     * When does this method do nothing? 1) when there are less than 2 levels,
-     * 2) when any level does not have a table name, and 3) when for every table
-     * in the relation there is not a level. In these cases, this method simply
-     * return the original relation.
+     *
+     * <p>When does this method do nothing? 1) when there are less than 2
+     * levels, 2) when any level does not have a table name, and 3) when for
+     * every table in the relation there is not a level. In these cases, this
+     * method simply return the original relation.
      *
      * @param relation Relation
      * @param levels Levels
@@ -4286,8 +4286,8 @@ public class RolapSchemaUpgrader {
         private RolapSchema.PhysRelation joinTable;
 
         /**
-         * The expression (usually a {@link mondrian.olap.MondrianDef.Column}) by
-         * which the hierarchy which is joined to the fact table.
+         * The expression (usually a {@link mondrian.olap.MondrianDef.Column})
+         * by which the hierarchy which is joined to the fact table.
          */
         private RolapSchema.PhysExpr joinExp;
 

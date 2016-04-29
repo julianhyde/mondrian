@@ -18,7 +18,7 @@ import java.util.*;
  * Implementation of {@link java.util.SortedSet} based on an array. The array
  * must already be sorted in natural order.
  *
- * @param <E>
+ * @param <E> Element type
  *
  * @author Julian Hyde
  */

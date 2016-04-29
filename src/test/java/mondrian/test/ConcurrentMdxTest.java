@@ -164,7 +164,8 @@ public class ConcurrentMdxTest extends FoodMartTestCase {
             + "Row #0: 207726.0\n"),
 
         new QueryAndResult(
-            "select {[Measures].[Unit Sales]} on columns\n" + " from Sales",
+            "select {[Measures].[Unit Sales]} on columns\n"
+            + " from Sales",
             "Axis #0:\n"
             + "{}\n"
             + "Axis #1:\n"

@@ -30,8 +30,8 @@ import org.eigenbase.util.property.StringProperty;
  * then calls the <code>ObjectFactory</code> <code>getObject</code> method.
  * After doing the test, the <code>ThreadLocal</code> variable should
  * be cleared.
- * <p>
- * The <code>ObjectFactory.Singleton</code> permits the use
+ *
+ * <p>The <code>ObjectFactory.Singleton</code> permits the use
  * of <code>System</code> properties to provide a class name to the
  * factory. This can be used to create a <code>MemoryMonitor</code>
  * that is not the default one. The property name is the

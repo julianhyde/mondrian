@@ -25,8 +25,8 @@
 <p>XML model for legacy (version 3.x) Mondrian schemas. It is
 generated from <code>Mondrian3Schema.xml</code>.</p>
 
-<p>This model is only used during schema upgrade. See also {@link
-MondrianDef} (generated from <code>MondrianSchema.xml</code>), which
+<p>This model is only used during schema upgrade. See also
+{@link MondrianDef} (generated from <code>MondrianSchema.xml</code>), which
 is the XML model for current Mondrian schemas.</p>
     </Doc>
 

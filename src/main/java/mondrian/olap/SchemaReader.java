@@ -114,8 +114,8 @@ public interface SchemaReader {
     /**
      * Returns direct children of <code>member</code>, optimized
      * for NON EMPTY.
-     * <p>
-     * If <code>context == null</code> then
+     *
+     * <p>If <code>context == null</code> then
      * there is no context and all members are returned - then
      * its identical to {@link #getMemberChildren(Member)}.
      * If <code>context</code> is not null, the resulting members

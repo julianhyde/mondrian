@@ -1408,8 +1408,8 @@ public class RolapResult extends ResultBase {
      * of evaluating named sets.
      *
      * <p>A given set is only evaluated once each time a query is executed; the
-     * result is added to the {@link #namedSetEvaluators} cache on first execution
-     * and re-used.
+     * result is added to the {@link #namedSetEvaluators} cache on first
+     * execution and re-used.
      *
      * <p>Named sets are always evaluated in the context of the slicer.
      */
@@ -1522,8 +1522,8 @@ public class RolapResult extends ResultBase {
      * in a synchronized HashMaps in order to limit how many copies
      * need to be kept around.
      *
-     * <p>
-     * There are two implementations of the ValueFormatter interface:<ul>
+     *
+     * <p>There are two implementations of the ValueFormatter interface:<ul>
      * <li>{@link CellFormatterValueFormatter}, which formats using a
      * user-registered {@link CellFormatter}; and
      * <li> {@link FormatValueFormatter}, which takes the {@link Locale} object.
@@ -1777,8 +1777,8 @@ public class RolapResult extends ResultBase {
      * implementations for 0 through 4 axes that convert the Cell
      * position integer array into a long.
      *
-     * <p>
-     * It should be noted that there is an alternate approach.
+     *
+     * <p>It should be noted that there is an alternate approach.
      * As the <code>executeStripe</code>
      * method is recursively called, at each call it is known which
      * axis is being iterated across and it is known whether or

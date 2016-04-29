@@ -569,8 +569,9 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
         assertEquals(detailedBatch, compositeBatch.detailedBatch);
         assertEquals(2, compositeBatch.summaryBatches.size());
         assertTrue(compositeBatch.summaryBatches.contains(aggBatch1));
-        assertTrue(compositeBatch.summaryBatches.contains(
-            aggBatchAlreadyInComposite));
+        assertTrue(
+            compositeBatch.summaryBatches.contains(
+                aggBatchAlreadyInComposite));
     }
 
     public void
@@ -614,10 +615,12 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
             batchGroups.get(detailedBatch.batchKey);
         assertEquals(detailedBatch, compositeBatch.detailedBatch);
         assertEquals(2, compositeBatch.summaryBatches.size());
-        assertTrue(compositeBatch.summaryBatches.contains(
-            aggBatchToAddToDetailedBatch));
-        assertTrue(compositeBatch.summaryBatches.contains(
-            aggBatchAlreadyInComposite));
+        assertTrue(
+            compositeBatch.summaryBatches.contains(
+                aggBatchToAddToDetailedBatch));
+        assertTrue(
+            compositeBatch.summaryBatches.contains(
+                aggBatchAlreadyInComposite));
     }
 
     public void
@@ -673,12 +676,15 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
             batchGroups.get(detailedBatch.batchKey);
         assertEquals(detailedBatch, compositeBatch.detailedBatch);
         assertEquals(3, compositeBatch.summaryBatches.size());
-        assertTrue(compositeBatch.summaryBatches.contains(
-            aggBatchToAddToDetailedBatch));
-        assertTrue(compositeBatch.summaryBatches.contains(
-            aggBatchAlreadyInCompositeOfAgg));
-        assertTrue(compositeBatch.summaryBatches.contains(
-            aggBatchAlreadyInCompositeOfDetail));
+        assertTrue(
+            compositeBatch.summaryBatches.contains(
+                aggBatchToAddToDetailedBatch));
+        assertTrue(
+            compositeBatch.summaryBatches.contains(
+                aggBatchAlreadyInCompositeOfAgg));
+        assertTrue(
+            compositeBatch.summaryBatches.contains(
+                aggBatchAlreadyInCompositeOfDetail));
     }
 
     /**

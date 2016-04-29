@@ -370,7 +370,8 @@ public class Util extends XOMUtil {
      * <li><code>breakAtFirstNonNull</code> is set to true and
      * one of the tasks has returned a non null value.</li>
      * </ul>
-     * @param <E>
+     *
+     * @param <E> Task return type
      * @param tasks List of tasks to run.
      * @param executor The executor service to use.
      * @param breakAtFirstNonNull Whether or not to stop executing
@@ -597,10 +598,10 @@ public class Util extends XOMUtil {
     }
 
     /**
-     * Compares two names.  if case sensitive flag is false,
-     * apply finer grain difference with case sensitive
-     * Takes into account the {@link MondrianProperties#CaseSensitive case
-     * sensitive option}.
+     * Compares two names.  If case sensitive flag is false,
+     * apply finer grain difference with case sensitive.
+     * Takes into account the
+     * {@link MondrianProperties#CaseSensitive case sensitive option}.
      * Names must not be null.
      */
     public static int caseSensitiveCompareName(String s, String t) {
@@ -619,8 +620,8 @@ public class Util extends XOMUtil {
 
     /**
      * Compares two names.
-     * Takes into account the {@link MondrianProperties#CaseSensitive case
-     * sensitive option}.
+     * Takes into account the
+     * {@link MondrianProperties#CaseSensitive case sensitive option}.
      * Names must not be null.
      */
     public static int compareName(String s, String t) {
@@ -1911,7 +1912,8 @@ public class Util extends XOMUtil {
      *
      * @param iterable Iterable
      * @param conds Zero or more conditions
-     * @param <T>
+     * @param <T> Element type
+     *
      * @return Iterable that returns only members of underlying iterable for
      *     for which all conditions evaluate to true
      */
@@ -4160,7 +4162,7 @@ public class Util extends XOMUtil {
      * <p>The list is created via {@link Util#flatList(Object[])}.
      *
      * @see mondrian.olap.Util.Flat3List
-     * @param <T>
+     * @param <T> Element type
      */
     protected static class Flat2List<T>
         extends AbstractFlatList<T>
@@ -4270,7 +4272,7 @@ public class Util extends XOMUtil {
      * <p>The list is created via {@link Util#flatList(Object[])}.
      *
      * @see mondrian.olap.Util.Flat2List
-     * @param <T>
+     * @param <T> Element type
      */
     protected static class Flat3List<T>
         extends AbstractFlatList<T>

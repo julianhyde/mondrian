@@ -22,8 +22,8 @@ import java.io.*;
  * the Ant sub-process cannot be started of if it returns an exit code that
  * indicates error, the test fails.
  *
- * <p>
- * AntTestBase makes the following assumptions about its run-time environment:
+ * <p>AntTestBase makes the following assumptions about its run-time
+ * environment:
  * <ol>
  *   <li>Ant can be invoked by executing <code>ant</code>.  That is, ant is
  *       on the current PATH.</li>

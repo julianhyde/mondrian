@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
  * Implementation of {@link DBLoader} which gets its Tables by reading CSV files
  * using the {@link CsvLoader} class and is the loader use for CSV junit tests.
  *
- * <p>
- * <code>CsvDBLoader</code> requires that the CSV files have a specific format
- * as defined:
+ *
+ * <p><code>CsvDBLoader</code> requires that the CSV files have a specific
+ * format as defined:
  *
  * <blockquote><pre>
  * list_of_csv_files : (csv_file)+
@@ -56,8 +56,8 @@ import java.util.regex.Pattern;
  *  comment lines start with '#'
  *
  * </pre></blockquote>
- * <p>
- * See the src/test/resources/mondrian/rolap/aggmatcher/BUG_1541077.csv file
+ *
+ * <p>See the src/test/resources/mondrian/rolap/aggmatcher/BUG_1541077.csv file
  * for an example.
  *
  *

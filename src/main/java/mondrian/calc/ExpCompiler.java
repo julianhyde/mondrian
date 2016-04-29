@@ -357,8 +357,8 @@ public interface ExpCompiler {
 
         /**
          * Get the underlying Factory object.
-         * <p>
-         * This is for testing only.
+         *
+         * <p>This is for testing only.
          *
          * @return the <code>ExpCompiler.Factory</code> object
          */
@@ -368,8 +368,8 @@ public interface ExpCompiler {
 
         /**
          * Get the current override contect.
-         * <p>
-         * This is for testing only.
+         *
+         * <p>This is for testing only.
          *
          * @return the override context object.
          */
@@ -379,8 +379,8 @@ public interface ExpCompiler {
 
         /**
          * Restore the current overrides.
-         * <p>
-         * This is for testing only.
+         *
+         * <p>This is for testing only.
          *
          * @param context the current override object.
          */
@@ -396,8 +396,8 @@ public interface ExpCompiler {
          * <code>Properties</code>. This class captures and clears the current
          * values for both in the constructor and then replaces them
          * in the <code>restore</code> method.
-         * <p>
-         * This is for testing only.
+         *
+         * <p>This is for testing only.
          */
         public static class Context implements ObjectFactory.Context {
             private final String threadLocalClassName;

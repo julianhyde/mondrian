@@ -65,4 +65,3 @@ public class SoftSmartCache<K, V> extends SmartCacheImpl<K, V> {
 }
 
 // End SoftSmartCache.java
-

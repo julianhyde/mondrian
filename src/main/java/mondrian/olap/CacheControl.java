@@ -199,8 +199,9 @@ public interface CacheControl {
     /**
      * Creates a member set consisting of a range between two members.
      * The members must belong to the same level of the same hierarchy. One of
-     * the bounds may be null. (Similar to {@link #createMemberRegion(boolean,
-     * Member, boolean, Member, boolean)}, which see for examples.)
+     * the bounds may be null. (Similar to
+     * {@link #createMemberRegion(boolean, Member, boolean, Member, boolean)},
+     * which see for examples.)
      *
      * @param lowerInclusive whether the the range includes the lower bound;
      *   ignored if the lower bound is not specified

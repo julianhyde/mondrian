@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  * enough is present to allow for communication between Mondrian's
  * XMLA code and other code in the same JVM.
  * Currently it is used in both the CmdRunner and in XMLA JUnit tests.
- * <p>
- * If you need to add to this implementation, please do so.
+ *
+ * <p>If you need to add to this implementation, please do so.
  *
  * @author Richard M. Emberson
  */
@@ -128,8 +128,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
      */
     public PrintWriter getWriter() throws IOException {
         if (writer == null) {
-            writer = new PrintWriter(new OutputStreamWriter(
-                outputStream, charEncoding), true);
+            writer = new PrintWriter(
+                new OutputStreamWriter(outputStream, charEncoding), true);
         }
 
         return writer;

@@ -13,8 +13,8 @@ package mondrian.olap;
 import java.io.PrintWriter;
 
 /**
- * A <code>Result</code> is the result of running an MDX query. See {@link
- * Connection#execute}.
+ * A <code>Result</code> is the result of running an MDX query. See
+ * {@link Connection#execute}.
  *
  * @author jhyde
  * @since 6 August, 2001

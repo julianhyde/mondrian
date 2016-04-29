@@ -228,9 +228,9 @@ public final class NameResolver {
          *
          * <p>If {@code matchType} is {@link MatchType#EXACT}, effect is
          * identical to calling
-         * {@link #lookupChild(OlapElement, org.olap4j.mdx.IdentifierSegment)}.</p>
+         * {@link #lookupChild(OlapElement, org.olap4j.mdx.IdentifierSegment)}.
          *
-         * <p>Match type is ignored except when searching for members.</p>
+         * <p>Match type is ignored except when searching for members.
          *
          * @param parent Parent element
          * @param segment Name segment

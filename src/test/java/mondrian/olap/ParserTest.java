@@ -787,7 +787,8 @@ public class ParserTest extends FoodMartTestCase {
         // medium precedence operator (:) in CAST
         assertParseQuery(
             "select cast(a : b as string) on 0 from cube",
-            "select CAST((a : b) AS string) ON COLUMNS\n" + "from [cube]\n");
+            "select CAST((a : b) AS string) ON COLUMNS\n"
+            + "from [cube]\n");
 
         // high precedence operator (IS) in CAST
         assertParseQuery(

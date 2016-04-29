@@ -914,8 +914,7 @@ public class SegmentLoader {
     /**
      * Decides whether to use a sparse representation for this segment, using
      * the formula described
-     * {@link mondrian.olap.MondrianProperties#SparseSegmentCountThreshold
-     * here}.
+     * {@link mondrian.olap.MondrianProperties#SparseSegmentCountThreshold here}.
      *
      * @param possibleCount Number of values in the space.
      * @param actualCount   Actual number of values.

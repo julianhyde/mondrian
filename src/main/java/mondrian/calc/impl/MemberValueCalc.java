@@ -37,8 +37,7 @@ public class MemberValueCalc extends GenericCalc {
      * Creates a MemberArrayValueCalc.
      *
      * <p>Clients outside this package should use the
-     * {@link MemberValueCalc#create(mondrian.olap.Exp,
-     * mondrian.calc.MemberCalc[], boolean)}
+     * {@link MemberValueCalc#create(mondrian.olap.Exp, mondrian.calc.MemberCalc[], boolean)}
      * factory method.
      *
      * @param exp Expression

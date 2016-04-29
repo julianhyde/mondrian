@@ -30,8 +30,8 @@ import javax.sql.DataSource;
  *     and stores it in a member variable to ensure that it is not
  *     garbage-collected.
  * <li>The {@link AggTableManager} creates and registers
- *     {@link org.eigenbase.util.property.Trigger} objects, so that it is notified
- *     when properties pertinent to aggregate tables change.
+ *     {@link org.eigenbase.util.property.Trigger} objects, so that it is
+ *     notified when properties pertinent to aggregate tables change.
  * <li>The {@link mondrian.rolap.RolapSchema} calls {@link #initialize()},
  *     which scans the JDBC catalog and identifies aggregate tables.
  * <li>For each aggregate table, it creates an {@link AggStar} and calls
@@ -140,8 +140,8 @@ public class AggTableManager {
 
     /**
      * This method loads and/or reloads the aggregate tables.
-     * <p>
-     * NOTE: At this point all RolapStars have been made for this
+     *
+     * <p>NOTE: At this point all RolapStars have been made for this
      * schema (except for dynamically added cubes which I am going
      * to ignore for right now). So, All stars have their columns
      * and their BitKeys can be generated.

@@ -64,7 +64,7 @@ public interface Exp {
      * Converts this expression into an a tree of expressions which can be
      * efficiently evaluated.
      *
-     * @param compiler
+     * @param compiler Compiler
      * @return A compiled expression
      */
     Calc accept(ExpCompiler compiler);

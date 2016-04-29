@@ -21,8 +21,9 @@ import javax.sql.DataSource;
  * current connection. The default implementation of that method looks first at
  * the "mondrian.statistics.providers.DATABASE" property (substituting the
  * current database name, e.g. MYSQL or ORACLE, for <i>DATABASE</i>), then at
- * the {@link mondrian.olap.MondrianProperties#StatisticsProviders "mondrian.statistics.providers"}
- * property.</p>
+ * the
+ * {@link mondrian.olap.MondrianProperties#StatisticsProviders "mondrian.statistics.providers"}
+ * property.
  *
  * @see mondrian.spi.impl.JdbcStatisticsProvider
  * @see mondrian.spi.impl.SqlStatisticsProvider

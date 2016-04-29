@@ -24,7 +24,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Utility class used by implementations of {@link mondrian.rolap.sql.SqlConstraint},
+ * Utility class used by implementations of
+ * {@link mondrian.rolap.sql.SqlConstraint},
  * used to generate constraints into {@link mondrian.rolap.sql.SqlQuery}.
  *
  * @author av

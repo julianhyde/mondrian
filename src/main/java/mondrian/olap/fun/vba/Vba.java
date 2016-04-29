@@ -2066,8 +2066,7 @@ public class Vba {
     /**
      * Returns an instance of {@link DateFormatSymbols} for the current locale.
      *
-     * <p>
-     * Todo: inherit locale from connection.
+     * <p>Todo: inherit locale from connection.
      *
      * @return a DateFormatSymbols object
      */

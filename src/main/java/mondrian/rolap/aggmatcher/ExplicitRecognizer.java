@@ -69,8 +69,8 @@ class ExplicitRecognizer extends Recognizer {
 
     /**
      * Make the measures for this aggregate table.
-     * <p>
-     * First, iterate through all of the columns in the table.
+     *
+     * <p>First, iterate through all of the columns in the table.
      * For each column, iterate through all of the tableDef measures, the
      * explicit definitions of a measure.
      * If the table's column name matches the column name in the measure
@@ -80,7 +80,6 @@ class ExplicitRecognizer extends Recognizer {
      * see if the tableDef has a foreign key defined with the same name.
      * If so, then, for free, we can make a measure for the aggregate using
      * its foreign key.
-     * <p>
      *
      * @return number of measures created.
      */
@@ -170,8 +169,8 @@ class ExplicitRecognizer extends Recognizer {
      * Make a measure. This makes a measure usage using the Aggregator found in
      * the RolapStar.Measure associated with the ExplicitRules.TableDef.Measure.
      *
-     * @param measure
-     * @param aggColumn
+     * @param measure Measure
+     * @param aggColumn Aggregate column
      */
     protected void makeMeasure(
         final ExplicitRules.TableDef.Measure measure,

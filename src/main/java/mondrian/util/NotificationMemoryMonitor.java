@@ -17,16 +17,16 @@ import javax.management.*;
 /**
  * The <code>NotificationMemoryMonitor</code> class uses the Java5
  * memory management system to detect system low memory events.
- * <p>
- * This code is loosely based on the code taken from The Java
+ *
+ * <p>This code is loosely based on the code taken from The Java
  * Specialists' Newsletter,
  * <a href="http://www.javaspecialists.co.za/archive/newsletter.do?issue=092"
  *  >issue 92</a> authored by Dr. Heinz M. Kabutz.
  * As a note, his on-line newletters are a good source of Java information,
  * take a look.
- * <p>
- *  For more information one should review the Java5 classes in
- *  java.lang.management.
+ *
+ * <p>For more information one should review the Java5 classes in
+ * java.lang.management.
  *
  *
  * @author <a>Richard M. Emberson</a>
@@ -70,8 +70,8 @@ public class NotificationMemoryMonitor extends AbstractMemoryMonitor {
          * registered with the JVM that the JVM memory threshold
          * has been exceeded.
          *
-         * @param notification
-         * @param unused
+         * @param notification Notification
+         * @param unused Unused
          */
         public void handleNotification(
             final Notification notification,

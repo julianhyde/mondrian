@@ -96,18 +96,18 @@ import java.util.concurrent.*;
  * <p>11. Remove Segment.setData and instead split out subclass
  * SegmentWithData. Now segment is immutable. You don't have to wait for its
  * state to change. You wait for a Future&lt;SegmentWithData&gt; to become
- * ready.</p>
+ * ready.
  *
  * <p>12. Remove methods: RolapCube.checkAggregateModifications,
  * RolapStar.checkAggregateModifications,
  * RolapSchema.checkAggregateModifications,
  * RolapStar.pushAggregateModificationsToGlobalCache,
  * RolapSchema.pushAggregateModificationsToGlobalCache,
- * RolapCube.pushAggregateModificationsToGlobalCache.</p>
+ * RolapCube.pushAggregateModificationsToGlobalCache.
  *
- * <p>13. Add new implementations of Future: CompletedFuture and SlotFuture.</p>
+ * <p>13. Add new implementations of Future: CompletedFuture and SlotFuture.
  *
- * <p>14. Remove methods:<p>
+ * <p>14. Remove methods:
  * <ul>
  *
  * <li>Remove {@link SegmentLoader}.loadSegmentsFromCache - creates a

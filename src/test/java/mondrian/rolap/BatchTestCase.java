@@ -1298,4 +1298,3 @@ public class BatchTestCase extends FoodMartTestCase {
 }
 
 // End BatchTestCase.java
-

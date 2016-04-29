@@ -26,24 +26,25 @@ import java.util.List;
  * names of the columns (by default this is not assumed). Lastly, this supports
  * only the comment character '#' and only at the start of a line.  This comment
  * support could be generalized but that task is left to others.
- * <p>
- * To use this class one gives it a <code>java.io.Reader</code> and then calls
- * the <code>hasNextLine</code> and <code>nextLine</code> methods much like a
- * <code>java.io.Iterator</code> but in this case the <code>nextLine</code>
- * method returns a <code>String[]</code> holding the, possibly null, values of
- * the parsed next line. The size of the <code>String[]</code> is the size of
- * the first line parsed that contains the separator character (comment lines
- * are not used). If the number of separator characters in subsequent lines is
- * less than the initial numbers, the trailing entries in the
- * <code>String[]</code> returned by the <code>nextLine</code> method are null.
- * On the other hand, if there are more separator characters in a subsequent
- * line, the world ends with an <code>IndexOutOfBoundsException</code> (sorry,
- * making this more graceful is also a task for others). When one is through
- * using a <code>CsvLoader</code> instance one should call the close method
- * (which closes the <code>Reader</code>).
- * <p>
- * All well and good, but there are two additional methods that can be used to
- * extend the capabilities of this CSV parser, the <code>nextSet</code> and
+ *
+ * <p>To use this class one gives it a <code>java.io.Reader</code> and then
+ * calls the <code>hasNextLine</code> and <code>nextLine</code> methods much
+ * like a <code>java.io.Iterator</code> but in this case the
+ * <code>nextLine</code> method returns a <code>String[]</code> holding the,
+ * possibly null, values of the parsed next line. The size of the
+ * <code>String[]</code> is the size of the first line parsed that contains the
+ * separator character (comment lines are not used). If the number of separator
+ * characters in subsequent lines is less than the initial numbers, the trailing
+ * entries in the <code>String[]</code> returned by the <code>nextLine</code>
+ * method are null.  On the other hand, if there are more separator characters
+ * in a subsequent line, the world ends with an
+ * <code>IndexOutOfBoundsException</code> (sorry, making this more graceful is
+ * also a task for others). When one is through using a <code>CsvLoader</code>
+ * instance one should call the close method (which closes the
+ * <code>Reader</code>).
+ *
+ * <p>All well and good, but there are two additional methods that can be used
+ * to extend the capabilities of this CSV parser, the <code>nextSet</code> and
  * <code>putBack</code> methods. With these methods one can, basically, reset
  * the <code>CsvLoader</code> to a state where it does not yet know how many
  * separator characters to expect per line (while stay at the current line in
@@ -52,8 +53,8 @@ import java.util.List;
  * the last line returned back into loader. These methods are used in
  * <code>CsvDBLoader</code> allowing one to have multiple sets of CSV rows with
  * differing number of values per sets.
- * <p>
- * There are six special start/end characters when seen prevent the
+ *
+ * <p>There are six special start/end characters when seen prevent the
  * recognition of both the separator character and new lines:
  *
  * <blockquote><pre>
@@ -65,8 +66,8 @@ import java.util.List;
  *    chevrons:      &lt; &gt;
  * </pre></blockquote>
  *
- * <p>
- * Its certainly not the penultimate such parser but its hoped that its
+ *
+ * <p>Its certainly not the penultimate such parser but its hoped that its
  * adequate.
  *
  * @author <a>Richard M. Emberson</a>

@@ -32,18 +32,18 @@ import java.util.NoSuchElementException;
  * an array of Entry objects, the Entry objects themselves, and the
  * key and value objects. An ObjectPool has simply an array of
  * objects and the objects themselves which server as both key and value.
- * <p>
- * This is like the String <code>intern</code> method, but works for
+ *
+ * <p>This is like the String <code>intern</code> method, but works for
  * an Object type and whereas the String <code>intern</code> method is global
  * an ObjectPool can be used within a context and then garbage collected.
  * Objects can not removed from an ObjectPool except by calling the
  * <code>clear</code> method which removes all objects.
- * <p>
- * Just as with a HashSet's key objects, objects to be placed into
+ *
+ * <p>Just as with a HashSet's key objects, objects to be placed into
  * an ObjectPool must implement the <code>equals</code> and
  * <code>hashCode</code> methods.
- * <p>
- * This implementation is NOT thread safe.
+ *
+ * <p>This implementation is NOT thread safe.
  *
  * @author Richard Emberson
  */

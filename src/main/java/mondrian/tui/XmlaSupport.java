@@ -1245,7 +1245,8 @@ public class XmlaSupport {
 
 
     /**
-     * See next method for JavaDoc {@link #validateEmbeddedSchema(org.w3c.dom.Document, String, String)}.
+     * See next method for JavaDoc
+     * {@link #validateEmbeddedSchema(org.w3c.dom.Document, String, String)}.
      *
      */
     public static boolean validateEmbeddedSchema(
@@ -1272,11 +1273,11 @@ public class XmlaSupport {
      * provided to extract the schema part of the Document and another
      * xsl transform is provided to extract the content part and then
      * the content is validated against the schema.
-     * <p>
-     * If the content is valid, then nothing happens, but if the content
+     *
+     * <p>If the content is valid, then nothing happens, but if the content
      * is not valid an execption is thrown (currently a RuntimeException).
-     * <p>
-     * When Mondrian moves to Java 5 or includes the JAXP 1.3 jar, then
+     *
+     * <p>When Mondrian moves to Java 5 or includes the JAXP 1.3 jar, then
      * there is a utility in JAXP that does something like this (but allows
      * for multiple schema/content parts).
      *

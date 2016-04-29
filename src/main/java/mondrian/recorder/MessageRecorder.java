@@ -126,7 +126,7 @@ public interface MessageRecorder {
     /**
      * Add the name parameter to the current context.
      *
-     * @param name
+     * @param name Name
      */
     void pushContextName(final String name);
 

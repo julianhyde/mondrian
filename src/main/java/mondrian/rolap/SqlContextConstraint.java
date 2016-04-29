@@ -384,4 +384,3 @@ public class SqlContextConstraint
 }
 
 // End SqlContextConstraint.java
-

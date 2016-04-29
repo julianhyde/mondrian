@@ -303,8 +303,8 @@ public class EnumeratedValues<V extends EnumeratedValues.Value>
     }
 
     /**
-     * <code>BasicValue</code> is an obvious implementation of {@link
-     * EnumeratedValues.Value}.
+     * <code>BasicValue</code> is an obvious implementation of
+     * {@link EnumeratedValues.Value}.
      */
     public static class BasicValue implements Value {
         public final String name;

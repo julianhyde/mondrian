@@ -160,7 +160,7 @@ public class ExplicitRules {
         /**
          * Add an exclude rule.
          *
-         * @param exclude
+         * @param exclude Exclude
          */
         public void addExclude(final ExplicitRules.Exclude exclude) {
             if (excludes == Collections.EMPTY_LIST) {
@@ -172,7 +172,7 @@ public class ExplicitRules {
         /**
          * Add a name or pattern (table) rule.
          *
-         * @param tableDef
+         * @param tableDef Table definition
          */
         public void addTableDef(final ExplicitRules.TableDef tableDef) {
             if (tableDefs == Collections.EMPTY_LIST) {
@@ -507,8 +507,8 @@ RME TODO
          * the NameTableDef and PatternTableDef subclasses of TableDef (it
          * extracts information common to both).
          *
-         * @param tableDef
-         * @param aggTable
+         * @param tableDef Table definition
+         * @param aggTable Aggregate table definition
          */
         private static void add(
             final ExplicitRules.TableDef tableDef,
@@ -926,7 +926,7 @@ RME TODO
         /**
          * Set the name of the fact count column.
          *
-         * @param factCountName
+         * @param factCountName Fact count column name
          */
         protected void setFactCountName(final String factCountName) {
             this.factCountName = factCountName;
@@ -1294,7 +1294,7 @@ RME TODO
         /**
          * Validate name and base class.
          *
-         * @param msgRecorder
+         * @param msgRecorder Message recorder
          */
         public void validate(final MessageRecorder msgRecorder) {
             msgRecorder.pushContextName("NameTableDef");
@@ -1383,7 +1383,7 @@ RME TODO
         /**
          * Add an Exclude.
          *
-         * @param exclude
+         * @param exclude Exclude
          */
         private void add(final Exclude exclude) {
             if (this.excludes == Collections.EMPTY_LIST) {
@@ -1456,9 +1456,9 @@ RME TODO
      * Helper method used to determine if an attribute with name attrName has a
      * non-empty value.
      *
-     * @param msgRecorder
-     * @param attrValue
-     * @param attrName
+     * @param msgRecorder Message recorder
+     * @param attrValue Attribute value
+     * @param attrName Attribute name
      */
     private static void checkAttributeString(
         final MessageRecorder msgRecorder,
@@ -1466,13 +1466,15 @@ RME TODO
         final String attrName)
     {
         if (attrValue == null) {
-            msgRecorder.reportError(mres.NullAttributeString.str(
-                msgRecorder.getContext(),
-                attrName));
+            msgRecorder.reportError(
+                mres.NullAttributeString.str(
+                    msgRecorder.getContext(),
+                    attrName));
         } else if (attrValue.length() == 0) {
-            msgRecorder.reportError(mres.EmptyAttributeString.str(
-                msgRecorder.getContext(),
-                attrName));
+            msgRecorder.reportError(
+                mres.EmptyAttributeString.str(
+                    msgRecorder.getContext(),
+                    attrName));
         }
     }
 

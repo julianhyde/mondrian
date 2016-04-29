@@ -17,23 +17,23 @@ import mondrian.olap.Axis;
  * ordinals and position arrays. There are particular implementations for
  * the most likely cases where the number of axes is 1, 2 and 3
  * as well as a general implementation.
- * <p>
- * Suppose the result is 4 x 3 x 2, then modulo = {1, 4, 12, 24}.
  *
- * <p>
- * Then the ordinal of cell (3, 2, 1)
- * <p><blockquote><pre>
+ * <p>Suppose the result is 4 x 3 x 2, then modulo = {1, 4, 12, 24}.
+ *
+ *
+ * <p>Then the ordinal of cell (3, 2, 1)
+ * <blockquote><pre>
  *  = (modulo[0] * 3) + (modulo[1] * 2) + (modulo[2] * 1)
  *  = (1 * 3) + (4 * 2) + (12 * 1)
  *  = 23
- * </pre></blockquote><p>
- * <p>
- * Reverse calculation:
- * <p><blockquote><pre>
+ * </pre></blockquote>
+ *
+ * <p>Reverse calculation:
+ * <blockquote><pre>
  * p[0] = (23 % modulo[1]) / modulo[0] = (23 % 4) / 1 = 3
  * p[1] = (23 % modulo[2]) / modulo[1] = (23 % 12) / 4 = 2
  * p[2] = (23 % modulo[3]) / modulo[2] = (23 % 24) / 12 = 1
- * </pre></blockquote><p>
+ * </pre></blockquote>
  *
  * @author jhyde
  */

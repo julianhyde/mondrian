@@ -65,8 +65,9 @@ public class QueryTag extends BodyTagSupport {
     }
 
     /** Sets string attribute <code>name</code>, which identifies this query
-     * within its page. The {@link TransformTag#setQuery &lt;transform
-     * query&gt;} attribute uses this. */
+     * within its page. The
+     * {@link TransformTag#setQuery &lt;transform query&gt;}
+     * attribute uses this. */
     public void setName(String newName) {
         name = newName;
     }

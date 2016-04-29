@@ -3,9 +3,9 @@ package mondrian.util;
 /**
  * Encodes and decodes to and from Base64 notation.
  *
- * <p>
- * Change Log:
- * </p>
+ *
+ * <p>Change Log:
+ *
  * <ul>
  *  <li>v2.1 - Cleaned up javadoc comments and unused variables and methods. Added
  *   some convenience methods for reading and writing to and from files.</li>
@@ -35,8 +35,7 @@ package mondrian.util;
  *  <li>v1.3.3 - Fixed I/O streams which were totally messed up.</li>
  * </ul>
  *
- * <p>
- * I am placing this code in the Public Domain. Do with it as you will.
+ * <p>I am placing this code in the Public Domain. Do with it as you will.
  * This software comes with no guarantees or warranties but with
  * plenty of well-wishing instead!
  * Please visit <a href="http://iharder.net/base64">http://iharder.net/base64</a>
@@ -291,16 +290,16 @@ public class Base64
      * version of that serialized object. If the object
      * cannot be serialized or there is another error,
      * the method will return <tt>null</tt>.
-     * <p>
-     * Valid options:<pre>
+     *
+     * <p>Valid options:<pre>
      *   GZIP: gzip-compresses object before encoding it.
      *   DONT_BREAK_LINES: don't break lines at 76 characters
      *     <i>Note: Technically, this makes your encoding non-compliant.</i>
      * </pre>
-     * <p>
-     * Example: <code>encodeObject( myObj, Base64.GZIP )</code> or
-     * <p>
-     * Example: <code>encodeObject( myObj, Base64.GZIP | Base64.DONT_BREAK_LINES )</code>
+     *
+     * <p>Example: <code>encodeObject( myObj, Base64.GZIP )</code> or
+     *
+     * <p>Example: <code>encodeObject( myObj, Base64.GZIP | Base64.DONT_BREAK_LINES )</code>
      *
      * @param serializableObject The object to encode
      * @param options Specified options
@@ -381,16 +380,16 @@ public class Base64
 
     /**
      * Encodes a byte array into Base64 notation.
-     * <p>
-     * Valid options:<pre>
+     *
+     * <p>Valid options:<pre>
      *   GZIP: gzip-compresses object before encoding it.
      *   DONT_BREAK_LINES: don't break lines at 76 characters
      *     <i>Note: Technically, this makes your encoding non-compliant.</i>
      * </pre>
-     * <p>
-     * Example: <code>encodeBytes( myData, Base64.GZIP )</code> or
-     * <p>
-     * Example: <code>encodeBytes( myData, Base64.GZIP | Base64.DONT_BREAK_LINES )</code>
+     *
+     * <p>Example: <code>encodeBytes( myData, Base64.GZIP )</code> or
+     *
+     * <p>Example: <code>encodeBytes( myData, Base64.GZIP | Base64.DONT_BREAK_LINES )</code>
      *
      *
      * @param source The data to convert
@@ -423,16 +422,16 @@ public class Base64
 
     /**
      * Encodes a byte array into Base64 notation.
-     * <p>
-     * Valid options:<pre>
+     *
+     * <p>Valid options:<pre>
      *   GZIP: gzip-compresses object before encoding it.
      *   DONT_BREAK_LINES: don't break lines at 76 characters
      *     <i>Note: Technically, this makes your encoding non-compliant.</i>
      * </pre>
-     * <p>
-     * Example: <code>encodeBytes( myData, Base64.GZIP )</code> or
-     * <p>
-     * Example: <code>encodeBytes( myData, Base64.GZIP | Base64.DONT_BREAK_LINES )</code>
+     *
+     * <p>Example: <code>encodeBytes( myData, Base64.GZIP )</code> or
+     *
+     * <p>Example: <code>encodeBytes( myData, Base64.GZIP | Base64.DONT_BREAK_LINES )</code>
      *
      *
      * @param source The data to convert
@@ -1027,15 +1026,15 @@ public class Base64
         /**
          * Constructs a {@link Base64.InputStream} in
          * either ENCODE or DECODE mode.
-         * <p>
-         * Valid options:<pre>
+         *
+         * <p>Valid options:<pre>
          *   ENCODE or DECODE: Encode or Decode as data is read.
          *   DONT_BREAK_LINES: don't break lines at 76 characters
          *     (only meaningful when encoding)
          *     <i>Note: Technically, this makes your encoding non-compliant.</i>
          * </pre>
-         * <p>
-         * Example: <code>new Base64.InputStream( in, Base64.DECODE )</code>
+         *
+         * <p>Example: <code>new Base64.InputStream( in, Base64.DECODE )</code>
          *
          *
          * @param in the <tt>java.io.InputStream</tt> from which to read data.
@@ -1245,7 +1244,8 @@ public class Base64
         /**
          * Constructs a {@link Base64.OutputStream} in ENCODE mode.
          *
-         * @param out the <tt>java.io.OutputStream</tt> to which data will be written.
+         * @param out the <tt>java.io.OutputStream</tt> to which data will be
+         *            written.
          * @since 1.3
          */
         public OutputStream( java.io.OutputStream out )
@@ -1257,17 +1257,18 @@ public class Base64
         /**
          * Constructs a {@link Base64.OutputStream} in
          * either ENCODE or DECODE mode.
-         * <p>
-         * Valid options:<pre>
+         *
+         * <p>Valid options:<pre>
          *   ENCODE or DECODE: Encode or Decode as data is read.
          *   DONT_BREAK_LINES: don't break lines at 76 characters
          *     (only meaningful when encoding)
          *     <i>Note: Technically, this makes your encoding non-compliant.</i>
          * </pre>
-         * <p>
-         * Example: <code>new Base64.OutputStream( out, Base64.ENCODE )</code>
          *
-         * @param out the <tt>java.io.OutputStream</tt> to which data will be written.
+         * <p>Example: <code>new Base64.OutputStream( out, Base64.ENCODE )</code>
+         *
+         * @param out the <tt>java.io.OutputStream</tt> to which data will be
+         *            written.
          * @param options Specified options.
          * @see Base64#ENCODE
          * @see Base64#DECODE

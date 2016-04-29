@@ -43,8 +43,9 @@ import java.util.*;
  * <p>Segments are pinned during the evaluation of a single MDX query. The query
  * evaluates the expressions twice. The first pass, it finds which cell values
  * it needs, pins the segments containing the ones which are already present
- * (one pin-count for each cell value used), and builds a {@link CellRequest
- * cell request} for those which are not present. It executes the cell request
+ * (one pin-count for each cell value used), and builds a
+ * {@link CellRequest cell request} for those which are not present.
+ * It executes the cell request
  * to bring the required cell values into the cache, again, pinned. Then it
  * evalutes the query a second time, knowing that all cell values are
  * available. Finally, it releases the pins.</p>

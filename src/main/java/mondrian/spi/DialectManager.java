@@ -255,7 +255,8 @@ public abstract class DialectManager {
         }
 
         /**
-         * Implements {@link DialectManager#createDialect(javax.sql.DataSource,java.sql.Connection,String)}.
+         * Implements
+         * {@link DialectManager#createDialect(javax.sql.DataSource,java.sql.Connection,String)}.
          *
          * <p>The method synchronizes on a singleton class, so prevents two
          * threads from accessing any dialect factory simultaneously.

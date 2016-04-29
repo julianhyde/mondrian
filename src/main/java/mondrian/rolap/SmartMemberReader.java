@@ -27,15 +27,15 @@ import java.util.*;
  *
  * <p>Synchronization: the MemberReader <code>source</code> must be called
  * from synchronized(this) context - it does not synchronize itself (probably
- * it should).</p>
+ * it should).
  *
  * <p>Constraints: Member.Children and Level.Members may be constrained by a
  * SqlConstraint object. In this case a subset of all members is returned.
  * These subsets are cached too and the SqlConstraint is part of the cache key.
- * This is used in NON EMPTY context.</p>
+ * This is used in NON EMPTY context.
  *
- * <p>Uniqueness. We need to ensure that there is never more than one {@link
- * RolapMember} object representing the same member.</p>
+ * <p>Uniqueness. We need to ensure that there is never more than one
+ * {@link RolapMember} object representing the same member.
  *
  * @author jhyde
  * @since 21 December, 2001

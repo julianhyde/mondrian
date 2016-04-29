@@ -898,9 +898,9 @@ public class Format {
      * to format other kinds of values give a runtime error.)
      *
      * <p>In a typical use of this class, a format string such as "m/d/yy" is
-     * parsed into DateFormat objects for "m", "d", and "yy", and {@link
-     * LiteralFormat} objects for "/".  A {@link Format.CompoundFormat} object
-     * is created to bind them together.
+     * parsed into DateFormat objects for "m", "d", and "yy", and
+     * {@link LiteralFormat} objects for "/".  A {@link Format.CompoundFormat}
+     * object is created to bind them together.
      */
     static class DateFormat extends FallbackFormat
     {

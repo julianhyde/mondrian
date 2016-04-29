@@ -35,11 +35,11 @@ import java.util.*;
  *
  * <p> The {@link Date} parameters in this API -- <code>begin</code> and
  * <code>end</code>, the <code>time</code> parameter to {@link #createOnce},
- * and the <code>earliestDate</code> parameter and value returned from {@link
- * #nextOccurrence} -- always represent a point in time (GMT), not a local
- * time.  If a schedule is to start at 12 noon Tokyo time, April 1st, 2002, it
- * is the application's reponsibility to convert this into a UTC {@link Date}
- * value.
+ * and the <code>earliestDate</code> parameter and value returned from
+ * {@link #nextOccurrence} -- always represent a point in time (GMT),
+ * not a local time.  If a schedule is to start at 12 noon Tokyo time,
+ * April 1st, 2002, it is the application's reponsibility to convert
+ * this into a UTC {@link Date} value.
  *
  * @author jhyde
  * @since May 7, 2002

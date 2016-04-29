@@ -181,9 +181,9 @@ public class UnaryTupleList
     }
 
     /**
-     * Implementation of {@link mondrian.calc.TupleIterator} for {@link UnaryTupleList}.
-     * Based upon AbstractList.Itr, but with concurrent modification checking
-     * removed.
+     * Implementation of {@link mondrian.calc.TupleIterator} for
+     * {@link UnaryTupleList}.  Based upon AbstractList.Itr, but with
+     * concurrent modification checking removed.
      */
     private class UnaryIterator implements TupleIterator {
         /**

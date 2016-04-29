@@ -35,9 +35,9 @@ public class ParallelTest extends FoodMartTestCase {
      * Tests several threads, each of which is creating connections and
      * periodically flushing the schema cache.
      *
-     * @param count
-     * @param cycleCount
-     * @param flushInverseFrequency
+     * @param count Count
+     * @param cycleCount Cycle count
+     * @param flushInverseFrequency Flush inverse frequency
      */
     private void checkSchemaFlush(
         final int count,

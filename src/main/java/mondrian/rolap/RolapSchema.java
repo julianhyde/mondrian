@@ -2343,7 +2343,8 @@ public class RolapSchema extends OlapElementBase implements Schema {
         }
     }
 
-    /** experimental - alternative to {@link mondrian.rolap.RolapSchema.PhysCalcColumn} */
+    /** experimental - alternative to
+     * {@link mondrian.rolap.RolapSchema.PhysCalcColumn} */
     public static final class PhysCalcExpr extends PhysExpr {
         final List<RolapSchema.PhysExpr> list;
         private final String sql;

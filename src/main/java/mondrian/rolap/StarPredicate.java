@@ -63,8 +63,8 @@ public interface StarPredicate {
     /**
      * Evaluates a constraint against a list of values.
      *
-     * <p>If one of the values is {@link #WILDCARD}, returns true if constraint is
-     * true for all possible values of that column.
+     * <p>If one of the values is {@link #WILDCARD}, returns true if constraint
+     * is true for all possible values of that column.
      *
      * @param valueList List of values, one for each constrained column
      * @return Whether constraint holds for given set of values

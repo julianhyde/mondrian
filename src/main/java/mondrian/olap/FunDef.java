@@ -54,8 +54,8 @@ public interface FunDef {
 
     /**
      * Creates an expression which represents a call to this function with
-     * a given set of arguments. The result is usually a {@link ResolvedFunCall} but
-     * not always.
+     * a given set of arguments. The result is usually a {@link ResolvedFunCall}
+     * but not always.
      */
     Exp createCall(Validator validator, Exp[] args);
 

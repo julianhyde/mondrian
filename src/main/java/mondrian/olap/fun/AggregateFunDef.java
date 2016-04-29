@@ -354,9 +354,7 @@ public class AggregateFunDef extends AbstractAggregateFunDef {
          * In distinct Count aggregation, if tuple list is a result
          * m.children * n.children then it can be optimized to m * n
          *
-         * <p>
-         * E.g.
-         * List consist of:
+         * <p>E.g. List consist of:
          *  (Gender.[F], [Store].[USA]),
          *  (Gender.[F], [Store].[USA].[OR]),
          *  (Gender.[F], [Store].[USA].[CA]),

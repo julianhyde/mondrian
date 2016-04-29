@@ -626,8 +626,9 @@ public class AggGen {
 
             pw.print(prefix);
             pw.print(
-                agg.getExpression(sqlQuery.getDialect().quoteIdentifier(
-                    factTableName, c.getName())));
+                agg.getExpression(
+                    sqlQuery.getDialect().quoteIdentifier(
+                        factTableName, c.getName())));
             pw.print(" AS ");
             pw.print(sqlQuery.getDialect().quoteIdentifier(c.getName()));
             pw.println(',');
@@ -773,8 +774,9 @@ public class AggGen {
 
             pw.print(prefix);
             pw.print(
-                agg.getExpression(sqlQuery.getDialect().quoteIdentifier(
-                    t.getName(), c.getName())));
+                agg.getExpression(
+                    sqlQuery.getDialect().quoteIdentifier(
+                        t.getName(), c.getName())));
             pw.print(" AS ");
             pw.print(sqlQuery.getDialect().quoteIdentifier(c.getName()));
             pw.println(',');

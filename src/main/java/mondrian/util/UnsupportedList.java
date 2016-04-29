@@ -26,8 +26,8 @@ import java.util.*;
  * their <code>remove</code>, <code>add</code> and <code>set</code>
  * methods throw the
  * UnsupportedOperationException exception.
- * <p>
- * This class can be used for List implementations that only implement
+ *
+ * <p>This class can be used for List implementations that only implement
  * a subset of all the methods.
  *
  * @author Richard Emberson
@@ -272,4 +272,3 @@ public abstract class UnsupportedList<T> implements List<T> {
 }
 
 // End UnsupportedList.java
-

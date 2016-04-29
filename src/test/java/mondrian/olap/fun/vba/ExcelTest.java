@@ -14,8 +14,8 @@ import junit.framework.TestCase;
 /**
  * Unit tests for implementations of Excel worksheet functions.
  *
- * <p>Every function defined in {@link Excel} must have a test here. In addition,
- * there should be MDX tests (usually in
+ * <p>Every function defined in {@link Excel} must have a test
+ * here. In addition, there should be MDX tests (usually in
  * {@link mondrian.olap.fun.FunctionTest}) if handling of argument types,
  * result types, operator overloading, exception handling or null handling
  * are non-trivial.

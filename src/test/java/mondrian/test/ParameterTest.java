@@ -47,9 +47,10 @@ public class ParameterTest extends FoodMartTestCase {
                 "expected exception, trying to set "
                 + "non-overrideable property '" + propName + "'");
         } catch (Exception e) {
-            assertTrue(e.getMessage().indexOf(
-                "Parameter '" + propName + "' (defined at '"
-                + scope + "' scope) is not modifiable") >= 0);
+            assertTrue(
+                e.getMessage().indexOf(
+                    "Parameter '" + propName + "' (defined at '"
+                    + scope + "' scope) is not modifiable") >= 0);
         }
     }
 
@@ -1198,4 +1199,3 @@ public class ParameterTest extends FoodMartTestCase {
 }
 
 // End ParameterTest.java
-

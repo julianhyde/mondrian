@@ -893,9 +893,10 @@ public class SegmentBuilderTest extends BatchTestCase {
                 }
             }
         }
-        assertFalse(String.format(
-            "SegmentMap is empty. No segmentIds matched test parameters. "
-            + "Full segment cache: %s", headers), testMap.isEmpty());
+        assertFalse(
+            String.format(
+                "SegmentMap is empty. No segmentIds matched test parameters. "
+                + "Full segment cache: %s", headers), testMap.isEmpty());
         return testMap;
     }
 

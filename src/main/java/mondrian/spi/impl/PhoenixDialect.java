@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of {@link mondrian.spi.Dialect} for the Phoenix JDBC driver. Phoenix provides a SQL API on top of
- * HBase that targets low-latency queries without map-reduce.
+ * Implementation of {@link mondrian.spi.Dialect} for the Phoenix JDBC
+ * driver. Phoenix provides a SQL API on top of HBase that targets
+ * low-latency queries without map-reduce.
  *
  * @author Benny Chow
  * @since Oct 31, 2013

@@ -268,7 +268,7 @@ public class DefaultRules {
     /**
      * Sets the name (tag) of this rule.
      *
-     * @param tag
+     * @param tag Tag
      */
     private void setTag(final String tag) {
         this.tag = tag;
@@ -295,7 +295,7 @@ public class DefaultRules {
      * Returns the {@link mondrian.rolap.aggmatcher.DefaultDef.AggRule} whose
      * tag equals the parameter tag, or null if not found.
      *
-     * @param tag
+     * @param tag Tag
      * @return the AggRule with tag value equal to tag parameter, or null.
      */
     public DefaultDef.AggRule getAggRule(final String tag) {
@@ -306,7 +306,7 @@ public class DefaultRules {
      * Gets the {@link mondrian.rolap.aggmatcher.Recognizer.Matcher} for this
      * tableName.
      *
-     * @param tableName
+     * @param tableName Table name
      */
     public Recognizer.Matcher getTableMatcher(final String tableName) {
         Recognizer.Matcher matcher = factToPattern.get(tableName);

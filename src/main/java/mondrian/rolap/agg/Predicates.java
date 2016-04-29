@@ -172,8 +172,8 @@ public abstract class Predicates
     /**
      * Generates a predicate that a column matches one of a list of values.
      *
-     * <p>
-     * Several possible outputs, depending upon whether the there are
+     *
+     * <p>Several possible outputs, depending upon whether the there are
      * nulls:<ul>
      *
      * <li>One not-null value: <code>foo.bar = 1</code>

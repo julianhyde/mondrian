@@ -86,14 +86,14 @@ class DefaultRecognizer extends Recognizer {
 
     /**
      * Create measures for an aggregate table.
-     * <p>
-     * First, iterator through all fact table measure usages.
+     *
+     * <p>First, iterator through all fact table measure usages.
      * Create a Matcher for each such usage.
      * Iterate through all aggregate table columns.
      * For each column that matches create a measure usage.
-     * <p>
-     * Per fact table measure usage, at most only one aggregate measure should
-     * be created.
+     *
+     * <p>Per fact table measure usage, at most only one aggregate measure
+     * should be created.
      *
      * @return number of measures created.
      */

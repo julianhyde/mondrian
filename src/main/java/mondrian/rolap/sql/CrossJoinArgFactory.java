@@ -388,8 +388,9 @@ public class CrossJoinArgFactory {
      * Checks for a set constructor, <code>{member1, member2,
      * &#46;&#46;&#46;}</code> that does not contain calculated members.
      *
-     * @return an {@link mondrian.rolap.sql.CrossJoinArg} instance describing the enumeration,
-     *         or null if <code>fun</code> represents something else.
+     * @return an {@link mondrian.rolap.sql.CrossJoinArg} instance
+     *         describing the enumeration, or null if <code>fun</code>
+     *         represents something else.
      */
     private CrossJoinArg[] checkEnumeration(
         RolapEvaluator evaluator,
@@ -441,8 +442,9 @@ public class CrossJoinArgFactory {
     /**
      * Checks for <code>&lt;Member&gt;.Children</code>.
      *
-     * @return an {@link mondrian.rolap.sql.CrossJoinArg} instance describing the member.children
-     *         function, or null if <code>fun</code> represents something else.
+     * @return an {@link mondrian.rolap.sql.CrossJoinArg} instance
+     *         describing the member.children function, or null if
+     *         <code>fun</code> represents something else.
      */
     private CrossJoinArg[] checkMemberChildren(
         Role role,
@@ -489,8 +491,9 @@ public class CrossJoinArgFactory {
     /**
      * Checks for <code>&lt;Level&gt;.Members</code>.
      *
-     * @return an {@link mondrian.rolap.sql.CrossJoinArg} instance describing the Level.members
-     *         function, or null if <code>fun</code> represents something else.
+     * @return an {@link mondrian.rolap.sql.CrossJoinArg} instance
+     *         describing the Level.members function, or null if
+     *         <code>fun</code> represents something else.
      */
     private CrossJoinArg[] checkLevelMembers(
         Role role,

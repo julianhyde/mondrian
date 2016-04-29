@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
  * This is an abstract base class for the creation and load of one or more
  * database tables with data. Optionally, if a table already exists it can be
  * dropped or its rows deleted.
- * <p>
- * Within this class is the Table sub-class. There is an abstract method the
+ *
+ * <p>Within this class is the Table sub-class. There is an abstract method the
  * returns an array of Table instances. A Table instance is used to define
  * a database table and its content (its rows or data). A concrete subclass
  * of this class can define how the array of Tables are created (CSV files,
@@ -40,8 +40,8 @@ import java.util.regex.Pattern;
  * class load thoses Tables into a database. In addition, rather than loading
  * a database, this class can be used to generate files containing the
  * sql that can be used to load the database.
- * <p>
- * To use this class the following must be specified:
+ *
+ * <p>To use this class the following must be specified:
  * <ul>
  * <li>
  * JDBC Driver: This is used both for the generation of the SQL (using the
@@ -90,9 +90,9 @@ import java.util.regex.Pattern;
  * If the force flag is false and a file already exists and exception is thrown.
  * </li>
  * </ul>
- * <p>
- * Each Table object created has a Controller object with four boolean instance
- * variables that control what actions are taken when the Table's
+ *
+ * <p>Each Table object created has a Controller object with four boolean
+ * instance variables that control what actions are taken when the Table's
  * executeStatements method is called. Those instance variables are:
  * <ul>
  * <li>
@@ -112,8 +112,8 @@ import java.util.regex.Pattern;
  * (Default value is true).
  * </li>
  * </ul>
- * <p>
- * The Table.Controller must also have its RowStream object defined.
+ *
+ * <p>The Table.Controller must also have its RowStream object defined.
  * A RowStream produces a set of Row objects (see the Row interface
  * below) which in turn has an array of Objects that represent the
  * values of a row in the Table.
@@ -123,8 +123,8 @@ import java.util.regex.Pattern;
  * rows would be in memory. Another implementation might read each row's
  * data from a file or another database. In this case, the row data is
  * not in memory allowing one to load much larger tables.
- * <p>
- * Each column must have one of the following SQL data type definitions:
+ *
+ * <p>Each column must have one of the following SQL data type definitions:
  * <ul>
  * <li>
  * INTEGER
@@ -154,8 +154,8 @@ import java.util.regex.Pattern;
  * TIMESTAMP
  * </li>
  * </ul>
- * <p>
- * NOTE: Much of the code appearing in this class came from the
+ *
+ * <p>NOTE: Much of the code appearing in this class came from the
  * MondrianFoodMartLoader class.
  *
  * @author Richard M. Emberson

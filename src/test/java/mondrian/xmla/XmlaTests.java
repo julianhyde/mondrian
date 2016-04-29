@@ -301,4 +301,3 @@ System.out.println("    value=" +value);
 }
 
 // End XmlaTests.java
-

@@ -26,8 +26,8 @@ import java.sql.SQLException;
  * directory with optional regular expression for matching files
  * in the directory to be loaded, this is simplest at this point.
  *
- * <p>
- * To use this file one must define both the directory and file
+ *
+ * <p>To use this file one must define both the directory and file
  * abstract methods.
  *
  * @author Richard M. Emberson
