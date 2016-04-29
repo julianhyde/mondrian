@@ -307,14 +307,14 @@ public class TestContext {
      * Constructs a connect string by which the unit tests can talk to the
      * FoodMart database.
      *
-     * The algorithm is as follows:<ul>
+     * <p>The algorithm is as follows:<ul>
      * <li>Starts with {@link MondrianProperties#TestConnectString}, if it is
      *     set.</li>
      * <li>If {@link MondrianProperties#FoodmartJdbcURL} is set, this
      *     overrides the <code>Jdbc</code> property.</li>
      * <li>If the <code>catalog</code> URL is unset or invalid, it assumes that
      *     we are at the root of the source tree, and references
-     *     <code>demo/FoodMart.mondrian.xml</code></li>.
+     *     <code>demo/FoodMart.mondrian.xml</code>.</li>
      * </ul>
      */
     public static String getDefaultConnectString() {
@@ -1170,7 +1170,7 @@ public class TestContext {
      *
      * <li>In new behavior, [Gender].[Gender] represents the Gender hierarchy,
      * and [Gender].[Gender].[Gender].members represents the Gender level.
-     * </ul></p>
+     * </ul>
      *
      * <p>So, {@code upgradeQuery("[Gender]")} returns
      * "[Gender].[Gender]" for old behavior,

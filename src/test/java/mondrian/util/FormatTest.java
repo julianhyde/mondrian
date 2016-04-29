@@ -789,7 +789,7 @@ public class FormatTest extends TestCase {
 
     /**
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-968">
-     * MONDRIAN-968</a>, "Thousands formatting does not work. #,###,, <-
+     * MONDRIAN-968</a>, "Thousands formatting does not work. #,###,, &larr;
      * Multiple Comma not rounding".
      */
     public void testThousandsThousands() {

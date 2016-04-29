@@ -1445,9 +1445,8 @@ public class VirtualCubeTest extends BatchTestCase {
     }
 
     /**
-     * <p>MONDRIAN-1061</p>
-     * <p>recursive members for 4.0 schema version</p>
-     * @throws IOException
+     * <p>MONDRIAN-1061
+     * <p>recursive members for 4.0 schema version
      */
     public void testVirtualCubeRecursiveMember() {
       String cube = "<Cube name='MONDRIAN-1062' defaultMeasure='Unit Sales'>"

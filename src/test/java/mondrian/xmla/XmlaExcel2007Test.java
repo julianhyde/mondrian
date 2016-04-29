@@ -128,8 +128,6 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
     /**
      * Test that executes MDSCHEMA_PROPERTIES with
      * {@link org.olap4j.metadata.Property.TypeFlag#CELL}.
-     *
-     * @throws Exception on error
      */
     public void testMdschemaPropertiesCell() {
         helperTest(false);

@@ -598,8 +598,9 @@ public class DrillThroughTest extends FoodMartTestCase {
     }
 
     /**
-     * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-752">
-     * MONDRIAN-752, "cell.getDrillCount returns 0".
+     * Test case for bug
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-752">
+     * MONDRIAN-752, "cell.getDrillCount returns 0"</a>.
      */
     public void testDrillThroughOneAxis() {
         Result result = executeQuery(
@@ -612,9 +613,9 @@ public class DrillThroughTest extends FoodMartTestCase {
     }
 
     /**
-     * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-751">
-     * MONDRIAN-751, "Drill SQL does not include slicer members in WHERE
-     * clause".
+     * Test case for bug
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-751">MONDRIAN-751,
+     * "Drill SQL does not include slicer members in WHERE clause"</a>.
      */
     public void testDrillThroughCalcMemberInSlicer() {
         Result result = executeQuery(

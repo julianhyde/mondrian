@@ -222,7 +222,7 @@ public abstract class DBLoader {
      *
      * @param lengthStr  String representing integer: number of digits to format
      * @param placesStr  String representing integer: number of decimal places
-     * @return number format, ie. length = 6, places = 2 => "####.##"
+     * @return number format, ie. length = 6, places = 2 &rarr; "####.##"
      */
     public static String decimalFormat(String lengthStr, String placesStr) {
         int length = Integer.parseInt(lengthStr);
@@ -236,7 +236,7 @@ public abstract class DBLoader {
      *
      * @param length  int: number of digits to format
      * @param places  int: number of decimal places
-     * @return number format, ie. length = 6, places = 2 => "###0.00"
+     * @return number format, ie. length = 6, places = 2 &rarr; "###0.00"
      */
     public static String decimalFormat(int length, int places) {
         StringBuilder buf = new StringBuilder();
@@ -439,9 +439,9 @@ public abstract class DBLoader {
     }
 
     /**
-     * Represents a logical type, such as "BOOLEAN".<p/>
+     * Represents a logical type, such as "BOOLEAN".
      *
-     * Specific databases will represent this their own particular physical
+     * <p>Specific databases will represent this their own particular physical
      * type, for example "TINYINT(1)", "BOOLEAN" or "BIT";
      * see {@link #toPhysical(mondrian.spi.Dialect)}.
      */

@@ -1139,7 +1139,6 @@ public class JdbcSchema {
      * table name.
      *
      * @param tableName Table name
-     * @throws SQLException on error
      */
     private void loadTables(String tableName) {
         Connection conn = null;

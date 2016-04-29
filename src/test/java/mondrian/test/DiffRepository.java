@@ -32,45 +32,45 @@ import javax.xml.parsers.*;
  * If there are differences, writes out a log file containing the actual
  * output.
  *
- * <p>Typical usage is as follows:<ol>
- * <li>A testcase class defines a method<blockquote><code><pre>
+ * <p>Typical usage is as follows. A testcase class defines a method
  *
- * package com.acme.test;
+ * <blockquote><code>
+ * package com.acme.test;<br>
+ * <br>
+ * public class MyTest extends TestCase {<br>
+ *     public DiffRepository getDiffRepos() {<br>
+ *         return DiffRepository.lookup(MyTest.class);<br>
+ *     }<br>
+ * <br>
+ *     public void testToUpper() {<br>
+ *          getDiffRepos().assertEquals("${result}", "${string}");<br>
+ *     }<br>
+ * <br>
+ *     public void testToLower() {<br>
+ *          getDiffRepos().assertEquals("Multi-line\nstring", "${string}");<br>
+ *     }<br>
+ * }</code></blockquote>
  *
- * public class MyTest extends TestCase {
- *     public DiffRepository getDiffRepos() {
- *         return DiffRepository.lookup(MyTest.class);
- *     }
- *
- *     public void testToUpper() {
- *          getDiffRepos().assertEquals("${result}", "${string}");
- *     }
-
- *     public void testToLower() {
- *          getDiffRepos().assertEquals("Multi-line\nstring", "${string}");
- *     }
- * }</pre></code></blockquote>
- *
- * There is an accompanying reference file named after the class,
+ * <p>There is an accompanying reference file named after the class,
  * <code>com/acme/test/MyTest.ref.xml</code>:
- * <blockquote><code><pre>
- * &lt;Root&gt;
- *     &lt;TestCase name="testToUpper"&gt;
- *         &lt;Resource name="string"&gt;
- *             &lt;![CDATA[String to be converted to upper case]]&gt;
- *         &lt;/Resource&gt;
- *         &lt;Resource name="result"&gt;
- *             &lt;![CDATA[STRING TO BE CONVERTED TO UPPER CASE]]&gt;
- *         &lt;/Resource&gt;
- *     &lt;/TestCase&gt;
- *     &lt;TestCase name="testToLower"&gt;
- *         &lt;Resource name="result"&gt;
- *             &lt;![CDATA[multi-line
- * string]]&gt;
- *         &lt;/Resource&gt;
- *     &lt;/TestCase&gt;
- * &lt;/Root&gt;
- * </pre></code></blockquote>
+ *
+ * <blockquote><code>
+ * &lt;Root&gt;<br>
+ *     &lt;TestCase name="testToUpper"&gt;<br>
+ *         &lt;Resource name="string"&gt;<br>
+ *             &lt;![CDATA[String to be converted to upper case]]&gt;<br>
+ *         &lt;/Resource&gt;<br>
+ *         &lt;Resource name="result"&gt;<br>
+ *             &lt;![CDATA[STRING TO BE CONVERTED TO UPPER CASE]]&gt;<br>
+ *         &lt;/Resource&gt;<br>
+ *     &lt;/TestCase&gt;<br>
+ *     &lt;TestCase name="testToLower"&gt;<br>
+ *         &lt;Resource name="result"&gt;<br>
+ *             &lt;![CDATA[multi-line<br>
+ * string]]&gt;<br>
+ *         &lt;/Resource&gt;<br>
+ *     &lt;/TestCase&gt;<br>
+ * &lt;/Root&gt;</code></blockquote>
  *
  * <p>If any of the testcases fails, a log file is generated, called
  * <code>com/acme/test/MyTest.log.xml</code> containing the actual output.

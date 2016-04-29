@@ -173,7 +173,7 @@ class OpeningClosingPeriodFunDef extends FunDefBase {
      * @param returnFirstDescendant Flag indicating whether to return the first
      * or last descendant of the member.
      * @return A member.
-     * @pre member.getLevel().getDepth() < level.getDepth();
+     * @pre member.getLevel().getDepth() &lt; level.getDepth();
      */
     static Member getDescendant(
         SchemaReader schemaReader,

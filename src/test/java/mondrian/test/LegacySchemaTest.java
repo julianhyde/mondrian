@@ -1519,7 +1519,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Test case for the Level@internalType attribute.
      *
      * <p>See bug <a href="http://jira.pentaho.com/browse/MONDRIAN-896">
-     * MONDRIAN-896, "Oracle integer columns overflow if value &gt;>2^31"</a>.
+     * MONDRIAN-896, "Oracle integer columns overflow if value &gt;2^31"</a>.
      */
     public void testLevelInternalType() {
         // One of the keys is larger than Integer.MAX_VALUE (2 billion), so

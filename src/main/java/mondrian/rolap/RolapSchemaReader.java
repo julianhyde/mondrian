@@ -683,7 +683,7 @@ public class RolapSchemaReader
     /**
      * Implementation of {@link Parameter} which is sourced from mondrian
      * properties (see {@link MondrianProperties}.
-     * <p/>
+     *
      * <p>The name of the property is the same as the key into the
      * {@link java.util.Properties} object; for example "mondrian.trace.level".
      */

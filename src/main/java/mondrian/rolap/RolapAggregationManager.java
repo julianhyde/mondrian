@@ -620,15 +620,15 @@ public abstract class RolapAggregationManager {
      * <p>1. The example below is for list of tuples
      *
      * <blockquote>
-     * group 1: [Gender].[M], [Store].[USA].[CA]<br/>
+     * group 1: [Gender].[M], [Store].[USA].[CA]<br>
      * group 2: [Gender].[F], [Store].[USA].[CA]
      * </blockquote>
      *
      * is translated into
      *
      * <blockquote>
-     * (Gender = 'M' AND Store_State = 'CA' AND Store_Country = 'USA')<br/>
-     * OR<br/>
+     * (Gender = 'M' AND Store_State = 'CA' AND Store_Country = 'USA')<br>
+     * OR<br>
      * (Gender = 'F' AND Store_State = 'CA' AND Store_Country = 'USA')
      * </blockquote>
      *
@@ -636,33 +636,35 @@ public abstract class RolapAggregationManager {
      * appropriate SQL form as
      *
      * <blockquote>
-     * WHERE (gender = 'M'<br/>
-     *        AND Store_State = 'CA'<br/>
-     *        AND Store_Country = 'USA')<br/>
-     *     OR (Gender = 'F'<br/>
-     *         AND Store_State = 'CA'<br/>
+     * WHERE (gender = 'M'<br>
+     *        AND Store_State = 'CA'<br>
+     *        AND Store_Country = 'USA')<br>
+     *     OR (Gender = 'F'<br>
+     *         AND Store_State = 'CA'<br>
      *         AND Store_Country = 'USA')
      * </blockquote>
      *
      * <p>2. The example below for a list of members
      *
      * <blockquote>
-     * group 1: [USA].[CA], [Canada].[BC]<br/>
+     * group 1: [USA].[CA], [Canada].[BC]<br>
      * group 2: [USA].[CA].[San Francisco], [USA].[OR].[Portland]
      * </blockquote>
      *
      * is translated into:
      *
      * <blockquote>
-     * (Country = 'USA' AND State = 'CA')<br/>
-     * OR (Country = 'Canada' AND State = 'BC')<br/>
-     * OR (Country = 'USA' AND State = 'CA' AND City = 'San Francisco')<br/>
+     * (Country = 'USA' AND State = 'CA')<br>
+     * OR (Country = 'Canada' AND State = 'BC')<br>
+     * OR (Country = 'USA' AND State = 'CA' AND City = 'San Francisco')<br>
      * OR (Country = 'USA' AND State = 'OR' AND City = 'Portland')
-     * </pre>
+     * </blockquote>
+     *
      * <p>The caller of this method will translate this representation into
      * appropriate SQL form. For exmaple, if the underlying DB supports multi
      * value IN-list, the second group will turn into this predicate:
-     * <pre>
+     *
+     * <blockquote>
      * where (country, state, city) IN (('USA', 'CA', 'San Francisco'),
      *                                      ('USA', 'OR', 'Portland'))
      * </blockquote>
@@ -670,8 +672,8 @@ public abstract class RolapAggregationManager {
      * or, if the DB does not support multi-value IN list:
      *
      * <blockquote>
-     * WHERE country = 'USA' AND<br/>
-     *           ((state = 'CA' AND city = 'San Francisco') OR<br/>
+     * WHERE country = 'USA' AND<br>
+     *           ((state = 'CA' AND city = 'San Francisco') OR<br>
      *            (state = 'OR' AND city = 'Portland'))
      * </blockquote>
      *

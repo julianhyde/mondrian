@@ -24,7 +24,7 @@ import java.util.List;
  *
  * <p>Syntax:
  * <blockquote><code>
- * &lt;Set&gt;.Item(&lt;Index&gt;)<br/>
+ * &lt;Set&gt;.Item(&lt;Index&gt;)<br>
  * &lt;Set&gt;.Item(&lt;String Expression&gt; [, ...])
  * </code></blockquote>
  *

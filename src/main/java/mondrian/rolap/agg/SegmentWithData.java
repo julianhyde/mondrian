@@ -32,7 +32,7 @@ public class SegmentWithData extends Segment {
      *
      * <p>Since the <code>SegmentDataset</code> is loaded and assigned after
      * <code>Segment</code> is constructed, threadsafe access to it is only
-     * guaranteed if the access is guarded.<p/>
+     * guaranteed if the access is guarded.
      *
      * <p>Access which does not depend on <code>data</code> already having been
      * loaded should be guarded by obtaining either a read or write lock on

@@ -1155,7 +1155,7 @@ public class RolapResult extends ResultBase {
      * we don't need to go to the lowest level.
      * We can simply replace it with:
      * <pre>Aggregate({[Store].[All Stores].[USA].[CA]})</pre>
-     * Because all children of [Store].[All Stores].[USA].[CA] are included.</p>
+     * Because all children of [Store].[All Stores].[USA].[CA] are included.
      */
     private List<Member> processDistinctMeasureExpr(
         List<Member> tuple,

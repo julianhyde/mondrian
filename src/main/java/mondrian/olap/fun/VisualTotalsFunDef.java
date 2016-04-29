@@ -310,9 +310,9 @@ public class VisualTotalsFunDef extends FunDefBase {
     }
 
     /**
-     * Substitutes a name into a pattern.<p/>
+     * Substitutes a name into a pattern.
      *
-     * Asterisks are replaced with the name,
+     * <p>Asterisks are replaced with the name,
      * double-asterisks are replaced with a single asterisk.
      * For example,
      *

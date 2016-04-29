@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * <h3>Command line examples for MySQL</h3>
  *
  * <blockquote><code>
- * $ mysqladmin create foodmart<br/>
+ * $ mysqladmin create foodmart<br>
  * $ java -cp 'classes;testclasses' mondrian.test.loader.MondrianFoodMartLoader
  *     -dataset=FOODMART
  *     -aggregates -tables -data -indexes -jdbcDrivers=com.mysql.jdbc.Driver
@@ -556,7 +556,7 @@ public class MondrianFoodMartLoader {
      * -verbose -tables -data -indexes -analyze
      * -jdbcDrivers=sun.jdbc.odbc.JdbcOdbcDriver,com.mysql.jdbc.Driver
      * -inputJdbcURL=jdbc:odbc:MondrianFoodMart
-     * -outputJdbcURL=jdbc:mysql://localhost/textload?user=root&password=myAdmin
+     * -outputJdbcURL=jdbc:mysql://localhost/textload?user=root&amp;password=baz
      * -outputDirectory=C:\Temp\wip\Loader-Output</pre></blockquote>
      *
      * @param tableFilter Condition whether to load rows from a given table
@@ -1621,7 +1621,7 @@ public class MondrianFoodMartLoader {
     }
 
     /**
-     * Defines all tables for the FoodMart database.<p/>
+     * Defines all tables for the FoodMart database.
      *
      * <p>Also initializes {@link #tableMetadataToLoad} and
      * {@link #aggregateTableMetadataToLoad}.
@@ -1921,12 +1921,12 @@ public class MondrianFoodMartLoader {
 
     /**
      * String representation of the column in the result set, suitable for
-     * inclusion in a SQL insert statement.<p/>
+     * inclusion in a SQL insert statement.
      *
-     * The column in the result set is transformed according to the type in
-     * the column parameter.<p/>
+     * <p>The column in the result set is transformed according to the type in
+     * the column parameter.
      *
-     * Different DBMSs (and drivers) return different Java types for a given
+     * <p>Different DBMSs (and drivers) return different Java types for a given
      * column; {@link ClassCastException}s may occur.
      *
      * @param rs        ResultSet row to process
@@ -2311,10 +2311,10 @@ public class MondrianFoodMartLoader {
     }
 
     /**
-     * Represents a logical type, such as "BOOLEAN".<p/>
+     * Represents a logical type, such as "BOOLEAN".
      *
-     * Specific databases will represent this with their own particular physical
-     * type, for example "TINYINT(1)", "BOOLEAN" or "BIT";
+     * <p>Specific databases will represent this with their own particular
+     * physical type, for example "TINYINT(1)", "BOOLEAN" or "BIT";
      * see {@link #toPhysical(mondrian.spi.Dialect)}.
      */
     private static class Type {

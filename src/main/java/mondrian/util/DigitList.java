@@ -38,8 +38,8 @@ import java.math.BigInteger;
  * characters, which are the digits radix 10, from '0' to '9'.  It also has a
  * base 10 exponent associated with it.  The value represented by a
  * <code>DigitList</code> object can be computed by mulitplying the fraction
- * <em>f</em>, where 0 <= <em>f</em> < 1, derived by placing all the digits of
- * the list to the right of the decimal point, by 10^exponent.
+ * <em>f</em>, where 0 &le; <em>f</em> &lt; 1, derived by placing all the digits
+ * of the list to the right of the decimal point, by 10^exponent.
  *
  * @see java.util.Locale
  * @see java.text.Format
@@ -293,11 +293,13 @@ final class DigitList {
 
     /**
      * Set the digit list to a representation of the given long value.
-     * @param source Value to be converted; must be >= 0 or ==
+     *
+     * @param source Value to be converted; must be &ge; 0 or ==
      * Long.MIN_VALUE.
+     *
      * @param maximumDigits The most digits which should be converted.
      * If maximumDigits is lower than the number of significant digits
-     * in source, the representation will be rounded.  Ignored if <= 0.
+     * in source, the representation will be rounded.  Ignored if &le; 0.
      */
     public final void set(long source, int maximumDigits)
     {
@@ -346,7 +348,7 @@ final class DigitList {
      * @param source Value to be converted
      * @param maximumDigits The most digits which should be converted.
      * If maximumDigits is lower than the number of significant digits
-     * in source, the representation will be rounded.  Ignored if <= 0.
+     * in source, the representation will be rounded.  Ignored if &le; 0.
      */
     public final void set(BigInteger source, int maximumDigits) {
         String stringDigits = source.toString();

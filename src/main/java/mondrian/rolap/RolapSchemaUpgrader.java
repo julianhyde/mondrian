@@ -305,12 +305,13 @@ public class RolapSchemaUpgrader {
         return xmlCube;
     }
 
-  private Integer getOrdinal(
-      Mondrian3Def.CalculatedMember xmlLegacyCalculatedMember) {
-    return getOrdinal(xmlLegacyCalculatedMember.memberProperties);
-  }
+    private Integer getOrdinal(
+        Mondrian3Def.CalculatedMember xmlLegacyCalculatedMember)
+    {
+        return getOrdinal(xmlLegacyCalculatedMember.memberProperties);
+    }
 
-  private static Integer getOrdinal(
+    private static Integer getOrdinal(
         Mondrian3Def.CalculatedMemberProperty[] memberProperties)
     {
         for (Mondrian3Def.CalculatedMemberProperty p : memberProperties) {

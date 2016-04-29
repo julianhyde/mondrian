@@ -10,7 +10,6 @@
 package mondrian.olap4j;
 
 import mondrian.olap.Exp;
-import mondrian.olap.Util;
 import mondrian.rolap.RolapCell;
 import mondrian.rolap.SqlStatement;
 
@@ -21,7 +20,6 @@ import org.olap4j.metadata.Property;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -143,9 +141,10 @@ class MondrianOlap4jCell implements Cell {
      * <p>Not a part of the public API. Package-protected because this method
      * also implements the DRILLTHROUGH statement.
      *
-     * @param maxRowCount Maximum number of rows to retrieve, <= 0 if unlimited
-     * @param firstRowOrdinal Ordinal of row to skip to (1-based), or 0 to
-     *   start from beginning
+     * @param maxRowCount       Maximum number of rows to retrieve,
+     *                          &le; 0 if unlimited
+     * @param firstRowOrdinal   Ordinal of row to skip to (1-based), or 0 to
+     *                          start from beginning
      * @param fields            List of fields to return, expressed as MDX
      *                          expressions.
      * @param extendedContext   If true, add non-constraining columns to the

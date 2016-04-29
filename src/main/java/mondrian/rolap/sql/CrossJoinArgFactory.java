@@ -67,7 +67,7 @@ public class CrossJoinArgFactory {
     /**
      * Checks whether an expression can be natively evaluated. The following
      * expressions can be natively evaluated:
-     * <p/>
+     *
      * <ul>
      * <li>member.Children
      * <li>level.members

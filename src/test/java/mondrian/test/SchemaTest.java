@@ -2712,7 +2712,7 @@ Test that get error if a dimension has more than one hierarchy with same name.
     /** Calculated members must have precisely one of:  formula attribute and
      * Formula element. Also tests ability to return multiple exceptions (per
      * {@link mondrian.rolap.RolapConnectionProperties#Ignore} and
-     * {@link mondrian.rolap.RolapSchemaLoader.Handler#check()}. */
+     * {@link mondrian.rolap.RolapSchemaLoader}.Handler.check(). */
     public void testCalculatedMemberFormulaBothOrNeither() {
         TestContext testContext = getTestContext()
             .withIgnore(true)
@@ -3221,7 +3221,7 @@ Test that get error if a dimension has more than one hierarchy with same name.
      * Test case for the Level@internalType attribute.
      *
      * <p>See bug <a href="http://jira.pentaho.com/browse/MONDRIAN-896">
-     * MONDRIAN-896, "Oracle integer columns overflow if value &gt;>2^31"</a>.
+     * MONDRIAN-896, "Oracle integer columns overflow if value &gt; 2^31"</a>.
      */
     public void testLevelInternalType() {
         // One of the keys is larger than Integer.MAX_VALUE (2 billion), so

@@ -22,12 +22,12 @@ import java.util.List;
 /**
  * Definition of the matched <code>CASE</code> MDX operator.
  *
- * Syntax is:
+ * <p>Syntax is:
  * <blockquote><pre><code>Case &lt;Expression&gt;
  * When &lt;Expression&gt; Then &lt;Expression&gt;
  * [...]
  * [Else &lt;Expression&gt;]
- * End</code></blockquote>.
+ * End</code></pre></blockquote>
  *
  * @see CaseTestFunDef
  * @author jhyde

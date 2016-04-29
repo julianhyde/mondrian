@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An AggStar's version of the {@link QuerySpec}. <p/>
+ * An AggStar's version of the {@link QuerySpec}.
  *
- * When/if the {@link AggStar} code is merged into {@link RolapStar}
+ * <p>When/if the {@link AggStar} code is merged into {@link RolapStar}
  * (or RolapStar is merged into AggStar}, then this, indeed, can implement the
  * {@link QuerySpec} interface.
  *

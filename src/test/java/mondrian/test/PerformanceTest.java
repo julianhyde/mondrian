@@ -507,7 +507,7 @@ public class PerformanceTest extends FoodMartTestCase {
     /**
      * Testcase for bug
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-981">MONDRIAN-981,
-     * "Poor performance when >=2 hierarchies are access-controlled with
+     * "Poor performance when &ge; 2 hierarchies are access-controlled with
      * rollupPolicy=partial"</a>.
      */
     public void testBugMondrian981() {

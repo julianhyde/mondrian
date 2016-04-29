@@ -2897,7 +2897,7 @@ public class Util extends XOMUtil {
             return list;
         }
         /**
-         * Reads "name=value;" or "name=value<EOF>".
+         * Reads "name=value;" or "name=value&lt;EOF&gt;".
          */
         void parsePair(PropertyList list) {
             String name = parseName();
@@ -2960,7 +2960,7 @@ public class Util extends XOMUtil {
         }
 
         /**
-         * Reads "value;" or "value<EOF>"
+         * Reads "value;" or "value&lt;EOF&gt;"
          */
         String parseValue() {
             char c;

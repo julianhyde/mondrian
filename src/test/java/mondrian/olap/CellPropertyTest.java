@@ -13,7 +13,7 @@ package mondrian.olap;
 import junit.framework.TestCase;
 
 /**
- * Test for <code>Cell Property<code>.
+ * Test for <code>Cell Property</code>.
  *
  * @author Shishir
  * @since 08 May, 2007

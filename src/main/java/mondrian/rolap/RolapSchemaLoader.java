@@ -3932,32 +3932,32 @@ public class RolapSchemaLoader {
      *
      * <p>Example 1. Table inherited, column specified using attribute
      *
-     * <blockquote><code>&lt;Dimension ... table="t"&gt;<br/>
-     * &nbsp;&nbsp;&lt;Attribute ... column="c"/&gt;<br/>
-     * &nbsp;&nbsp;...<br/>
+     * <blockquote><code>&lt;Dimension ... table="t"&gt;<br>
+     * &nbsp;&nbsp;&lt;Attribute ... column="c"/&gt;<br>
+     * &nbsp;&nbsp;...<br>
      * &lt;/Dimension&gt;</code></blockquote>
      *
-     * would result in the call <code>createColumn(xmlAttribute, "column",
+     * <p>would result in the call <code>createColumn(xmlAttribute, "column",
      * "t", "c", null)</code>, where {@code xmlAttribute} is the Attribute XML
-     * element.</p>
+     * element.
      *
      * <p>Example 2. Column specified using embedded element
      *
-     * <blockquote><code>&lt;Dimension ... table="t"&gt;<br/>
-     * &nbsp;&nbsp;&lt;Attribute .../&gt;<br/>
-     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;OrderBy&gt;<br/>
+     * <blockquote><code>&lt;Dimension ... table="t"&gt;<br>
+     * &nbsp;&nbsp;&lt;Attribute .../&gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;OrderBy&gt;<br>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Column name="c2"
-     * table="t2"&gt;<br/>
-     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;/OrderBy&gt;<br/>
-     * &nbsp;&nbsp;&lt;/Attribute&gt;<br/>
-     * &nbsp;&nbsp;...<br/>
+     * table="t2"&gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;/OrderBy&gt;<br>
+     * &nbsp;&nbsp;&lt;/Attribute&gt;<br>
+     * &nbsp;&nbsp;...<br>
      * &lt;/Dimension&gt;</code></blockquote>
      *
-     * would result in the call <code>createColumn(xmlAttribute, "column",
+     * <p>would result in the call <code>createColumn(xmlAttribute, "column",
      * "t", null, xmlOrderBy)</code>, where {@code xmlOrderBy} is the OrderBy
      * element. The inherited table "t" is supplied to the method, but is
      * overridden by the "table" attribute of the Column element, and the
-     * resulting column will be "t2"."c2".</p>
+     * resulting column will be "t2"."c2".
      *
      * <p>Throws if the XML element is present and contains more than one
      * column. Also throws if the column name attribute and the XML element

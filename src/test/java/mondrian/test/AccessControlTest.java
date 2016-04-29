@@ -1406,7 +1406,7 @@ public class AccessControlTest extends FoodMartTestCase {
     /**
      * Test to verify that non empty crossjoins enforce role access.
      * Testcase for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-369">
-     * MONDRIAN-369, "Non Empty Crossjoin fails to enforce role access".
+     * MONDRIAN-369, "Non Empty Crossjoin fails to enforce role access"</a>.
      */
     public void testNonEmptyAccess() {
         final TestContext testContext =
@@ -2585,8 +2585,10 @@ public class AccessControlTest extends FoodMartTestCase {
      * to the SQL for the first member only.
      *
      * <p>Currently, Mondrian disguises the root member in the evaluator as a
-     * {@link mondrian.rolap.RestrictedMemberReader.MultiCardinalityDefaultMember}.
-     * Later, {@link mondrian.rolap.RolapHierarchy.LimitedRollupSubstitutingMemberReader}
+     * {@code mondrian.rolap.RestrictedMemberReader
+     * .MultiCardinalityDefaultMember}.
+     * Later, {@code mondrian.rolap.RolapHierarchy
+     * .LimitedRollupSubstitutingMemberReader}
      * will recognize it and use the correct rollup policy on the parent member
      * to generate correct SQL.
      */

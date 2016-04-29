@@ -41,18 +41,18 @@ import java.util.concurrent.BlockingQueue;
  * its {@code fix()} method is called:</p>
  *
  * <ul>
- *     <li>{@link MutableServerInfo} &rarr; {@link ServerInfo}</li>
+ *     <li>{@link MutableServerInfo} &rarr; {@link ServerInfo}
  *     <ul>
- *         <li>{@link MutableConnectionInfo} &rarr; {@link ConnectionInfo}</li>
+ *         <li>{@link MutableConnectionInfo} &rarr; {@link ConnectionInfo}
  *         <ul>
  *             <li>{@link MutableStatementInfo}
- *                 &rarr; {@link StatementInfo}</li>
+ *                 &rarr; {@link StatementInfo}
  *             <ul>
  *                 <li>{@link MutableExecutionInfo}
- *                     &rarr; {@link ExecutionInfo}</li>
+ *                     &rarr; {@link ExecutionInfo}
  *                 <ul>
  *                     <li>{@link MutableSqlStatementInfo}
- *                         &rarr; {@link SqlStatementInfo}</li>
+ *                         &rarr; {@link SqlStatementInfo}
  *                 </ul>
  *             </ul>
  *         </ul>

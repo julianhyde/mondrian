@@ -1307,9 +1307,9 @@ diagrams and hyperlinks to source code">
     <record name="javadoc-complaints.log" action="stop"/>
     <loadfile srcFile="javadoc-complaints.log" property="javadoc.complaints">
       <filterchain>
-        <!-- only interested in lines that are errors or warnings -->
+        <!-- only interested in lines that are errors -->
         <linecontainsregexp>
-            <regexp pattern=":[0-9]+: "/>
+            <regexp pattern=":[0-9]+: error: "/>
         </linecontainsregexp>
         <!-- ignore: unwrap does not exist until JDK1.6 -->
         <linecontains negate="true">

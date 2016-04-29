@@ -3244,40 +3244,41 @@ public class BasicQueryTest extends FoodMartTestCase {
      *
      * There are cross database order issues in this test.
      *
-     * MySQL and Access show the rows as:
+     * <p>MySQL and Access show the rows as:
      *
-     * [Store Size in SQFT].[All Store Size in SQFTs]
+     * <blockquote>
+     * [Store Size in SQFT].[All Store Size in SQFTs]<br>
+     * [Store Size in SQFT].[null]<br>
+     * [Store Size in SQFT].[&lt;each distinct store size&gt;]
+     * </blockquote>
+     *
+     * <p>Postgres shows:
+     *
+     * <blockquote>
+     * [Store Size in SQFT].[All Store Size in SQFTs]<br>
+     * [Store Size in SQFT].[&lt;each distinct store size&gt;]<br>
      * [Store Size in SQFT].[null]
-     * [Store Size in SQFT].[<each distinct store
-     * size>]
+     * </blockquote>
      *
-     * Postgres shows:
-     *
-     * [Store Size in SQFT].[All Store Size in SQFTs]
-     * [Store Size in SQFT].[<each distinct store
-     * size>]
-     * [Store Size in SQFT].[null]
-     *
-     * The test failure is due to some inherent differences in the way
+     * <p>The test failure is due to some inherent differences in the way
      * Postgres orders NULLs in a result set,
      * compared with MySQL and Access.
      *
-     * From the MySQL 4.X manual:
+     * <p>From the MySQL 4.X manual:
      *
-     * When doing an ORDER BY, NULL values are presented first if you do
+     * <p>When doing an ORDER BY, NULL values are presented first if you do
      * ORDER BY ... ASC and last if you do ORDER BY ... DESC.
      *
-     * From the Postgres 8.0 manual:
+     * <p>From the Postgres 8.0 manual:
      *
-     * The null value sorts higher than any other value. In other words,
+     * <p>The null value sorts higher than any other value. In other words,
      * with ascending sort order, null values sort at the end, and with
      * descending sort order, null values sort at the beginning.
      *
-     * Oracle also sorts nulls high by default.
+     * <p>Oracle also sorts nulls high by default.
      *
-     * So, this test has expected results that vary depending on whether
+     * <p>So, this test has expected results that vary depending on whether
      * the database is being used sorts nulls high or low.
-     *
      */
     public void testMemberWithNullKey() {
         if (!isDefaultNullMemberRepresentation()) {
@@ -3486,7 +3487,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * joins the Sales and Budget cubes together, comparing the two sets of
      * figures would be difficult at best.
      *
-     * <p><b>Note<b> In many situations a virtual cube can be used to integrate
+     * <p><b>Note</b> In many situations a virtual cube can be used to integrate
      * data from multiple cubes, which will often provide a simpler and more
      * efficient solution than the LookupCube function. This example uses the
      * LookupCube function for purposes of illustration.

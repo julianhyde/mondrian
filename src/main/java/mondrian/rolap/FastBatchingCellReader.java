@@ -1537,6 +1537,7 @@ class BatchLoader {
          * Returns whether another Batch can be batched to this Batch.
          *
          * <p>This is possible if:
+         * <ul>
          * <li>columns list is super set of other batch's constraint columns;
          *     and
          * <li>both have same Fact Table; and

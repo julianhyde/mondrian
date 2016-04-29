@@ -19,7 +19,7 @@ import mondrian.resource.MondrianResource;
 import mondrian.rolap.RolapMember;
 
 /**
- * Definition of the MDX <code>&lt;Member&gt : &lt;Member&gt;</code> operator,
+ * Definition of the MDX <code>&lt;Member&gt; : &lt;Member&gt;</code> operator,
  * which returns the set of members between a given pair of members.
  *
  * @author jhyde

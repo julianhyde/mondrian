@@ -20,7 +20,7 @@ import mondrian.olap.type.*;
  *
  * <p>Syntax:
  * <blockquote><code>
- * &lt;Tuple&gt;.Item(&lt;Index&gt;)<br/>
+ * &lt;Tuple&gt;.Item(&lt;Index&gt;)<br>
  * </code></blockquote>
  *
  * @author jhyde

@@ -26,7 +26,7 @@ import java.util.List;
  *
  * <blockquote>
  * DrilldownLevelTop(Set_Expression, Count [, [Level_Expression][,
- * Numeric_Expression]])<br/>
+ * Numeric_Expression]])<br>
  * DrilldownLevelBottom(Set_Expression, Count [, [Level_Expression][,
  * Numeric_Expression]])
  * </blockquote>

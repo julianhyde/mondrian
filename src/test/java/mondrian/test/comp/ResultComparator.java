@@ -275,9 +275,9 @@ class ResultComparator {
 
     /**
      * Returns which member of a given dimension appears in the slicer
-     * axis.<p/>
-     * <p/>
-     * If the dimension occurs on one of the other axes, the answer is null.
+     * axis.
+     *
+     * <p>If the dimension occurs on one of the other axes, the answer is null.
      * If the dimension occurs in the slicer axis, the answer is that member.
      * Otherwise it is the default member of the dimension.
      */

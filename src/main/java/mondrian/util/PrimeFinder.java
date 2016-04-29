@@ -56,35 +56,35 @@ final class PrimeFinder {
      * The prime number list consists of 11 chunks.
      * Each chunk contains prime numbers.
      * A chunk starts with a prime P1. The next element is a prime P2. P2
-     * is the smallest prime for which holds: P2 >= 2*P1.
+     * is the smallest prime for which holds: P2 &ge; 2*P1.
      * The next element is P3, for which the same holds with respect to P2,
      * and so on.
      *
-     * Chunks are chosen such that for any desired capacity >= 1000
-     * the list includes a prime number <= desired capacity * 1.11 (11%).
-     * For any desired capacity >= 200
-     * the list includes a prime number <= desired capacity * 1.16 (16%).
-     * For any desired capacity >= 16
-     * the list includes a prime number <= desired capacity * 1.21 (21%).
+     * <p>Chunks are chosen such that for any desired capacity &ge; 1000
+     * the list includes a prime number &le; desired capacity * 1.11 (11%).
+     * For any desired capacity &ge; 200
+     * the list includes a prime number &le; desired capacity * 1.16 (16%).
+     * For any desired capacity &ge; 16
+     * the list includes a prime number &le; desired capacity * 1.21 (21%).
      *
-     * Therefore, primes can be retrieved which are quite close to any desired
-     * capacity, which in turn avoids wasting memory.
+     * <p>Therefore, primes can be retrieved which are quite close to any
+     * desired capacity, which in turn avoids wasting memory.
      * For example, the list includes
      * 1039,1117,1201,1277,1361,1439,1523,1597,1759,1907,2081.
-     * So if you need a prime >= 1040, you will find a prime <= 1040*1.11=1154.
+     * So if you need a prime &ge; 1040, you will find a prime &le; 1040 * 1.11
+     * = 1154.
      *
-     * Chunks are chosen such that they are optimized for a hashtable
+     * <p>Chunks are chosen such that they are optimized for a hashtable
      * growthfactor of 2.0;
      * If your hashtable has such a growthfactor then,
      * after initially "rounding to a prime" upon hashtable construction,
      * it will later expand to prime capacities such that there exist no
      * better primes.
      *
-     * In total these are about 32*10=320 numbers -> 1 KB of static memory
-     * needed.
+     * <p>In total these are about 32*10 = 320 numbers &rarr; 1 KB of static
+     * memory needed.
      * If you are stingy, then delete every second or fourth chunk.
      */
-
     private static final int[] primeCapacities = {
         //chunk #0
         largestPrime,

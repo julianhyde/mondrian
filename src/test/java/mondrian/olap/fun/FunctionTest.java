@@ -6737,7 +6737,7 @@ public class FunctionTest extends FoodMartTestCase {
 
     /**
      * Make sure that slicer is in force when expression is applied
-     * on axis, E.g. select filter([Customers].members, [Unit Sales] > 100)
+     * on axis, E.g. select filter([Customers].members, [Unit Sales] &gt; 100)
      * from sales where ([Time].[1998])
      */
     public void testFilterWithSlicer() {
@@ -12376,8 +12376,8 @@ public class FunctionTest extends FoodMartTestCase {
     }
 
     /**
-     * "Could not find column for <agg table column> in header.." error<br>
-     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1359">MONDRIAN-1359</a>
+     * "Could not find column for &lt;agg table column&gt; in header.." error,
+     * <a href="http://jira.pentaho.com/browse/MONDRIAN-1359">MONDRIAN-1359</a>.
      */
     public void testMondrian1359() {
         executeQuery(

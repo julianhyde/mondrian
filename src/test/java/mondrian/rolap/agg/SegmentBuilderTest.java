@@ -821,10 +821,11 @@ public class SegmentBuilderTest extends BatchTestCase {
         FORWARD, REVERSE
     }
     /**
-     * Creates a Map<SegmentHeader,SegmentBody> based on the set of
+     * Creates a {@code Map<SegmentHeader, SegmentBody>} based on the set of
      * segments currently in the cache.  The Map overrides the entrySet()
      * method to provide an ordered set of elements based
      * on Header.getUniqueID(), ordered according to the order param.
+     *
      * @param context  The test context
      * @param order  The order to sort the elements returned by entrySet(),
      *               FORWARD or REVERSE

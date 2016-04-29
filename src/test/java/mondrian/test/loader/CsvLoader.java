@@ -62,7 +62,7 @@ import java.util.List;
  *    bracket: i     [ ]
  *    parenthesis:   ()
  *    braces:        { }
- *    chevrons:      < >
+ *    chevrons:      &lt; &gt;
  * </pre></blockquote>
  *
  * <p>

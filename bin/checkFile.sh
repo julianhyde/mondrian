@@ -55,6 +55,8 @@ doCheck() {
     # Exceptions for mondrian
     case "$filePath" in
     */mondrian/util/Base64.java| \
+    */mondrian/util/Ord.java| \
+    */mondrian/olap/Ignore.java| \
     */mondrian/olap/MondrianDef.java| \
     */mondrian/olap/Mondrian3Def.java| \
     */mondrian/xmla/DataSourcesConfig.java| \

@@ -1093,8 +1093,8 @@ public class NativizeSetFunDef extends FunDefBase {
         /**
          * Check the resultSize against the result limit setting. Throws
          * LimitExceededDuringCrossjoin exception if limit exceeded.
-         * <p/>
-         * It didn't seem appropriate to use the existing Mondrian
+         *
+         * <p>It didn't seem appropriate to use the existing Mondrian
          * ResultLimit property, since the meaning and use of that
          * property seems to be a bit ambiguous, otherwise we could
          * simply call Util.checkCJResultLimit.
