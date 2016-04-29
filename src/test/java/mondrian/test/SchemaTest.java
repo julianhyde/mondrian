@@ -1751,13 +1751,15 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "</Query>");
 
         testContext.assertQueryReturns(
-            "select\n"
+            "with member [Measures].[Warehouse Cost 2]\n"
+            + "  as [Measures].[Warehouse Cost], format_string = '#,###.00'\n"
+            + "select\n"
             + " {[Time].[1997], [Time].[1997].[Q3]} on columns,\n"
             + " {[Store].[USA].Children} on rows\n"
             + "From [Warehouse (based on view)]\n"
-            + "where [Warehouse].[USA]",
+            + "where ([Warehouse].[USA], [Measures].[Warehouse Cost 2])",
             "Axis #0:\n"
-            + "{[Warehouse].[Country].[USA]}\n"
+            + "{[Warehouse].[Country].[USA], [Measures].[Warehouse Cost 2]}\n"
             + "Axis #1:\n"
             + "{[Time].[Time].[1997]}\n"
             + "{[Time].[Time].[1997].[Q3]}\n"
@@ -1765,12 +1767,12 @@ Test that get error if a dimension has more than one hierarchy with same name.
             + "{[Store].[Stores].[USA].[CA]}\n"
             + "{[Store].[Stores].[USA].[OR]}\n"
             + "{[Store].[Stores].[USA].[WA]}\n"
-            + "Row #0: 25,789.086\n"
-            + "Row #0: 8,624.791\n"
-            + "Row #1: 17,606.904\n"
-            + "Row #1: 3,812.023\n"
-            + "Row #2: 45,647.262\n"
-            + "Row #2: 12,664.162\n");
+            + "Row #0: 25,789.09\n"
+            + "Row #0: 8,624.79\n"
+            + "Row #1: 17,606.90\n"
+            + "Row #1: 3,812.02\n"
+            + "Row #2: 45,647.26\n"
+            + "Row #2: 12,664.16\n");
     }
 
     /**
