@@ -4,7 +4,7 @@
 // http://www.eclipse.org/legal/epl-v10.html.
 // You must accept the terms of that agreement to use this software.
 //
-// Copyright (C) 2010-2012 Pentaho
+// Copyright (C) 2010-2016 Pentaho
 // All Rights Reserved.
 */
 package mondrian.test;
@@ -34,6 +34,12 @@ public class Olap4jTckTest extends TestCase {
                 final TestCase testCase = (TestCase) test;
                 final String testCaseName = testCase.getName();
                 return !testCaseName.equals("testStatementTimeout")
+                    // Temporarily disable 3 tests. They are fixed in olap4j
+                    // master and will be in olap4j-tck 1.3.
+                    && !testCaseName.equals("testCubeLookupMembers")
+                    && !testCaseName.equals("testDatabaseMetaDataGetProperties")
+                    && !testCaseName.equals("testVirtualCubeCmBug")
+
                     && !testCaseName.equals("testStatementCancel")
                     && !testCaseName.equals("testDatabaseMetaDataGetCatalogs")
                     && !testCaseName.equals("testCellSetBug");
