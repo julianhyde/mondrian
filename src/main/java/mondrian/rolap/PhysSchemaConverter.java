@@ -9,6 +9,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.rolap.RolapSchema.PhysColumn;
 import mondrian.rolap.RolapSchema.PhysKey;
@@ -336,10 +337,8 @@ class PhysSchemaConverter extends RolapSchemaLoader.PhysSchemaBuilder {
             if (entry.getValue() instanceof RolapSchema.PhysCalcColumn) {
                 RolapSchema.PhysCalcColumn physCalcColumn =
                     (RolapSchema.PhysCalcColumn) entry.getValue();
-                if (physCalcColumn.getList().equals(
-                        Collections.singletonList(expr)))
-                {
-                    return physCalcColumn;
+                if (physCalcColumn.getList().equals(ImmutableList.of(expr))) {
+                  return physCalcColumn;
                 }
             }
         }
@@ -351,7 +350,7 @@ class PhysSchemaConverter extends RolapSchemaLoader.PhysSchemaBuilder {
                 "calc$" + physTable.columnsByName.size(),
                 expr.getDatatype(),
                 expr.getInternalType(),
-                Collections.singletonList(expr));
+                ImmutableList.of(expr));
         physTable.addColumn(physCalcColumn);
         calcColumnExprMap.put(
             physCalcColumn,

@@ -10,13 +10,13 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.*;
 import mondrian.mdx.*;
 import mondrian.olap.*;
 import mondrian.olap.type.*;
 import mondrian.rolap.RolapEvaluator;
-import mondrian.rolap.RolapUtil;
 import mondrian.util.CartesianProductList;
 
 import java.util.*;
@@ -385,15 +385,13 @@ public class CrossJoinFunDef extends FunDefBase {
                 arity,
                 new AbstractList<List<Member>>() {
                     final List<List<List<Member>>> lists =
-                        Arrays.<List<List<Member>>>asList(
-                            l1, l2);
+                        ImmutableList.<List<List<Member>>>of(l1, l2);
                     final Member[] members = new Member[arity];
 
                     final CartesianProductList cartesianProductList =
-                        new CartesianProductList<List<Member>>(
-                            lists);
+                        new CartesianProductList<List<Member>>(lists);
 
-                    @Override
+                  @Override
                     public List<Member> get(int index) {
                         cartesianProductList.getIntoArray(index, members);
                         return Util.flatList(members);

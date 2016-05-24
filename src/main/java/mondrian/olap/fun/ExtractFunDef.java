@@ -9,6 +9,7 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.AbstractListCalc;
 import mondrian.mdx.*;
@@ -114,7 +115,7 @@ class ExtractFunDef extends FunDefBase {
         if (type.getElementType() instanceof TupleType) {
             hierarchies = ((TupleType) type.getElementType()).getHierarchies();
         } else {
-            hierarchies = Collections.singletonList(type.getHierarchy());
+            hierarchies = ImmutableList.of(type.getHierarchy());
         }
         for (Hierarchy hierarchy : hierarchies) {
             if (hierarchy == null) {

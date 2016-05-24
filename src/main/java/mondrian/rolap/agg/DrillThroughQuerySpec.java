@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 import mondrian.rolap.*;
 import mondrian.rolap.sql.SqlQuery;
@@ -39,7 +40,7 @@ class DrillThroughQuerySpec extends AbstractQuerySpec {
         this.request = request;
         if (starPredicateSlicer != null) {
             this.listOfStarPredicates =
-                Collections.singletonList(starPredicateSlicer);
+                ImmutableList.of(starPredicateSlicer);
         } else {
             this.listOfStarPredicates = Collections.emptyList();
         }

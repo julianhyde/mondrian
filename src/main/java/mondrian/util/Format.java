@@ -12,6 +12,7 @@
 */
 package mondrian.util;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 
 import java.io.PrintWriter;
@@ -531,46 +532,46 @@ public class Format {
      */
     static class CompoundFormat extends BasicFormat
     {
-        final BasicFormat[] formats;
-        CompoundFormat(BasicFormat[] formats)
+        final ImmutableList<BasicFormat> formats;
+        CompoundFormat(List<BasicFormat> formats)
         {
-            this.formats = formats;
-            assert formats.length >= 2;
+            this.formats = ImmutableList.copyOf(formats);
+            assert formats.size() >= 2;
         }
 
         void format(double v, StringBuilder buf) {
-            for (int i = 0; i < formats.length; i++) {
-                formats[i].format(v, buf);
+            for (BasicFormat format1 : formats) {
+                format1.format(v, buf);
             }
         }
 
         void format(long v, StringBuilder buf) {
-            for (int i = 0; i < formats.length; i++) {
-                formats[i].format(v, buf);
+            for (BasicFormat format1 : formats) {
+                format1.format(v, buf);
             }
         }
 
         void format(String v, StringBuilder buf) {
-            for (int i = 0; i < formats.length; i++) {
-                formats[i].format(v, buf);
+            for (BasicFormat format1 : formats) {
+                format1.format(v, buf);
             }
         }
 
         void format(Date v, StringBuilder buf) {
-            for (int i = 0; i < formats.length; i++) {
-                formats[i].format(v, buf);
+            for (BasicFormat format1 : formats) {
+                format1.format(v, buf);
             }
         }
 
         void format(Calendar v, StringBuilder buf) {
-            for (int i = 0; i < formats.length; i++) {
-                formats[i].format(v, buf);
+            for (BasicFormat format1 : formats) {
+                format1.format(v, buf);
             }
         }
 
         boolean isApplicableTo(double n) {
-            for (int i = 0; i < formats.length; i++) {
-                if (!formats[i].isApplicableTo(n)) {
+            for (BasicFormat format1 : formats) {
+                if (!format1.isApplicableTo(n)) {
                     return false;
                 }
             }
@@ -1392,7 +1393,7 @@ public class Format {
 
     public static List<Token> getTokenList()
     {
-        return Collections.unmodifiableList(Arrays.asList(tokens));
+        return ImmutableList.copyOf(tokens);
     }
 
     /**
@@ -1406,7 +1407,7 @@ public class Format {
         return formatTokenToFormatString.get(code);
     }
 
-    private static final Token[] tokens = {
+    private static final List<Token> tokens = ImmutableList.of(
         nfe(
             FORMAT_NULL,
             NUMERIC,
@@ -1893,8 +1894,7 @@ public class Format {
             null,
             "Shows date and time if expression contains both. If expression is "
             + "only a date or a time, the missing information is not "
-            + "displayed."),
-    };
+            + "displayed."));
 
     // Named formats.  todo: Supply the translation strings.
     private enum MacroToken {
@@ -2755,10 +2755,7 @@ public class Format {
             alternateFormat = formatList.get(0);
             break;
         default:
-            alternateFormat =
-                new CompoundFormat(
-                    formatList.toArray(
-                        new BasicFormat[formatList.size()]));
+            alternateFormat = new CompoundFormat(formatList);
             break;
         }
         alternateFormatList.add(alternateFormat);
@@ -2766,8 +2763,8 @@ public class Format {
     }
 
     private Token findToken(String formatString, FormatType formatType) {
-        for (int i = tokens.length - 1; i > 0; i--) {
-            final Token token = tokens[i];
+        for (int i = tokens.size() - 1; i > 0; i--) {
+            final Token token = tokens.get(i);
             if (formatString.startsWith(token.token)
                 && token.compatibleWith(formatType))
             {

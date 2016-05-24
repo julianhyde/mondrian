@@ -86,7 +86,7 @@ public class ListTupleList extends AbstractEndToEndTupleList
 
     public void addTuple(Member... members) {
         assert mutable;
-        list.addAll(Arrays.asList(members));
+        Collections.addAll(list, members);
     }
 
     @Override

@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.AbstractCalc;
 import mondrian.calc.impl.GenericCalc;
@@ -430,7 +431,7 @@ public class RolapSchemaReader
     }
 
     public List<NameResolver.Namespace> getNamespaces() {
-        return Collections.<NameResolver.Namespace>singletonList(this);
+        return ImmutableList.<NameResolver.Namespace>of(this);
     }
 
     public OlapElement lookupChild(
@@ -546,7 +547,7 @@ public class RolapSchemaReader
         TupleConstraint constraint =
             sqlConstraintFactory.getLevelMembersConstraint(
                 context,
-                Collections.singletonList(rolapLevel));
+                ImmutableList.of(rolapLevel));
         final MemberReader memberReader =
             getMemberReader(level.getHierarchy());
         List<RolapMember> membersInLevel =

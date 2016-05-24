@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.aggmatcher;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.resource.MondrianResource;
 import mondrian.rolap.*;
@@ -1183,7 +1184,7 @@ public class JdbcSchema {
                 for (String tableType : tableTypes) {
                     loadTablesOfType(
                         databaseMetaData,
-                        Collections.singletonList(tableType),
+                        ImmutableList.of(tableType),
                         tableName);
                 }
             } else {

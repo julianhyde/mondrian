@@ -19,7 +19,8 @@ import mondrian.server.Locus;
 import mondrian.spi.PropertyFormatter;
 import mondrian.util.*;
 
-import org.apache.commons.collections.map.Flat3Map;
+import com.google.common.collect.ImmutableList;
+
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
@@ -575,7 +576,7 @@ public class RolapMemberBase
         if (key instanceof List) {
             return (List<Comparable>) key;
         } else {
-            return Collections.singletonList(key);
+            return ImmutableList.of(key);
         }
     }
 

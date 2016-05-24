@@ -9,6 +9,7 @@
 */
 package mondrian.test;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.TupleCollections;
 import mondrian.calc.TupleList;
 import mondrian.calc.impl.*;
@@ -48,7 +49,7 @@ public class TupleListTest extends FoodMartTestCase {
         TupleList list1 = new UnaryTupleList();
         assertEquals(list0, list1);
         final Member storeUsaMember = xxx("[Store].[USA]");
-        list1.add(Collections.singletonList(storeUsaMember));
+        list1.add(ImmutableList.of(storeUsaMember));
         assertFalse(list1.isEmpty());
         assertEquals(1, list1.size());
         assertNotSame(list0, list1);
@@ -71,7 +72,7 @@ public class TupleListTest extends FoodMartTestCase {
 
         // Null members OK (at least for TupleList).
         list1.addTuple(new Member[]{null});
-        list1.add(Collections.<Member>singletonList(null));
+        list1.add(ImmutableList.<Member>of(null));
     }
 
     public void testArrayTupleList() {

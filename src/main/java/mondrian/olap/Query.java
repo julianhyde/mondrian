@@ -20,7 +20,7 @@ import mondrian.server.*;
 import mondrian.spi.ProfileHandler;
 import mondrian.util.ArrayStack;
 
-import org.apache.commons.collections.collection.CompositeCollection;
+import com.google.common.collect.ImmutableList;
 
 import org.olap4j.impl.IdentifierParser;
 import org.olap4j.mdx.IdentifierSegment;
@@ -188,7 +188,7 @@ public class Query extends QueryPart {
         normalizeAxes();
         this.slicerAxis = slicerAxis;
         this.cellProps = cellProps;
-        this.parameters.addAll(Arrays.asList(parameters));
+        Collections.addAll(this.parameters, parameters);
         this.measuresMembers = new HashSet<Member>();
         // assume, for now, that cross joins on virtual cubes can be
         // processed natively; as we parse the query, we'll know otherwise
@@ -447,7 +447,7 @@ public class Query extends QueryPart {
         final Evaluator evaluator = RolapUtil.createEvaluator(statement);
         ExpCompiler compiler =
             createCompiler(
-                evaluator, validator, Collections.singletonList(resultStyle));
+                evaluator, validator, ImmutableList.of(resultStyle));
         compile(compiler);
     }
 
@@ -629,13 +629,14 @@ public class Query extends QueryPart {
      */
     private Collection<QueryAxis> allAxes() {
         if (slicerAxis == null) {
-            return Arrays.asList(axes);
+            return ImmutableList.copyOf(axes);
         } else {
-            //noinspection unchecked
-            return new CompositeCollection(
-                new Collection[] {
-                    Collections.singletonList(slicerAxis),
-                    Arrays.asList(axes)});
+          final ImmutableList.Builder<QueryAxis> builder =
+              ImmutableList.<QueryAxis>builder().add(slicerAxis);
+          for (QueryAxis axis : axes) {
+            builder.add(axis);
+          }
+          return builder.build();
         }
     }
 
@@ -683,11 +684,11 @@ public class Query extends QueryPart {
         // Chidren are axes, slicer, and formulas (in that order, to be
         // consistent with replaceChild).
         List<QueryPart> list = new ArrayList<QueryPart>();
-        list.addAll(Arrays.asList(axes));
+        Collections.addAll(list, axes);
         if (slicerAxis != null) {
             list.add(slicerAxis);
         }
-        list.addAll(Arrays.asList(formulas));
+        Collections.addAll(list, formulas);
         return list.toArray();
     }
 
@@ -1253,7 +1254,7 @@ public class Query extends QueryPart {
         final Validator validator = createValidator();
         List<ResultStyle> resultStyleList;
         resultStyleList =
-            Collections.singletonList(
+            ImmutableList.of(
                 resultStyle != null ? resultStyle : this.resultStyle);
         final ExpCompiler compiler =
             createCompiler(
@@ -1274,7 +1275,7 @@ public class Query extends QueryPart {
         return createCompiler(
             evaluator,
             validator,
-            Collections.singletonList(resultStyle));
+            ImmutableList.of(resultStyle));
     }
 
     private ExpCompiler createCompiler(
@@ -1876,7 +1877,7 @@ public class Query extends QueryPart {
                 return null;
             }
             return queryValidator.getQuery().lookupScopedNamedSet(
-                Collections.singletonList(Util.convert(segment)),
+                ImmutableList.of(Util.convert(segment)),
                 queryValidator.getScopeStack());
         }
     }

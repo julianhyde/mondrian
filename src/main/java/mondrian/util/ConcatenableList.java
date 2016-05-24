@@ -9,6 +9,8 @@
 */
 package mondrian.util;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.*;
 
 /**
@@ -140,7 +142,7 @@ public class ConcatenableList<T> extends AbstractList<T> {
 
     public boolean add(final T t) {
         if (this.plainList == null) {
-            return this.lists.add(Collections.singletonList(t));
+            return this.lists.add(ImmutableList.of(t));
         } else {
             return this.plainList.add(t);
         }

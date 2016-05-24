@@ -9,10 +9,11 @@
 */
 package mondrian.rolap;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 import mondrian.olap.*;
 import mondrian.util.Pair;
-
-import org.apache.commons.collections.iterators.FilterIterator;
 
 import org.olap4j.impl.NamedListImpl;
 import org.olap4j.metadata.NamedList;
@@ -143,19 +144,15 @@ public class RolapMeasureGroup {
     public Iterable<RolapCubeDimension> nonJoiningDimensions(
         final Iterable<? extends RolapCubeDimension> otherDims)
     {
-        return new Iterable<RolapCubeDimension>() {
-            public Iterator<RolapCubeDimension> iterator() {
-                //noinspection unchecked
-                return (Iterator<RolapCubeDimension>) new FilterIterator(
-                    otherDims.iterator(),
-                    new Util.Predicate1<RolapCubeDimension>() {
-                        public boolean test(RolapCubeDimension dimension) {
-                            return !dimensionMap3.containsKey(dimension)
-                                && !dimension.isMeasures();
-                        }
-                    });
-            }
-        };
+        //noinspection unchecked
+        return Iterables.filter(
+            (Iterable<RolapCubeDimension>) otherDims,
+            new Predicate<RolapCubeDimension>() {
+                public boolean apply(RolapCubeDimension dimension) {
+                    return !dimensionMap3.containsKey(dimension)
+                        && !dimension.isMeasures();
+                }
+            });
     }
 
     /**

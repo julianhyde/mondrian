@@ -21,9 +21,9 @@ import mondrian.test.TestContext;
  */
 public class QueryTest extends FoodMartTestCase {
     private QueryPart[] cellProps = {
-        new CellProperty(Id.Segment.toList("Value")),
-        new CellProperty(Id.Segment.toList("Formatted_Value")),
-        new CellProperty(Id.Segment.toList("Format_String")),
+        new CellProperty(Id.Segment.listOf("Value")),
+        new CellProperty(Id.Segment.listOf("Formatted_Value")),
+        new CellProperty(Id.Segment.listOf("Format_String")),
     };
     private QueryAxis[] axes = new QueryAxis[0];
     private Formula[] formulas = new Formula[0];

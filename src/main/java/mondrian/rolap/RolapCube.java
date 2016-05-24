@@ -542,9 +542,8 @@ public class RolapCube extends CubeBase {
         String name,
         Calc calc)
     {
-        final List<Id.Segment> segmentList = new ArrayList<Id.Segment>();
-        segmentList.addAll(
-            Util.parseIdentifier(hierarchy.getUniqueName()));
+        final List<Id.Segment> segmentList =
+            Util.parseIdentifier(hierarchy.getUniqueName());
         segmentList.add(new Id.NameSegment(name));
         final Formula formula = new Formula(
             new Id(segmentList),

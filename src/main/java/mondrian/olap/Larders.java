@@ -9,6 +9,7 @@
 */
 package mondrian.olap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.util.Pair;
 
 import org.olap4j.impl.*;
@@ -142,10 +143,10 @@ public class Larders {
         return new DelegatingLarder((LarderImpl) larder) {
             public String get(LocalizedProperty prop, Locale locale) {
                 final String value = super.get(prop, locale);
-                if (value != null) {
-                    return name + "." + value;
+                if (value == null) {
+                    return null;
                 }
-                return value;
+                return name + "." + value;
             }
 
             @Override
@@ -232,7 +233,7 @@ public class Larders {
         }
 
         public List<Object> getElements() {
-            return Collections.emptyList();
+            return ImmutableList.of();
         }
     }
 
@@ -245,6 +246,7 @@ public class Larders {
         }
 
         public List<Object> getElements() {
+            // Can not use ImmutableList. Some of the elements may be null
             return Arrays.asList(elements);
         }
 

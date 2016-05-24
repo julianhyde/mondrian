@@ -9,6 +9,8 @@
 */
 package mondrian.util;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.*;
 
 /**
@@ -73,7 +75,7 @@ public class DirectedGraph<N, E extends DirectedGraph.Edge<N>> {
      */
     public List<List<E>> findAllPaths(N from, N to) {
         if (from.equals(to)) {
-            return Collections.singletonList(Collections.<E>emptyList());
+            return ImmutableList.<List<E>>of(ImmutableList.<E>of());
         }
         List<E> path = new ArrayList<E>();
         Set<N> activeNodes = new HashSet<N>();
@@ -92,8 +94,8 @@ public class DirectedGraph<N, E extends DirectedGraph.Edge<N>> {
      */
     public List<List<Pair<E, Boolean>>> findAllPathsUndirected(N from, N to) {
         if (from.equals(to)) {
-            return Collections.singletonList(
-                Collections.<Pair<E, Boolean>>emptyList());
+            return ImmutableList.<List<Pair<E, Boolean>>>of(
+                ImmutableList.<Pair<E, Boolean>>of());
         }
         List<Pair<E, Boolean>> path = new ArrayList<Pair<E, Boolean>>();
         Set<N> activeNodes = new HashSet<N>();

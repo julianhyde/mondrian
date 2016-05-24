@@ -19,8 +19,10 @@ import mondrian.rolap.sql.SqlQuery;
 import mondrian.server.Locus;
 import mondrian.spi.*;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.log4j.Logger;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.MapMaker;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -210,8 +212,7 @@ public class RolapStar {
     public static class Bar {
         /** Holds all thread-local aggregations of this star. */
         private final Map<AggregationKey, Aggregation> aggregations =
-            new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.WEAK);
-
+            new MapMaker().weakKeys().weakValues().makeMap();
         private final List<SoftReference<SegmentWithData>> segmentRefs =
             new ArrayList<SoftReference<SegmentWithData>>();
     }
@@ -1135,8 +1136,8 @@ public class RolapStar {
             Dialect.Datatype datatype =
                 measure.getAggregator().deriveDatatype(
                     expr == null
-                        ? Collections.<Dialect.Datatype>emptyList()
-                        : Collections.singletonList(expr.getDatatype()));
+                        ? ImmutableList.<Dialect.Datatype>of()
+                        : ImmutableList.of(expr.getDatatype()));
             if (datatype == null
                 && expr != null)
             {

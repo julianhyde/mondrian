@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.ResultStyle;
 import mondrian.olap.*;
 import mondrian.rolap.RolapNative.*;
@@ -1048,14 +1049,7 @@ public class BatchTestCase extends FoodMartTestCase {
 
     protected static <T> List<T> list(T... ts) {
         // Always unmodifiable, whatever the length.
-        switch (ts.length) {
-        case 0:
-            return Collections.emptyList();
-        case 1:
-            return Collections.singletonList(ts[0]);
-        default:
-            return Collections.unmodifiableList(Arrays.asList(ts));
-        }
+        return ImmutableList.copyOf(ts);
     }
 
     /**

@@ -9,6 +9,7 @@
 */
 package mondrian.tui;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.olap.Util.ByteMatcher;
 import mondrian.rolap.RolapConnectionProperties;
@@ -24,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.eigenbase.xom.*;
 import org.eigenbase.xom.Parser;
 
+import com.google.common.cache.Cache;
+
 import org.olap4j.metadata.XmlaConstants.ResponseMimeType;
 import org.olap4j.xmla.XmlaPropertyDefinition;
 
@@ -32,6 +35,8 @@ import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -698,7 +703,7 @@ public class XmlaSupport {
         String connectString,
         Map<String, String> catalogNameUrls,
         String cbClassName,
-        Map<List<String>, Servlet> servletCache)
+        Cache<List<String>, Servlet> servletCache)
         throws IOException, ServletException, SAXException
     {
         String requestText = XmlaSupport.readFile(file);
@@ -727,7 +732,7 @@ public class XmlaSupport {
         Map<String, String> catalogNameUrls,
         String cbClassName,
         Role role,
-        Map<List<String>, Servlet> servletCache)
+        Cache<List<String>, Servlet> servletCache)
         throws IOException, ServletException, SAXException
     {
         String requestText = XmlUtil.toString(doc, false);
@@ -756,7 +761,7 @@ public class XmlaSupport {
         Map<String, String> catalogNameUrls,
         String cbClassName,
         Role role,
-        Map<List<String>, Servlet> servletCache)
+        Cache<List<String>, Servlet> servletCache)
         throws IOException, ServletException, SAXException
     {
         // read soap file
@@ -810,7 +815,7 @@ public class XmlaSupport {
         String connectString,
         Map<String, String> catalogNameUrls,
         String cbClassName,
-        Map<List<String>, Servlet> servletCache)
+        Cache<List<String>, Servlet> servletCache)
         throws IOException, ServletException, SAXException
     {
         // Create datasource file and put datasource xml into it.
@@ -822,33 +827,35 @@ public class XmlaSupport {
     }
 
     private static Servlet getServlet(
-        String cbClassName,
-        String dataSourceText,
-        Map<List<String>, Servlet> cache)
+        final String cbClassName,
+        final String dataSourceText,
+        final Cache<List<String>, Servlet> cache)
         throws ServletException
     {
-        final List<String> key =
-            Arrays.asList(
-                dataSourceText + cbClassName);
-        Servlet servlet = cache.get(key);
-        if (servlet != null) {
-            return servlet;
+        final List<String> key = ImmutableList.of(dataSourceText + cbClassName);
+        try {
+            return cache.get(
+                key,
+                new Callable<Servlet>() {
+                    public Servlet call() throws Exception {
+                        MockServletContext servletContext = new MockServletContext();
+                        MockServletConfig servletConfig =
+                            new MockServletConfig(servletContext);
+                        servletConfig.addInitParameter(
+                            XmlaServlet.PARAM_CALLBACKS, cbClassName);
+                        servletConfig.addInitParameter(
+                            XmlaServlet.PARAM_CHAR_ENCODING, "UTF-8");
+                        servletConfig.addInitParameter(
+                            XmlaServlet.PARAM_DATASOURCES_CONFIG,
+                            "inline:" + dataSourceText);
+                        Servlet servlet = new MondrianXmlaServlet();
+                        servlet.init(servletConfig);
+                        return servlet;
+                    }
+                });
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e.getCause());
         }
-        MockServletContext servletContext = new MockServletContext();
-        MockServletConfig servletConfig = new MockServletConfig(servletContext);
-        servletConfig.addInitParameter(
-            XmlaServlet.PARAM_CALLBACKS, cbClassName);
-        servletConfig.addInitParameter(
-            XmlaServlet.PARAM_CHAR_ENCODING, "UTF-8");
-        servletConfig.addInitParameter(
-            XmlaServlet.PARAM_DATASOURCES_CONFIG,
-            "inline:" + dataSourceText);
-        servlet = new MondrianXmlaServlet();
-        servlet.init(servletConfig);
-        if (cache != null) {
-            cache.put(key, servlet);
-        }
-        return servlet;
     }
 
     public static byte[] processSoapXmla(

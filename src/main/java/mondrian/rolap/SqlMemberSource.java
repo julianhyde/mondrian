@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.TupleList;
 import mondrian.olap.*;
 import mondrian.olap.Member.MemberType;
@@ -295,7 +296,7 @@ class SqlMemberSource
         String sql =
             makeKeysSql(
                 layoutBuilder,
-                Collections.singletonList(
+                ImmutableList.of(
                     Util.last(hierarchy.levelList).attribute.getKeyList()));
         List<SqlStatement.Type> types = layoutBuilder.types;
         SqlStatement stmt =
@@ -552,7 +553,7 @@ class SqlMemberSource
         TupleConstraint constraint)
     {
         if (level.isAll()) {
-            return Collections.singletonList(hierarchy.getAllMember());
+            return ImmutableList.of(hierarchy.getAllMember());
         }
         final TupleReader tupleReader = new SqlTupleReader(constraint);
         tupleReader.addLevelMembers(level, this, null);
@@ -736,7 +737,7 @@ class SqlMemberSource
             new RolapSchema.SqlQueryBuilder(
                 sqlQuery,
                 layoutBuilder,
-                Collections.singletonList(
+                ImmutableList.of(
                     Util.transform(
                         fn,
                         member.getLevel().attribute.getKeyList())));
@@ -1400,7 +1401,7 @@ class SqlMemberSource
             new RolapSchema.SqlQueryBuilder(
                 sqlQuery,
                 layoutBuilder,
-                Collections.singletonList(
+                ImmutableList.of(
                     member.getLevel().attribute.getKeyList()));
         Util.assertTrue(
             member.isAll(),
@@ -1468,7 +1469,7 @@ class SqlMemberSource
             new RolapSchema.SqlQueryBuilder(
                 sqlQuery,
                 layoutBuilder,
-                Collections.singletonList(
+                ImmutableList.of(
                     member.getLevel().attribute.getKeyList()));
         RolapLevel level = member.getLevel();
 

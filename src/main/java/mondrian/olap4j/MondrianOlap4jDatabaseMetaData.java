@@ -9,6 +9,7 @@
 */
 package mondrian.olap4j;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 import mondrian.rolap.RolapConnection;
 import mondrian.server.Locus;
@@ -95,7 +96,7 @@ abstract class MondrianOlap4jDatabaseMetaData implements OlapDatabaseMetaData {
             Object value = patternValues[i * 2 + 1];
             if (value != null) {
                 if (value instanceof String) {
-                    value = Collections.singletonList((String) value);
+                    value = ImmutableList.of((String) value);
                 }
                 restrictionMap.put(key, value);
             }
@@ -706,7 +707,7 @@ abstract class MondrianOlap4jDatabaseMetaData implements OlapDatabaseMetaData {
                     CATALOG_COMP))
         {
             rowList.add(
-                Collections.<Object>singletonList(catalog.getName()));
+                ImmutableList.<Object>of(catalog.getName()));
         }
         return olap4jConnection.factory.newFixedResultSet(
             olap4jConnection, headerList, rowList);

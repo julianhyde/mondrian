@@ -313,7 +313,7 @@ public class RolapNativeCrossJoin extends RolapNativeSet {
     {
         Set<CrossJoinArg> joinArgs =
             crossJoinArgFactory().buildConstraintFromAllAxes(evaluator);
-        joinArgs.addAll(Arrays.asList(cargs));
+        Collections.addAll(joinArgs, cargs);
         return joinArgs.toArray(new CrossJoinArg[joinArgs.size()]);
     }
 

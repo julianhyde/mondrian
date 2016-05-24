@@ -10,6 +10,7 @@
 */
 package mondrian.olap.type;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.mdx.UnresolvedFunCall;
 import mondrian.olap.*;
 import mondrian.olap.fun.Resolver;
@@ -507,7 +508,7 @@ public class TypeUtil {
             }
             return hierarchyList;
         } else {
-            return Collections.singletonList(type.getHierarchy());
+            return ImmutableList.of(type.getHierarchy());
         }
     }
 

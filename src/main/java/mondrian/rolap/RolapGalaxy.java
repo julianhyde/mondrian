@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.util.Pair;
 
@@ -445,7 +446,7 @@ public class RolapGalaxy {
         {
             BitKey bitKey = galaxy.prototypeBitKey.emptyCopy();
             List<RolapSchema.PhysExpr> key =
-                Collections.singletonList(measure.getExpression());
+                ImmutableList.of(measure.getExpression());
             for (RolapStar.Table table : star.getFactTable().getChildren()) {
                 if (table.getPath().getLinks().get(0).columnList.equals(key)) {
                     setTransitive(table, bitKey);

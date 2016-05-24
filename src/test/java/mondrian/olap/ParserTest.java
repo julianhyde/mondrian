@@ -10,6 +10,7 @@
 */
 package mondrian.olap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.mdx.QueryPrintWriter;
 import mondrian.mdx.UnresolvedFunCall;
 import mondrian.olap.fun.BuiltinFunTable;
@@ -687,7 +688,7 @@ public class ParserTest extends FoodMartTestCase {
         // must have at least one segment
         Id id;
         try {
-            id = new Id(Collections.<Id.Segment>emptyList());
+            id = new Id(ImmutableList.<Id.Segment>of());
             fail("expected exception, got " + id);
         } catch (IllegalArgumentException e) {
             // ok

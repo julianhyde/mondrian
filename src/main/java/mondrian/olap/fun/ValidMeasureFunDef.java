@@ -9,6 +9,7 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.GenericCalc;
 import mondrian.mdx.ResolvedFunCall;
@@ -67,7 +68,7 @@ public class ValidMeasureFunDef extends FunDefBase
             final List<Member> memberList;
             if (calc.isWrapperFor(MemberCalc.class)) {
                 memberList =
-                    Collections.singletonList(
+                    ImmutableList.of(
                         calc.unwrap(MemberCalc.class)
                             .evaluateMember(evaluator));
             } else {

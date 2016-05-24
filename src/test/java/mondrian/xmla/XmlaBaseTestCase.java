@@ -15,6 +15,9 @@ import mondrian.test.*;
 import mondrian.tui.*;
 import mondrian.util.LockBox;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import junit.framework.AssertionFailedError;
 
 import org.olap4j.metadata.XmlaConstants;
@@ -823,18 +826,18 @@ System.out.println("Got CONTINUE");
                 server.shutdown();
             }
             serverCache.clear();
-            for (Servlet servlet : servletCache.values()) {
+            for (Servlet servlet : servletCache.asMap().values()) {
                 servlet.destroy();
             }
-            servletCache.clear();
+            servletCache.invalidateAll();
         }
 
         /**
          * Cache servlet instances between test invocations. Prevents creation
          * of many spurious MondrianServer instances.
          */
-        private final Map<List<String>, Servlet> servletCache =
-            new HashMap<List<String>, Servlet>();
+        private final Cache<List<String>, Servlet> servletCache =
+            CacheBuilder.newBuilder().build();
 
         /**
          * Cache servlet instances between test invocations. Prevents creation

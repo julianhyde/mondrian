@@ -11267,8 +11267,8 @@ public class FunctionTest extends FoodMartTestCase {
      * specification</a>.
      */
     public void testDumpFunctions() throws IOException {
-        final List<FunInfo> funInfoList = new ArrayList<FunInfo>();
-        funInfoList.addAll(BuiltinFunTable.instance().getFunInfoList());
+        final List<FunInfo> funInfoList = new ArrayList<FunInfo>(
+            BuiltinFunTable.instance().getFunInfoList());
 
         // Add some UDFs.
         funInfoList.add(

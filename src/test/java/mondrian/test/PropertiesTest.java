@@ -32,7 +32,7 @@ public class PropertiesTest extends FoodMartTestCase {
         SchemaReader scr = salesCube.getSchemaReader(null).withLocus();
         Member member =
             scr.getMemberByUniqueName(
-                Id.Segment.toList("Customers", "All Customers", "USA", "CA"),
+                Id.Segment.listOf("Customers", "All Customers", "USA", "CA"),
                 true);
         final boolean caseSensitive =
             MondrianProperties.instance().CaseSensitive.get();
@@ -170,7 +170,7 @@ public class PropertiesTest extends FoodMartTestCase {
         SchemaReader scr = salesCube.getSchemaReader(null).withLocus();
         Member memberForCardinalityTest =
             scr.getMemberByUniqueName(
-                Id.Segment.toList("Marital Status", "All Marital Status"),
+                Id.Segment.listOf("Marital Status", "All Marital Status"),
                 true);
         Integer intPropValue =
             (Integer) memberForCardinalityTest.getPropertyValue(

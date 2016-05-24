@@ -23,7 +23,7 @@ public class CellPropertyTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        cellProperty = new CellProperty(Id.Segment.toList("Format_String"));
+        cellProperty = new CellProperty(Id.Segment.listOf("Format_String"));
     }
 
     public void testIsNameEquals() {

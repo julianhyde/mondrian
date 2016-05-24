@@ -135,7 +135,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         Cube cube = tc.getConnection().getSchema().lookupCube(cubeName, true);
         SchemaReader scr = cube.getSchemaReader(null).withLocus();
         return (RolapMember)
-            scr.getMemberByUniqueName(Id.Segment.toList(names), true);
+            scr.getMemberByUniqueName(Id.Segment.listOf(names), true);
     }
 
     /**

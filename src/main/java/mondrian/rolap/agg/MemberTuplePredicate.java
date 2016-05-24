@@ -9,6 +9,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 import mondrian.rolap.*;
 import mondrian.spi.Dialect;
@@ -206,7 +207,7 @@ public class MemberTuplePredicate implements StarPredicate {
 
         RelOp(String op) {
             this.op = op;
-            this.singletonList = Collections.singletonList(this);
+            this.singletonList = ImmutableList.of(this);
         }
 
         String getOp() {

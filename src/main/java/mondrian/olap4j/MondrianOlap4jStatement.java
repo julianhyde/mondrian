@@ -9,6 +9,7 @@
 */
 package mondrian.olap4j;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.ResultStyle;
 import mondrian.olap.*;
 import mondrian.rolap.RolapConnection;
@@ -16,7 +17,6 @@ import mondrian.server.*;
 import mondrian.util.Pair;
 
 import org.olap4j.*;
-import org.olap4j.layout.RectangularCellSetFormatter;
 import org.olap4j.mdx.*;
 
 import java.io.PrintWriter;
@@ -112,9 +112,9 @@ abstract class MondrianOlap4jStatement
             String plan = explainInternal(((Explain) parseTree).getQuery());
             return olap4jConnection.factory.newFixedResultSet(
                 olap4jConnection,
-                Collections.singletonList("PLAN"),
-                Collections.singletonList(
-                    Collections.<Object>singletonList(plan)));
+                ImmutableList.of("PLAN"),
+                ImmutableList.<List<Object>>of(
+                    ImmutableList.<Object>of(plan)));
         } else {
             throw olap4jConnection.helper.createException(
                 "Query does not have relational result. Use a DRILLTHROUGH "

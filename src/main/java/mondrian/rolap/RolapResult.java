@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.*;
 import mondrian.mdx.*;
@@ -850,7 +851,7 @@ public class RolapResult extends ResultBase {
             // the same as an empty axis).
             return new DelegatingTupleList(
                 0,
-                Collections.singletonList(Collections.<Member>emptyList()));
+                ImmutableList.<List<Member>>of(ImmutableList.<Member>of()));
         }
         final int savepoint = evaluator.savepoint();
         try {

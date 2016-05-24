@@ -11,6 +11,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Id;
 import mondrian.olap.Util;
 import mondrian.rolap.TupleReader.MemberBuilder;
@@ -157,7 +158,7 @@ public class SmartMemberReader implements MemberReader {
         MemberChildrenConstraint constraint)
     {
         List<RolapMember> parentMembers =
-            Collections.singletonList(parentMember);
+            ImmutableList.of(parentMember);
         getMemberChildren(parentMembers, children, constraint);
     }
 

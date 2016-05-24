@@ -9,6 +9,7 @@
 */
 package mondrian.olap4j;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.OlapElement;
 
 import org.olap4j.OlapConnection;
@@ -70,10 +71,8 @@ class MondrianOlap4jDatabase
         this.providerName = providerName;
         this.url = url;
         this.dataSourceInfo = dataSourceInfo;
-        this.providerType =
-            Collections.unmodifiableList(providerType);
-        this.authenticationMode =
-            Collections.unmodifiableList(authenticationMode);
+        this.providerType = ImmutableList.copyOf(providerType);
+        this.authenticationMode = ImmutableList.copyOf(authenticationMode);
         this.catalogs = Olap4jUtil.unmodifiableNamedList(catalogs);
     }
 

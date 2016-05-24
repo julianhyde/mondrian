@@ -12,7 +12,7 @@ package mondrian.calc;
 import mondrian.olap.Util;
 import mondrian.util.Bug;
 
-import org.apache.commons.collections.map.CompositeMap;
+import com.google.common.collect.Iterables;
 
 import java.io.PrintWriter;
 import java.util.IdentityHashMap;
@@ -57,26 +57,28 @@ public class CalcWriter {
     {
         writer.print(getLinePrefix());
         writer.print(name);
+        Iterable<Map.Entry<String, Object>> entries = arguments.entrySet();
         final Map<String, Object> parentArgs = parentArgMap.get(calc);
         if (parentArgs != null && !parentArgs.isEmpty()) {
             //noinspection unchecked
-            arguments = new CompositeMap(arguments, parentArgs);
+            entries = Iterables.concat(entries, parentArgs.entrySet());
         }
-        if (!arguments.isEmpty()) {
-            writer.print("(");
-            int k = 0;
-            for (Map.Entry<String, Object> entry : arguments.entrySet()) {
-                if (k++ > 0) {
-                    writer.print(", ");
-                }
-                writer.print(entry.getKey());
-                writer.print("=");
-                writer.print(entry.getValue());
+        int k = 0;
+        for (Map.Entry<String, Object> entry : entries) {
+            if (k++ > 0) {
+                writer.print(", ");
+            } else {
+                writer.print(")");
             }
+            writer.print(entry.getKey());
+            writer.print("=");
+            writer.print(entry.getValue());
+        }
+        if (k > 0) {
             writer.print(")");
         }
         writer.println();
-        int k = 0;
+        k = 0;
         for (Calc childCalc : childCalcs) {
             visitChild(k++, childCalc);
         }

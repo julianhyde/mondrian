@@ -9,6 +9,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.resource.MondrianResource;
 import mondrian.rolap.agg.SegmentCacheManager;
@@ -625,7 +626,7 @@ public class CacheControlImpl implements CacheControl {
     public MemberSet createMemberSet(Member member, boolean descendants)
     {
         return new SimpleMemberSet(
-            Collections.singletonList((RolapMember) member),
+            ImmutableList.of((RolapMember) member),
             descendants);
     }
 
@@ -768,7 +769,7 @@ public class CacheControlImpl implements CacheControl {
         // TODO: validate that prop NAME exists for Level of MEMBER
         return new ChangeMemberPropsCommand(
             new SimpleMemberSet(
-                Collections.singletonList((RolapMember) member),
+                ImmutableList.of((RolapMember) member),
                 false),
             Collections.singletonMap(name, value));
     }
@@ -967,7 +968,7 @@ public class CacheControlImpl implements CacheControl {
         }
 
         public List<Hierarchy> getDimensionality() {
-            return Collections.singletonList(hierarchy);
+            return ImmutableList.of(hierarchy);
         }
 
         public String toString() {
@@ -1031,7 +1032,7 @@ public class CacheControlImpl implements CacheControl {
         }
 
         public List<Hierarchy> getDimensionality() {
-            return Collections.<Hierarchy>singletonList(level.getHierarchy());
+            return ImmutableList.<Hierarchy>of(level.getHierarchy());
         }
 
         public RolapLevel getLevel() {
@@ -1095,25 +1096,25 @@ public class CacheControlImpl implements CacheControl {
             new ArrayList<CellRegionImpl>();
 
         CrossjoinCellRegion(List<CellRegionImpl> regions) {
-            final List<Hierarchy> dimensionality = new ArrayList<Hierarchy>();
-            compute(regions, components, dimensionality);
-            dimensions = Collections.unmodifiableList(dimensionality);
+            final Set<Hierarchy> dimensionSet = new LinkedHashSet<Hierarchy>();
+            compute(regions, components, dimensionSet);
+            dimensions = ImmutableList.copyOf(dimensionSet);
         }
 
         private static void compute(
             List<CellRegionImpl> regions,
             List<CellRegionImpl> components,
-            List<Hierarchy> dimensionality)
+            Set<Hierarchy> dimensionSet)
         {
-            final Set<Hierarchy> dimensionSet = new HashSet<Hierarchy>();
             for (CellRegionImpl region : regions) {
                 addComponents(region, components);
 
                 final List<Hierarchy> regionDimensionality =
                     region.getDimensionality();
-                dimensionality.addAll(regionDimensionality);
+                final int expected =
+                    dimensionSet.size() + regionDimensionality.size();
                 dimensionSet.addAll(regionDimensionality);
-                assert dimensionSet.size() == dimensionality.size()
+                assert dimensionSet.size() == expected
                     : "dimensions in common";
             }
         }
@@ -1389,7 +1390,7 @@ public class CacheControlImpl implements CacheControl {
         public final RolapHierarchy hierarchy;
 
         SimpleMemberSet(List<RolapMember> members, boolean descendants) {
-            this.members = new ArrayList<RolapMember>(members);
+            this.members = ImmutableList.copyOf(members);
             stripMemberList(this.members);
             this.descendants = descendants;
             this.hierarchy =

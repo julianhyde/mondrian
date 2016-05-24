@@ -10,6 +10,7 @@
 */
 package mondrian.olap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.mdx.*;
 import mondrian.olap.fun.FunUtil;
 import mondrian.olap.fun.Resolver;
@@ -19,7 +20,6 @@ import mondrian.rolap.*;
 import mondrian.spi.*;
 import mondrian.util.*;
 
-import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
 
 import org.eigenbase.xom.XOMUtil;
@@ -1678,9 +1678,10 @@ public class Util extends XOMUtil {
     private static <T> List<T> _flatList(T[] t, boolean copy) {
         switch (t.length) {
         case 0:
+            //noinspection unchecked
             return COMPARABLE_EMPTY_LIST;
         case 1:
-            return Collections.singletonList(t[0]);
+            return ImmutableList.of(t[0]);
         case 2:
             return new Flat2List<T>(t[0], t[1]);
         case 3:
@@ -1690,8 +1691,10 @@ public class Util extends XOMUtil {
             //   write our own implementation and reduce creation overhead a
             //   bit.
             if (copy) {
-                return new ComparableList(Arrays.asList(t.clone()));
+                //noinspection unchecked
+                return new ComparableList(ImmutableList.copyOf(t));
             } else {
+                //noinspection unchecked
                 return new ComparableList(Arrays.asList(t));
             }
         }
@@ -1708,9 +1711,10 @@ public class Util extends XOMUtil {
     public static <T> List<T> flatList(List<T> t) {
         switch (t.size()) {
         case 0:
+            //noinspection unchecked
             return COMPARABLE_EMPTY_LIST;
         case 1:
-            return Collections.singletonList(t.get(0));
+            return ImmutableList.of(t.get(0));
         case 2:
             return new Flat2List<T>(t.get(0), t.get(1));
         case 3:
@@ -1827,11 +1831,11 @@ public class Util extends XOMUtil {
     public static List<Id.Segment> convert(
         List<IdentifierSegment> olap4jSegmentList)
     {
-        final List<Id.Segment> list = new ArrayList<Id.Segment>();
+        final ImmutableList.Builder<Id.Segment> list = ImmutableList.builder();
         for (IdentifierSegment olap4jSegment : olap4jSegmentList) {
             list.add(convert(olap4jSegment));
         }
-        return list;
+        return list.build();
     }
 
     /**
@@ -1967,9 +1971,10 @@ public class Util extends XOMUtil {
     public static <T extends Comparable> List<T> sort(
         Collection<T> collection)
     {
-        Object[] a = collection.toArray(new Object[collection.size()]);
+        //noinspection unchecked
+        T[] a = collection.toArray((T[]) new Object[collection.size()]);
         Arrays.sort(a);
-        return cast(Arrays.asList(a));
+        return ImmutableList.copyOf(a);
     }
 
     /**
@@ -1985,10 +1990,10 @@ public class Util extends XOMUtil {
         Collection<T> collection,
         Comparator<T> comparator)
     {
-        Object[] a = collection.toArray(new Object[collection.size()]);
         //noinspection unchecked
-        Arrays.sort(a, (Comparator<? super Object>) comparator);
-        return cast(Arrays.asList(a));
+        T[] a = collection.toArray((T[]) new Object[collection.size()]);
+        Arrays.sort(a, comparator);
+        return cast(ImmutableList.copyOf(a));
     }
 
     public static List<IdentifierSegment> toOlap4j(
@@ -2386,7 +2391,7 @@ public class Util extends XOMUtil {
      * @param <V> Value type
      */
     public static <K, V> void putMulti(Map<K, List<V>> map, K k, V v) {
-        List<V> list = map.put(k, Collections.singletonList(v));
+        List<V> list = map.put(k, ImmutableList.of(v));
         if (list != null) {
             if (list.size() == 1) {
                 list = new ArrayList<V>(list);
@@ -3640,7 +3645,7 @@ public class Util extends XOMUtil {
         final Object[] array,
         final Class<E> includeFilter)
     {
-        return filter(Arrays.asList(array), includeFilter);
+        return filter(ImmutableList.copyOf(array), includeFilter);
     }
 
     /**
@@ -4190,7 +4195,7 @@ public class Util extends XOMUtil {
      * <p>The list is read-only, cannot be modified or resized, and none
      * of the elements can be null.
      *
-     * <p>The list is created via {@link Util#flatList(Object[])}.
+     * <p>The list is created via {@link Util#flatList(java.util.List)}.
      *
      * @see mondrian.olap.Util.Flat2List
      * @param <T>
@@ -4397,7 +4402,7 @@ public class Util extends XOMUtil {
      * @param <PT> Parameter type
      */
     public static abstract class Predicate1<PT>
-        implements Predicate, Function1<PT, Boolean>
+        implements Function1<PT, Boolean>
     {
         public Boolean apply(PT param) {
             return test(param);

@@ -20,8 +20,9 @@ import mondrian.resource.MondrianResource;
 import mondrian.rolap.RolapHierarchy;
 import mondrian.util.*;
 
-import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.collections.comparators.ComparatorChain;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
+
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -561,7 +562,7 @@ public class FunUtil extends Util {
             }
         }
 
-        ComparatorChain chain = new ComparatorChain();
+        List<Comparator<Member>> chain = new ArrayList<Comparator<Member>>();
         for (SortKeySpec key : keySpecList) {
             boolean brk = key.direction.brk;
             MemberComparator comp;
@@ -573,10 +574,10 @@ public class FunUtil extends Util {
                     evaluator, key.key, key.direction.descending);
             }
             comp.preloadValues(memberList);
-            chain.addComparator(comp.wrap(), false);
+            chain.add(comp.wrap());
         }
 
-        Collections.sort(memberList, chain);
+        Collections.sort(memberList, Ordering.compound(chain));
         return memberList;
     }
 
@@ -638,8 +639,7 @@ public class FunUtil extends Util {
             tupleArrayList.toArray(new List[tupleArrayList.size()]);
         final DelegatingTupleList result =
             new DelegatingTupleList(
-                tupleIterable.getArity(),
-                Arrays.asList(tuples));
+                tupleIterable.getArity(), ImmutableList.copyOf(tupleArrayList));
 
         Comparator<List<Member>> comparator;
         if (brk) {
@@ -733,7 +733,8 @@ public class FunUtil extends Util {
             return tupleList;
         }
 
-        ComparatorChain chain = new ComparatorChain();
+        List<Comparator<List<Member>>> chain =
+            new ArrayList<Comparator<List<Member>>>();
         for (SortKeySpec key : keySpecList) {
             boolean brk = key.direction.brk;
             boolean orderByKey =
@@ -742,26 +743,33 @@ public class FunUtil extends Util {
                 TupleExpMemoComparator comp =
                     new BreakTupleComparator(evaluator, key.key, arity);
                 comp.preloadValues(tupleList);
-                chain.addComparator(comp.wrap(), key.direction.descending);
+                chain.add(reverseIf(comp.wrap(), key.direction.descending));
             } else if (orderByKey) {
                 TupleExpMemoComparator comp =
                     new HierarchicalTupleKeyComparator(
                         evaluator, key.key, arity);
                 comp.preloadValues(tupleList);
-                chain.addComparator(comp.wrap(), key.direction.descending);
+                chain.add(reverseIf(comp.wrap(), key.direction.descending));
             } else {
                 TupleExpComparator comp =
                     new HierarchicalTupleComparator(
                         evaluator, key.key, arity, key.direction.descending);
-                chain.addComparator(comp.wrap(), false);
+                chain.add(comp.wrap());
             }
         }
 
-        Collections.sort(tupleList, chain);
+        Collections.sort(tupleList, Ordering.compound(chain));
         return tupleList;
     }
 
-    /**
+  private static <E> Comparator<E> reverseIf(
+      Comparator<E> wrap,
+      boolean descending)
+  {
+      return descending ? wrap : Collections.reverseOrder(wrap);
+  }
+
+  /**
      * Partially sorts a list of Tuples by the value of an applied expression.
      *
      * <p>Avoids sorting the whole list, finds only the <i>n</i> top (or bottom)
@@ -2213,7 +2221,7 @@ public class FunUtil extends Util {
     {
         if (comp == null) {
             //noinspection unchecked
-            comp = (Comparator<T>) ComparatorUtils.naturalComparator();
+            comp = (Comparator<T>) Ordering.natural();
         }
         new Quicksorter<T>(items, comp).partialSort(limit);
     }
@@ -2455,13 +2463,13 @@ public class FunUtil extends Util {
         }
 
         int n = queue.size();
-        final Object[] elements = new Object[n];
+        //noinspection unchecked
+        final T[] elements = (T[]) new Object[n];
         while (n > 0) {
             elements[--n] = queue.poll().t;
         }
         assert queue.isEmpty();
-        //noinspection unchecked
-        return Arrays.asList((T[]) elements);
+        return ImmutableList.copyOf(elements);
     }
 
     static TupleList parseTupleList(

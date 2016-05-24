@@ -10,6 +10,7 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.AbstractListCalc;
 import mondrian.calc.impl.UnaryTupleList;
@@ -316,7 +317,7 @@ class DescendantsFunDef extends FunDefBase {
         // (a city). This is why we repeat the before/self/after logic for
         // each member.
         final int levelDepth = level.getDepth();
-        List<Member> members = Collections.singletonList(ancestor);
+        List<Member> members = ImmutableList.of(ancestor);
         // Each pass, "fertileMembers" has the same contents as "members",
         // except that we omit members whose children we are not interested
         // in. We allocate it once, and clear it each pass, to save a little

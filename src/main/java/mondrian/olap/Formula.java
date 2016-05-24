@@ -129,7 +129,8 @@ public class Formula extends QueryPart {
             }
 
             final List<MemberProperty> memberPropertyList =
-                new ArrayList<MemberProperty>(Arrays.asList(memberProperties));
+                new ArrayList<MemberProperty>();
+            Collections.addAll(memberPropertyList, memberProperties);
 
             // put CELL_FORMATTER_SCRIPT_LANGUAGE first, if it exists; we must
             // see it before CELL_FORMATTER_SCRIPT.

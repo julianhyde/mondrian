@@ -9,6 +9,7 @@
 */
 package mondrian.olap4j;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.mdx.*;
 import mondrian.olap.*;
 import mondrian.olap.Member;
@@ -178,15 +179,14 @@ public abstract class MondrianOlap4jConnection implements OlapConnection {
             new StringTokenizer(
                 String.valueOf(dbpropsMap.get("ProviderType")),
                 ",");
-        List<ProviderType> pTypes =
-            new ArrayList<ProviderType>();
+        ImmutableList.Builder<ProviderType> pTypes = ImmutableList.builder();
         while (st.hasMoreTokens()) {
             pTypes.add(ProviderType.valueOf(st.nextToken()));
         }
         st = new StringTokenizer(
             String.valueOf(dbpropsMap.get("AuthenticationMode")), ",");
-        List<AuthenticationMode> aModes =
-            new ArrayList<AuthenticationMode>();
+        ImmutableList.Builder<AuthenticationMode> aModes =
+            ImmutableList.builder();
         while (st.hasMoreTokens()) {
             aModes.add(AuthenticationMode.valueOf(st.nextToken()));
         }
@@ -199,8 +199,8 @@ public abstract class MondrianOlap4jConnection implements OlapConnection {
                 toString(dbpropsMap.get("ProviderName")),
                 toString(dbpropsMap.get("URL")),
                 toString(dbpropsMap.get("DataSourceInfo")),
-                pTypes,
-                aModes);
+                pTypes.build(),
+                aModes.build());
         this.olap4jDatabases.add(database);
 
         for (String catalogName
@@ -678,7 +678,7 @@ public abstract class MondrianOlap4jConnection implements OlapConnection {
             this.roleNames = Collections.emptyList();
             connection1.setRole(role);
         } else {
-            setRoleNames(Collections.singletonList(roleName));
+            setRoleNames(ImmutableList.of(roleName));
         }
     }
 
@@ -721,12 +721,11 @@ public abstract class MondrianOlap4jConnection implements OlapConnection {
         case 1:
             role = roleList.get(0);
             this.roleName = roleNames.get(0);
-            this.roleNames = Collections.singletonList(roleName);
+            this.roleNames = ImmutableList.of(roleName);
             break;
         default:
             role = RoleImpl.union(roleList);
-            this.roleNames =
-                Collections.unmodifiableList(new ArrayList<String>(roleNames));
+            this.roleNames = ImmutableList.copyOf(roleNames);
             this.roleName = this.roleNames.toString();
             break;
         }

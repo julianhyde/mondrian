@@ -637,14 +637,14 @@ public class CacheControlTest extends FoodMartTestCase {
         final SchemaReader schemaReader =
             salesCube.getSchemaReader(null).withLocus();
         final Member memberQ1 = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Time", "1997", "Q1"), true);
+            Id.Segment.listOf("Time", "1997", "Q1"), true);
         final Member memberBeer = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList(
+            Id.Segment.listOf(
                 "Product", "Drink", "Alcoholic Beverages", "Beer and Wine",
                 "Beer"),
             true);
         final Member memberDairy = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Product", "Drink", "Dairy"), true);
+            Id.Segment.listOf("Product", "Drink", "Dairy"), true);
 
         final CellRegion regionTimeQ1 =
             cacheControl.createMemberRegion(memberQ1, true);
@@ -710,7 +710,7 @@ public class CacheControlTest extends FoodMartTestCase {
         final SchemaReader schemaReader =
             salesCube.getSchemaReader(null).withLocus();
         final Member memberQ1 = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Time", "1997", "Q1"), true);
+            Id.Segment.listOf("Time", "1997", "Q1"), true);
 
         final CellRegion regionTimeQ1 =
             cacheControl.createMemberRegion(memberQ1, true);
@@ -742,7 +742,7 @@ public class CacheControlTest extends FoodMartTestCase {
         final SchemaReader schemaReader =
             salesCube.getSchemaReader(null).withLocus();
         final Member memberApril = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Time", "1997", "Q2", "4"), true);
+            Id.Segment.listOf("Time", "1997", "Q2", "4"), true);
 
         final CellRegion regionTimeApril =
             cacheControl.createMemberRegion(
@@ -775,7 +775,7 @@ public class CacheControlTest extends FoodMartTestCase {
         // Region consists of [Time].[Time].[1997] and its children.
         final SchemaReader schemaReader = salesCube.getSchemaReader(null);
         final Member member1997 = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Time", "1997"), true);
+            Id.Segment.listOf("Time", "1997"), true);
 
         final CellRegion region1997 =
             cacheControl.createMemberRegion(member1997, true);
@@ -809,11 +809,11 @@ public class CacheControlTest extends FoodMartTestCase {
         final SchemaReader schemaReader =
             salesCube.getSchemaReader(null).withLocus();
         final Member memberFood = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Product", "Food"), true);
+            Id.Segment.listOf("Product", "Food"), true);
         final Member memberDrink = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Product", "Drink"), true);
+            Id.Segment.listOf("Product", "Drink"), true);
         final Member memberFemale = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Gender", "F"), true);
+            Id.Segment.listOf("Gender", "F"), true);
 
         final CellRegion regionProductFoodDrink =
             cacheControl.createMemberRegion(
@@ -845,7 +845,7 @@ public class CacheControlTest extends FoodMartTestCase {
             salesCube.getSchemaReader(null).withLocus();
         final Member memberFemale =
             schemaReader.getMemberByUniqueName(
-                Id.Segment.toList("Gender", "F"), true);
+                Id.Segment.listOf("Gender", "F"), true);
 
         final CacheControl.CellRegion regionFemale =
             cacheControl.createMemberRegion(memberFemale, true);
@@ -869,7 +869,7 @@ public class CacheControlTest extends FoodMartTestCase {
             salesCube.getSchemaReader(null).withLocus();
         final Member memberFemale =
             schemaReader.getMemberByUniqueName(
-                Id.Segment.toList("Gender", "M"), true);
+                Id.Segment.listOf("Gender", "M"), true);
 
         final CacheControl.CellRegion regionFemale =
             cacheControl.createMemberRegion(memberFemale, true);
@@ -905,15 +905,17 @@ public class CacheControlTest extends FoodMartTestCase {
             new CacheControlImpl((RolapConnection) connection);
         final Member memberQ1 =
             schemaReader.withLocus().getMemberByUniqueName(
-                Id.Segment.toList("Time", "1997", "Q1"), true);
+                Id.Segment.listOf("Time", "1997", "Q1"), true);
         final Member memberBeer =
             schemaReader.withLocus().getMemberByUniqueName(
-                Id.Segment.toList(
-                    "Product", "Drink", "Alcoholic Beverages", "Beer and Wine"),
+                Id.Segment.listOf("Product",
+                    "Drink",
+                    "Alcoholic Beverages",
+                    "Beer and Wine"),
             true);
         final Member memberDairy =
             schemaReader.withLocus().getMemberByUniqueName(
-                Id.Segment.toList("Product", "Drink", "Dairy"), true);
+                Id.Segment.listOf("Product", "Drink", "Dairy"), true);
 
         final CellRegion regionTimeQ1 =
             cacheControl.createMemberRegion(memberQ1, false);
@@ -1054,17 +1056,19 @@ public class CacheControlTest extends FoodMartTestCase {
         final SchemaReader schemaReader =
             salesCube.getSchemaReader(null).withLocus();
         final Member memberQ1 = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Time", "1997", "Q1"), true);
+            Id.Segment.listOf("Time", "1997", "Q1"), true);
         final Member memberBeer = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList(
-                "Product", "Drink", "Alcoholic Beverages", "Beer and Wine",
+            Id.Segment.listOf("Product",
+                "Drink",
+                "Alcoholic Beverages",
+                "Beer and Wine",
                 "Beer"),
             true);
         final CellRegion regionProductBeer =
             cacheControl.createMemberRegion(memberBeer, false);
 
         final Member memberFemale = schemaReader.getMemberByUniqueName(
-            Id.Segment.toList("Gender", "F"), true);
+            Id.Segment.listOf("Gender", "F"), true);
         final CellRegion regionGenderFemale =
             cacheControl.createMemberRegion(memberFemale, false);
 

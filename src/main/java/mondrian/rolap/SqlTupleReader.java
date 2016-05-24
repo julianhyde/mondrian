@@ -11,6 +11,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.TupleList;
 import mondrian.calc.impl.ListTupleList;
 import mondrian.calc.impl.UnaryTupleList;
@@ -829,7 +830,7 @@ public class SqlTupleReader implements TupleReader {
         } else if (constraint.getEvaluator() != null
             && constraint.getEvaluator().isNonEmpty())
         {
-            measureGroupList = Collections.singletonList(
+            measureGroupList = ImmutableList.of(
                 constraint.getEvaluator().getMeasureGroup());
         } else {
             measureGroupList = Collections.emptyList();
@@ -1579,7 +1580,7 @@ Util.deprecated("obsolete basecube parameter", false);
                 if (orderByOrdinalList.equals(keyOrdinalList)) {
                     orderBySource = OrderKeySource.KEY;
                 } else if (orderByOrdinalList.equals(
-                        Collections.singletonList(nameOrdinal)))
+                        ImmutableList.of(nameOrdinal)))
                 {
                     orderBySource = OrderKeySource.NAME;
                 } else {

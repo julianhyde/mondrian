@@ -10,6 +10,7 @@
 */
 package mondrian.test;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.TupleList;
 import mondrian.calc.impl.UnaryTupleList;
 import mondrian.olap.*;
@@ -218,40 +219,38 @@ public class FoodMartTestCase extends TestCase {
     {
         return new UnaryTupleList(Arrays.asList(
             member(
-                Id.Segment.toList(
-                    "Store", "All Stores", "USA", "CA", "Alameda"),
+                Id.Segment.listOf("Store", "All Stores", "USA", "CA", "Alameda"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "CA", "Alameda", "HQ"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "CA", "Beverly Hills"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "CA", "Beverly Hills",
                     "Store 6"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "CA", "Los Angeles"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "OR", "Portland"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "OR", "Portland", "Store 11"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
-                    "Store", "All Stores", "USA", "OR", "Salem"),
+                Id.Segment.listOf("Store", "All Stores", "USA", "OR", "Salem"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Store", "All Stores", "USA", "OR", "Salem", "Store 13"),
                 salesCubeSchemaReader)));
     }
@@ -261,42 +260,42 @@ public class FoodMartTestCase extends TestCase {
     {
         return new UnaryTupleList(Arrays.asList(
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pot Scrubbers", "Cormorant"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pot Scrubbers", "Denny"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pot Scrubbers", "Red Wing"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pots and Pans", "Cormorant"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pots and Pans", "Denny"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pots and Pans", "High Quality"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pots and Pans", "Red Wing"),
                 salesCubeSchemaReader),
             member(
-                Id.Segment.toList(
+                Id.Segment.listOf(
                     "Product", "All Products", "Non-Consumable", "Household",
                     "Kitchen Products", "Pots and Pans", "Sunset"),
                 salesCubeSchemaReader)));
@@ -309,11 +308,11 @@ public class FoodMartTestCase extends TestCase {
     {
         Member maleMember =
             member(
-                Id.Segment.toList("Gender", "All Gender", "M"),
+                Id.Segment.listOf("Gender", "All Gender", "M"),
                 salesCubeSchemaReader);
         Member femaleMember =
             member(
-                Id.Segment.toList("Gender", "All Gender", "F"),
+                Id.Segment.listOf("Gender", "All Gender", "F"),
                 salesCubeSchemaReader);
         Member [] members;
         if (includeAllMember) {
@@ -353,13 +352,16 @@ public class FoodMartTestCase extends TestCase {
 
     protected List<Member> warehouseMembersCanadaMexicoUsa(SchemaReader reader)
     {
-        return Arrays.asList(
-            member(Id.Segment.toList(
-                "Warehouse", "All Warehouses", "Canada"), reader),
-            member(Id.Segment.toList(
-                "Warehouse", "All Warehouses", "Mexico"), reader),
-            member(Id.Segment.toList(
-                "Warehouse", "All Warehouses", "USA"), reader));
+        return ImmutableList.of(
+            member(
+                Id.Segment.listOf("Warehouse", "All Warehouses", "Canada"),
+                reader),
+            member(
+                Id.Segment.listOf("Warehouse", "All Warehouses", "Mexico"),
+                reader),
+            member(
+                Id.Segment.listOf("Warehouse", "All Warehouses", "USA"),
+                reader));
     }
 
     protected Cube cubeByName(Connection connection, String cubeName) {
@@ -387,11 +389,11 @@ public class FoodMartTestCase extends TestCase {
     {
         Member usaMember =
             member(
-                Id.Segment.toList("Store", "All Stores", "USA"),
+                Id.Segment.listOf("Store", "All Stores", "USA"),
                 salesCubeSchemaReader);
         Member canadaMember =
             member(
-                Id.Segment.toList("Store", "All Stores", "CANADA"),
+                Id.Segment.listOf("Store", "All Stores", "CANADA"),
                 salesCubeSchemaReader);
         Member [] members;
         if (includeAllMember) {

@@ -11,6 +11,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.rolap.RestrictedMemberReader.MultiCardinalityDefaultMember;
 import mondrian.rolap.RolapSchema.PhysSchemaException;
@@ -489,7 +490,7 @@ public class SqlConstraintUtils {
         RolapMember parent,
         boolean restrictMemberTypes)
     {
-        List<RolapMember> list = Collections.singletonList(parent);
+        List<RolapMember> list = ImmutableList.of(parent);
         boolean exclude = false;
         addMemberConstraint(
             sqlQuery, starSet, list, restrictMemberTypes, false, exclude);

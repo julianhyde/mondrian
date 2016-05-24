@@ -9,6 +9,7 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.AbstractListCalc;
 import mondrian.calc.impl.DelegatingTupleList;
@@ -41,7 +42,7 @@ public class NativizeSetFunDef extends FunDefBase {
     private static final String MEMBER_NAME_PREFIX = "_Nativized_Member_";
     private static final String SET_NAME_PREFIX = "_Nativized_Set_";
     private static final List<Class<? extends FunDef>> functionWhitelist =
-        Arrays.<Class<? extends FunDef>>asList(
+        ImmutableList.<Class<? extends FunDef>>of(
             CacheFunDef.class,
             SetFunDef.class,
             CrossJoinFunDef.class,
@@ -315,8 +316,7 @@ public class NativizeSetFunDef extends FunDefBase {
             try {
                 evaluator.setNonEmpty(true);
                 evaluator.setNativeEnabled(false);
-                TupleList members = calc.evaluateList(evaluator);
-                return members;
+                return calc.evaluateList(evaluator);
             } finally {
                 evaluator.restore(savepoint);
             }
@@ -347,9 +347,8 @@ public class NativizeSetFunDef extends FunDefBase {
                 evaluator.setNonEmpty(true);
                 evaluator.setNativeEnabled(true);
 
-                TupleList members = analyzer.mergeCalcMembers(
+                return analyzer.mergeCalcMembers(
                     evaluateJoinExpression(evaluator, crossJoin));
-                return members;
             } finally {
                 evaluator.restore(savepoint);
             }
@@ -776,7 +775,7 @@ public class NativizeSetFunDef extends FunDefBase {
                 MondrianProperties.instance().NativizeMaxResults.get();
             arity = simplifiedList.getArity();
             tempTuple = new Member[arity];
-            tempTupleAsList = Arrays.asList(tempTuple);
+            tempTupleAsList = ImmutableList.copyOf(tempTuple);
             resultLimit = nativizeMaxResults <= 0
                     ? Integer.MAX_VALUE
                     : (int) Math.min(nativizeMaxResults, Integer.MAX_VALUE);
@@ -1136,7 +1135,7 @@ public class NativizeSetFunDef extends FunDefBase {
                             for (int i = 0; i < destIndices.length; i++) {
                                 members[destIndices[i]] = sourceTuple.get(i);
                             }
-                            return Arrays.asList(members);
+                            return Util.flatList(members);
                         }
 
                         @Override
@@ -1373,7 +1372,7 @@ public class NativizeSetFunDef extends FunDefBase {
 
     private static class ReassemblyGuide {
         private final int index;
-        private final List<ReassemblyCommand> commands =
+        private List<ReassemblyCommand> commands =
             new ArrayList<ReassemblyCommand>();
 
         public ReassemblyGuide(int index) {
@@ -1385,7 +1384,9 @@ public class NativizeSetFunDef extends FunDefBase {
         }
 
         public List<ReassemblyCommand> getCommands() {
-            return Collections.unmodifiableList(commands);
+            // Ensure that commands is not modified after it has been queried.
+            commands = ImmutableList.copyOf(commands);
+            return commands;
         }
 
         private void addCommandTuple(List<ReassemblyCommand> commandTuple) {
@@ -1400,8 +1401,8 @@ public class NativizeSetFunDef extends FunDefBase {
             List<ReassemblyCommand> commandTuple)
         {
             ReassemblyCommand curr = commandTuple.get(index);
-            ReassemblyCommand prev = commands.isEmpty()
-                ? null : commands.get(commands.size() - 1);
+            ReassemblyCommand prev =
+                commands.isEmpty() ? null : Util.last(commands);
 
             if (prev != null && prev.getMemberType() == SENTINEL) {
                 commands.set(commands.size() - 1, curr);

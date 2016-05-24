@@ -9,6 +9,8 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import mondrian.olap.*;
 import mondrian.olap.Cube;
 import mondrian.olap.Dimension;
@@ -307,7 +309,7 @@ public class RolapSchemaLoader {
                 useContentChecksum,
                 xmlSchema.name,
                 toBoolean(xmlSchema.quoteSql, true),
-                Collections.unmodifiableSet(locales),
+                ImmutableSet.copyOf(locales),
                 createLarder(
                     ".schema",
                     xmlSchema.getAnnotations(),
@@ -1211,8 +1213,7 @@ public class RolapSchemaLoader {
                 // If both null, nothing to do.
                 return;
             }
-            columns = Collections.singletonList(
-                new Tcl(null, columnName, xmlTable));
+            columns = ImmutableList.of(new Tcl(null, columnName, xmlTable));
             keyName = "primary";
         } else {
             columns = new AbstractList<Tcl>() {
@@ -1521,7 +1522,7 @@ public class RolapSchemaLoader {
             xmlCubeDimensionsPlus =
                 Composite.of(
                     xmlCubeDimensions,
-                    Collections.singletonList(xmlDimension));
+                    ImmutableList.of(xmlDimension));
         } else {
             xmlCubeDimensionsPlus = xmlCubeDimensions;
         }
@@ -2273,8 +2274,8 @@ public class RolapSchemaLoader {
         Dialect.Datatype datatype =
             aggregator.deriveDatatype(
                 measureExp == null
-                    ? Collections.<Dialect.Datatype>emptyList()
-                    : Collections.singletonList(measureExp.getDatatype()));
+                    ? ImmutableList.<Dialect.Datatype>of()
+                    : ImmutableList.of(measureExp.getDatatype()));
         final Dialect.Datatype specifiedDatatype;
         if (xmlMeasure.datatype == null) {
             specifiedDatatype = null;
@@ -3338,7 +3339,7 @@ public class RolapSchemaLoader {
         }
         if (orderByList.isEmpty()) {
             if (nameSpecified) {
-                orderByList = Collections.singletonList(nameExpr);
+                orderByList = ImmutableList.of(nameExpr);
             } else {
                 orderByList = keyList;
             }
@@ -3861,7 +3862,7 @@ public class RolapSchemaLoader {
                     attributeName);
                 return null;
             }
-            return Collections.singletonList(column);
+            return ImmutableList.of(column);
         }
         final List<RolapSchema.PhysColumn> list =
             new ArrayList<RolapSchema.PhysColumn>();
@@ -5010,8 +5011,8 @@ public class RolapSchemaLoader {
 
         final List<RolapMember> memberList = new ArrayList<RolapMember>();
         createCalcMembersAndNamedSets(
-            Collections.singletonList(xmlCalcMember),
-            Collections.<MondrianDef.NamedSet>emptyList(),
+            ImmutableList.of(xmlCalcMember),
+            ImmutableList.<MondrianDef.NamedSet>of(),
             memberList,
             new ArrayList<Formula>(),
             new ArrayList<Formula>(),
@@ -5446,7 +5447,7 @@ public class RolapSchemaLoader {
                     "dummy$" + (nextId++),
                     null,
                     null,
-                    Collections.<RolapSchema.PhysExpr>singletonList(
+                    ImmutableList.<RolapSchema.PhysExpr>of(
                         new RolapSchema.PhysTextExpr("0")));
         }
 
@@ -5797,7 +5798,7 @@ public class RolapSchemaLoader {
                 uniqueNameParts = Util.parseIdentifier(defaultMemberName);
             } else {
                 uniqueNameParts =
-                    Collections.<Id.Segment>singletonList(
+                    ImmutableList.<Id.Segment>of(
                         new Id.NameSegment(
                             defaultMemberName,
                             Id.Quoting.UNQUOTED));

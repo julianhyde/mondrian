@@ -4807,7 +4807,7 @@ public class BasicQueryTest extends FoodMartTestCase {
         long timeoutMs = (long) threadCount * iterationCount * 600 * 1000;
         final int[] executeCount = new int[] {0};
         final List<QueryAndResult> queries = new ArrayList<QueryAndResult>();
-        queries.addAll(Arrays.asList(sampleQueries));
+        Collections.addAll(queries, sampleQueries);
         queries.addAll(taglibQueries);
         TestCaseForker threaded =
             new TestCaseForker(
@@ -5292,20 +5292,17 @@ public class BasicQueryTest extends FoodMartTestCase {
         SchemaReader scr = testContext.getConnection().getSchema().lookupCube(
             cubeName, true).getSchemaReader(null);
         Member member = scr.getMemberByUniqueName(
-            Id.Segment.toList(
-                "Measures", "Unit Sales"), true);
+            Id.Segment.listOf("Measures", "Unit Sales"), true);
         Object visible = member.getPropertyValue(Property.VISIBLE);
         assertEquals(Boolean.FALSE, visible);
 
         member = scr.getMemberByUniqueName(
-            Id.Segment.toList(
-                "Measures", "Store Cost"), true);
+            Id.Segment.listOf("Measures", "Store Cost"), true);
         visible = member.getPropertyValue(Property.VISIBLE);
         assertEquals(Boolean.TRUE, visible);
 
         member = scr.getMemberByUniqueName(
-            Id.Segment.toList(
-                "Measures", "Profit"), true);
+            Id.Segment.listOf("Measures", "Profit"), true);
         visible = member.getPropertyValue(Property.VISIBLE);
         assertEquals(Boolean.FALSE, visible);
     }

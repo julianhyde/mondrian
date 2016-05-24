@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.sql;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.mdx.*;
 import mondrian.olap.*;
@@ -47,7 +48,7 @@ public class CrossJoinArgFactory {
                 checkCrossJoinArg(evaluator, ax.getSet(), true);
             if (axesArgs != null) {
                 for (CrossJoinArg[] axesArg : axesArgs) {
-                    joinArgs.addAll(Arrays.asList(axesArg));
+                    Collections.addAll(joinArgs, axesArg);
                 }
             }
         }
@@ -103,26 +104,26 @@ public class CrossJoinArgFactory {
 
         cjArgs = checkMemberChildren(role, fun, args);
         if (cjArgs != null) {
-            return Collections.singletonList(cjArgs);
+            return ImmutableList.of(cjArgs);
         }
         cjArgs = checkLevelMembers(role, fun, args);
         if (cjArgs != null) {
-            return Collections.singletonList(cjArgs);
+            return ImmutableList.of(cjArgs);
         }
         cjArgs = checkDescendants(role, fun, args);
         if (cjArgs != null) {
-            return Collections.singletonList(cjArgs);
+            return ImmutableList.of(cjArgs);
         }
         final boolean exclude = false;
         cjArgs = checkEnumeration(evaluator, fun, args, exclude);
         if (cjArgs != null) {
-            return Collections.singletonList(cjArgs);
+            return ImmutableList.of(cjArgs);
         }
 
         if (returnAny) {
             cjArgs = checkConstrainedMeasures(evaluator, fun, args);
             if (cjArgs != null) {
-                return Collections.singletonList(cjArgs);
+                return ImmutableList.of(cjArgs);
             }
         }
 

@@ -22,10 +22,12 @@ import mondrian.spi.CatalogLocator;
 import mondrian.util.LockBox;
 import mondrian.xmla.*;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.log4j.Logger;
 
 import org.olap4j.OlapConnection;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.MapMaker;
 
 import java.lang.ref.*;
 import java.sql.SQLException;
@@ -68,9 +70,9 @@ class MondrianServerImpl
     @SuppressWarnings("unchecked")
     private final Map<Integer, RolapConnection> connectionMap =
          // We use a reference map here because the value
-         // is what needs to be week, not the key, as it
+         // is what needs to be weak, not the key, as it
          // would be the case with a WeakHashMap.
-        new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.WEAK);
+        new MapMaker().weakKeys().weakValues().makeMap();
 
     /**
      * Map of open statements, by id. Statements are added just after
@@ -86,9 +88,9 @@ class MondrianServerImpl
     @SuppressWarnings("unchecked")
     private final Map<Long, Statement> statementMap =
          // We use a reference map here because the value
-         // is what needs to be week, not the key, as it
+         // is what needs to be weak, not the key, as it
          // would be the case with a WeakHashMap.
-        new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.WEAK);
+        new MapMaker().weakKeys().weakValues().makeMap();
 
     private final MonitorImpl monitor = new MonitorImpl();
 
@@ -102,7 +104,7 @@ class MondrianServerImpl
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
 
     private static final List<String> KEYWORD_LIST =
-        Collections.unmodifiableList(Arrays.asList(
+        ImmutableList.of(
             "$AdjustedProbability", "$Distance", "$Probability",
             "$ProbabilityStDev", "$ProbabilityStdDeV", "$ProbabilityVariance",
             "$StDev", "$StdDeV", "$Support", "$Variance",
@@ -160,7 +162,7 @@ class MondrianServerImpl
             "ToggleDrillState", "TopCount", "TopPercent", "TopSum",
             "TupleToStr", "Under", "Uniform", "UniqueName", "Use", "Value",
             "Value", "Var", "Variance", "VarP", "VarianceP", "VisualTotals",
-            "When", "Where", "With", "WTD", "Xor"));
+            "When", "Where", "With", "WTD", "Xor");
 
     /**
      * Creates a MondrianServerImpl.

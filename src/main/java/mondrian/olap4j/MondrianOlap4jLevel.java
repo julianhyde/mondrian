@@ -115,8 +115,8 @@ class MondrianOlap4jLevel
         };
         // standard properties first
         if (includeStandard) {
-            list.addAll(
-                Arrays.asList(Property.StandardMemberProperty.values()));
+            Collections.addAll(
+                list, Property.StandardMemberProperty.values());
             list.addAll(MondrianOlap4jProperty.MEMBER_EXTENSIONS.values());
         }
         // then level-specific properties

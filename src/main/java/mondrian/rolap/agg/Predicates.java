@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 import mondrian.rolap.*;
 import mondrian.spi.Dialect;
@@ -47,8 +48,7 @@ public abstract class Predicates
                 router,
                 schema,
                 keyList,
-                Collections.singletonList(
-                    MemberTuplePredicate.createPoint(member)));
+                ImmutableList.of(MemberTuplePredicate.createPoint(member)));
         }
     }
 
@@ -147,7 +147,7 @@ public abstract class Predicates
             router,
             physSchema,
             member.getLevel().getAttribute().getKeyList(),
-            Collections.singletonList(
+            ImmutableList.of(
                 MemberTuplePredicate.createRange(
                     lower, lowerStrict, upper, upperStrict)));
     }

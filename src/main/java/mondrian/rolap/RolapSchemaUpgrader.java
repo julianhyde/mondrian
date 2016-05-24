@@ -9,11 +9,11 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.mdx.MdxVisitorImpl;
 import mondrian.mdx.MemberExpr;
 import mondrian.olap.*;
 import mondrian.olap.Id.NameSegment;
-import mondrian.olap.Id.Segment;
 import mondrian.resource.MondrianResource;
 import mondrian.spi.Dialect;
 import mondrian.util.ByteString;
@@ -681,7 +681,7 @@ public class RolapSchemaUpgrader {
                         + xmlVirtualCubeDimension.cubeName + "'");
                 }
                 xmlFact = cube.fact;
-                links = Collections.singletonList(
+                links = ImmutableList.of(
                     new Link(
                         toPhysRelation(cube.fact),
                         xmlVirtualCubeDimension.foreignKey));
@@ -710,7 +710,7 @@ public class RolapSchemaUpgrader {
                     null);
             }
             links =
-                Collections.singletonList(
+                ImmutableList.of(
                     new Link(fact, foreignKey));
             final Pair<String, String> pair =
                 getUniquePrimaryKey(xmlLegacyDimension);
@@ -1232,7 +1232,7 @@ public class RolapSchemaUpgrader {
 
             final String elementName =
                 Util.quoteMdxIdentifier(
-                    NameSegment.toList(
+                    NameSegment.listOf(
                         element.dimension,
                         element.hierarchy,
                         element.level));
@@ -1250,9 +1250,7 @@ public class RolapSchemaUpgrader {
 
             final String shortElementName =
                 Util.quoteMdxIdentifier(
-                    NameSegment.toList(
-                        element.dimension,
-                        element.level));
+                    NameSegment.listOf(element.dimension, element.level));
 
             if (shortElementName.equals(name)) {
                 return element;
@@ -1752,7 +1750,7 @@ public class RolapSchemaUpgrader {
                 assert physInlineTable.getTotalColumnSize() > 0
                     : "Inline tables must have at least one column to work properly in Mondrian 4+.";
                 physInlineTable.lookupKey(
-                    Collections.singletonList(
+                    ImmutableList.of(
                         physInlineTable.columnsByName
                             .values().iterator().next()),
                     true);
@@ -1884,7 +1882,7 @@ public class RolapSchemaUpgrader {
                 assert columnCount > 0
                     : "Inline tables must have at least one column to work properly in Mondrian 4+.";
                 physInlineTable.lookupKey(
-                    Collections.singletonList(
+                    ImmutableList.of(
                         physInlineTable.columnsByName
                             .values().iterator().next()),
                     true);
@@ -2298,7 +2296,7 @@ public class RolapSchemaUpgrader {
                     cubeInfoList.add(lookupCube(info.cubeName));
                 }
             } else {
-                cubeInfoList = Collections.singletonList(
+                cubeInfoList = ImmutableList.of(
                     lookupCube(xmlVirtualCubeDimension.cubeName));
             }
             int nonJoinCount = 0;
@@ -2860,7 +2858,7 @@ public class RolapSchemaUpgrader {
                 addKey(xmlRelation, xmlKeyAttribute.keyColumn);
 
                 firstRelation.lookupKey(
-                    Collections.singletonList(
+                    ImmutableList.of(
                         firstRelation.getColumn(
                             xmlKeyAttribute.keyColumn, true)),
                     true);
@@ -2968,7 +2966,7 @@ public class RolapSchemaUpgrader {
                     throw new IllegalArgumentException();
                 }
                 final List<RolapSchema.PhysColumn> keyColumnList =
-                    Collections.singletonList(rightColumn);
+                    ImmutableList.of(rightColumn);
                 rightKey = rightRelation.lookupKey(keyColumnList, true);
                 if (rightAlias != null && relation.getAlias() != null) {
                     if (!rightAlias.equals(relation.getAlias())) {
@@ -2992,7 +2990,7 @@ public class RolapSchemaUpgrader {
                         + " does not contain column " + leftKeyColumnName);
                 }
                 final List<RolapSchema.PhysColumn> leftKeyColumnList =
-                    Collections.singletonList(leftColumn);
+                    ImmutableList.of(leftColumn);
                 assert rightKey != null;
                 physSchemaConverter.physSchema.addLink(
                     rightKey,
@@ -3014,7 +3012,7 @@ public class RolapSchemaUpgrader {
                     + rightKeyColumnName); // REVIEW: user error?
             }
             final List<RolapSchema.PhysColumn> keyColumnList =
-                Collections.singletonList(column);
+                ImmutableList.of(column);
             final RolapSchema.PhysKey midKey =
                 midRelation.lookupKey(keyColumnList, true);
             // TODO: also create link from leftRelation to midRelation???
@@ -3204,7 +3202,7 @@ public class RolapSchemaUpgrader {
                 RolapSchema.PhysKey key =
                     physClosureTable.addKey(
                         "primary",
-                        Collections.singletonList(
+                        ImmutableList.of(
                             physClosureTable.getColumn(
                                 xmlLegacyLevel.closure.childColumn, true)));
                 if (links != null) {
@@ -3212,7 +3210,7 @@ public class RolapSchemaUpgrader {
                         physSchemaConverter.physSchema.addLink(
                             key,
                             link.fact,
-                            Collections.singletonList(
+                            ImmutableList.of(
                                 link.fact.getColumn(link.foreignKey, true)),
                             false);
                     }

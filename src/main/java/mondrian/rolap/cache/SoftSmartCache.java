@@ -10,13 +10,13 @@
 */
 package mondrian.rolap.cache;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import com.google.common.collect.MapMaker;
 
 import java.util.*;
 
 /**
  * An implementation of {@link SmartCacheImpl} which uses a
- * {@link ReferenceMap} as a backing object. Both the key
+ * Guava map as a backing object. Both the key
  * and the value are soft references, because of their
  * cyclic nature.
  *
@@ -30,7 +30,7 @@ public class SoftSmartCache<K, V> extends SmartCacheImpl<K, V> {
 
     @SuppressWarnings("unchecked")
     private final Map<K, V> cache =
-        new ReferenceMap(ReferenceMap.SOFT, ReferenceMap.SOFT);
+  new MapMaker().weakKeys().weakValues().makeMap();
 
     public V putImpl(K key, V value) {
         // Null values are the same as a 'remove'

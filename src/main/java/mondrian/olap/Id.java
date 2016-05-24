@@ -10,6 +10,7 @@
 */
 package mondrian.olap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.mdx.MdxVisitor;
 import mondrian.olap.type.Type;
 
@@ -27,8 +28,7 @@ public class Id
     extends ExpBase
     implements Cloneable
 {
-
-    private final List<Segment> segments;
+    private final ImmutableList<Segment> segments;
 
     /**
      * Creates an identifier containing a single part.
@@ -36,11 +36,11 @@ public class Id
      * @param segment Segment, consisting of a name and quoting style
      */
     public Id(Segment segment) {
-        segments = Collections.singletonList(segment);
+        segments = ImmutableList.of(segment);
     }
 
     public Id(List<Segment> segments) {
-        this.segments = segments;
+        this.segments = ImmutableList.copyOf(segments);
         if (segments.size() <= 0) {
             throw new IllegalArgumentException();
         }
@@ -75,8 +75,8 @@ public class Id
         return names;
     }
 
-    public List<Segment> getSegments() {
-        return Collections.unmodifiableList(this.segments);
+    public ImmutableList<Segment> getSegments() {
+        return segments;
     }
 
     public Id.Segment getElement(int i) {
@@ -160,18 +160,18 @@ public class Id
         public abstract List<NameSegment> getKeyParts();
 
         /**
-         * Converts an array of names to a list of segments.
+         * Converts an array of names to an immutable list of segments.
          *
          * @param nameParts Array of names
          * @return List of segments
          */
-        public static List<Segment> toList(String... nameParts) {
-            final List<Segment> segments =
-                new ArrayList<Segment>(nameParts.length);
+        public static List<Segment> listOf(String... nameParts) {
+            final ImmutableList.Builder<Segment> segments =
+                ImmutableList.builder();
             for (String namePart : nameParts) {
                 segments.add(new NameSegment(namePart));
             }
-            return segments;
+            return segments.build();
         }
 
         /**

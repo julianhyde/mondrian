@@ -12,6 +12,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.rolap.*;
 
@@ -143,8 +144,7 @@ public class Aggregation {
             final SegmentLoader segmentLoader = new SegmentLoader(cacheMgr);
             segmentLoader.load(
                 cellRequestCount,
-                new ArrayList<GroupingSet>(
-                    Collections.singletonList(groupingSet)),
+                ImmutableList.of(groupingSet),
                 compoundPredicateList,
                 segmentFutures);
         }

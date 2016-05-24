@@ -9,6 +9,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.rolap.*;
 
 import java.util.*;
@@ -104,7 +105,7 @@ final class GroupingSetsList {
 
     private List<BitKey> loadGroupingColumnBitKeys() {
         if (!useGroupingSet) {
-            return Collections.singletonList(BitKey.EMPTY);
+            return ImmutableList.of(BitKey.EMPTY);
         }
         final List<BitKey> rollupColumnsBitKeyList = new ArrayList<BitKey>();
         final int bitKeyLength = getDefaultColumns().length;

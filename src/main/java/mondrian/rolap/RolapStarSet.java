@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 import mondrian.rolap.aggmatcher.AggStar;
 
@@ -61,9 +62,9 @@ public class RolapStarSet {
      */
     List<RolapStar> getStars() {
         if (star != null) {
-            return Collections.singletonList(star);
+            return ImmutableList.of(star);
         } else if (cube == null) {
-            return Collections.emptyList();
+            return ImmutableList.of();
         } else {
             return cube.getStars();
         }

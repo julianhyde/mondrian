@@ -9,6 +9,7 @@
 */
 package mondrian.rolap.cache;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.QueryCanceledException;
 import mondrian.olap.Util;
 import mondrian.rolap.BitKey;
@@ -753,7 +754,7 @@ public class SegmentCacheIndexImpl implements SegmentCacheIndex {
             }
 
             if (nonWildcards.isEmpty()) {
-                list.add(Collections.singletonList(header));
+                list.add(ImmutableList.of(header));
             } else {
                 matchingHeaders.add(Pair.of(header, nonWildcards));
             }

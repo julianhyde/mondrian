@@ -10,6 +10,7 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.*;
 import mondrian.mdx.ResolvedFunCall;
@@ -285,7 +286,7 @@ public class SetFunDef extends FunDefBase {
                         memberCalc.evaluateMember(evaluator);
                     return member == null
                         ? TupleCollections.createList(1)
-                        : new UnaryTupleList(Collections.singletonList(member));
+                        : new UnaryTupleList(ImmutableList.of(member));
                 }
 
                 protected String getName() {

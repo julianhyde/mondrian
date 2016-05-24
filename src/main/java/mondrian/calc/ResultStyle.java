@@ -9,6 +9,8 @@
 */
 package mondrian.calc;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,67 +63,67 @@ public enum ResultStyle {
     // collections of result styles.
 
     public static final List<ResultStyle> ANY_LIST =
-        Arrays.asList(
+        ImmutableList.of(
             ANY);
 
     public static final List<ResultStyle> ITERABLE_ONLY =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE);
 
     public static final List<ResultStyle> MUTABLELIST_ONLY =
-        Arrays.asList(
+        ImmutableList.of(
             MUTABLE_LIST);
 
     public static final List<ResultStyle> LIST_ONLY =
-        Arrays.asList(
+        ImmutableList.of(
             LIST);
 
     public static final List<ResultStyle> ITERABLE_ANY =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE,
             ANY);
 
     public static final List<ResultStyle> ITERABLE_LIST =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE,
             LIST);
 
     public static final List<ResultStyle> ITERABLE_MUTABLELIST =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE,
             MUTABLE_LIST);
 
     public static final List<ResultStyle> ITERABLE_LIST_MUTABLELIST =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE,
             LIST,
             MUTABLE_LIST);
 
     public static final List<ResultStyle> LIST_MUTABLELIST =
-        Arrays.asList(
+        ImmutableList.of(
             LIST,
             MUTABLE_LIST);
 
     public static final List<ResultStyle> MUTABLELIST_LIST =
-        Arrays.asList(
+        ImmutableList.of(
             MUTABLE_LIST,
             LIST);
 
     public static final List<ResultStyle> ITERABLE_LIST_MUTABLELIST_ANY =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE,
             LIST,
             MUTABLE_LIST,
             ANY);
 
     public static final List<ResultStyle> ITERABLE_MUTABLELIST_LIST =
-        Arrays.asList(
+        ImmutableList.of(
             ITERABLE,
             MUTABLE_LIST,
             LIST);
 
     public static final List<ResultStyle> ANY_ONLY =
-        Arrays.asList(
+        ImmutableList.of(
             ANY);
 }
 

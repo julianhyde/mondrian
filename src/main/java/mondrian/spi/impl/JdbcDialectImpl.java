@@ -9,6 +9,7 @@
 */
 package mondrian.spi.impl;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.MondrianProperties;
 import mondrian.olap.Util;
 import mondrian.rolap.SqlStatement;
@@ -560,7 +561,7 @@ public class JdbcDialectImpl implements Dialect {
         return generateInlineGeneric(
             columnNames,
             columnTypes,
-            Collections.singletonList(new String[columnTypes.size()]),
+            ImmutableList.of(new String[columnTypes.size()]),
             fromClause,
             cast);
     }
@@ -966,7 +967,7 @@ public class JdbcDialectImpl implements Dialect {
     protected List<StatisticsProvider> computeStatisticsProviders() {
         List<String> names = getStatisticsProviderNames();
         if (names == null) {
-            return Collections.<StatisticsProvider>singletonList(
+            return ImmutableList.<StatisticsProvider>of(
                 new SqlStatisticsProvider());
         }
         final List<StatisticsProvider> providerList =

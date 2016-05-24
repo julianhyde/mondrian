@@ -9,12 +9,12 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.Ordering;
+
 import mondrian.test.PerformanceTest;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.collections.ComparatorUtils;
-import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -46,11 +46,12 @@ public class PartialSortTest extends TestCase
 
     // calls partialSort() for natural ascending or descending order
     @SuppressWarnings({"unchecked"})
-    private void doPartialSort(Object[] items, boolean descending, int limit)
+    private <T extends Comparable> void doPartialSort(
+        T[] items, boolean descending, int limit)
     {
-        Comparator<Object> comp = ComparatorUtils.naturalComparator();
+        Ordering<Comparable> comp = Ordering.natural();
         if (descending) {
-            comp = ComparatorUtils.reversedComparator(comp);
+            comp = comp.reverse();
         }
         FunUtil.partialSort(items, comp, limit);
     }
@@ -96,9 +97,7 @@ public class PartialSortTest extends TestCase
         T [] vec, int limit, boolean descending)
     {
         //noinspection unchecked
-        return isPartiallySorted(
-            vec, limit, (Comparator<T>) ComparatorUtils.naturalComparator(),
-            descending);
+        return isPartiallySorted(vec, limit, Ordering.natural(), descending);
     }
 
     // same predicate generalized: uses a given Comparator
@@ -388,7 +387,7 @@ public class PartialSortTest extends TestCase
                 return x.index - y.index;
             }
         };
-        static final Comparator<Item> byKey = new Comparator<Item>() {
+        static final Ordering<Item> byKey = new Ordering<Item>() {
             public int compare(Item x, Item y) {
                 return x.key - y.key;
             }
@@ -429,10 +428,9 @@ public class PartialSortTest extends TestCase
 
     // just glue
     private Item[] doStablePartialSort(Item[] vec, boolean desc, int limit) {
-        Comparator<Item> comp = Item.byKey;
+        Ordering<Item> comp = Item.byKey;
         if (desc) {
-            //noinspection unchecked
-            comp = new ReverseComparator(comp);
+            comp = comp.reverse();
         }
         List<Item> sorted =
             FunUtil.stablePartialSort(Arrays.asList(vec), comp, limit);
@@ -530,8 +528,7 @@ public class PartialSortTest extends TestCase
 
         // marc's stable partial quicksort vec3
         @SuppressWarnings({"unchecked"})
-        Comparator<Integer> comp =
-            new ReverseComparator(ComparatorUtils.naturalComparator());
+        Comparator<Integer> comp = Ordering.natural().reverse();
         List<Integer> vec3List = Arrays.asList(vec3);
         now = System.currentTimeMillis();
         FunUtil.stablePartialSort(vec3List, comp, limit, 2);

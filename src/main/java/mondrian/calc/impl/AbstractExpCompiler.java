@@ -9,6 +9,7 @@
 */
 package mondrian.calc.impl;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.mdx.MemberExpr;
 import mondrian.mdx.UnresolvedFunCall;
@@ -128,8 +129,7 @@ public class AbstractExpCompiler implements ExpCompiler {
             if (substitutions > 0) {
                 final IterCalc iterCalc = (IterCalc) calc;
                 if (iterCalc == null) {
-                    this.resultStyles =
-                        Collections.singletonList(ResultStyle.ITERABLE);
+                    this.resultStyles = ImmutableList.of(ResultStyle.ITERABLE);
                     return compile(exp);
                 } else {
                     return iterCalc;

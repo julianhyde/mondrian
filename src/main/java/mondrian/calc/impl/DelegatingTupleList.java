@@ -9,6 +9,7 @@
 */
 package mondrian.calc.impl;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.TupleIterator;
 import mondrian.calc.TupleList;
 import mondrian.olap.Member;
@@ -79,8 +80,7 @@ public class DelegatingTupleList extends AbstractTupleList
                     // The sub list is probably a singleton list.
                     // calling set() on it will fail. We have to
                     // create a new singleton list.
-                    return list.set(index, Collections.singletonList(element))
-                        .get(0);
+                    return list.set(index, ImmutableList.of(element)).get(0);
                 }
                 return subList.set(column, element);
             };

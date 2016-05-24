@@ -37,7 +37,7 @@ public class MemberCacheHelper implements MemberCache {
         mapMemberToChildren;
 
     /** a cache for all members to ensure uniqueness */
-    SmartCache<Pair<RolapLevel, Object>, RolapMember> mapKeyToMember;
+    final SmartCache<Pair<RolapLevel, Object>, RolapMember> mapKeyToMember;
     RolapHierarchy rolapHierarchy;
 
     /** maps a level to its members */

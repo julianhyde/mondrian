@@ -10,6 +10,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.rolap.agg.*;
 import mondrian.rolap.aggmatcher.AggGen;
@@ -233,7 +234,7 @@ public class FastBatchingCellReader implements CellReader {
             new ArrayList<Future<Map<Segment, SegmentWithData>>>();
 
         final List<CellRequest> cellRequests1 =
-            new ArrayList<CellRequest>(cellRequests);
+            ImmutableList.copyOf(cellRequests);
 
         for (int iteration = 0;; ++iteration) {
             final BatchLoader.LoadBatchResponse response =
@@ -243,7 +244,7 @@ public class FastBatchingCellReader implements CellReader {
                         cacheMgr,
                         getDialect(),
                         cube,
-                        Collections.unmodifiableList(cellRequests1)));
+                        cellRequests1));
 
             int failureCount = 0;
 
@@ -1317,7 +1318,7 @@ class BatchLoader {
                         starConverter,
                         cacheMgr,
                         cellRequestCount,
-                        Collections.singletonList(measure),
+                        ImmutableList.of(measure),
                         columns,
                         batchKey,
                         predicates,

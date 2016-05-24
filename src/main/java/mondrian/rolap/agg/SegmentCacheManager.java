@@ -138,11 +138,6 @@ import java.util.concurrent.*;
  * <p>8. Longer term. Move {@link mondrian.rolap.RolapStar.Bar}.segmentRefs to
  * {@link mondrian.server.Execution}. Would it still be thread-local?</p>
  *
- * <p>10. Call
- * {@link mondrian.spi.DataSourceChangeListener#isAggregationChanged}.
- * Previously called from
- * {@link RolapStar}.checkAggregateModifications, now never called.</p>
- *
  * <p>12. We can quickly identify segments affected by a flush using
  * {@link SegmentCacheIndex#intersectRegion}. But then what? Options:</p>
  *

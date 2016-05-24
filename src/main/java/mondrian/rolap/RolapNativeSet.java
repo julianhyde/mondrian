@@ -11,6 +11,7 @@
 */
 package mondrian.rolap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.ResultStyle;
 import mondrian.calc.TupleList;
 import mondrian.calc.impl.DelegatingTupleList;
@@ -191,7 +192,7 @@ public abstract class RolapNativeSet extends RolapNative {
             }
             throw ResultStyleException.generate(
                 ResultStyle.ITERABLE_MUTABLELIST_LIST,
-                Collections.singletonList(desiredResultStyle));
+                ImmutableList.of(desiredResultStyle));
         }
 
         protected TupleList executeList(final SqlTupleReader tr) {
@@ -213,7 +214,7 @@ public abstract class RolapNativeSet extends RolapNative {
             // same cached result and project different columns?
             List<Object> key = new ArrayList<Object>();
             key.add(tr.getCacheKey());
-            key.addAll(Arrays.asList(args));
+            Collections.addAll(key, args);
 
             TupleList result = cache.get(key);
             boolean hasEnumTargets = (tr.getEnumTargetCount() > 0);
@@ -255,7 +256,7 @@ public abstract class RolapNativeSet extends RolapNative {
                 if (hasEnumTargets) {
                     if (newPartialResult != null) {
                         cache.put(
-                            key,
+                            ImmutableList.copyOf(key),
                             new DelegatingTupleList(
                                 args.length,
                                 Util.<List<Member>>cast(newPartialResult)));

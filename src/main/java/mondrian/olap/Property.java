@@ -12,6 +12,7 @@
 */
 package mondrian.olap;
 
+import com.google.common.collect.ImmutableSet;
 import mondrian.spi.PropertyFormatter;
 
 import org.olap4j.impl.Named;
@@ -708,9 +709,8 @@ public class Property extends EnumeratedValues.BasicValue implements Named {
      * The various property names which define a format string.
      */
     static final Set<String> FORMAT_PROPERTIES =
-        new HashSet<String>(
-            Arrays.asList(
-                "format", "format_string", "FORMAT", FORMAT_STRING.name));
+        ImmutableSet.of(
+            "format", "format_string", "FORMAT", FORMAT_STRING.name);
 
     // ~ Data members ---------------------------------------------------------
 

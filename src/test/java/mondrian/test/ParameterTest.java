@@ -64,7 +64,7 @@ public class ParameterTest extends FoodMartTestCase {
         SchemaReader sr = query.getSchemaReader(false).withLocus();
         Member m =
             sr.getMemberByUniqueName(
-                Id.Segment.toList("Time", "1997", "Q2", "5"), true);
+                Id.Segment.listOf("Time", "1997", "Q2", "5"), true);
         Parameter p = sr.getParameter("Foo");
         p.setValue(m);
         assertEquals(m, p.getValue());
@@ -558,7 +558,7 @@ public class ParameterTest extends FoodMartTestCase {
         Assert.assertEquals("Q", parameters[3].getName());
         final Member member =
             query.getSchemaReader(true).getMemberByUniqueName(
-                Id.Segment.toList("Gender", "M"), true);
+                Id.Segment.listOf("Gender", "M"), true);
         parameters[2].setValue(member);
         TestContext.assertEqualsVerbose(
             "with member [Measures].[A string] as 'Parameter(\"S\", STRING, (\"x\" || \"y\"), \"A string parameter\")'\n"
@@ -756,14 +756,14 @@ public class ParameterTest extends FoodMartTestCase {
         // Member of wrong hierarchy.
         assertAssignParameter(
             para, false, sr.getMemberByUniqueName(
-                Id.Segment.toList("Time", "1997", "Q2", "5"), true),
+                Id.Segment.listOf("Time", "1997", "Q2", "5"), true),
             "Invalid value '[Time].[Time].[1997].[Q2].[5]' for parameter 'x', "
             + "type MemberType<hierarchy=[Customer].[Customers]>");
 
         // Member of right hierarchy.
         assertAssignParameter(
             para, false, sr.getMemberByUniqueName(
-                Id.Segment.toList("Customers", "All Customers"), true),
+                Id.Segment.listOf("Customers", "All Customers"), true),
             null);
 
         // Member of wrong level of right hierarchy.
@@ -771,7 +771,7 @@ public class ParameterTest extends FoodMartTestCase {
             "Parameter(\"x\", [Customers].[State Province], [Customers].[USA].[CA])",
             false,
             sr.getMemberByUniqueName(
-                Id.Segment.toList("Customers", "USA"), true),
+                Id.Segment.listOf("Customers", "USA"), true),
             "Invalid value '[Customer].[Customers].[USA]' for parameter "
             + "'x', type MemberType<level=[Customer].[Customers].[State Province]>");
 
@@ -787,7 +787,7 @@ public class ParameterTest extends FoodMartTestCase {
             "Parameter(\"x\", [Customers].[State Province], [Customers].[USA].[CA])",
             false,
             sr.getMemberByUniqueName(
-                Id.Segment.toList("Customers", "USA", "OR"), true),
+                Id.Segment.listOf("Customers", "USA", "OR"), true),
             null);
     }
 
@@ -872,9 +872,9 @@ public class ParameterTest extends FoodMartTestCase {
         list =
             Arrays.asList(
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "Mexico"), true),
+                    Id.Segment.listOf("Customers", "Mexico"), true),
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Time", "1997", "Q2", "5"), true));
+                    Id.Segment.listOf("Time", "1997", "Q2", "5"), true));
         assertAssignParameter(
             para, true, list,
             "Invalid value '[Time].[Time].[1997].[Q2].[5]' for parameter 'x', "
@@ -891,18 +891,18 @@ public class ParameterTest extends FoodMartTestCase {
         list =
             Arrays.asList(
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "Mexico"), true),
+                    Id.Segment.listOf("Customers", "Mexico"), true),
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "Canada"), true));
+                    Id.Segment.listOf("Customers", "Canada"), true));
         assertAssignParameter(para, true, list, null);
 
         // List that contains member of wrong level of right hierarchy.
         list =
             Arrays.asList(
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "USA", "CA"), true),
+                    Id.Segment.listOf("Customers", "USA", "CA"), true),
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "Mexico"), true));
+                    Id.Segment.listOf("Customers", "Mexico"), true));
         assertAssignParameter(
             "Parameter(\"x\", [Customers].[State Province], {[Customers].[USA].[CA]})",
             true,
@@ -922,10 +922,10 @@ public class ParameterTest extends FoodMartTestCase {
         list =
             Arrays.asList(
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "USA", "CA"), true),
+                    Id.Segment.listOf("Customers", "USA", "CA"), true),
                 null,
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Customers", "USA", "OR"), true));
+                    Id.Segment.listOf("Customers", "USA", "OR"), true));
         assertAssignParameter(
             "Parameter(\"x\", [Customers].[State Province], {[Customers].[USA].[CA]})",
             true,
@@ -996,10 +996,10 @@ public class ParameterTest extends FoodMartTestCase {
             SchemaReader sr = query.getSchemaReader(false).withLocus();
             Member m1 =
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Time", "1997", "Q2", "5"), true);
+                    Id.Segment.listOf("Time", "1997", "Q2", "5"), true);
             Member m2 =
                 sr.getMemberByUniqueName(
-                    Id.Segment.toList("Time", "1997", "Q3"), true);
+                    Id.Segment.listOf("Time", "1997", "Q3"), true);
             Parameter p = sr.getParameter("Foo");
             final List<Member> list = Arrays.asList(m1, m2);
             p.setValue(list);

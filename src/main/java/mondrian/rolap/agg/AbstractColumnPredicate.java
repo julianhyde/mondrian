@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util;
 import mondrian.rolap.*;
 import mondrian.spi.Dialect;
@@ -48,7 +49,7 @@ public abstract class AbstractColumnPredicate implements StarColumnPredicate {
     }
 
     public List<PredicateColumn> getColumnList() {
-        return Collections.singletonList(constrainedColumn);
+        return ImmutableList.of(constrainedColumn);
     }
 
     public BitKey getConstrainedColumnBitKey() {

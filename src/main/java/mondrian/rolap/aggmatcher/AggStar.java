@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.aggmatcher;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.olap.MondrianDef.AggLevel;
 import mondrian.recorder.MessageRecorder;
@@ -1311,8 +1312,8 @@ public class AggStar extends RolapStar {
                     final RolapSchema.PhysColumn key0 =
                         parentLevel.getAttribute().getKeyList().get(0);
                     final BitKey bk = AggStar.this.star.getBitKey(
-                        Collections.singletonList(key0.relation.getAlias()),
-                        Collections.singletonList(key0.name));
+                        ImmutableList.of(key0.relation.getAlias()),
+                        ImmutableList.of(key0.name));
                     final int bitPos = bk.nextSetBit(0);
                     if (bitPos == -1) {
                         throw new MondrianException(

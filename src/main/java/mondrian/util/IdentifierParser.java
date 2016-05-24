@@ -12,6 +12,7 @@
 */
 package mondrian.util;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.TupleList;
 import mondrian.calc.impl.ArrayTupleList;
 import mondrian.olap.*;
@@ -156,7 +157,7 @@ public class IdentifierParser extends org.olap4j.impl.IdentifierParser {
         public MemberListBuilder(
             SchemaReader schemaReader, Cube cube, Hierarchy hierarchy)
         {
-            super(schemaReader, cube, Collections.singletonList(hierarchy));
+            super(schemaReader, cube, ImmutableList.of(hierarchy));
         }
 
         public void memberComplete() {

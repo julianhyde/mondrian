@@ -10,6 +10,7 @@
 */
 package mondrian.rolap.agg;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.*;
 import mondrian.rolap.*;
 import mondrian.server.*;
@@ -423,7 +424,7 @@ public class SegmentLoaderTest extends BatchTestCase {
             new MockSqlStatement(
                 0,
                 new GroupingSetsList(
-                    Collections.singletonList(groupingSetsInfo)),
+                    ImmutableList.of(groupingSetsInfo)),
                 trim(5, getDataWithNullInAxisColumn(false)));
         SegmentLoader loader = new SegmentLoader(cacheMgr) {
             @Override
@@ -466,7 +467,7 @@ public class SegmentLoaderTest extends BatchTestCase {
             new MockSqlStatement(
                 0,
                 new GroupingSetsList(
-                    Collections.singletonList(groupingSetsInfo)),
+                    ImmutableList.of(groupingSetsInfo)),
                 data);
         SegmentLoader loader = new SegmentLoader(cacheMgr) {
             @Override
@@ -585,8 +586,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         Object[] data = {
             "1997", "Food", "Deli", "M", "6047", 0, 0, 0, 0
         };
-        ResultSet rowList =
-            toResultSet(Collections.singletonList(data));
+        ResultSet rowList = toResultSet(ImmutableList.of(data));
         assertTrue(rowList.next());
         assertEquals(
             BitKey.Factory.makeBitKey(4),
@@ -595,7 +595,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         data = new Object[]{
             "1997", "Food", "Deli", null, "12037", 0, 0, 0, 1
         };
-        rowList = toResultSet(Collections.singletonList(data));
+        rowList = toResultSet(ImmutableList.of(data));
         BitKey key = BitKey.Factory.makeBitKey(4);
         key.set(3);
         assertEquals(
@@ -605,7 +605,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         data = new Object[] {
             "1997", null, "Deli", null, "12037", 0, 1, 0, 1
         };
-        rowList = toResultSet(Collections.singletonList(data));
+        rowList = toResultSet(ImmutableList.of(data));
         key = BitKey.Factory.makeBitKey(4);
         key.set(1);
         key.set(3);

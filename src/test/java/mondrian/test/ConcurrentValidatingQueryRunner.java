@@ -237,22 +237,22 @@ public class ConcurrentValidatingQueryRunner extends Thread {
                 queriesAndResults);
         }
 
-        for (int idx = 0; idx < runners.length; idx++) {
-            runners[idx].start();
+        for (ConcurrentValidatingQueryRunner runner2 : runners) {
+            runner2.start();
         }
 
-        for (int idx = 0; idx < runners.length; idx++) {
+        for (ConcurrentValidatingQueryRunner runner1 : runners) {
             try {
-                runners[idx].join();
+                runner1.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        for (int idx = 0; idx < runners.length; idx++) {
-            allExceptions.addAll(runners[idx].mExceptions);
+        for (ConcurrentValidatingQueryRunner runner : runners) {
+            allExceptions.addAll(runner.mExceptions);
             if (printReport) {
-                runners[idx].report(System.out);
+                runner.report(System.out);
             }
         }
         return allExceptions;
@@ -304,9 +304,7 @@ public class ConcurrentValidatingQueryRunner extends Thread {
                 salesCube);
 
         try {
-            String[] tsegments =
-                new String[] {"Time", "1997"};
-            Id tid = new Id(Id.Segment.toList(tsegments));
+            Id tid = new Id(Id.Segment.listOf("Time", "1997"));
 
             Member memberTime97 =
                 schemaReader.getMemberByUniqueName(tid.getSegments(), false);
@@ -317,9 +315,11 @@ public class ConcurrentValidatingQueryRunner extends Thread {
             String[] states = {"CA", "OR", "WA"};
             int idx = (int) (Math.random() * states.length);
 
-            String[] ssegments =
-                new String[] {"Customers", "All Customers", "USA", states[idx]};
-            Id sid = new Id(Id.Segment.toList(ssegments));
+            Id sid = new Id(
+                Id.Segment.listOf("Customers",
+                    "All Customers",
+                    "USA",
+                    states[idx]));
 
             Member memberCustomerState =
                 schemaReader.getMemberByUniqueName(sid.getSegments(), false);

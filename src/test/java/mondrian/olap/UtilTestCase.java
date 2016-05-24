@@ -10,6 +10,7 @@
 */
 package mondrian.olap;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.Util.ByteMatcher;
 import mondrian.rolap.RolapUtil;
 import mondrian.util.*;
@@ -1043,18 +1044,18 @@ public class UtilTestCase extends TestCase {
         // 1-ary
         final CartesianProductList<String> list5 =
             new CartesianProductList<String>(
-                Collections.singletonList(
-                    Arrays.asList("a", "b")));
+                ImmutableList.<List<String>>of(
+                    ImmutableList.of("a", "b")));
         assertEquals("[[a], [b]]", list5.toString());
         checkCartesianListContents(list5);
 
         // 3-ary
         final CartesianProductList<String> list6 =
             new CartesianProductList<String>(
-                Arrays.asList(
-                    Arrays.asList("a", "b", "c", "d"),
-                    Arrays.asList("1", "2"),
-                    Arrays.asList("x", "y", "z")));
+                ImmutableList.<List<String>>of(
+                    ImmutableList.of("a", "b", "c", "d"),
+                    ImmutableList.of("1", "2"),
+                    ImmutableList.of("x", "y", "z")));
         assertEquals(24, list6.size()); // 4 * 2 * 3
         assertFalse(list6.isEmpty());
         assertEquals("[a, 1, x]", list6.get(0).toString());
@@ -1117,8 +1118,8 @@ public class UtilTestCase extends TestCase {
         assertEquals("[a, b, c]", flatABC.toString());
         assertEquals("[a, b]", flatAB.toString());
 
-        final List<String> arrayEmpty = Arrays.asList();
-        final List<String> arrayA = Collections.singletonList("a");
+        final List<String> arrayEmpty = ImmutableList.of();
+        final List<String> arrayA = ImmutableList.of("a");
 
         // mixed 2 & 3
         final List<List<String>> notAB =

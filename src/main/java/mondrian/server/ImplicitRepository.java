@@ -9,6 +9,7 @@
 */
 package mondrian.server;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.olap.MondrianServer;
 import mondrian.rolap.RolapConnection;
 import mondrian.rolap.RolapSchema;
@@ -39,8 +40,7 @@ public class ImplicitRepository implements Repository {
         // In an implicit repository, we assume that there is a single
         // database, a single catalog and a single schema.
         return
-            Collections.singletonList(
-                connection.getSchema().getName());
+            ImmutableList.of(connection.getSchema().getName());
     }
 
     public List<String> getDatabaseNames(RolapConnection connection)
@@ -48,8 +48,7 @@ public class ImplicitRepository implements Repository {
         // In an implicit repository, we assume that there is a single
         // database, a single catalog and a single schema.
         return
-            Collections.singletonList(
-                connection.getSchema().getName());
+            ImmutableList.of(connection.getSchema().getName());
     }
 
     public Map<String, RolapSchema> getRolapSchemas(
@@ -78,7 +77,7 @@ public class ImplicitRepository implements Repository {
     public List<Map<String, Object>> getDatabases(
         RolapConnection connection)
     {
-        return Collections.singletonList(
+        return ImmutableList.of(
             Olap4jUtil.<String, Object>mapOf(
                 "DataSourceName", connection.getSchema().getName(),
                 "DataSourceDescription", null,

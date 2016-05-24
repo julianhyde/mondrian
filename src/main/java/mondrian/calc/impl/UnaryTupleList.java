@@ -9,6 +9,7 @@
 */
 package mondrian.calc.impl;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.olap.Evaluator;
 import mondrian.olap.Member;
@@ -55,7 +56,7 @@ public class UnaryTupleList
 
     @Override
     public List<Member> get(int index) {
-        return Collections.singletonList(list.get(index));
+        return ImmutableList.of(list.get(index));
     }
 
     @Override
@@ -77,7 +78,7 @@ public class UnaryTupleList
         final Member member = list.set(index, element.get(0));
         return member == null
             ? null
-            : Collections.singletonList(member);
+            : ImmutableList.of(member);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class UnaryTupleList
         final Member member = list.remove(index);
         return member == null
             ? null
-            : Collections.singletonList(member);
+            : ImmutableList.of(member);
     }
 
     @Override

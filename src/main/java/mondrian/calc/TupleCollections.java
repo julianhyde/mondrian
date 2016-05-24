@@ -342,7 +342,7 @@ public final class TupleCollections {
                 memberArrayList.get(0).length,
                 new AbstractList<List<Member>>() {
                     public List<Member> get(int index) {
-                        return Arrays.asList(memberArrayList.get(index));
+                        return Util.flatList(memberArrayList.get(index));
                     }
 
                     public int size() {

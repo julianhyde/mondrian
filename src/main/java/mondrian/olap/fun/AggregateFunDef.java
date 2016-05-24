@@ -9,6 +9,7 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
 import mondrian.calc.*;
 import mondrian.calc.impl.*;
 import mondrian.mdx.ResolvedFunCall;
@@ -509,7 +510,7 @@ public class AggregateFunDef extends AbstractAggregateFunDef {
         {
             return !measureGroup
                 .nonJoiningDimensions(
-                    Collections.singletonList((RolapCubeDimension) dimension))
+                    ImmutableList.of((RolapCubeDimension) dimension))
                 .iterator()
                 .hasNext();
         }

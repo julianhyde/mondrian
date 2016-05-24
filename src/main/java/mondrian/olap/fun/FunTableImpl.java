@@ -10,6 +10,8 @@
 */
 package mondrian.olap.fun;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import mondrian.olap.*;
 import mondrian.util.Pair;
 
@@ -50,7 +52,7 @@ public abstract class FunTableImpl implements FunTable {
         builder.organizeFunctions();
 
         // Copy information out of builder into this.
-        this.funInfoList = Collections.unmodifiableList(builder.funInfoList);
+        this.funInfoList = ImmutableList.copyOf(builder.funInfoList);
         this.mapNameToResolvers =
             Collections.unmodifiableMap(builder.mapNameToResolvers);
         this.reservedWordSet = builder.reservedWords;
@@ -58,9 +60,8 @@ public abstract class FunTableImpl implements FunTable {
             builder.reservedWords.toArray(
                 new String[builder.reservedWords.size()]);
         Arrays.sort(reservedWords);
-        this.reservedWordList =
-            Collections.unmodifiableList(Arrays.asList(reservedWords));
-        this.propertyWords = Collections.unmodifiableSet(builder.propertyWords);
+        this.reservedWordList = ImmutableList.copyOf(reservedWords);
+        this.propertyWords = ImmutableSet.copyOf(builder.propertyWords);
     }
 
     /**
