@@ -71,6 +71,7 @@
     <eigenbase-properties.version>1.1.2</eigenbase-properties.version>
     <eigenbase-resgen.version>1.3.1</eigenbase-resgen.version>
     <eigenbase-xom.version>1.3.1</eigenbase-xom.version>
+    <foodmart-data-hsqldb.version>0.4</foodmart-data-hsqldb.version>
     <javacc-maven-plugin.version>2.4</javacc-maven-plugin.version>
     <jsp-api.version>2.0</jsp-api.version>
     <junit.version>3.8.1</junit.version>
@@ -87,6 +88,7 @@
     <properties-maven-plugin.version>1.0-alpha-2</properties-maven-plugin.version>
     <rt-jdk1.5.version>1.5.0_22</rt-jdk1.5.version>
     <servlet-api.version>2.4</servlet-api.version>
+    <steelwheels-data-hsqldb.version>0.1</steelwheels-data-hsqldb.version>
     <tools.version>1.5.0</tools.version>
     <validation-api.version>1.0.0.GA</validation-api.version>
     <xalan.version>2.6.0</xalan.version>
@@ -224,6 +226,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>net.hydromatic</groupId>
+      <artifactId>foodmart-data-hsqldb</artifactId>
+      <version>${foodmart-data-hsqldb.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.hydromatic</groupId>
+      <artifactId>steelwheels-data-hsqldb</artifactId>
+      <version>${steelwheels-data-hsqldb.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <version>${xmlunit.version}</version>
@@ -244,6 +258,15 @@
   </dependencies>
 
   <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>http://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
     <repository>
       <releases>
         <enabled>true</enabled>

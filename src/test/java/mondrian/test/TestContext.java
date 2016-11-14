@@ -22,7 +22,6 @@ import mondrian.resource.MondrianResource;
 import mondrian.rolap.*;
 import mondrian.spi.*;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
-import mondrian.util.DelegatingInvocationHandler;
 import mondrian.util.Pair;
 
 import junit.framework.*;
@@ -37,7 +36,6 @@ import org.olap4j.layout.TraditionalCellSetFormatter;
 import java.io.*;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.*;
@@ -260,6 +258,7 @@ public class TestContext {
 
     static Util.PropertyList replaceProperties(
         TestContext context,
+        DataSet dataSet,
         String catalogContent,
         String schema0,
         String schema1,
@@ -268,11 +267,20 @@ public class TestContext {
     {
         final Util.PropertyList properties =
             context.getConnectionProperties().clone();
-        final String jdbc = properties.get(
-            RolapConnectionProperties.Jdbc.name());
-        properties.put(
-            RolapConnectionProperties.Jdbc.name(),
-            Util.replace(jdbc, "/" + schema0, "/" + schema1));
+        final MondrianProperties p = MondrianProperties.instance();
+        final String dbName = p.TestDatabase.get();
+        if (dbName != null) {
+            final MondrianTestDatabase db =
+                MondrianTestDatabase.valueOf(dbName.toUpperCase());
+            DbSpec spec = db.spec(dataSet, p);
+            properties.put(RolapConnectionProperties.Jdbc.name(), spec.url);
+        } else {
+            final String jdbc =
+                properties.get(RolapConnectionProperties.Jdbc.name());
+            properties.put(
+                RolapConnectionProperties.Jdbc.name(),
+                Util.replace(jdbc, "/" + schema0, "/" + schema1));
+        }
         if (catalogContent != null) {
             properties.put(
                 RolapConnectionProperties.CatalogContent.name(),
@@ -320,8 +328,8 @@ public class TestContext {
      * </ul>
      */
     public static String getDefaultConnectString() {
-        String connectString =
-            MondrianProperties.instance().TestConnectString.get();
+        final MondrianProperties p = MondrianProperties.instance();
+        final String connectString = p.TestConnectString.get();
         final Util.PropertyList connectProperties;
         if (connectString == null || connectString.equals("")) {
             connectProperties = new Util.PropertyList();
@@ -329,18 +337,24 @@ public class TestContext {
         } else {
             connectProperties = Util.parseConnectString(connectString);
         }
-        String jdbcURL = MondrianProperties.instance().FoodmartJdbcURL.get();
-        if (jdbcURL != null) {
-            connectProperties.put("Jdbc", jdbcURL);
+        DbSpec spec;
+        final String dbName = p.TestDatabase.get();
+        if (dbName != null) {
+            final MondrianTestDatabase db =
+                MondrianTestDatabase.valueOf(dbName.toUpperCase());
+            spec = db.spec(DataSet.FOODMART, p);
+        } else {
+            spec = new DbSpec(p.FoodmartJdbcURL.get(),
+                p.TestJdbcUser.get(), p.TestJdbcPassword.get(), null);
         }
-        String jdbcUser = MondrianProperties.instance().TestJdbcUser.get();
-        if (jdbcUser != null) {
-            connectProperties.put("JdbcUser", jdbcUser);
+        if (spec.url != null) {
+            connectProperties.put("Jdbc", spec.url);
         }
-        String jdbcPassword =
-            MondrianProperties.instance().TestJdbcPassword.get();
-        if (jdbcPassword != null) {
-            connectProperties.put("JdbcPassword", jdbcPassword);
+        if (spec.user != null) {
+            connectProperties.put("JdbcUser", spec.user);
+        }
+        if (spec.password != null) {
+            connectProperties.put("JdbcPassword", spec.password);
         }
 
         // Find the catalog. Use the URL specified in the connect string, if it
@@ -1042,7 +1056,7 @@ public class TestContext {
 
     /**
      * Massages the actual result of executing a query to handle differences in
-     * unique names betweeen old and new behavior.
+     * unique names between old and new behavior.
      *
      * <p>Since the new naming is now the default, reference logs
      * should be in terms of the new naming.
@@ -1745,14 +1759,14 @@ public class TestContext {
         case STEELWHEELS:
             properties =
                 replaceProperties(
-                    this, catalogContents,
+                    this, dataSet, catalogContents,
                     "foodmart", "steelwheels",
                     "FoodMart", "SteelWheels");
             return withProperties(properties);
         case ADVENTURE_WORKS_DW:
             properties =
-                TestContext.replaceProperties(
-                    this, catalogContents,
+                replaceProperties(
+                    this, dataSet, catalogContents,
                     "foodmart", "adventureworks_dw",
                     "FoodMart", "AdventureWorks");
             return withProperties(properties);

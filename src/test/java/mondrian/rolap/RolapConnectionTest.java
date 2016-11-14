@@ -445,10 +445,10 @@ public class RolapConnectionTest extends TestCase {
                 case MYSQL:
                     assertTrue(
                         s,
-                        s.indexOf(
+                        s.matches(
                             "Caused by: java.sql.SQLException: Access denied "
-                            + "for user 'bogususer'@'localhost' (using "
-                            + "password: YES)") >= 0);
+                            + "for user 'bogususer'@'[^']+' (using "
+                            + "password: YES)"));
                     break;
                 case POSTGRESQL:
                     assertTrue(

@@ -74,6 +74,19 @@ in its entirety will be run.</p>
         <Type>String</Type>
     </PropertyDefinition>
     <PropertyDefinition>
+        <Name>TestDatabase</Name>
+        <Path>mondrian.test.db</Path>
+        <Category>Testing</Category>
+        <Default>mysql</Default>
+        <Description>
+<p>Name of the database to test against.</p>
+
+<p>Mondrian converts the value to upper case, and looks for an
+entry in {@code MondrianTestDatabase}.</p>
+        </Description>
+        <Type>String</Type>
+    </PropertyDefinition>
+    <PropertyDefinition>
         <Name>TestClass</Name>
         <Path>mondrian.test.Class</Path>
         <Category>Testing</Category>

@@ -9,10 +9,12 @@
 */
 package mondrian.rolap.agg;
 
+import mondrian.olap.Util;
 import mondrian.rolap.RolapStar;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,14 @@ import java.util.Map;
  */
 public class DrillThroughCellRequest extends CellRequest {
 
-    private final Map<RolapStar.Column, String> drillThroughColumns =
+  private static final Comparator<RolapStar.Column> COLUMN_COMPARATOR =
+      new Comparator<RolapStar.Column>() {
+          public int compare(RolapStar.Column o1, RolapStar.Column o2) {
+              return Util.compare(o1.getBitPosition(), o2.getBitPosition());
+          }
+      };
+
+  private final Map<RolapStar.Column, String> drillThroughColumns =
         new LinkedHashMap<RolapStar.Column, String>();
 
     private final List<RolapStar.Measure> drillThroughMeasures =
@@ -57,6 +66,7 @@ public class DrillThroughCellRequest extends CellRequest {
         List<RolapStar.Column> orderedConstrainedColumns =
             new ArrayList<RolapStar.Column>();
         orderedConstrainedColumns.addAll(drillThroughColumns.keySet());
+        Collections.sort(orderedConstrainedColumns, COLUMN_COMPARATOR);
         RolapStar.Column[] columns = super.getConstrainedColumns();
         for (RolapStar.Column col : columns) {
             if (!orderedConstrainedColumns.contains(col)) {
