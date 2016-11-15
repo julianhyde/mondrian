@@ -22,6 +22,16 @@
     locale="en_US"
     exceptionClassName="mondrian.olap.MondrianException">
 
+<factory className="mondrian.olap.MondrianException" signature="()"/>
+<factory className="mondrian.olap.MondrianException" signature="(Throwable cause)"/>
+<factory className="mondrian.olap.MondrianException" signature="(String message)"/>
+<factory className="mondrian.olap.MondrianException" signature="(String message, Throwable cause)"/>
+<factory className="mondrian.olap.InvalidHierarchyException" signature="(String message)"/>
+<factory className="mondrian.olap.NativeEvaluationUnsupportedException" signature="(String message)"/>
+<factory className="mondrian.olap.QueryCanceledException" signature="(String message)"/>
+<factory className="mondrian.olap.QueryTimeoutException" signature="(String message)"/>
+<factory className="mondrian.olap.ResourceLimitExceededException" signature="(String message)"/>
+
 <!-- ====================================================================== -->
 <!-- Internal errors 320,000 - 321,000 ==================================== -->
 <!-- ====================================================================== -->

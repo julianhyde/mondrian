@@ -54,6 +54,13 @@
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <vendor>Pentaho</vendor>
+    <version.major>4</version.major>
+    <version.minor>700</version.minor>
+    <driver.name>Mondrian olap4j driver</driver.name>
+    <driver.version>4.7-SNAPSHOT</driver.version>
+    <driver.version.major>4</driver.version.major>
+    <driver.version.minor>700</driver.version.minor>
 
     <!-- Version properties must be sorted. -->
     <build-helper-maven-plugin.version>1.8</build-helper-maven-plugin.version>
@@ -69,13 +76,14 @@
     <ctsym-java6.version>1.6.0_24</ctsym-java6.version>
     <dom4j.version>1.6.1</dom4j.version>
     <eigenbase-properties.version>1.1.2</eigenbase-properties.version>
-    <eigenbase-resgen.version>1.3.1</eigenbase-resgen.version>
-    <eigenbase-xom.version>1.3.1</eigenbase-xom.version>
+    <eigenbase-resgen.version>1.3.7-SNAPSHOT</eigenbase-resgen.version>
+    <eigenbase-xom.version>1.3.5</eigenbase-xom.version>
     <foodmart-data-hsqldb.version>0.4</foodmart-data-hsqldb.version>
+    <git-commit-id-plugin.version>2.1.9</git-commit-id-plugin.version>
+    <groovy-maven-plugin.version>2.0</groovy-maven-plugin.version>
     <javacc-maven-plugin.version>2.4</javacc-maven-plugin.version>
     <jsp-api.version>2.0</jsp-api.version>
     <junit.version>3.8.1</junit.version>
-    <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
     <maven-jar-plugin.version>2.2</maven-jar-plugin.version>
@@ -85,10 +93,10 @@
     <mockito-all.version>1.8.5</mockito-all.version>
     <mysql-connector-java.version>5.1.31</mysql-connector-java.version>
     <olap4j.version>1.2.0</olap4j.version>
-    <properties-maven-plugin.version>1.0-alpha-2</properties-maven-plugin.version>
     <rt-jdk1.5.version>1.5.0_22</rt-jdk1.5.version>
     <servlet-api.version>2.4</servlet-api.version>
     <steelwheels-data-hsqldb.version>0.1</steelwheels-data-hsqldb.version>
+    <toolbox.version>0.4-SNAPSHOT</toolbox.version>
     <tools.version>1.5.0</tools.version>
     <validation-api.version>1.0.0.GA</validation-api.version>
     <xalan.version>2.6.0</xalan.version>
@@ -338,6 +346,18 @@
         <version>${maven-compiler-plugin.version}</version>
         <executions>
           <execution>
+            <id>compile-early</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>src/main/java/mondrian/olap/MondrianException.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
             <id>compile-jdk15</id>
             <goals>
               <goal>compile</goal>
@@ -387,36 +407,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>${maven-antrun-plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <ant target="def" />
-                <ant target="generate.properties" />
-                <ant target="generate.resources" />
-                <ant target="parser" />
-                <ant target="version" />
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <version>${tools.version}</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>${build-helper-maven-plugin.version}</version>
@@ -449,14 +439,162 @@
               <goal>javacc</goal>
             </goals>
             <configuration>
+              <sourceDirectory>src/main/javacc</sourceDirectory>
               <includes>
-                <include>src/main/mondrian/parser/MdxParser.jj</include>
+                <include>mondrian/parser/MdxParser.jj</include>
               </includes>
               <lookAhead>2</lookAhead>
               <isStatic>false</isStatic>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>${groovy-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                import net.hydromatic.toolbox.property.PropertyGenerator
+                import org.eigenbase.resgen.ResourceGenTask
+                import org.eigenbase.xom.MetaGenerator
+                import java.io.File
+
+                new File("target/generated-sources/xom/mondrian/olap").mkdirs()
+                new File("target/generated-sources/xom/mondrian/rolap/aggmatcher").mkdirs()
+
+                destDir = "target/generated-sources/xom"
+                e = new File("${project.basedir}")
+                destinationDirectory = new File(e, destDir)
+
+                // Generate Mondrian3Def.java
+                model = "src/main/xom/mondrian/olap/Mondrian3Schema.xml"
+                className = "mondrian.olap.Mondrian3Def"
+                dtdFileName = "mondrian3.dtd"
+
+                modelFile = new File(e, model)
+                generator = new MetaGenerator(modelFile.toString(), false, className)
+                generator.writeFiles(destinationDirectory.toString(), dtdFileName)
+                generator.writeOutputs()
+
+                // Generate MondrianDef.java
+                model = "src/main/xom/mondrian/olap/MondrianSchema.xml"
+                className = "mondrian.olap.MondrianDef"
+                dtdFileName = "mondrian.dtd"
+
+                modelFile = new File(e, model)
+                generator = new MetaGenerator(modelFile.toString(), false, className)
+                generator.writeFiles(destinationDirectory.toString(), dtdFileName)
+                generator.writeOutputs()
+
+                // Generate DefaultDef.java
+                model = "src/main/xom/mondrian/rolap/aggmatcher/DefaultRulesSchema.xml"
+                className = "mondrian.rolap.aggmatcher.DefaultDef"
+                dtdFileName = "aggregates.dtd"
+
+                modelFile = new File(e, model)
+                generator = new MetaGenerator(modelFile.toString(), false, className)
+                generator.writeFiles(destinationDirectory.toString(), dtdFileName)
+                generator.writeOutputs()
+
+                // Generate DataSourcesConfig.java
+                model = "src/main/xom/mondrian/xmla/DataSourcesConfig.xml"
+                className = "mondrian.xmla.DataSourcesConfig"
+                dtdFileName = "datasourcesconfig.dtd"
+
+                modelFile = new File(e, model)
+                generator = new MetaGenerator(modelFile.toString(), false, className)
+                generator.writeFiles(destinationDirectory.toString(), dtdFileName)
+                generator.writeOutputs()
+
+                // Generate MondrianProperties.java
+                PropertyGenerator.main()
+
+                // Generate MondrianResource.java
+                t2 = new ResourceGenTask()
+                t2.setSrcdir(new File(e, "src/main/java"))
+                t2.setDestdir(new File(e, "target/generated-sources/resgen"))
+                t2.setResdir(new File(e, "target/classes"))
+                t2.setStyle("functor")
+                t2.setLocales("en_US,de_DE,de,es_ES")
+                i = new ResourceGenTask.Include()
+                i.setName("mondrian/resource/MondrianResource.xml")
+                t2.addInclude(i)
+                t2.execute()
+
+                // Generate MondrianOlap4jDriverVersion.java
+                v = new File(e, "target/generated-sources/version/mondrian/olap4j/MondrianOlap4jDriverVersion.java")
+                v.getParentFile().mkdirs()
+                w = new FileWriter(v)
+                pw = new PrintWriter(w)
+                pw.println("/*")
+                pw.println(" * Project version information. Generated - do not modify.")
+                pw.println(" */")
+                pw.println("package mondrian.olap4j;")
+                pw.println("")
+                pw.println("/**")
+                pw.println(" * Version information for the Mondrian olap4j driver. (Generated.)")
+                pw.println(" */")
+                pw.println("class MondrianOlap4jDriverVersion {")
+                pw.println("  static final String NAME = \"${driver.name}\";")
+                pw.println("  static final String VERSION = \"${driver.version}\";")
+                pw.println("  static final int MAJOR_VERSION = ${driver.version.major};")
+                pw.println("  static final int MINOR_VERSION = ${driver.version.minor};")
+                pw.println("}")
+                pw.println("")
+                pw.println("// End MondrianOlap4jDriverVersion.java")
+                pw.close()
+
+                // Generate MondrianServerVersion.java
+                sv = new File(e, "target/generated-sources/version/mondrian/server/MondrianServerVersion.java")
+                sv.getParentFile().mkdirs()
+                w = new FileWriter(sv)
+                pw = new PrintWriter(w)
+                pw.println("/*")
+                pw.println(" * Project version information. Generated - do not modify.")
+                pw.println(" */")
+                pw.println("package mondrian.server;")
+                pw.println("")
+                pw.println("/**")
+                pw.println(" * Version information for Mondrian. (Generated by build)")
+                pw.println(" */")
+                pw.println("class MondrianServerVersion {")
+                pw.println("  static final String VENDOR = \"${vendor}\";")
+                pw.println("  static final String NAME = \"${project.name}\";")
+                pw.println("  static final String VERSION = \"${project.version}\";")
+                pw.println("  static final int MAJOR_VERSION = ${version.major};")
+                pw.println("  static final int MINOR_VERSION = ${version.minor};")
+                pw.println("}")
+                pw.println("")
+                pw.println("// End MondrianServerVersion.java")
+                pw.close()
+              </source>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>eigenbase</groupId>
+            <artifactId>eigenbase-resgen</artifactId>
+            <version>${eigenbase-resgen.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>eigenbase</groupId>
+            <artifactId>eigenbase-xom</artifactId>
+            <version>${eigenbase-xom.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.hydromatic</groupId>
+            <artifactId>toolbox</artifactId>
+            <version>${toolbox.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -473,25 +611,6 @@
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>properties-maven-plugin</artifactId>
-        <version>${properties-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>initialize</phase>
-            <goals>
-              <goal>read-project-properties</goal>
-            </goals>
-            <configuration>
-              <files>
-                <file>mondrian.properties</file>
-                <file>build.properties</file>
-              </files>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -549,4 +668,54 @@
       </plugin>
     </plugins>
   </reporting>
+  <profiles>
+    <profile>
+      <!-- Generate git.properties on first build -->
+      <id>generate-git-id</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <!-- Note: <missing> here does NOT support interpolation,
+        so technically, this profile is active for sub-modules.
+        It would be nice to use ${top.dir}/target/... here, but
+        it is not possible.
+        However sub-modules lack .git folder, so no git.properties
+        is generated. -->
+        <file>
+          <missing>target/git.properties</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+            <version>${git-commit-id-plugin.version}</version>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>revision</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+              <verbose>false</verbose>
+              <skipPoms>false</skipPoms>
+              <generateGitPropertiesFile>true</generateGitPropertiesFile>
+              <generateGitPropertiesFilename>target/git.properties</generateGitPropertiesFilename>
+              <failOnNoGitDirectory>false</failOnNoGitDirectory>
+              <gitDescribe>
+                <skip>false</skip>
+                <always>false</always>
+                <abbrev>7</abbrev>
+                <dirty>-dirty</dirty>
+                <forceLongFormat>true</forceLongFormat>
+              </gitDescribe>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
