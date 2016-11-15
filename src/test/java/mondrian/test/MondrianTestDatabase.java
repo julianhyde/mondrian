@@ -20,13 +20,13 @@ public enum MondrianTestDatabase {
 
     static {
         final String[] strings = {
-            "mondrian.foodmart.hsqldb.jdbcURL", "jdbc:hsqldb:demo/hsql/FoodMart",
-            "mondrian.foodmart.hsqldb.jdbcUser", null,
-            "mondrian.foodmart.hsqldb.jdbcPassword", null,
+            "mondrian.foodmart.hsqldb.jdbcURL", "jdbc:hsqldb:res:foodmart",
+            "mondrian.foodmart.hsqldb.jdbcUser", "FOODMART",
+            "mondrian.foodmart.hsqldb.jdbcPassword", "FOODMART",
             "mondrian.foodmart.hsqldb.jdbcDriver", "org.hsqldb.jdbcDriver",
             "mondrian.steelwheels.hsqldb.jdbcURL", "jdbc:hsqldb:res:steelwheels",
-            "mondrian.steelwheels.hsqldb.jdbcUser", "steelwheels",
-            "mondrian.steelwheels.hsqldb.jdbcPassword", "",
+            "mondrian.steelwheels.hsqldb.jdbcUser", "STEELWHEELS",
+            "mondrian.steelwheels.hsqldb.jdbcPassword", "STEELWHEELS",
             "mondrian.steelwheels.hsqldb.jdbcDriver", "org.hsqldb.jdbcDriver",
             "mondrian.foodmart.mysql.jdbcURL", "jdbc:mysql://localhost/foodmart",
             "mondrian.foodmart.mysql.jdbcUser", "foodmart",

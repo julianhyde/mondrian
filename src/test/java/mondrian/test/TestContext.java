@@ -269,18 +269,23 @@ public class TestContext {
             context.getConnectionProperties().clone();
         final MondrianProperties p = MondrianProperties.instance();
         final String dbName = p.TestDatabase.get();
+        final DbSpec spec;
         if (dbName != null) {
             final MondrianTestDatabase db =
                 MondrianTestDatabase.valueOf(dbName.toUpperCase());
-            DbSpec spec = db.spec(dataSet, p);
-            properties.put(RolapConnectionProperties.Jdbc.name(), spec.url);
+            spec = db.spec(dataSet, p);
         } else {
             final String jdbc =
                 properties.get(RolapConnectionProperties.Jdbc.name());
-            properties.put(
-                RolapConnectionProperties.Jdbc.name(),
-                Util.replace(jdbc, "/" + schema0, "/" + schema1));
+            spec = new DbSpec(Util.replace(jdbc, "/" + schema0, "/" + schema1),
+                properties.get(RolapConnectionProperties.JdbcUser.name()),
+                properties.get(RolapConnectionProperties.JdbcPassword.name()),
+                null);
         }
+        properties.put(RolapConnectionProperties.Jdbc.name(), spec.url);
+        properties.put(RolapConnectionProperties.JdbcUser.name(), spec.user);
+        properties.put(RolapConnectionProperties.JdbcPassword.name(),
+            spec.password);
         if (catalogContent != null) {
             properties.put(
                 RolapConnectionProperties.CatalogContent.name(),

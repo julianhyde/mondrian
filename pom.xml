@@ -81,6 +81,7 @@
     <foodmart-data-hsqldb.version>0.4</foodmart-data-hsqldb.version>
     <git-commit-id-plugin.version>2.1.9</git-commit-id-plugin.version>
     <groovy-maven-plugin.version>2.0</groovy-maven-plugin.version>
+    <hsqldb.version>2.3.1</hsqldb.version>
     <javacc-maven-plugin.version>2.4</javacc-maven-plugin.version>
     <jsp-api.version>2.0</jsp-api.version>
     <junit.version>3.8.1</junit.version>
@@ -95,7 +96,7 @@
     <olap4j.version>1.2.0</olap4j.version>
     <rt-jdk1.5.version>1.5.0_22</rt-jdk1.5.version>
     <servlet-api.version>2.4</servlet-api.version>
-    <steelwheels-data-hsqldb.version>0.1</steelwheels-data-hsqldb.version>
+    <steelwheels-data-hsqldb.version>0.2-SNAPSHOT</steelwheels-data-hsqldb.version>
     <toolbox.version>0.4-SNAPSHOT</toolbox.version>
     <tools.version>1.5.0</tools.version>
     <validation-api.version>1.0.0.GA</validation-api.version>
@@ -174,6 +175,11 @@
       <groupId>eigenbase</groupId>
       <artifactId>eigenbase-resgen</artifactId>
       <version>${eigenbase-resgen.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>${hsqldb.version}</version>
     </dependency>
     <dependency>
       <groupId>org.olap4j</groupId>
