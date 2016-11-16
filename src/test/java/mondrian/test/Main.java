@@ -23,7 +23,6 @@ import mondrian.rolap.agg.*;
 import mondrian.rolap.aggmatcher.*;
 import mondrian.rolap.sql.SelectNotInGroupByTest;
 import mondrian.rolap.sql.SqlQueryTest;
-import mondrian.test.build.CodeComplianceTest;
 import mondrian.test.clearview.*;
 import mondrian.test.comp.ResultComparatorTest;
 import mondrian.udf.CurrentDateMemberUdfTest;
@@ -321,7 +320,6 @@ public class Main extends TestSuite {
             addTest(suite, DynamicSchemaProcessorTest.class);
             addTest(suite, MonitorTest.class);
             addTest(suite, BlockingHashMapTest.class);
-            addTest(suite, CodeComplianceTest.class);
 
             boolean testNonEmpty = isRunOnce();
             if (!MondrianProperties.instance().EnableNativeNonEmpty.get()) {

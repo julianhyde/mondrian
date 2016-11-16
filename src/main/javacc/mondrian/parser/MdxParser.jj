@@ -726,22 +726,20 @@ Exp primary() :
 
 Exp segmentOrFuncall(Exp left) :
 {
-    Id.Segment segment;
-    List<Exp> argList = null;
+    final Id.Segment segment;
+    final List<Exp> argList;
 }
 {
     segment = identifier()
     (
-        <LPAREN>
-        (
-            LOOKAHEAD(<RPAREN>) {
-                argList = Collections.emptyList();
-            }
-        |
-            argList = expOrEmptyList()
-        )
-        <RPAREN>
-    )?
+        <LPAREN> <RPAREN> {
+            argList = Collections.emptyList();
+        }
+    |
+        <LPAREN> argList = expOrEmptyList() <RPAREN>
+    |
+        { argList = null; }
+    )
     {
         return createCall(left, segment, argList);
     }
@@ -764,9 +762,9 @@ Literal numericLiteral() :
 
 Exp atom() :
 {
-    Exp e;
+    final Exp e;
     Id.NameSegment segment;
-    List<Exp> lis;
+    final List<Exp> lis;
 }
 {
     <SINGLE_QUOTED_STRING> {
@@ -797,17 +795,12 @@ Exp atom() :
     }
 |
     // set built from sets/tuples
-    <LBRACE>
-    (
-        LOOKAHEAD(<RBRACE>) {
-            lis = Collections.emptyList();
-        }
-    |
-        lis = expList()
-    )
-    <RBRACE> {
-        return new UnresolvedFunCall(
-            "{}", Syntax.Braces, toExpArray(lis));
+    <LBRACE> <RBRACE> {
+        return new UnresolvedFunCall("{}", Syntax.Braces, EmptyExpArray);
+    }
+|
+    <LBRACE> lis = expList() <RBRACE> {
+        return new UnresolvedFunCall("{}", Syntax.Braces, toExpArray(lis));
     }
 |   e = caseExpression() {
         return e;
@@ -825,15 +818,11 @@ Exp atom() :
         }
     )*
     (
-        <LPAREN>
-        (
-            LOOKAHEAD(<RPAREN>) {
-                lis = Collections.emptyList();
-            }
-        |
-            lis = expOrEmptyList()
-        )
-        <RPAREN>
+        <LPAREN> <RPAREN> {
+            lis = Collections.emptyList();
+        }
+    |
+        <LPAREN> lis = expOrEmptyList() <RPAREN>
     |
         /* empty */ { lis = null; }
     )
@@ -913,8 +902,11 @@ Exp expressionOrEmpty() :
     }
 }
 
-// Comma-separated list of expressions, some of which may be empty. Used
-// for functions.
+// Comma-separated list of expressions, in parentheses.
+// Some of the expressions may be empty, but the list may not.
+// Used for functions. Examples:
+//    (a, b + c, d)
+//    (a, , 4)
 List<Exp> expOrEmptyList() :
 {
     Exp e;
@@ -1107,7 +1099,7 @@ Exp formulaExpression() :
     Exp e;
 }
 {
-    LOOKAHEAD(<SINGLE_QUOTED_STRING>)
+    LOOKAHEAD(1/*<SINGLE_QUOTED_STRING>*/)
     <SINGLE_QUOTED_STRING> {
         // Support archaic syntax "WITH MEMBER m AS ' <expr> ' ...";
         // "WITH MEMBER m AS <expr>" is now preferred.

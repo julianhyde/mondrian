@@ -3907,7 +3907,7 @@ public class FunctionTest extends FoodMartTestCase {
             + "    (Time.Month.Members * Gender.Members) as 'foo',\n"
             + "    (s.Current.Item(0).Parent, [Marital Status].[S]) > 50000) on 1\n"
             + "from [Sales]",
-            "Syntax error at line 3, column 46, token ''foo''");
+            "Syntax error at line 3, column 43, token 'as'");
 
         // 'set AS numeric' is invalid
         assertQueryThrows(
@@ -3916,7 +3916,7 @@ public class FunctionTest extends FoodMartTestCase {
             + "    (Time.Month.Members * Gender.Members) as 1234,\n"
             + "    (s.Current.Item(0).Parent, [Marital Status].[S]) > 50000) on 1\n"
             + "from [Sales]",
-            "Syntax error at line 3, column 46, token '1234'");
+            "Syntax error at line 3, column 43, token 'as'");
 
         // 'numeric AS identifier' is invalid
         assertQueryThrows(

@@ -82,7 +82,7 @@
     <git-commit-id-plugin.version>2.1.9</git-commit-id-plugin.version>
     <groovy-maven-plugin.version>2.0</groovy-maven-plugin.version>
     <hsqldb.version>2.3.1</hsqldb.version>
-    <javacc-maven-plugin.version>2.4</javacc-maven-plugin.version>
+    <javacc-maven-plugin.version>2.6</javacc-maven-plugin.version>
     <jsp-api.version>2.0</jsp-api.version>
     <junit.version>3.8.1</junit.version>
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -451,6 +451,7 @@
               </includes>
               <lookAhead>2</lookAhead>
               <isStatic>false</isStatic>
+              <unicodeInput>true</unicodeInput>
             </configuration>
           </execution>
         </executions>
