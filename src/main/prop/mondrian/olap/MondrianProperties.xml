@@ -77,7 +77,7 @@ in its entirety will be run.</p>
         <Name>TestDatabase</Name>
         <Path>mondrian.test.db</Path>
         <Category>Testing</Category>
-        <Default>mysql</Default>
+        <Default>hsqldb</Default>
         <Description>
 <p>Name of the database to test against.</p>
 

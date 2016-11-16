@@ -447,8 +447,8 @@ public class RolapConnectionTest extends TestCase {
                         s,
                         s.matches(
                             "Caused by: java.sql.SQLException: Access denied "
-                            + "for user 'bogususer'@'[^']+' (using "
-                            + "password: YES)"));
+                            + "for user 'bogususer'@'[^']+' \\(using "
+                            + "password: YES\\)"));
                     break;
                 case POSTGRESQL:
                     assertTrue(

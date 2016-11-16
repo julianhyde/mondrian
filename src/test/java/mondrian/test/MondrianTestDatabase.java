@@ -11,7 +11,10 @@ package mondrian.test;
 
 import java.util.Properties;
 
-/** Collection of database instance names. */
+/** Collection of database instance names.
+ *
+ * @see mondrian.olap.MondrianProperties#TestDatabase
+ */
 public enum MondrianTestDatabase {
     HSQLDB,
     MYSQL;
