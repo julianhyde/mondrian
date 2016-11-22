@@ -13,6 +13,10 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>SubTotalTest</code> is a test suite which tests scenarios of
  * using sub totals against the FoodMart database. MDX queries and their
@@ -21,15 +25,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class SubTotalTest extends ClearViewBase {
-
-    public SubTotalTest() {
-        super();
-    }
-
-    public SubTotalTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +33,9 @@ public class SubTotalTest extends ClearViewBase {
         return DiffRepository.lookup(SubTotalTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), SubTotalTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(SubTotalTest.class);
     }
 
 }

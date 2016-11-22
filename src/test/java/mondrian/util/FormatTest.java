@@ -12,6 +12,7 @@ package mondrian.util;
 import mondrian.olap.Util;
 import mondrian.test.I18nTest;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.math.BigDecimal;
@@ -62,11 +63,11 @@ public class FormatTest extends TestCase {
     /**
      * Exhaustive tests on various numbers.
      */
-    public void testNumbers() {
+    @Test public void testNumbers() {
         checkNumbersInLocale(null);
     }
 
-    public void testFrenchNumbers() {
+    @Test public void testFrenchNumbers() {
         checkNumbersInLocale(localeFra);
     }
 
@@ -186,7 +187,7 @@ public class FormatTest extends TestCase {
         return result;
     }
 
-    public void testTrickyNumbers() {
+    @Test public void testTrickyNumbers() {
         checkFormat(null, new BigDecimal("40.385"), "##0.0#", "40.39");
         checkFormat(null, new BigDecimal("40.386"), "##0.0#", "40.39");
         checkFormat(null, new BigDecimal("40.384"), "##0.0#", "40.38");
@@ -232,7 +233,7 @@ public class FormatTest extends TestCase {
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-186">
      * MONDRIAN-186</a>, "Small negative numbers are printed as '-0'".
      */
-    public void testSmallNegativeNumbers() {
+    @Test public void testSmallNegativeNumbers() {
         checkFormat(null, new BigDecimal("-0.006"), "#.0", ".0");
         checkFormat(null, new BigDecimal("-0.006"), "#.00", "-.01");
         checkFormat(null, new BigDecimal("-0.0500001"), "#.0", "-.1");
@@ -256,7 +257,7 @@ public class FormatTest extends TestCase {
      * a number is too small to appear in either format string, it underflows
      * to 'Nil', and gets to use a third format.
      */
-    public void testNil() {
+    @Test public void testNil() {
         // The +ve format gives "-0.01", but the negative format gives "0.0",
         // so we move onto the "Nil" format.
         checkFormat(null, new BigDecimal("-0.001"), "0.##;(0.##);Nil", "Nil");
@@ -310,7 +311,7 @@ public class FormatTest extends TestCase {
     /**
      * Null values use the fourth format.
      */
-    public void testNull() {
+    @Test public void testNull() {
         // Null value with different numbers of strings
         checkFormat(
             null, null, "\\P\\o\\s", "");
@@ -327,7 +328,7 @@ public class FormatTest extends TestCase {
             null, null, "\\P\\o\\s;;;", "");
     }
 
-    public void testNegativeZero() {
+    @Test public void testNegativeZero() {
         checkFormat(null, new BigDecimal("-0.0"), "#0.000", "0.000");
         checkFormat(null, new BigDecimal("-0.0"), "#0", "0");
         checkFormat(null, new BigDecimal("-0.0"), "#0.0", "0.0");
@@ -338,7 +339,7 @@ public class FormatTest extends TestCase {
      * MONDRIAN-686</a>, "Regression: JPivot output invalid - New Variance
      * Percent column".
      */
-    public void testPercentWithStyle() {
+    @Test public void testPercentWithStyle() {
         checkFormat(
             null,
             new BigDecimal("0.0364"),
@@ -350,7 +351,7 @@ public class FormatTest extends TestCase {
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-687">
      * MONDRIAN-687</a>, "Format treats negative numbers differently than SSAS".
      */
-    public void testNegativePercentWithStyle() {
+    @Test public void testNegativePercentWithStyle() {
         if (Bug.BugMondrian687Fixed) {
             checkFormat(
                 null,
@@ -397,7 +398,7 @@ public class FormatTest extends TestCase {
      * Single quotes in format string. SSAS 2005 removes them; Mondrian should
      * also.
      */
-    public void testSingleQuotes() {
+    @Test public void testSingleQuotes() {
         if (Bug.BugMondrian687Fixed) {
             checkFormat(
                 null,
@@ -418,12 +419,12 @@ public class FormatTest extends TestCase {
         }
     }
 
-    public void testNegativePercent() {
+    @Test public void testNegativePercent() {
         checkFormat(null, new BigDecimal("-0.0364"), "#.00%", "-3.64%");
         checkFormat(null, new BigDecimal("0.0364"), "#.00%", "3.64%");
     }
 
-    public void testNumberRoundingBug() {
+    @Test public void testNumberRoundingBug() {
         checkFormat(null, new BigDecimal("0.50"), "0", "1");
         checkFormat(null, new BigDecimal("-1.5"), "0", "-2");
         checkFormat(null, new BigDecimal("-0.50"), "0", "-1");
@@ -436,7 +437,7 @@ public class FormatTest extends TestCase {
         checkFormat(null, new BigDecimal("0.49999"), "#.0", ".5");
     }
 
-    public void testCurrencyBug() {
+    @Test public void testCurrencyBug() {
         // The following case illustrates an outstanding bug.
         // Should be able to override '.' to '-',
         // so result should be '3.141.592-65 FF',
@@ -457,7 +458,7 @@ public class FormatTest extends TestCase {
         return calendar.getTime();
     }
 
-    public void testDates() {
+    @Test public void testDates() {
         checkDate("dd-mmm-yy",     "29-Apr-69",  "29-Avr-69",  "29-Apr-69");
         checkDate("h:mm:ss AM/PM", "8:09:06 PM", "8#09#06 PM", "8:09:06 PM");
         checkDate("hh:mm",         "20:09",      "20#09",      "20:09");
@@ -482,7 +483,7 @@ public class FormatTest extends TestCase {
         checkFormat(localeDe, date, format, de);
     }
 
-    public void testAllTokens() {
+    @Test public void testAllTokens() {
         for (Format.Token fe : Format.getTokenList()) {
             Object o;
             if (fe.isNumeric()) {
@@ -498,7 +499,7 @@ public class FormatTest extends TestCase {
         }
     }
 
-    public void testTrickyDates() {
+    @Test public void testTrickyDates() {
         // All examples have been checked with Excel2003 and AS2005.
 
         checkFormat(null, date2, "y", "250");
@@ -551,7 +552,7 @@ public class FormatTest extends TestCase {
         checkFormat(null, date2, "Long Date", "Tuesday, September 07, 2010");
     }
 
-    public void testFrenchLocale() {
+    @Test public void testFrenchLocale() {
         Format.FormatLocale fr = Format.createLocale(Locale.FRANCE);
         assertEquals("#,##0.00 " + I18nTest.Euro, fr.currencyFormat);
         assertEquals(I18nTest.Euro + "", fr.currencySymbol);
@@ -616,7 +617,7 @@ public class FormatTest extends TestCase {
         }
     }
 
-    public void testCache() {
+    @Test public void testCache() {
         StringBuilder buf = new StringBuilder(Format.CacheLimit * 2 + 10);
         buf.append("0.");
         for (int i = 0; i < Format.CacheLimit * 2; ++i) {
@@ -627,7 +628,7 @@ public class FormatTest extends TestCase {
         }
     }
 
-    public void testString() {
+    @Test public void testString() {
         // Excel2003
         checkFormat(null, "This Is A Test", ">", "THIS IS A TEST");
 
@@ -682,7 +683,7 @@ public class FormatTest extends TestCase {
         checkFormat(null, string, "$#,#.#", string);
     }
 
-    public void testNonNumericValuesUsingNumericFormat() {
+    @Test public void testNonNumericValuesUsingNumericFormat() {
         // All of the following have been checked in Excel 2003.
 
         // string value printed using a numeric format
@@ -709,7 +710,7 @@ public class FormatTest extends TestCase {
         checkFormat(null, -123.45E6, ">", "-123,450,000");
     }
 
-    public void testFormatThousands() {
+    @Test public void testFormatThousands() {
         checkFormat(
             null,
             123456.7,
@@ -792,7 +793,7 @@ public class FormatTest extends TestCase {
      * MONDRIAN-968</a>, "Thousands formatting does not work. #,###,, <-
      * Multiple Comma not rounding".
      */
-    public void testThousandsThousands() {
+    @Test public void testThousandsThousands() {
         final int i = 1234567890;
         if (false) {
         checkFormat(null, i, "#,##0,,", "1,235");
@@ -816,7 +817,7 @@ public class FormatTest extends TestCase {
      * Tests the international currency symbol parsing
      * in format strings according to different locales.
      */
-    public void testCurrency() {
+    @Test public void testCurrency() {
         checkFormat(
             localeDe,
             123456,
@@ -854,7 +855,7 @@ public class FormatTest extends TestCase {
             "$1");
     }
 
-    public void testInfinity() {
+    @Test public void testInfinity() {
         String[] strings = {"#", "#.#", "#,###.0"};
         for (String string : strings) {
             checkFormat(

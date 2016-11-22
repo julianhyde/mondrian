@@ -11,6 +11,11 @@ package mondrian.rolap.aggmatcher;
 
 import mondrian.olap.Result;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Testcase for levels that contain multiple columns and are
  * collapsed in the agg table.
@@ -18,20 +23,11 @@ import mondrian.olap.Result;
  * @author Will Gorman
  */
 public class MultipleColsInTupleAggTest extends AggTableTestCase {
-
-    public MultipleColsInTupleAggTest() {
-        super();
-    }
-
-    public MultipleColsInTupleAggTest(String name) {
-        super(name);
-    }
-
     protected String getFileName() {
         return "multiple_cols_in_tuple_agg.csv";
     }
 
-    public void testTotal() throws Exception {
+    @Test public void testTotal() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -59,15 +55,15 @@ public class MultipleColsInTupleAggTest extends AggTableTestCase {
         Result result1 = getCubeTestContext().executeQuery(mdx);
         Object v1 = result1.getCell(new int[]{0}).getValue();
 
-        assertTrue(v.equals(v1));
+        assertThat(v.equals(v1), is(true));
 
         Result aresult2 = getCubeTestContext().executeQuery(mdx2);
         Object av1 = aresult2.getCell(new int[]{0}).getValue();
 
-        assertTrue(av.equals(av1));
+        assertThat(av.equals(av1), is(true));
     }
 
-    public void testTupleSelection() throws Exception {
+    @Test public void testTupleSelection() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -91,7 +87,7 @@ public class MultipleColsInTupleAggTest extends AggTableTestCase {
             + "Row #0: 15\n");
     }
 
-    public void testChildSelection() throws Exception {
+    @Test public void testChildSelection() throws Exception {
         if (!isApplicable()) {
             return;
         }

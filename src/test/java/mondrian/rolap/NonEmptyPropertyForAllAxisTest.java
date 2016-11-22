@@ -15,11 +15,13 @@ import mondrian.olap.Query;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
 /**
  * Tests the {@link MondrianProperties#EnableNonEmptyOnAllAxis} property.
  */
 public class NonEmptyPropertyForAllAxisTest extends FoodMartTestCase {
-    public void testNonEmptyForAllAxesWithPropertySet() {
+    @Test public void testNonEmptyForAllAxesWithPropertySet() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, true);
         assertQueryReturns(
             "select {[Country].[USA].[OR].Children} on 0,"
@@ -66,7 +68,7 @@ public class NonEmptyPropertyForAllAxisTest extends FoodMartTestCase {
             + "Row #3: \n");
     }
 
-    public void testNonEmptyForAllAxesWithOutPropertySet() {
+    @Test public void testNonEmptyForAllAxesWithOutPropertySet() {
         assertQueryReturns(
             "SELECT {customers.USA.CA.[Santa Cruz].[Brian Merlo]} on 0, "
             + "[product].[product category].members on 1 FROM [sales]",
@@ -187,7 +189,7 @@ public class NonEmptyPropertyForAllAxisTest extends FoodMartTestCase {
             + "Row #54: 2\n");
     }
 
-    public void testSlicerAxisDoesNotGetNonEmptyApplied() {
+    @Test public void testSlicerAxisDoesNotGetNonEmptyApplied() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, true);
         String mdxQuery = "select from [Sales]\n"
             + "where [Time].[Time].[1997]\n";

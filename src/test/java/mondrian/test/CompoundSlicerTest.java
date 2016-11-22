@@ -11,6 +11,8 @@ package mondrian.test;
 
 import mondrian.util.Bug;
 
+import org.junit.Test;
+
 /**
  * Tests the expressions used for calculated members. Please keep in sync
  * with the actual code used by the wizard.
@@ -20,26 +22,10 @@ import mondrian.util.Bug;
  */
 public class CompoundSlicerTest extends FoodMartTestCase {
     /**
-     * Creates a CompoundSlicerTest.
-     */
-    public CompoundSlicerTest() {
-        super();
-    }
-
-    /**
-     * Creates a CompoundSlicerTest with a given name.
-     *
-     * @param name Test name
-     */
-    public CompoundSlicerTest(String name) {
-        super(name);
-    }
-
-    /**
      * Query that simulates a compound slicer by creating a calculated member
      * that aggregates over a set and places it in the WHERE clause.
      */
-    public void testSimulatedCompoundSlicer() {
+    @Test public void testSimulatedCompoundSlicer() {
         assertQueryReturns(
             "with\n"
             + "  member [Measures].[Price per Unit] as\n"
@@ -120,7 +106,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * <p>Test case for <a href="http://jira.pentaho.com/browse/MONDRIAN-637">
      * Bug MONDRIAN-637, "Using Except in the slicer makes no sense"</a>.
      */
-    public void testCompoundSlicerExcept() {
+    @Test public void testCompoundSlicerExcept() {
         final String expected =
             "Axis #0:\n"
             + "{[Promotion].[Media Type].[Bulk Mail]}\n"
@@ -199,7 +185,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
             + "Row #2: 4,051\n"
             + "Row #2: 131,164\n");
     }
-    public void testCompoundSlicerWithCellFormatter() {
+    @Test public void testCompoundSlicerWithCellFormatter() {
         String xmlMeasure =
             "<Measure name='Unit Sales Foo Bar' column='unit_sales'\n"
             + "    aggregator='sum' formatString='Standard' formatter='"
@@ -228,7 +214,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
     }
 
 
-    public void testMondrian1226() {
+    @Test public void testMondrian1226() {
         assertQueryReturns(
             "with \n"
             +    "member Measures.x1 as ([Time].[1997].[Q1],"
@@ -295,7 +281,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Tests a query with a compond slicer over tuples. (Multiple rows, each
      * of which has multiple members.)
      */
-    public void testCompoundSlicerOverTuples() {
+    @Test public void testCompoundSlicerOverTuples() {
         // reference query
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
@@ -372,7 +358,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
             + "Row #3: 2.20\n");
     }
 
-    public void testCompoundSlicerCrossjoinRange() {
+    @Test public void testCompoundSlicerCrossjoinRange() {
         assertQueryReturns(
             "select\n"
             + "from [Sales]\n"
@@ -389,7 +375,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
     /**
      * Tests that if the slicer contains zero members, all cells are null.
      */
-    public void testEmptySetSlicerReturnsNull() {
+    @Test public void testEmptySetSlicerReturnsNull() {
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
             + "[Product].[Products].Children on 1\n"
@@ -411,7 +397,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Tests that if the slicer is calculated using an expression and contains
      * zero members, all cells are null.
      */
-    public void testEmptySetSlicerViaExpressionReturnsNull() {
+    @Test public void testEmptySetSlicerViaExpressionReturnsNull() {
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
             + "[Product].[Products].Children on 1\n"
@@ -433,7 +419,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Test case for a basic query with more than one member of the same
      * hierarchy in the WHERE clause.
      */
-    public void testCompoundSlicer() {
+    @Test public void testCompoundSlicer() {
         // Reference query.
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
@@ -635,7 +621,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Slicer that is a member expression that evaluates to null.
      * SSAS 2005 allows this, and returns null cells.
      */
-    public void testSlicerContainsNullMember() {
+    @Test public void testSlicerContainsNullMember() {
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
             + "[Gender].Members on 1\n"
@@ -658,7 +644,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * SSAS 2005 allows this, and returns null cells; Mondrian currently gives
      * an error.
      */
-    public void testSlicerContainsLiteralNull() {
+    @Test public void testSlicerContainsLiteralNull() {
         final String mdx =
             "select [Measures].[Unit Sales] on 0,\n"
             + "[Gender].Members on 1\n"
@@ -684,7 +670,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * that makes it a null tuple, and it is eliminated from the list.
      * SSAS 2005 allows this, and returns null cells.
      */
-    public void testSlicerContainsPartiallyNullMember() {
+    @Test public void testSlicerContainsPartiallyNullMember() {
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
             + "[Gender].Members on 1\n"
@@ -705,7 +691,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
     /**
      * Compound slicer with distinct-count measure.
      */
-    public void testCompoundSlicerWithDistinctCount() {
+    @Test public void testCompoundSlicerWithDistinctCount() {
         // Reference query.
         assertQueryReturns(
             "select [Measures].[Customer Count] on 0,\n"
@@ -756,7 +742,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Bug MONDRIAN-675,
      * "Allow rollup of measures based on AVG aggregate function"</a>.
      */
-    public void testRollupAvg() {
+    @Test public void testRollupAvg() {
         final TestContext testContext =
             TestContext.instance().legacy().createSubstitutingCube(
                 "Sales",
@@ -801,7 +787,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Bug MONDRIAN-899,
      * "Order() function does not work properly together with WHERE clause"</a>.
      */
-    public void testBugMondrian899() {
+    @Test public void testBugMondrian899() {
         final String expected =
             "Axis #0:\n"
             + "{[Time].[Time].[1997].[Q1].[2]}\n"
@@ -896,7 +882,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
     }
 
     // similar to MONDRIAN-899 testcase
-    public void testTopCount() {
+    @Test public void testTopCount() {
         assertQueryReturns(
             "select NON EMPTY {[Measures].[Unit Sales]} ON COLUMNS, \n"
             + "  TopCount([Customers].[USA].[WA].[Spokane].Children, 10, [Measures].[Unit Sales]) ON ROWS \n"
@@ -935,7 +921,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
      * Bug MONDRIAN-900,
      * "Filter() function works incorrectly together with WHERE clause"</a>.
      */
-    public void testBugMondrian900() {
+    @Test public void testBugMondrian900() {
         assertQueryReturns(
             "select NON EMPTY {[Measures].[Unit Sales]} ON COLUMNS,\n"
             + "  Tail(Filter([Customers].[Name].Members, ([Measures].[Unit Sales] IS EMPTY)), 3) ON ROWS \n"
@@ -958,7 +944,7 @@ public class CompoundSlicerTest extends FoodMartTestCase {
             + "{[Customer].[Customers].[USA].[WA].[Yakima].[Louis Gomez]}\n");
     }
 
-    public void testSlicerWithCalcMembers() throws Exception {
+    @Test public void testSlicerWithCalcMembers() throws Exception {
         final TestContext testContext = TestContext.instance();
         //2 calc mems
         testContext.assertQueryReturns(

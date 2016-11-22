@@ -13,6 +13,11 @@ import mondrian.olap.*;
 import mondrian.server.monitor.Monitor;
 import mondrian.server.monitor.ServerInfo;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -35,7 +40,7 @@ public class CacheTest extends FoodMartTestCase {
      * managed to share work. If it has not increased, the cache was probably
      * not flushed correctly.</p>
      */
-    public void testNQueriesWaitingForSameSegmentRepeat()
+    @Test public void testNQueriesWaitingForSameSegmentRepeat()
         throws ExecutionException, InterruptedException
     {
         final int parallel = 10;
@@ -98,19 +103,18 @@ public class CacheTest extends FoodMartTestCase {
             futures.add(executor.submit(runnable));
         }
         for (Future<Boolean> future : futures) {
-            assertTrue(future.get() == Boolean.TRUE);
+            assertThat(future.get(), is(true));
         }
         final ServerInfo serverAfter = monitor.getServer();
         final String beforeAfter =
             "before: " + serverBefore + "\n"
             + "after: " + serverAfter + "\n"
             + iteration;
-        assertTrue(
-            beforeAfter,
+        assertThat(beforeAfter,
             serverAfter.segmentCreateCount
             == serverBefore.segmentCreateCount + 1
             && serverAfter.segmentCreateViaSqlCount
-               == serverBefore.segmentCreateViaSqlCount + 1);
+            == serverBefore.segmentCreateViaSqlCount + 1, is(true));
     }
 
     private Cube getCubeWithName(String cubeName, Cube[] cubes) {

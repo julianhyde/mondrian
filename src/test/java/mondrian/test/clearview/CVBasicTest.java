@@ -11,7 +11,10 @@ package mondrian.test.clearview;
 
 import mondrian.test.DiffRepository;
 
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
 
 /**
  * <code>CVBasicTest</code> is a test suite which tests
@@ -21,15 +24,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class CVBasicTest extends ClearViewBase {
-
-    public CVBasicTest() {
-        super();
-    }
-
-    public CVBasicTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +32,9 @@ public class CVBasicTest extends ClearViewBase {
         return DiffRepository.lookup(CVBasicTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), CVBasicTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(CVBasicTest.class);
     }
 
 }

@@ -15,6 +15,8 @@ import mondrian.test.*;
 import mondrian.tui.*;
 import mondrian.util.LockBox;
 
+import org.junit.*;
+
 import junit.framework.AssertionFailedError;
 
 import org.olap4j.metadata.XmlaConstants;
@@ -31,6 +33,8 @@ import java.util.regex.Pattern;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.fail;
 
 /**
  * Extends FoodMartTestCase, adding support for testing XMLA specific
@@ -68,14 +72,11 @@ public abstract class XmlaBaseTestCase extends FoodMartTestCase {
 
     private Resource resource;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         resource = Resource.acquire();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         super.tearDown();
         resource = null;
     }
@@ -217,10 +218,10 @@ System.out.println("Got CONTINUE");
                     bytes, expectedDoc, TestContext.instance(), true, true);
 
             } else {
-                fail("Bad status code: "  + statusCode);
+                fail("Bad status code: " + statusCode);
             }
         } else {
-            fail("Bad status code: "  + statusCode);
+            fail("Bad status code: " + statusCode);
         }
     }
 
@@ -290,13 +291,6 @@ System.out.println("Got CONTINUE");
             Map<String, Object> context) throws Exception
         {
         }
-    }
-
-    public XmlaBaseTestCase() {
-    }
-
-    public XmlaBaseTestCase(String name) {
-        super(name);
     }
 
     protected abstract DiffRepository getDiffRepos();

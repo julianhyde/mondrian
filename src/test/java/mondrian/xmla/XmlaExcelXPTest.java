@@ -12,6 +12,8 @@ package mondrian.xmla;
 
 import mondrian.test.DiffRepository;
 
+import org.junit.Test;
+
 /**
  * Test suite for compatibility of Mondrian XMLA with Excel XP.
  * Simba (the maker of the O2X bridge) supplied captured request/response
@@ -32,13 +34,6 @@ public class XmlaExcelXPTest extends XmlaBaseTestCase {
         }
     }
 
-    public XmlaExcelXPTest() {
-    }
-
-    public XmlaExcelXPTest(String name) {
-        super(name);
-    }
-
     protected Class<? extends XmlaRequestCallback> getServletCallbackClass() {
         return Callback.class;
     }
@@ -47,73 +42,73 @@ public class XmlaExcelXPTest extends XmlaBaseTestCase {
         return DiffRepository.lookup(XmlaExcelXPTest.class);
     }
 
-    public void test01() {
+    @Test public void test01() {
         helperTest(false);
     }
 
     // BeginSession
-    public void test02() {
+    @Test public void test02() {
         helperTest(false);
     }
 
-    public void test03() {
+    @Test public void test03() {
         helperTest(true);
     }
 
-    public void test04() {
+    @Test public void test04() {
         helperTest(true);
     }
 
-    public void test05() {
+    @Test public void test05() {
         helperTest(true);
     }
 
-    public void test06() {
+    @Test public void test06() {
         helperTest(true);
     }
 
     // BeginSession
-    public void test07() {
+    @Test public void test07() {
         helperTest(false);
     }
 
-    public void test08() {
+    @Test public void test08() {
         helperTest(true);
     }
 
-    public void test09() {
+    @Test public void test09() {
         helperTest(true);
     }
 
-    public void test10() {
+    @Test public void test10() {
         helperTest(true);
     }
 
-    public void test11() {
+    @Test public void test11() {
         helperTest(true);
     }
 
-    public void test12() {
+    @Test public void test12() {
         helperTest(true);
     }
 
-    public void test13() {
+    @Test public void test13() {
         helperTest(true);
     }
 
-    public void test14() {
+    @Test public void test14() {
         helperTest(true);
     }
 
-    public void test15() {
+    @Test public void test15() {
         helperTest(true);
     }
 
-    public void test16() {
+    @Test public void test16() {
         helperTest(true);
     }
 
-    public void test17() {
+    @Test public void test17() {
         helperTest(true);
     }
 
@@ -125,11 +120,11 @@ public class XmlaExcelXPTest extends XmlaBaseTestCase {
         helperTest(true);
     }
 
-    public void test19() {
+    @Test public void test19() {
         helperTest(true);
     }
 
-    public void test20() {
+    @Test public void test20() {
         helperTest(true);
     }
 
@@ -143,35 +138,35 @@ public class XmlaExcelXPTest extends XmlaBaseTestCase {
         helperTest(true);
     }
 
-    public void test23() {
+    @Test public void test23() {
         helperTest(true);
     }
 
-    public void test24() {
+    @Test public void test24() {
         helperTest(true);
     }
 
-    public void testExpect01() {
+    @Test public void testExpect01() {
         helperTestExpect(false);
     }
 
-    public void testExpect02() {
+    @Test public void testExpect02() {
         helperTestExpect(false);
     }
 
-    public void testExpect03() {
+    @Test public void testExpect03() {
         helperTestExpect(true);
     }
 
-    public void testExpect04() {
+    @Test public void testExpect04() {
         helperTestExpect(true);
     }
 
-    public void testExpect05() {
+    @Test public void testExpect05() {
         helperTestExpect(true);
     }
 
-    public void testExpect06() {
+    @Test public void testExpect06() {
         helperTestExpect(true);
     }
 }

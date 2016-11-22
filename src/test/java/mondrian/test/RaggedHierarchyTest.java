@@ -11,6 +11,8 @@
 package mondrian.test;
 
 
+import org.junit.Test;
+
 /**
  * Unit test for ragged hierarchies.
  *
@@ -27,7 +29,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
 
     // ~ The tests ------------------------------------------------------------
 
-    public void testChildrenOfRoot() {
+    @Test public void testChildrenOfRoot() {
         assertAxisReturns(
             "[Store].[Store].children",
             "[Store].[Store].[Canada]\n"
@@ -37,7 +39,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
             + "[Store].[Store].[Vatican]");
     }
 
-    public void testChildrenOfUSA() {
+    @Test public void testChildrenOfUSA() {
         assertAxisReturns(
             "[Store].[USA].children",
             "[Store].[Store].[USA].[CA]\n"
@@ -48,7 +50,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
 
     // Israel has one real child, which is hidden, and which has children
     // Haifa and Tel Aviv
-    public void testChildrenOfIsrael() {
+    @Test public void testChildrenOfIsrael() {
         assertAxisReturns(
             "[Store].[Israel].children",
             "[Store].[Store].[Israel].[Israel].[Haifa]\n"
@@ -58,46 +60,46 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
     // disabled: (1) does not work with SmartMemberReader and
     // (2) test returns [null] member
     // Vatican's descendants at the province and city level are hidden
-    public void testChildrenOfVatican() {
+    @Test public void testChildrenOfVatican() {
         assertAxisReturns(
             "[Store].[Vatican].children",
             "[Store].[Store].[Vatican].[Vatican].[#null].[Store 17]");
     }
 
-    public void testParentOfHaifa() {
+    @Test public void testParentOfHaifa() {
         assertAxisReturns(
             "[Store].[Israel].[Haifa].Parent",
             "[Store].[Store].[Israel]");
     }
 
-    public void testParentOfVatican() {
+    @Test public void testParentOfVatican() {
         assertAxisReturns(
             "[Store].[Vatican].Parent",
             "[Store].[Store].[All Stores]");
     }
 
     // PrevMember must return something at the same level -- a city
-    public void testPrevMemberOfHaifa() {
+    @Test public void testPrevMemberOfHaifa() {
         assertAxisReturns(
             "[Store].[Israel].[Haifa].PrevMember",
             "[Store].[Store].[Canada].[BC].[Victoria]");
     }
 
     // PrevMember must return something at the same level -- a city
-    public void testNextMemberOfTelAviv() {
+    @Test public void testNextMemberOfTelAviv() {
         assertAxisReturns(
             "[Store].[Israel].[Tel Aviv].NextMember",
             "[Store].[Store].[Mexico].[DF].[Mexico City]");
     }
 
-    public void testNextMemberOfBC() {
+    @Test public void testNextMemberOfBC() {
         // The next state after BC is Israel, but it's hidden
         assertAxisReturns(
             "[Store].[Canada].[BC].NextMember",
             "[Store].[Store].[Mexico].[DF]");
     }
 
-    public void testLead() {
+    @Test public void testLead() {
         assertAxisReturns(
             "[Store].[Mexico].[DF].Lead(1)",
             "[Store].[Store].[Mexico].[Guerrero]");
@@ -120,7 +122,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
 
     // disabled: (1) does not work with SmartMemberReader and (2) test returns
     // [null] member
-    public void testDescendantsOfVatican() {
+    @Test public void testDescendantsOfVatican() {
         assertAxisReturns(
             "Descendants([Store].[Vatican])",
             "[Store].[Store].[Vatican]\n"
@@ -128,13 +130,13 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
     }
 
     // The only child of Vatican at state level is hidden
-    public void testDescendantsOfVaticanAtStateLevel() {
+    @Test public void testDescendantsOfVaticanAtStateLevel() {
         assertAxisReturns(
             "Descendants([Store].[Vatican], [Store].[Store State])",
             "");
     }
 
-    public void testDescendantsOfRootAtCity() {
+    @Test public void testDescendantsOfRootAtCity() {
         assertAxisReturns(
             "Descendants([Store], [Store City])",
             "[Store].[Store].[Canada].[BC].[Vancouver]\n"
@@ -163,13 +165,13 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
     }
 
     // no ancestor at the State level
-    public void testAncestorOfHaifa() {
+    @Test public void testAncestorOfHaifa() {
         assertAxisReturns(
             "Ancestor([Store].[Israel].[Haifa], [Store].[Store State])",
             "");
     }
 
-    public void testHierarchize() {
+    @Test public void testHierarchize() {
         // Haifa and Tel Aviv should appear directly after Israel
         // Vatican should have no children
         // Washington should appear after WA
@@ -225,7 +227,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
      */
     // disabled: (1) does not work with SmartMemberReader and (2) test returns
     // [null] member
-    public void testMeasuresVatican() {
+    @Test public void testMeasuresVatican() {
         assertQueryReturns(
             "SELECT {[Measures].[Unit Sales]} ON COLUMNS,\n"
             + " {Descendants([Store].[Vatican])} ON ROWS\n"
@@ -246,7 +248,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
      * disabled: (1) does not work with SmartMemberReader and (2) test returns
      * [null] member?
      */
-    public void testMeasures() {
+    @Test public void testMeasures() {
         assertQueryReturns(
             "SELECT {[Measures].[Unit Sales]} ON COLUMNS,\n"
             + " NON EMPTY {Descendants([Store])} ON ROWS\n"
@@ -330,7 +332,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
      * <p>Cause was that ancestor yielded a null member, which was a RolapMember
      * but Order required it to be a RolapCubeMember.
      */
-    public void testNullMember() {
+    @Test public void testNullMember() {
         assertQueryReturns(
             "With \n"
             + " Set [*NATIVE_CJ_SET] as '[*BASE_MEMBERS_Geography]' \n"
@@ -402,7 +404,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
      * Unit test for <a href="http://jira.pentaho.com/browse/MONDRIAN-642">
      * MONDRIAN-642, "Treat members that have only whitespace as blanks"</a>.
      */
-    public void testHideIfBlankHidesWhitespace() {
+    @Test public void testHideIfBlankHidesWhitespace() {
         switch (getTestContext().getDialect().getDatabaseProduct()) {
         case MYSQL:
         case ORACLE:
@@ -445,7 +447,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
             + "Row #0: 135,215\n");
     }
 
-    public void testNativeFilterWithHideMemberIfBlankOnLeaf() throws Exception {
+    @Test public void testNativeFilterWithHideMemberIfBlankOnLeaf() throws Exception {
         TestContext testContext =
             TestContext.instance().withSalesRagged()
                 .remove("<Level attribute='Store Name' hideMemberIf='Never'/>");
@@ -486,7 +488,7 @@ public class RaggedHierarchyTest extends FoodMartTestCase {
             + "Row #11: 23,591\n");
     }
 
-    public void testNativeCJWithHideMemberIfBlankOnLeaf() throws Exception {
+    @Test public void testNativeCJWithHideMemberIfBlankOnLeaf() throws Exception {
         TestContext testContext = TestContext.instance().withSalesRagged()
             .remove("<Level attribute='Store Name' hideMemberIf='Never'/>");
 

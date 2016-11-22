@@ -12,6 +12,8 @@ package mondrian.test;
 import mondrian.olap.Connection;
 import mondrian.tui.CmdRunner;
 
+import org.junit.Test;
+
 import java.io.*;
 
 /**
@@ -24,16 +26,11 @@ public class CmdRunnerTest extends FoodMartTestCase {
     protected DiffRepository getDiffRepos() {
         return DiffRepository.lookup(CmdRunnerTest.class);
     }
-    public CmdRunnerTest() {
-    }
-    public CmdRunnerTest(String name) {
-        super(name);
-    }
 
-    public void testQuery() throws IOException {
+    @Test public void testQuery() throws IOException {
         doTest();
     }
-    public void test7731() throws IOException {
+    @Test public void test7731() throws IOException {
         doTest();
     }
     protected void doTest() {

@@ -26,6 +26,15 @@ import org.olap4j.metadata.Level;
 import org.olap4j.metadata.Member;
 import org.olap4j.metadata.Property;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,30 +48,20 @@ import java.util.*;
  * @author jhyde
  */
 public class Olap4jTest extends FoodMartTestCase {
-    @SuppressWarnings({"UnusedDeclaration"})
-    public Olap4jTest() {
-        super();
-    }
-
-    @SuppressWarnings({"UnusedDeclaration"})
-    public Olap4jTest(String name) {
-        super(name);
-    }
-
     /**
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-920">
      * MONDRIAN-920, "olap4j: inconsistent measure's member type"</a>.
      *
      * @throws java.sql.SQLException on error
      */
-    public void testSameMemberByVariousMeans() throws SQLException {
+    @Test public void testSameMemberByVariousMeans() throws SQLException {
         Random random = new Random();
         for (int i = 0; i < 20; i++) {
             int n = random.nextInt(7);
             Member member = foo(n);
             String s = "source #" + n;
-            assertEquals(s, "Unit Sales", member.getName());
-            assertEquals(s, Member.Type.MEASURE, member.getMemberType());
+            assertThat(s, member.getName(), is("Unit Sales"));
+            assertThat(s, member.getMemberType(), is(Member.Type.MEASURE));
         }
     }
 
@@ -126,7 +125,7 @@ public class Olap4jTest extends FoodMartTestCase {
         }
     }
 
-    public void testAnnotation() throws SQLException {
+    @Test public void testAnnotation() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         final CellSet cellSet =
@@ -137,22 +136,21 @@ public class Olap4jTest extends FoodMartTestCase {
         Annotated annotated = ((OlapWrapper) salesCube).unwrap(Annotated.class);
         final Annotation annotation =
             annotated.getAnnotationMap().get("caption+fr_FR");
-        assertEquals("Ventes", annotation.getValue());
+        assertThat(annotation.getValue(), is((Object) "Ventes"));
 
         // the annotation that indicated a localized resource has been removed
         // from the annotation map
-        assertNull(annotated.getAnnotationMap().get("caption.fr_FR"));
-        assertEquals(
-            "Ventes",
-            ((OlapWrapper) salesCube).unwrap(OlapElement.class)
-                .getLocalized(LocalizedProperty.CAPTION, Locale.FRANCE));
+        assertThat(annotated.getAnnotationMap().get("caption.fr_FR"), nullValue());
+        assertThat(((OlapWrapper) salesCube).unwrap(OlapElement.class)
+                    .getLocalized(LocalizedProperty.CAPTION, Locale.FRANCE),
+             is("Ventes"));
 
         final Map<String, Object> map =
             MondrianOlap4jDriver.EXTRA.getAnnotationMap(salesCube);
-        assertEquals("Ventes", map.get("caption+fr_FR"));
+        assertThat(map.get("caption+fr_FR"), is((Object) "Ventes"));
     }
 
-    public void testFormatString() throws SQLException {
+    @Test public void testFormatString() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         final CellSet cellSet =
@@ -165,13 +163,12 @@ public class Olap4jTest extends FoodMartTestCase {
         final Member member =
             axis.getPositions().get(0).getMembers().get(0);
         Property property = findProperty(axis, "FORMAT_EXP");
-        assertNotNull(property);
+        assertThat(property, notNullValue());
 
         // Note that the expression is returned, unevaluated. You can tell from
         // the parentheses and quotes that it has been un-parsed.
-        assertEquals(
-            "IIf((1 < 2), \"##.0%\", \"foo\")",
-            member.getPropertyValue(property));
+        assertThat(member.getPropertyValue(property),
+            is((Object) "IIf((1 < 2), \"##.0%\", \"foo\")"));
     }
 
     /**
@@ -181,7 +178,7 @@ public class Olap4jTest extends FoodMartTestCase {
      *
      * @throws SQLException on error
      */
-    public void testLevelProperties() throws SQLException {
+    @Test public void testLevelProperties() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         final CellSet cellSet =
@@ -194,11 +191,11 @@ public class Olap4jTest extends FoodMartTestCase {
         final NamedList<Property> properties =
             member.getLevel().getProperties();
         // UNIQUE_NAME is an olap4j standard property.
-        assertNotNull(properties.get("MEMBER_UNIQUE_NAME"));
+        assertThat(properties.get("MEMBER_UNIQUE_NAME"), notNullValue());
         // FORMAT_EXP is a Mondrian built-in but not olap4j standard property.
-        assertNotNull(properties.get("FORMAT_EXP"));
+        assertThat(properties.get("FORMAT_EXP"), notNullValue());
         // [Store Type] is a property of the level.
-        assertNotNull(properties.get("Store Type"));
+        assertThat(properties.get("Store Type"), notNullValue());
     }
 
     private Property findProperty(CellSetAxis axis, String name) {
@@ -210,7 +207,7 @@ public class Olap4jTest extends FoodMartTestCase {
         return null;
     }
 
-    public void testCellProperties() throws SQLException {
+    @Test public void testCellProperties() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         final CellSet cellSet =
@@ -231,19 +228,19 @@ public class Olap4jTest extends FoodMartTestCase {
         final Cell cell0 = cellSet.getCell(0);
         final int actionType0 =
             (Integer) cell0.getPropertyValue(actionTypeProperty);
-        assertEquals(0x100, actionType0); // MDACTION_TYPE_DRILLTHROUGH
+        assertThat(actionType0, is(0x100));
         final int drill0 =
             (Integer) cell0.getPropertyValue(drillthroughCountProperty);
-        assertEquals(24442, drill0);
+        assertThat(drill0, is(24442));
 
         // Cell [0, 1] is not drillable
         final Cell cell1 = cellSet.getCell(1);
         final int actionType1 =
             (Integer) cell1.getPropertyValue(actionTypeProperty);
-        assertEquals(0x0, actionType1);
+        assertThat(actionType1, is(0x0));
         final int drill1 =
             (Integer) cell1.getPropertyValue(drillthroughCountProperty);
-        assertEquals(-1, drill1);
+        assertThat(drill1, is(-1));
     }
 
     /**
@@ -253,7 +250,7 @@ public class Olap4jTest extends FoodMartTestCase {
      *
      * @throws SQLException on error
      */
-    public void testLimit() throws SQLException {
+    @Test public void testLimit() throws SQLException {
         propSaver.set(MondrianProperties.instance().IterationLimit, 11);
         String queryString =
             "With Set [*NATIVE_CJ_SET] as "
@@ -278,11 +275,11 @@ public class Olap4jTest extends FoodMartTestCase {
                 connection.createStatement().executeOlapQuery(queryString);
             fail("expected exception, got " + cellSet);
         } catch (OlapException e) {
-            assertEquals("ResourceLimitExceeded", e.getSQLState());
+            assertThat(e.getSQLState(), is("ResourceLimitExceeded"));
         }
     }
 
-    public void testCloseOnCompletion() throws Exception {
+    @Test public void testCloseOnCompletion() throws Exception {
         if (Util.JdbcVersion < 0x0401) {
             // Statement.closeOnCompletion added in JDBC 4.1 / JDK 1.7.
             return;
@@ -297,11 +294,11 @@ public class Olap4jTest extends FoodMartTestCase {
             if (b) {
                 closeOnCompletion(statement);
             }
-            assertFalse(isClosed(cellSet));
-            assertFalse(isClosed(statement));
+            assertThat(isClosed(cellSet), is(false));
+            assertThat(isClosed(statement), is(false));
             cellSet.close();
-            assertTrue(isClosed(cellSet));
-            assertEquals(b, isClosed(statement));
+            assertThat(isClosed(cellSet), is(true));
+            assertThat(isClosed(statement), is(b));
             statement.close(); // not error to close twice
         }
     }
@@ -340,7 +337,7 @@ public class Olap4jTest extends FoodMartTestCase {
      *
      * @throws java.sql.SQLException on error
      */
-    public void testCalcMemberInCube() throws SQLException {
+    @Test public void testCalcMemberInCube() throws SQLException {
         final OlapConnection testContext =
             TestContext.instance().legacy().createSubstitutingCube(
                 "Sales",
@@ -355,10 +352,9 @@ public class Olap4jTest extends FoodMartTestCase {
         }
         // Calc member in the Time dimension does not appear in the list.
         // Never did, as far as I can tell.
-        assertEquals(
-            "Unit Sales;Store Cost;Store Sales;Sales Count;Customer Count;"
-            + "Promotion Sales;Profit;Profit last Period;Profit Growth;",
-            buf.toString());
+        assertThat(buf.toString(),
+            is("Unit Sales;Store Cost;Store Sales;Sales Count;Customer Count;"
+            + "Promotion Sales;Profit;Profit last Period;Profit Growth;"));
 
         final CellSet cellSet = testContext.createStatement().executeOlapQuery(
             "select AddCalculatedMembers([Time].[Time].Members) on 0 from [Sales]");
@@ -369,8 +365,8 @@ public class Olap4jTest extends FoodMartTestCase {
             }
             ++n2;
         }
-        assertEquals(1, n);
-        assertEquals(35, n2);
+        assertThat(n, is(1));
+        assertThat(n2, is(35));
 
         final CellSet cellSet2 = testContext.createStatement().executeOlapQuery(
             "select Filter(\n"
@@ -385,8 +381,8 @@ public class Olap4jTest extends FoodMartTestCase {
             }
             ++n2;
         }
-        assertEquals(1, n);
-        assertEquals(1, n2);
+        assertThat(n, is(1));
+        assertThat(n2, is(1));
     }
 
     /**
@@ -396,7 +392,7 @@ public class Olap4jTest extends FoodMartTestCase {
      *
      * @throws java.sql.SQLException on error
      */
-    public void testUniqueName() throws SQLException {
+    @Test public void testUniqueName() throws SQLException {
         // Things are straightforward if dimension, hierarchy, level have
         // distinct names. This worked even before MONDRIAN-1124 was fixed.
         CellSet x =
@@ -406,11 +402,11 @@ public class Olap4jTest extends FoodMartTestCase {
                     + "from [Sales]");
         Member member =
             x.getAxes().get(0).getPositions().get(0).getMembers().get(0);
-        assertEquals("[Store]", member.getDimension().getUniqueName());
-        assertEquals("[Store].[Stores]", member.getHierarchy().getUniqueName());
-        assertEquals(
-            "[Store].[Stores].[(All)]", member.getLevel().getUniqueName());
-        assertEquals("[Store].[Stores].[All Stores]", member.getUniqueName());
+        assertThat(member.getDimension().getUniqueName(), is("[Store]"));
+        assertThat(member.getHierarchy().getUniqueName(), is("[Store].[Stores]"));
+        assertThat(member.getLevel().getUniqueName(),
+            is("[Store].[Stores].[(All)]"));
+        assertThat(member.getUniqueName(), is("[Store].[Stores].[All Stores]"));
 
         CellSet y =
             getTestContext()
@@ -440,18 +436,16 @@ public class Olap4jTest extends FoodMartTestCase {
                     + "from [Sales]");
         member =
             y.getAxes().get(0).getPositions().get(0).getMembers().get(0);
-        assertEquals("[Store Type]", member.getDimension().getUniqueName());
-        assertEquals(
-            "[Store Type].[Store Type]", member.getHierarchy().getUniqueName());
-        assertEquals(
-            "[Store Type].[Store Type].[(All)]",
-            member.getLevel().getUniqueName());
-        assertEquals(
-            "[Store Type].[Store Type].[All Store Types]",
-            member.getUniqueName());
+        assertThat(member.getDimension().getUniqueName(), is("[Store Type]"));
+        assertThat(member.getHierarchy().getUniqueName(),
+            is("[Store Type].[Store Type]"));
+        assertThat(member.getLevel().getUniqueName(),
+            is("[Store Type].[Store Type].[(All)]"));
+        assertThat(member.getUniqueName(),
+            is("[Store Type].[Store Type].[All Store Types]"));
     }
 
-    public void testCellSetGetCellPositionArray() throws SQLException {
+    @Test public void testCellSetGetCellPositionArray() throws SQLException {
         // Create a cell set with 1 column and 2 rows.
         // Only coordinates (0, 0) and (0, 1) are valid.
         CellSet x =
@@ -466,60 +460,56 @@ public class Olap4jTest extends FoodMartTestCase {
         // column=0, row=1 via getCell(List<Integer>)
         cell = x.getCell(Arrays.asList(0, 1));
         final String xxx = "68,755";
-        assertEquals(xxx, cell.getFormattedValue());
+        assertThat(cell.getFormattedValue(), is(xxx));
 
         // column=1, row=0 out of range
         try {
             cell = x.getCell(Arrays.asList(1, 0));
             fail("expected exception, got " + cell);
         } catch (IndexOutOfBoundsException e) {
-            assertEquals(
-                "Cell coordinates (1, 0) fall outside CellSet bounds (1, 2)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Cell coordinates (1, 0) fall outside CellSet bounds (1, 2)"));
         }
 
         // ordinal=1 via getCell(int)
         cell = x.getCell(1);
-        assertEquals(xxx, cell.getFormattedValue());
+        assertThat(cell.getFormattedValue(), is(xxx));
 
         // column=0, row=1 via getCell(Position...)
         final Position col0 = x.getAxes().get(0).getPositions().get(0);
         final Position row1 = x.getAxes().get(1).getPositions().get(1);
         final Position row0 = x.getAxes().get(1).getPositions().get(0);
         cell = x.getCell(col0, row1);
-        assertEquals(xxx, cell.getFormattedValue());
+        assertThat(cell.getFormattedValue(), is(xxx));
 
         // row=1, column=0 via getCell(Position...).
         // This is OK, even though positions are not in axis order.
         // Result same as previous.
         cell = x.getCell(row1, col0);
-        assertEquals(xxx, cell.getFormattedValue());
+        assertThat(cell.getFormattedValue(), is(xxx));
 
         try {
             cell = x.getCell(col0);
             fail("expected exception, got " + cell);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "Coordinates have different dimension (1) than axes (2)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Coordinates have different dimension (1) than axes (2)"));
         }
 
         try {
             cell = x.getCell(col0, row1, col0);
             fail("expected exception, got " + cell);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "Coordinates have different dimension (3) than axes (2)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Coordinates have different dimension (3) than axes (2)"));
         }
 
         try {
             cell = x.getCell(row0, row1);
             fail("expected exception, got " + cell);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "Coordinates contain axis 1 more than once",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Coordinates contain axis 1 more than once"));
         }
     }
 
@@ -528,7 +518,7 @@ public class Olap4jTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-1204">MONDRIAN-1204,
      * "Olap4j's method toOlap4j throws NPE if we have a function"</a>.
      */
-    public void testBugMondrian1204() throws SQLException {
+    @Test public void testBugMondrian1204() throws SQLException {
         final OlapConnection connection =
             TestContext.instance().getOlap4jConnection();
         final String mdx =
@@ -560,7 +550,7 @@ public class Olap4jTest extends FoodMartTestCase {
      * the hierarchy didn't have a all member and the default member
      * was not explicitly set.
      */
-    public void testMondrian1353() throws Exception {
+    @Test public void testMondrian1353() throws Exception {
         final TestContext testContext = TestContext.instance().legacy().create(
             null,
             "<Cube name=\"Mondrian1353\">\n"
@@ -586,15 +576,15 @@ public class Olap4jTest extends FoodMartTestCase {
                 .getDimensions().get("Cities")
                 .getDefaultHierarchy().getDefaultMember();
 
-        assertNotNull(defaultMember);
-        assertEquals("Acapulco", defaultMember.getName());
+        assertThat(defaultMember, notNullValue());
+        assertThat(defaultMember.getName(), is("Acapulco"));
     }
 
     /**
      * Same as {@link SchemaTest#testMondrian1390()} but this time
      * with olap4j.
      */
-    public void testMondrian1390() throws Exception {
+    @Test public void testMondrian1390() throws Exception {
         final List<Member> members =
             getTestContext().getOlap4jConnection()
                 .getOlapSchema()
@@ -603,8 +593,8 @@ public class Olap4jTest extends FoodMartTestCase {
                 .getHierarchies().get("Store Size in SQFT")
                 .getLevels().get("Store Sqft")
                     .getMembers();
-        assertEquals(
-            "[[Store].[Store Size in SQFT].[#null], "
+        assertThat(members.toString(),
+            is("[[Store].[Store Size in SQFT].[#null], "
             + "[Store].[Store Size in SQFT].[20319], "
             + "[Store].[Store Size in SQFT].[21215], "
             + "[Store].[Store Size in SQFT].[22478], "
@@ -624,8 +614,7 @@ public class Olap4jTest extends FoodMartTestCase {
             + "[Store].[Store Size in SQFT].[34791], "
             + "[Store].[Store Size in SQFT].[36509], "
             + "[Store].[Store Size in SQFT].[38382], "
-            + "[Store].[Store Size in SQFT].[39696]]",
-            members.toString());
+            + "[Store].[Store Size in SQFT].[39696]]"));
     }
 }
 

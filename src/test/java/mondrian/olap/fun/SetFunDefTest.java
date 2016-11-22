@@ -12,6 +12,8 @@ package mondrian.olap.fun;
 
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Test;
+
 /**
  * Unit test for the set constructor function <code>{ ... }</code>,
  * {@link SetFunDef}.
@@ -21,14 +23,14 @@ import mondrian.test.FoodMartTestCase;
  */
 public class SetFunDefTest extends FoodMartTestCase {
 
-    public void testSetWithMembersFromDifferentHierarchies() {
+    @Test public void testSetWithMembersFromDifferentHierarchies() {
         assertQueryFailsInSetValidation(
             "with member store.[Stores].x as "
             + "'{[Gender].[M],[Store].[USA].[CA]}' "
             + " SELECT store.x on 0, [measures].[customer count] on 1 from sales");
     }
 
-    public void testSetWith2TuplesWithDifferentHierarchies() {
+    @Test public void testSetWith2TuplesWithDifferentHierarchies() {
         assertQueryFailsInSetValidation(
             "with member store.[Stores].x as '{([Gender].[M],[Store].[All Stores].[USA].[CA]),"
             + "([Store].[USA].[OR],[Gender].[F])}'\n"

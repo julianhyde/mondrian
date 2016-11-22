@@ -16,6 +16,8 @@ import mondrian.rolap.RolapConnectionProperties;
 import mondrian.test.DiffRepository;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -91,42 +93,42 @@ public class XmlaMetaDataConstraintsTest extends XmlaBaseTestCase {
         return props.toString();
     }
 
-    public void testDBSchemataFiltered() throws Exception {
+    @Test public void testDBSchemataFiltered() throws Exception {
         doTest(
             RowsetDefinition.DBSCHEMA_SCHEMATA.name(), "FoodMart2");
         doTest(
             RowsetDefinition.DBSCHEMA_SCHEMATA.name(), "FoodMart1");
     }
 
-    public void testDBSchemataFilteredByRestraints() throws Exception {
+    @Test public void testDBSchemataFilteredByRestraints() throws Exception {
         doTest(
             RowsetDefinition.DBSCHEMA_SCHEMATA.name(), "FoodMart2");
         doTest(
             RowsetDefinition.DBSCHEMA_SCHEMATA.name(), "FoodMart1");
     }
 
-    public void testCatalogsFiltered() throws Exception {
+    @Test public void testCatalogsFiltered() throws Exception {
         doTest(
             RowsetDefinition.DBSCHEMA_CATALOGS.name(), "FoodMart2");
         doTest(
             RowsetDefinition.DBSCHEMA_CATALOGS.name(), "FoodMart1");
     }
 
-    public void testCatalogsFilteredByRestraints() throws Exception {
+    @Test public void testCatalogsFilteredByRestraints() throws Exception {
         doTest(
             RowsetDefinition.DBSCHEMA_CATALOGS.name(), "FoodMart2");
         doTest(
             RowsetDefinition.DBSCHEMA_CATALOGS.name(), "FoodMart1");
     }
 
-    public void testCubesFiltered() throws Exception {
+    @Test public void testCubesFiltered() throws Exception {
         doTest(
             RowsetDefinition.MDSCHEMA_CUBES.name(), "FoodMart2");
         doTest(
             RowsetDefinition.MDSCHEMA_CUBES.name(), "FoodMart1");
     }
 
-    public void testCubesFilteredByRestraints() throws Exception {
+    @Test public void testCubesFilteredByRestraints() throws Exception {
         doTest(
             RowsetDefinition.MDSCHEMA_CUBES.name(), "FoodMart2");
         doTest(

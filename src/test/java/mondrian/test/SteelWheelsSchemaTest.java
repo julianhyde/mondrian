@@ -14,14 +14,19 @@ import mondrian.rolap.RolapConnectionProperties;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
 import mondrian.util.Bug;
 
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.util.Arrays;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
     /**
      * Sanity check, that enumerates the Measures dimension.
      */
-    public void testMeasures() {
+    @Test public void testMeasures() {
         TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -37,7 +42,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      * was not found but [Markets].[All Markets].[JAPAN] was OK.
      * (We've since dropped 'All Xxx' from member unique names.)
      */
-    public void testMarkets() {
+    @Test public void testMarkets() {
         TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -67,7 +72,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
             + "Row #0: 37,952\n");
     }
 
-    public void testMarkets2() {
+    @Test public void testMarkets2() {
         TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -116,7 +121,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-755">
      * MONDRIAN-755, "Getting drillthrough count results in exception"</a>.
      */
-    public void testBugMondrian755() {
+    @Test public void testBugMondrian755() {
         TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -180,8 +185,8 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
     private void checkCellZero(TestContext testContext, String mdx) {
         final Result result = testContext.executeQuery(mdx);
         final Cell cell = result.getCell(new int[result.getAxes().length]);
-        assertTrue(cell.canDrillThrough());
-        assertEquals(2996, cell.getDrillThroughCount());
+        assertThat(cell.canDrillThrough(), is(true));
+        assertThat(cell.getDrillThroughCount(), is(2996));
     }
 
     /**
@@ -191,7 +196,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      *
      * @see #testBugMondrian805() duplicate bug MONDRIAN-805
      */
-    public void testBugMondrian756() {
+    @Test public void testBugMondrian756() {
         TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -238,7 +243,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      *
      * @see #testBugMondrian805() duplicate bug MONDRIAN-805
      */
-    public void testBugMondrian756b() {
+    @Test public void testBugMondrian756b() {
         final TestContext testContext0 = getTestContext();
         if (!testContext0.databaseIsValid()) {
             return;
@@ -264,7 +269,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      * bug <a href="http://jira.pentaho.com/browse/MONDRIAN-805">MONDRIAN-805,
      * "Two dimensions with hasAll=false fail"</a>.
      */
-    public void testBugMondrian805() {
+    @Test public void testBugMondrian805() {
         final TestContext testContext0 = getTestContext();
         if (!testContext0.databaseIsValid()) {
             return;
@@ -308,7 +313,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
             + "Row #0: 596\n");
     }
 
-    public void testMondrianBug476_770_957() throws Exception {
+    @Test public void testMondrianBug476_770_957() throws Exception {
         final TestContext context =
             TestContext.instance().with(
                 TestContext.DataSet.STEELWHEELS,
@@ -470,7 +475,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
             + "Row #9: 6,107.0\n");
     }
 
-    public void testBugMondrian935() {
+    @Test public void testBugMondrian935() {
         final TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -520,7 +525,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      *
      * @throws Exception on error
      */
-    public void testPropertyWithParameterOfTimestampType() throws Exception {
+    @Test public void testPropertyWithParameterOfTimestampType() throws Exception {
         final TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -572,7 +577,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      * only execute one SQL query, basically, "select year_id from time group by
      * year_id order by year_id". It should definitely not join to fact table.
      */
-    public void testEsr1587() {
+    @Test public void testEsr1587() {
         final TestContext testContext = getTestContext();
         if (!testContext.databaseIsValid()) {
             return;
@@ -597,7 +602,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
             + "Row #0: 0\n");
     }
 
-    public void testMondrian1133() {
+    @Test public void testMondrian1133() {
         if (!getTestContext().databaseIsValid()) {
             return;
         }
@@ -625,7 +630,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      * java.lang.Integer cannot be cast to java.lang.Double
      * keys.
      */
-    public void testBug1285() {
+    @Test public void testBug1285() {
         if (!getTestContext().databaseIsValid()) {
             return;
         }
@@ -713,7 +718,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
             + "Row #7: 2\n");
     }
 
-    public void testDoubleValueCanBeRankedAmongIntegers() {
+    @Test public void testDoubleValueCanBeRankedAmongIntegers() {
         if (!getTestContext().databaseIsValid()) {
             return;
         }
@@ -752,7 +757,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      * Member Unique Name is incorrect for a calculated member on a shared
      * dimension whose name is different from the dimension it is based on.
      */
-    public void testMondrian1360() {
+    @Test public void testMondrian1360() {
         if (!Bug.BugMondrian1416Fixed) {
             return;
         }
@@ -865,7 +870,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      *
      * Invalid filter SQL generated on numeric column
      */
-    public void testMondrian1464() {
+    @Test public void testMondrian1464() {
         if (!getTestContext().databaseIsValid()) {
             return;
         }
@@ -900,7 +905,7 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
      *
      * On .Members in NonEmpty, with mondrian.native.nonempty.enabled=true
      */
-    public void testMondrian1252() throws Exception {
+    @Test public void testMondrian1252() throws Exception {
         if (!getTestContext().databaseIsValid()) {
             return;
         }

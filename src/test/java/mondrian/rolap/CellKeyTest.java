@@ -10,9 +10,13 @@
 */
 package mondrian.rolap;
 
-import mondrian.olap.MondrianProperties;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
+
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test that the implementations of the CellKey interface are correct.
@@ -20,24 +24,17 @@ import mondrian.test.TestContext;
  * @author Richard M. Emberson
  */
 public class CellKeyTest extends FoodMartTestCase {
-    public CellKeyTest() {
-    }
-
-    public CellKeyTest(String name) {
-        super(name);
-    }
-
-    public void testMany() {
+    @Test public void testMany() {
         CellKey key = CellKey.Generator.newManyCellKey(5);
 
-        assertTrue("CellKey size", key.size() == 5);
+        assertThat("CellKey size", key.size(), is(5));
 
         CellKey copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         int[] ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         boolean gotException = false;
         try {
@@ -45,7 +42,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey axis too big", gotException);
+        assertThat("CellKey axis too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -53,7 +50,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too big", gotException);
+        assertThat("CellKey array too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -61,31 +58,32 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too small", gotException);
+        assertThat("CellKey array too small", gotException, is(true));
 
         key.setAxis(0, 1);
         key.setAxis(1, 3);
         key.setAxis(2, 5);
         key.setAxis(3, 7);
         key.setAxis(4, 13);
-        assertTrue("CellKey not equals", !key.equals(copy));
+        boolean b = !key.equals(copy);
+        assertThat("CellKey not equals", b, is(true));
 
         copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
     }
 
-    public void testZero() {
+    @Test public void testZero() {
         CellKey key = CellKey.Generator.newCellKey(new int[0]);
         CellKey key2 = CellKey.Generator.newCellKey(new int[0]);
-        assertTrue(key == key2); // all 0-dimensional keys have same singleton
-        assertEquals(0, key.size());
+        assertThat(key, is(key2));
+        assertThat(key.size(), is(0));
 
         CellKey copy = key.copy();
-        assertEquals(copy, key);
+        assertThat(key, is(copy));
 
         boolean gotException = false;
         try {
@@ -93,24 +91,24 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey axis too big", gotException);
+        assertThat("CellKey axis too big", gotException, is(true));
 
         int[] ordinals = key.getOrdinals();
-        assertEquals(ordinals.length, 0);
+        assertThat(0, is(ordinals.length));
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
     }
 
-    public void testOne() {
+    @Test public void testOne() {
         CellKey key = CellKey.Generator.newCellKey(1);
-        assertTrue("CellKey size", key.size() == 1);
+        assertThat("CellKey size", key.size(), is(1));
 
         CellKey copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         int[] ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         boolean gotException = false;
         try {
@@ -118,7 +116,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey axis too big", gotException);
+        assertThat("CellKey axis too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -126,7 +124,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too big", gotException);
+        assertThat("CellKey array too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -134,29 +132,29 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too small", gotException);
+        assertThat("CellKey array too small", gotException, is(true));
 
         key.setAxis(0, 1);
 
         copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
     }
 
-    public void testTwo() {
+    @Test public void testTwo() {
         CellKey key = CellKey.Generator.newCellKey(2);
 
-        assertTrue("CellKey size", key.size() == 2);
+        assertThat("CellKey size", key.size(), is(2));
 
         CellKey copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         int[] ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         boolean gotException = false;
         try {
@@ -164,7 +162,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey axis too big", gotException);
+        assertThat("CellKey axis too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -172,7 +170,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too big", gotException);
+        assertThat("CellKey array too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -180,30 +178,30 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too small", gotException);
+        assertThat("CellKey array too small", gotException, is(true));
 
         key.setAxis(0, 1);
         key.setAxis(1, 3);
 
         copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
     }
 
-    public void testThree() {
+    @Test public void testThree() {
         CellKey key = CellKey.Generator.newCellKey(3);
 
-        assertTrue("CellKey size", key.size() == 3);
+        assertThat("CellKey size", key.size(), is(3));
 
         CellKey copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         int[] ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         boolean gotException = false;
         try {
@@ -211,7 +209,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey axis too big", gotException);
+        assertThat("CellKey axis too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -219,7 +217,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too big", gotException);
+        assertThat("CellKey array too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -227,31 +225,31 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too small", gotException);
+        assertThat("CellKey array too small", gotException, is(true));
 
         key.setAxis(0, 1);
         key.setAxis(1, 3);
         key.setAxis(2, 5);
 
         copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
     }
 
-    public void testFour() {
+    @Test public void testFour() {
         CellKey key = CellKey.Generator.newCellKey(4);
 
-        assertTrue("CellKey size", key.size() == 4);
+        assertThat("CellKey size", key.size(), is(4));
 
         CellKey copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         int[] ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         boolean gotException = false;
         try {
@@ -259,7 +257,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey axis too big", gotException);
+        assertThat("CellKey axis too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -267,7 +265,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too big", gotException);
+        assertThat("CellKey array too big", gotException, is(true));
 
         gotException = false;
         try {
@@ -275,7 +273,7 @@ public class CellKeyTest extends FoodMartTestCase {
         } catch (Exception ex) {
             gotException = true;
         }
-        assertTrue("CellKey array too small", gotException);
+        assertThat("CellKey array too small", gotException, is(true));
 
         key.setAxis(0, 1);
         key.setAxis(1, 3);
@@ -283,14 +281,14 @@ public class CellKeyTest extends FoodMartTestCase {
         key.setAxis(3, 7);
 
         copy = key.copy();
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
 
         ordinals = key.getOrdinals();
         copy = CellKey.Generator.newCellKey(ordinals);
-        assertTrue("CellKey equals", key.equals(copy));
+        assertThat("CellKey equals", key.equals(copy), is(true));
     }
 
-    public void testCellLookup() {
+    @Test public void testCellLookup() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -356,10 +354,10 @@ public class CellKeyTest extends FoodMartTestCase {
         testContext.assertQueryReturns(query, result);
     }
 
-    public void testSize() {
+    @Test public void testSize() {
         for (int i = 1; i < 20; i++) {
-            assertEquals(i, CellKey.Generator.newCellKey(new int[i]).size());
-            assertEquals(i, CellKey.Generator.newCellKey(i).size());
+            assertThat(CellKey.Generator.newCellKey(new int[i]).size(), is(i));
+            assertThat(CellKey.Generator.newCellKey(i).size(), is(i));
         }
     }
 }

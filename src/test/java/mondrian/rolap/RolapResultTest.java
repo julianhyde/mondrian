@@ -13,6 +13,11 @@ import mondrian.olap.Result;
 import mondrian.rolap.aggmatcher.AggTableTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Testcase for
  *
@@ -69,23 +74,8 @@ public class RolapResultTest extends AggTableTestCase {
         + "Row #2: 15\n";
 
     //boolean useImplicitMembers;
-    public RolapResultTest() {
-        super();
-    }
 
-    public RolapResultTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    public void testAll() throws Exception {
+    @Test public void testAll() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -109,7 +99,7 @@ public class RolapResultTest extends AggTableTestCase {
 */
     }
 
-    public void testD1() throws Exception {
+    @Test public void testD1() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -136,10 +126,10 @@ Axis #2:
 {[D2].[y]}
 {[D2].[z]}
 */
-        assertEquals(resultString, RESULTS);
+        assertThat(RESULTS, is(resultString));
     }
 
-    public void testD2() throws Exception {
+    @Test public void testD2() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -187,7 +177,7 @@ Axis #2:
         //getCubeTestContext().assertQueryReturns(mdx, RESULTS);
         Result result = getCubeTestContext().executeQuery(mdx);
         String resultString = TestContext.toString(result);
-        assertTrue(resultString.equals(RESULTS));
+        assertThat(resultString.equals(RESULTS), is(true));
     }
 
 
@@ -285,7 +275,7 @@ Axis #2:
             + "</Cube>";
     }
 
-    public void testNonAllPromotionMembers() {
+    @Test public void testNonAllPromotionMembers() {
         TestContext testContext = TestContext.instance().createSubstitutingCube(
             "Sales",
             "<Dimension name=\"Promotions2\" foreignKey=\"promotion_id\">\n"

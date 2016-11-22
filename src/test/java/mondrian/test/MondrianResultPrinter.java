@@ -15,7 +15,9 @@
 */
 package mondrian.test;
 
+import org.junit.Test;
 import junit.framework.*;
+import org.junit.Test;
 import junit.runner.BaseTestRunner;
 
 import java.io.PrintStream;
@@ -123,29 +125,29 @@ public class MondrianResultPrinter implements TestListener {
         return fWriter;
     }
     /**
-     * @see junit.framework.TestListener#addError(Test, Throwable)
+     * @see junit.framework.TestListener#addError(junit.framework.Test, Throwable)
      */
-    public void addError(Test test, Throwable t) {
+    public void addError(junit.framework.Test test, Throwable t) {
         getWriter().print("E");
     }
 
     /**
-     * @see junit.framework.TestListener#addFailure(Test, AssertionFailedError)
+     * @see junit.framework.TestListener#addFailure(junit.framework.Test, AssertionFailedError)
      */
-    public void addFailure(Test test, AssertionFailedError t) {
+    public void addFailure(junit.framework.Test test, AssertionFailedError t) {
         getWriter().print("F");
     }
 
     /**
-     * @see junit.framework.TestListener#endTest(Test)
+     * @see junit.framework.TestListener#endTest(junit.framework.Test)
      */
-    public void endTest(Test test) {
+    public void endTest(junit.framework.Test test) {
     }
 
     /**
-     * @see junit.framework.TestListener#startTest(Test)
+     * @see junit.framework.TestListener#startTest(junit.framework.Test)
      */
-    public void startTest(Test test) {
+    public void startTest(junit.framework.Test test) {
         if (fStarted % 40 == 0) {
             getWriter().print("\n[" + fStarted + "] ");
         }

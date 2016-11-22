@@ -17,6 +17,12 @@ import mondrian.test.FoodMartTestCase;
 import org.apache.log4j.*;
 import org.apache.log4j.Level;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.*;
@@ -30,13 +36,10 @@ import javax.sql.DataSource;
  *
  * @author Sherman Wood
  */
+@Ignore("OPTIONAL_TEST")
 public class AggGenTest extends FoodMartTestCase {
-    public AggGenTest(String name) {
-        super(name);
-    }
-
-    public void
-        testCallingLoadColumnsInAddCollapsedColumnOrAddzSpecialCollapsedColumn()
+    @Test public void
+    testCallingLoadColumnsInAddCollapsedColumnOrAddzSpecialCollapsedColumn()
         throws Exception
     {
         Logger logger = Logger.getLogger(AggGen.class);
@@ -86,7 +89,8 @@ public class AggGenTest extends FoodMartTestCase {
                 ResultSet rs =
                     dbmeta.getColumns(
                         catalogName, schemaName, m.group(1), m.group(2));
-                assertTrue(!rs.next());
+                boolean b = !rs.next();
+                assertThat(b, is(true));
             }
         } finally {
             if (sqlConnection != null) {

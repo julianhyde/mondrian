@@ -17,6 +17,10 @@ import mondrian.util.Bug;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.log4j.Logger;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,16 +39,12 @@ public class PerformanceTest extends FoodMartTestCase {
     public static final Logger LOGGER =
         Logger.getLogger(PerformanceTest.class);
 
-    public PerformanceTest(String name) {
-        super(name);
-    }
-
     /**
      * Test case for
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-550">
      * Bug MONDRIAN-550, "Performance bug with NON EMPTY and large axes"</a>.
      */
-    public void testBugMondrian550() {
+    @Test public void testBugMondrian550() {
         final TestContext testContext = getBugMondrian550Schema();
         new Benchmarker(
             "testBugMondrian550",
@@ -79,14 +79,14 @@ public class PerformanceTest extends FoodMartTestCase {
             + "from [Sales]\n"
             + "where ([Time].[1997].[Q4], [Measures].[EXP2])");
         statistician.record(start);
-        assertEquals(13, result.getAxes()[0].getPositions().size());
-        assertEquals(3262, result.getAxes()[1].getPositions().size());
+        assertThat(result.getAxes()[0].getPositions().size(), is(13));
+        assertThat(result.getAxes()[1].getPositions().size(), is(3262));
     }
 
     /**
      * As {@link #testBugMondrian550()} but with tuples on the rows axis.
      */
-    public void testBugMondrian550Tuple() {
+    @Test public void testBugMondrian550Tuple() {
         final TestContext testContext = getBugMondrian550Schema();
         new Benchmarker(
             "testBugMondrian550Tuple",
@@ -121,8 +121,8 @@ public class PerformanceTest extends FoodMartTestCase {
             + "from [Sales]\n"
             + "where ([Time].[1997].[Q4], [Measures].[EXP2])");
         statistician.record(start);
-        assertEquals(13, result2.getAxes()[0].getPositions().size());
-        assertEquals(3263, result2.getAxes()[1].getPositions().size());
+        assertThat(result2.getAxes()[0].getPositions().size(), is(13));
+        assertThat(result2.getAxes()[1].getPositions().size(), is(3263));
     }
 
     private TestContext getBugMondrian550Schema() {
@@ -151,7 +151,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * ResultStyle.ITERABLE".  Runs in ~10 seconds with ResultStyle.LIST,
      * 99+ seconds with ITERABLE (on DELL Latitude D630).
      */
-    public void testMondrianBug641() {
+    @Test public void testMondrianBug641() {
         if (!Bug.BugMondrian641Fixed) {
             return;
         }
@@ -164,13 +164,13 @@ public class PerformanceTest extends FoodMartTestCase {
                 + " on 0 from sales");
         // jdk1.6 marmalade main 14036 287,940 518,349 ms
         printDuration("testBugMondrian641", start);
-        assertEquals(51148, result.getAxes()[0].getPositions().size());
+        assertThat(result.getAxes()[0].getPositions().size(), is(51148));
     }
 
     /**
      * Tests performance when an MDX query contains a very large explicit set.
      */
-    public void testVeryLargeExplicitSet() {
+    @Test public void testVeryLargeExplicitSet() {
         final TestContext testContext = getTestContext();
         final Statistician[] statisticians = {
             // jdk1.6 mackerel access main old    5,000 ms
@@ -239,7 +239,7 @@ public class PerformanceTest extends FoodMartTestCase {
         final Axis axis = testContext.executeAxis("Customers.Members");
         statisticians[0].record(start);
         final List<Position> positionList = axis.getPositions();
-        assertEquals(10407, positionList.size());
+        assertThat(positionList.size(), is(10407));
 
         // Take customers 0-2000 and 5000-7000. Using contiguous bursts,
         // Mondrian has a chance to optimize how it reads cells from the
@@ -272,9 +272,7 @@ public class PerformanceTest extends FoodMartTestCase {
             result = testContext.executeQuery(mdx);
 
             statisticians[1].record(start);
-            assertEquals(
-                memberList.size(),
-                result.getAxes()[1].getPositions().size());
+            assertThat(result.getAxes()[1].getPositions().size(), is(memberList.size()));
         }
 
         // Much more efficient technique. Use a parameter, and bind to array.
@@ -292,9 +290,7 @@ public class PerformanceTest extends FoodMartTestCase {
         result = testContext.getConnection().execute(query);
 
         statisticians[2].record(start);
-        assertEquals(
-            memberList.size(),
-            result.getAxes()[1].getPositions().size());
+        assertThat(result.getAxes()[1].getPositions().size(), is(memberList.size()));
     }
 
     /**
@@ -304,7 +300,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * Iterable, causing performance regression from 2.4 in
      * FunUtil.count()"</a>.
      */
-    public void testBugMondrian639() {
+    @Test public void testBugMondrian639() {
         // unknown revision before fix mac-mini 233,000 ms
         // unknown revision after fix mac-mini    4,500 ms
         // jdk1.6 marmalade 3.2 14036             1,821 1,702 ms
@@ -340,8 +336,8 @@ public class PerformanceTest extends FoodMartTestCase {
             + "FROM sales");
 
         statistician.record(start);
-        assertEquals(62442, result.getAxes()[0].getPositions().size());
-        assertEquals(1, result.getAxes()[1].getPositions().size());
+        assertThat(result.getAxes()[0].getPositions().size(), is(62442));
+        assertThat(result.getAxes()[1].getPositions().size(), is(1));
     }
 
     /**
@@ -350,7 +346,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * Runs in 14 seconds when RolapEvaluator.getProperty uses getNonAllMembers.
      * The performance boost gets more significant as the schema size grows.
      */
-    public void testBigResultsWithBigSchemaPerforms() {
+    @Test public void testBigResultsWithBigSchemaPerforms() {
         if (!LOGGER.isDebugEnabled()) {
             return;
         }
@@ -409,7 +405,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * <li>mondrian     14770 marmite   mysql  jdk1.7 &gt; 30 minutes
      * </ul>
      */
-    public void testInMemoryCalc() {
+    @Test public void testInMemoryCalc() {
         if (!LOGGER.isDebugEnabled()) {
             // Test is too expensive to run as part of standard regress.
             // Take 10h on hudson (MySQL)!!!
@@ -482,7 +478,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-843">
      * Bug MONDRIAN-843, where Filter is inefficient.</a>
      */
-    public void testBugMondrian843() {
+    @Test public void testBugMondrian843() {
         // On my core i7 laptop:
         // takes 2.5 seconds before bug fixed
         // takes 0.4 seconds after bug fixed
@@ -510,7 +506,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * "Poor performance when >=2 hierarchies are access-controlled with
      * rollupPolicy=partial"</a>.
      */
-    public void testBugMondrian981() {
+    @Test public void testBugMondrian981() {
         if (!LOGGER.isDebugEnabled()) {
             // Too slow to run as part of standard regress until bug is fixed.
             return;
@@ -575,7 +571,7 @@ public class PerformanceTest extends FoodMartTestCase {
      * case just checks correctness; a similar case in {@link PerformanceTest}
      * checks performance.
      */
-    public void testBugMondrian1242() {
+    @Test public void testBugMondrian1242() {
         final TestContext testContext = getTestContext().create(
             null, null, null, null,
             "<UserDefinedFunction name=\"StringMult\" className=\""
@@ -622,13 +618,12 @@ public class PerformanceTest extends FoodMartTestCase {
             + "from [Sales]\n"
             + "where ([Customers].[USA].[CA].[Altadena].[Alice Cantrell]"
             + " : [Customers].[USA].[CA].[Altadena].[Alice Cantrell].Lead(7000))");
-        assertEquals(
-            "111,191",
-            result.getCell(new int[] {0, 0}).getFormattedValue());
+        assertThat(result.getCell(new int[] {0, 0}).getFormattedValue(),
+            is("111,191"));
 
         // Count is 4 if bug is fixed,
         // 28004 if bug is not fixed.
-        assertEquals(4, CounterUdf.count.get());
+        assertThat(CounterUdf.count.get(), is(4));
     }
 
     /**
@@ -654,7 +649,7 @@ public class PerformanceTest extends FoodMartTestCase {
      *     is the best, with N + L log L + comparisons</li>
      * </ul>
      */
-    public void testStablePartialSort() {
+    @Test public void testStablePartialSort() {
         final int N = 1000000; // should be 1M in checked-in code
         final int limit = 10;  // should be 10 in checked-in code
         final int runCount = 10;
@@ -754,10 +749,10 @@ public class PerformanceTest extends FoodMartTestCase {
                 final long start = System.currentTimeMillis();
                 List<Integer> x = sort(list, comp, limit);
                 statistician.record(start);
-                assertEquals("non-destructive", first, list.get(0));
+                assertThat("non-destructive", list.get(0), is(first));
                 if (limit == 10 && list.size() == 1000000) {
-                    assertEquals(
-                        name(), "[0, 1, 1, 2, 3, 5, 5, 5, 6, 9]", x.toString());
+                    assertThat(name(), x.toString(),
+                        is("[0, 1, 1, 2, 3, 5, 5, 5, 6, 9]"));
                 }
             }
 
@@ -771,7 +766,7 @@ public class PerformanceTest extends FoodMartTestCase {
                     new CountingComparator<Integer>();
                 List<Integer> x = sort(list, comp, limit);
                 if (limit == 10 && list.size() == 1000000 && false) {
-                    assertEquals(name(), compCount, comp.count);
+                    assertThat(name(), comp.count, is(compCount));
                 }
             }
 

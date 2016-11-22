@@ -19,6 +19,11 @@ import org.olap4j.metadata.*;
 import org.olap4j.metadata.Cube;
 import org.olap4j.metadata.Schema;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.sql.SQLException;
 import java.util.*;
 
@@ -36,7 +41,7 @@ public class I18nTest extends FoodMartTestCase {
     public static final char EA = '\u00e9'; // e acute
     public static final char UC = '\u00FB'; // u circumflex
 
-    public void testFormat() {
+    @Test public void testFormat() {
         // Make sure Util is loaded, so that the LocaleFormatFactory gets
         // registered.
         Util.discard(Util.nl);
@@ -46,13 +51,12 @@ public class I18nTest extends FoodMartTestCase {
 
         // Thousands and decimal separators are different in Spain
         Format numFormat = new Format("#,000.00", spanish);
-        assertEquals("123.456,79", numFormat.format(new Double(123456.789)));
+        assertThat(numFormat.format(new Double(123456.789)), is("123.456,79"));
 
         // Currency too
         Format currencyFormat = new Format("Currency", spanish);
-        assertEquals(
-            "1.234.567,79 " + Euro,
-            currencyFormat.format(new Double(1234567.789)));
+        assertThat(currencyFormat.format(new Double(1234567.789)),
+            is("1.234.567,79 " + Euro));
 
         // Dates
         Format dateFormat = new Format("Medium Date", spanish);
@@ -61,26 +65,26 @@ public class I18nTest extends FoodMartTestCase {
         calendar.set(Calendar.MONTH, 0); // January, 0-based
         calendar.set(Calendar.DATE, 22);
         java.util.Date date = calendar.getTime();
-        assertEquals("22-ene-05", dateFormat.format(date));
+        assertThat(dateFormat.format(date), is("22-ene-05"));
 
         // Dates in German
         dateFormat = new Format("Long Date", german);
-        assertEquals("Samstag, Januar 22, 2005", dateFormat.format(date));
+        assertThat(dateFormat.format(date), is("Samstag, Januar 22, 2005"));
     }
 
-    public void testAutoFrench() {
+    @Test public void testAutoFrench() {
         // Create a connection in French.
         String localeName = "fr_FR";
         String resultString = "12" + Nbsp + "345,67";
         assertFormatNumber(localeName, resultString);
     }
 
-    public void testAutoSpanish() {
+    @Test public void testAutoSpanish() {
         // Format a number in (Peninsular) spanish.
         assertFormatNumber("es", "12.345,67");
     }
 
-    public void testAutoMexican() {
+    @Test public void testAutoMexican() {
         // Format a number in Mexican spanish.
         assertFormatNumber("es_MX", "12,345.67");
     }
@@ -108,7 +112,7 @@ public class I18nTest extends FoodMartTestCase {
     }
 
     /** Unit test for captions and descriptions defined using annotations. */
-    public void testSimple() throws SQLException {
+    @Test public void testSimple() throws SQLException {
         final OlapConnection olapConnection =
             getTestContext()
                 .insertCube(
@@ -128,38 +132,38 @@ public class I18nTest extends FoodMartTestCase {
         for (Locale locale : olapSchema.getSupportedLocales()) {
             localeNames.add(locale.toString());
         }
-        assertEquals(
-            new HashSet<String>(Arrays.asList("en", "fr", "fr_CA", "de_DE")),
-            localeNames);
+        assertThat(localeNames,
+            is((Set<String>) new HashSet<String>(
+                Arrays.asList("en", "fr", "fr_CA", "de_DE"))));
 
         olapConnection.setLocale(Locale.US);
         final Cube salesCubeUs = olapSchema.getCubes().get("Sales");
-        assertEquals("Sales", salesCubeUs.getCaption());
+        assertThat(salesCubeUs.getCaption(), is("Sales"));
 
         // Switch locales. Note that we have to re-read metadata from the
         // root (getOlapSchema()).
         olapConnection.setLocale(Locale.GERMANY);
         final Cube salesCubeGerman = olapSchema.getCubes().get("Sales");
-        assertEquals("Verkaufen", salesCubeGerman.getCaption());
-        assertEquals("Cube Verkaufen", salesCubeGerman.getDescription());
+        assertThat(salesCubeGerman.getCaption(), is("Verkaufen"));
+        assertThat(salesCubeGerman.getDescription(), is("Cube Verkaufen"));
 
         olapConnection.setLocale(Locale.FRANCE);
         final Cube salesCubeFrance = olapSchema.getCubes().get("Sales");
-        assertEquals("Ventes", salesCubeFrance.getCaption());
-        assertEquals("Cube des ventes", salesCubeFrance.getDescription());
+        assertThat(salesCubeFrance.getCaption(), is("Ventes"));
+        assertThat(salesCubeFrance.getDescription(), is("Cube des ventes"));
 
         // According to the olap4j spec,
         // behavior is undefined (e.g. the US sales cube might be invalid).
         // In the mondrian-olap4j driver, the cube object is the same under
         // all locales, and switches based on the connection's locale.
-        assertEquals("Ventes", salesCubeUs.getCaption());
+        assertThat(salesCubeUs.getCaption(), is("Ventes"));
 
         // Reset locale.
         olapConnection.setLocale(Locale.US);
     }
 
     /** Unit test for captions and descriptions loaded from resource file. */
-    public void testFileMissing() throws SQLException {
+    @Test public void testFileMissing() throws SQLException {
         getTestContext()
             .insertCube(
                 "<Localization>\n"
@@ -174,12 +178,12 @@ public class I18nTest extends FoodMartTestCase {
                 + "  </Translations>\n"
                 + "</Localization>\n")
             .assertErrorList().containsError(
-                "(?s).*Error reading resource file.*",
-                "<Translation path='../target/test-classes/mondrian/test/I18nTest_${locale}.properties'/>");
+            "(?s).*Error reading resource file.*",
+            "<Translation path='../target/test-classes/mondrian/test/I18nTest_${locale}.properties'/>");
     }
 
     /** Unit test for captions and descriptions loaded from resource file. */
-    public void testFromFile() throws SQLException {
+    @Test public void testFromFile() throws SQLException {
         final OlapConnection olapConnection =
             getTestContext()
                 .insertCube(
@@ -203,28 +207,27 @@ public class I18nTest extends FoodMartTestCase {
 
         // Resource from file overrides resource from annotation. (Is this what
         // we want?)
-        assertEquals(
-            "Caption of Sales cube in en-US", salesCubeUs.getCaption());
+        assertThat(salesCubeUs.getCaption(), is("Caption of Sales cube in en-US"));
 
         // Switch locales. Note that we have to re-read metadata from the
         // root (getOlapSchema()).
         olapConnection.setLocale(Locale.GERMANY);
         final Cube salesCubeGerman =
             olapSchema.getCubes().get("Sales");
-        assertEquals("Verkaufen", salesCubeGerman.getCaption());
-        assertEquals("Cube Verkaufen", salesCubeGerman.getDescription());
+        assertThat(salesCubeGerman.getCaption(), is("Verkaufen"));
+        assertThat(salesCubeGerman.getDescription(), is("Cube Verkaufen"));
 
         olapConnection.setLocale(Locale.FRANCE);
         final Cube salesCubeFrance =
             olapSchema.getCubes().get("Sales");
-        assertEquals("Ventes", salesCubeFrance.getCaption());
-        assertEquals("Cube des ventes", salesCubeFrance.getDescription());
+        assertThat(salesCubeFrance.getCaption(), is("Ventes"));
+        assertThat(salesCubeFrance.getDescription(), is("Cube des ventes"));
 
         // According to the olap4j spec,
         // behavior is undefined (e.g. the US sales cube might be invalid).
         // In the mondrian-olap4j driver, the cube object is the same under
         // all locales, and switches based on the connection's locale.
-        assertEquals("Ventes", salesCubeUs.getCaption());
+        assertThat(salesCubeUs.getCaption(), is("Ventes"));
 
 
         // Now the resources coming from files.
@@ -233,143 +236,106 @@ public class I18nTest extends FoodMartTestCase {
 
         // olap4j Schema class does not have i18n APIs yet. So get resources
         // through the back door.
-        assertEquals(
-            "Caption of Sales schema in fr",
-            ((MetadataElement) olapSchema).getCaption());
-        assertEquals(
-            "Description of Sales schema in fr",
-            ((MetadataElement) olapSchema).getDescription());
+        assertThat(((MetadataElement) olapSchema).getCaption(),
+            is("Caption of Sales schema in fr"));
+        assertThat(((MetadataElement) olapSchema).getDescription(),
+            is("Description of Sales schema in fr"));
 
         olapConnection.setLocale(Locale.CANADA_FRENCH);
 
         // Description is overridden in fr-CA, but not caption.
-        assertEquals(
-            "Caption of Sales schema in fr",
-            ((MetadataElement) olapSchema).getCaption());
-        assertEquals(
-            "Description of Sales schema in fr-CA",
-            ((MetadataElement) olapSchema).getDescription());
+        assertThat(((MetadataElement) olapSchema).getCaption(),
+            is("Caption of Sales schema in fr"));
+        assertThat(((MetadataElement) olapSchema).getDescription(),
+            is("Description of Sales schema in fr-CA"));
 
-        assertEquals(
-            "Caption of Unit Sales measure in fr",
-            olapSchema.getCubes().get("Sales")
-                .getDimensions().get("Measures")
-                .getHierarchies().get(0)
-                .getRootMembers().get("Unit Sales")
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .getDimensions().get("Measures")
+            .getHierarchies().get(0)
+            .getRootMembers().get("Unit Sales")
+            .getCaption(), is("Caption of Unit Sales measure in fr"));
 
-        assertEquals(
-            "Profit",
-            // TODO: should be "Caption of Profit calculated measure in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Measures].[Profit]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Measures].[Profit]"))
+            .getCaption(), is("Profit"));
 
-        assertEquals(
-            "Caption of Time shared dimension in fr",
-            olapSchema.getSharedDimensions().get("Time").getCaption());
+        assertThat(olapSchema.getSharedDimensions().get("Time").getCaption(),
+            is("Caption of Time shared dimension in fr"));
 
-        assertEquals(
-            "Caption of shared Weekly hierarchy in fr",
-            olapSchema.getSharedDimensions().get("Time").getHierarchies()
-                .get("Weekly").getCaption());
+        assertThat(olapSchema.getSharedDimensions().get("Time").getHierarchies()
+            .get("Weekly").getCaption(),
+            is("Caption of shared Weekly hierarchy in fr"));
 
-        assertEquals(
-            "Caption of shared Year level in fr",
-            olapSchema.getSharedDimensions().get("Time").getHierarchies()
-                .get("Weekly").getLevels().get("Year").getCaption());
+        assertThat(olapSchema.getSharedDimensions().get("Time").getHierarchies()
+            .get("Weekly").getLevels().get("Year").getCaption(),
+            is("Caption of shared Year level in fr"));
 
-        assertEquals(
-            "Caption of Time dimension in Sales cube in fr",
-            olapSchema.getCubes().get("Sales").getDimensions().get("Time")
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales").getDimensions().get("Time")
+            .getCaption(),
+            is("Caption of Time dimension in Sales cube in fr"));
 
-        assertEquals(
-            "Caption of Weekly hierarchy in Sales cube in fr",
-            olapSchema.getCubes().get("Sales").getDimensions().get("Time")
-                .getHierarchies().get("Weekly").getCaption());
+        assertThat(olapSchema.getCubes().get("Sales").getDimensions().get("Time")
+            .getHierarchies().get("Weekly").getCaption(),
+            is("Caption of Weekly hierarchy in Sales cube in fr"));
 
-        assertEquals(
-            "Caption of shared Year level in fr",
-            // TODO: should be "Caption of Year level in Sales cube in fr",
-            olapSchema.getCubes().get("Sales").getDimensions().get("Time")
-                .getHierarchies().get("Weekly").getLevels().get("Year")
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales").getDimensions().get("Time")
+            .getHierarchies().get("Weekly").getLevels().get("Year")
+            .getCaption(), is("Caption of shared Year level in fr"));
 
         // The Month level does not have a caption, so it inherits the caption
         // from the Month attribute
-        assertEquals(
-            "Month",
-            // TODO: should be "Caption of Month attribute in fr",
-            olapSchema.getCubes().get("Sales").getDimensions().get("Time")
-                .getHierarchies().get("Time").getLevels().get("Month")
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales").getDimensions().get("Time")
+            .getHierarchies().get("Time").getLevels().get("Month")
+            .getCaption(), is("Month"));
 
         try {
-            assertEquals(
-                "Caption of Top Sellers named set in Sales cube in fr",
-                olapSchema.getCubes().get("Sales").getSets().get("Top Sellers")
-                    .getCaption());
+            assertThat(olapSchema.getCubes().get("Sales").getSets()
+                .get("Top Sellers").getCaption(),
+                is("Caption of Top Sellers named set in Sales cube in fr"));
         } catch (NullPointerException e) {
             // TODO: fix me
         }
 
         // level 1 member
-        assertEquals(
-            "Caption of member USA in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Store].[Stores].[USA]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Store].[Stores].[USA]"))
+            .getCaption(), is("Caption of member USA in fr"));
 
         // level 2 member
-        assertEquals(
-            "Caption of member CA in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Store].[Stores].[USA].[CA]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Store].[Stores].[USA].[CA]"))
+            .getCaption(), is("Caption of member CA in fr"));
 
         // level 2 member, resource defined against shared dimension
-        assertEquals(
-            "Caption of shared member OR in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Store].[Stores].[USA].[OR]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Store].[Stores].[USA].[OR]"))
+            .getCaption(), is("Caption of shared member OR in fr"));
 
         // look for equivalent member (defined from same shared dimension) in
         // a different cube. should not be found
-        assertEquals(
-            "CA",
-            olapSchema.getCubes().get("HR")
-                .lookupMember(parse("[Store].[Stores].[USA].[CA]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("HR")
+            .lookupMember(parse("[Store].[Stores].[USA].[CA]"))
+            .getCaption(), is("CA"));
 
         // same resource as previous, equivalent member from another cube
-        assertEquals(
-            "Caption of shared member OR in fr",
-            olapSchema.getCubes().get("HR")
-                .lookupMember(parse("[Store].[Stores].[USA].[OR]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("HR")
+            .lookupMember(parse("[Store].[Stores].[USA].[OR]"))
+            .getCaption(), is("Caption of shared member OR in fr"));
 
         // all member
-        assertEquals(
-            "Caption of member All Stores in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Store].[Stores].[All Stores]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Store].[Stores].[All Stores]"))
+            .getCaption(), is("Caption of member All Stores in fr"));
 
         // all member of attribute hierarchy
-        assertEquals(
-            "Caption of member All Gender in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Customer].[Gender].[All Gender]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Customer].[Gender].[All Gender]"))
+            .getCaption(), is("Caption of member All Gender in fr"));
 
         // level 1 member of attribute hierarchy
-        assertEquals(
-            "Caption of member F in fr",
-            olapSchema.getCubes().get("Sales")
-                .lookupMember(parse("[Customer].[Gender].[F]"))
-                .getCaption());
+        assertThat(olapSchema.getCubes().get("Sales")
+            .lookupMember(parse("[Customer].[Gender].[F]"))
+            .getCaption(), is("Caption of member F in fr"));
 
         // TODO: test named set in schema, e.g. "[Best Customers].set.caption"
         Util.discard(Bug.olap4jUpgrade("bug-31") && Bug.BugOlap4j31Fixed);

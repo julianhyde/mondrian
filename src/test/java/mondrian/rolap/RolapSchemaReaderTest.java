@@ -14,17 +14,20 @@ import mondrian.olap.*;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.*;
 
 /**
  * Unit test for {@link SchemaReader}.
  */
 public class RolapSchemaReaderTest extends FoodMartTestCase {
-    public RolapSchemaReaderTest(String name) {
-        super(name);
-    }
-
-    public void testGetCubesWithNoHrCubes() {
+    @Test public void testGetCubesWithNoHrCubes() {
         String[] expectedCubes = new String[] {
                 "Sales", "Warehouse", "Warehouse and Sales", "Store",
                 "Sales 2", "$Time", "$Product", "$Warehouse",
@@ -38,7 +41,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
 
             Cube[] cubes = reader.getCubes();
 
-            assertEquals(expectedCubes.length, cubes.length);
+            assertThat(cubes.length, is(expectedCubes.length));
 
             assertCubeExists(expectedCubes, cubes);
         } finally {
@@ -46,7 +49,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
         }
     }
 
-    public void testGetCubesWithNoRole() {
+    @Test public void testGetCubesWithNoRole() {
         String[] expectedCubes = new String[] {
                 "Sales", "Warehouse", "Warehouse and Sales", "Store",
                 "Sales 2", "HR", "$Time", "$Product", "$Warehouse",
@@ -59,7 +62,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
 
             Cube[] cubes = reader.getCubes();
 
-            assertEquals(expectedCubes.length, cubes.length);
+            assertThat(cubes.length, is(expectedCubes.length));
 
             assertCubeExists(expectedCubes, cubes);
         } finally {
@@ -67,7 +70,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
         }
     }
 
-    public void testGetCubesForCaliforniaManager() {
+    @Test public void testGetCubesForCaliforniaManager() {
         String[] expectedCubes = new String[] {
                 "Sales"
         };
@@ -79,7 +82,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
 
             Cube[] cubes = reader.getCubes();
 
-            assertEquals(expectedCubes.length, cubes.length);
+            assertThat(cubes.length, is(expectedCubes.length));
 
             assertCubeExists(expectedCubes, cubes);
         } finally {
@@ -87,7 +90,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
         }
     }
 
-    public void testConnectUseContentChecksum() {
+    @Test public void testConnectUseContentChecksum() {
         Util.PropertyList properties =
             TestContext.instance().getConnectionProperties().clone();
         properties.put(
@@ -109,9 +112,9 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
 
         for (Cube cube : cubes) {
             String cubeName = cube.getName();
-            assertTrue(
+            assertThat(
                 "Cube name not found: " + cubeName,
-                cubesAsList.contains(cubeName));
+                cubesAsList.contains(cubeName), is(true));
         }
     }
 
@@ -124,7 +127,7 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-691">MONDRIAN-691,
      * "RolapSchemaReader is not enforcing access control on two APIs"</a>.
      */
-    public void testGetCubeDimensions() {
+    @Test public void testGetCubeDimensions() {
         final String timeWeekly =
             TestContext.hierarchyName("Time", "Weekly");
         final String timeTime =
@@ -153,9 +156,9 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
             for (Cube cube : reader.getCubes()) {
                 cubes.put(cube.getName(), cube);
             }
-            assertTrue(cubes.containsKey("Sales")); // granted access
-            assertFalse(cubes.containsKey("HR")); // denied access
-            assertFalse(cubes.containsKey("Bad")); // not exist
+            assertThat(cubes.containsKey("Sales"), is(true));
+            assertThat(cubes.containsKey("HR"), is(false));
+            assertThat(cubes.containsKey("Bad"), is(false));
 
             final Cube salesCube = cubes.get("Sales");
             final Map<String, Dimension> dimensions =
@@ -170,17 +173,17 @@ public class RolapSchemaReaderTest extends FoodMartTestCase {
                     hierarchies.put(hierarchy.getUniqueName(), hierarchy);
                 }
             }
-            assertFalse(dimensions.containsKey("Store")); // denied access
-            assertTrue(dimensions.containsKey("Customer")); // implicit
-            assertTrue(dimensions.containsKey("Time")); // implicit
-            assertFalse(dimensions.containsKey("Bad dimension")); // not exist
+            assertThat(dimensions.containsKey("Store"), is(false));
+            assertThat(dimensions.containsKey("Customer"), is(true));
+            assertThat(dimensions.containsKey("Time"), is(true));
+            assertThat(dimensions.containsKey("Bad dimension"), is(false));
 
-            assertFalse(hierarchies.containsKey("[Foo]"));
-            assertTrue(hierarchies.containsKey("[Customer].[Marital Status]"));
-            assertTrue(hierarchies.containsKey("[Product].[Products]"));
-            assertTrue(hierarchies.containsKey(timeWeekly));
-            assertFalse(hierarchies.containsKey("[Time]"));
-            assertFalse(hierarchies.containsKey("[Time].[Time]"));
+            assertThat(hierarchies.containsKey("[Foo]"), is(false));
+            assertThat(hierarchies.containsKey("[Customer].[Marital Status]"), is(true));
+            assertThat(hierarchies.containsKey("[Product].[Products]"), is(true));
+            assertThat(hierarchies.containsKey(timeWeekly), is(true));
+            assertThat(hierarchies.containsKey("[Time]"), is(false));
+            assertThat(hierarchies.containsKey("[Time].[Time]"), is(false));
         } finally {
             connection.close();
         }

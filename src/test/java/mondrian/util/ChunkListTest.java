@@ -14,6 +14,7 @@ import mondrian.olap.Util.Function0;
 import mondrian.test.PerformanceTest;
 import mondrian.test.PerformanceTest.Statistician;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.util.*;
@@ -49,7 +50,7 @@ public class ChunkListTest extends TestCase {
     final List<Factory> factories = Arrays.asList(FACTORY, REVERSE_FACTORY);
 
     /** Unit test for {@link mondrian.util.ChunkList}. */
-    public void testChunkList() {
+    @Test public void testChunkList() {
         checkChunkList(FACTORY);
     }
 
@@ -173,7 +174,7 @@ public class ChunkListTest extends TestCase {
         assertEquals("[y, x]", list2.toString());
     }
 
-    public void testClear() {
+    @Test public void testClear() {
         for (Factory factory : factories) {
             checkClear(factory);
         }
@@ -189,7 +190,7 @@ public class ChunkListTest extends TestCase {
         assertTrue(list.isEmpty());
     }
 
-    public void testContainsAll() {
+    @Test public void testContainsAll() {
         for (Factory factory : factories) {
             checkContainsAll(factory);
         }
@@ -225,7 +226,7 @@ public class ChunkListTest extends TestCase {
                 .containsAll(Collections.singletonList("xxx")));
     }
 
-    public void testIndexOf() {
+    @Test public void testIndexOf() {
         for (Factory factory : factories) {
             checkIndexOf(factory);
         }
@@ -246,7 +247,7 @@ public class ChunkListTest extends TestCase {
             factory.create(Arrays.asList(1, 2, 3, 2)).lastIndexOf(2));
     }
 
-    public void testContains() {
+    @Test public void testContains() {
         for (Factory factory : factories) {
             checkContains(factory);
         }
@@ -273,7 +274,7 @@ public class ChunkListTest extends TestCase {
         assertTrue(list.contains(null));
     }
 
-    public void testFragmentation() {
+    @Test public void testFragmentation() {
         final ChunkList<Integer> list =
             new ChunkList<Integer>(Arrays.asList(1, 2, 3, 4));
         assertEquals(
@@ -304,7 +305,7 @@ public class ChunkListTest extends TestCase {
 
     /** Unit test for {@link mondrian.util.ChunkList} that applies random
      * operations. */
-    public void testRandom() {
+    @Test public void testRandom() {
         final int ITERATION_COUNT = 3; //10000;
         for (Factory factory : factories) {
             checkRandom0(factory, ITERATION_COUNT);
@@ -395,7 +396,7 @@ public class ChunkListTest extends TestCase {
         assertValid(list, true);
     }
 
-    public void testPerformance() {
+    @Test public void testPerformance() {
         //noinspection unchecked
         final Iterable<Pair<Function0<List<Integer>>, String>> factories0 =
             Pair.iterate(

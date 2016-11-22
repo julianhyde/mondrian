@@ -15,7 +15,11 @@ package mondrian.test;
 import mondrian.olap.*;
 import mondrian.util.Bug;
 
+import org.junit.Test;
 import junit.framework.Assert;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -26,9 +30,6 @@ import java.util.List;
  * @since Mar 6, 2003
  */
 public class ParentChildHierarchyTest extends FoodMartTestCase {
-    public ParentChildHierarchyTest(String name) {
-        super(name);
-    }
 
     // -- Helper methods -------------------------------------------------------
     /**
@@ -186,7 +187,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-266">MONDRIAN-266,
      * "Closure tables do not work in a Snowflake Dimension"</a>.
      */
-    public void testSnowflakeClosure() {
+    @Test public void testSnowflakeClosure() {
         getEmpSnowFlakeClosureTestContext().assertQueryReturns(
             "select {[Measures].[Count], [Measures].[Org Salary], \n"
             + "[Measures].[Number Of Employees], [Measures].[Avg Salary]} on columns,\n"
@@ -257,7 +258,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
     }
 
 
-    public void testAll() {
+    @Test public void testAll() {
         assertQueryReturns(
             "select {[Measures].[Org Salary], [Measures].[Count]} on columns,\n"
             + " {[Employees]} on rows\n"
@@ -273,7 +274,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: 7,392\n");
     }
 
-    public void testChildrenOfAll() {
+    @Test public void testChildrenOfAll() {
         assertQueryReturns(
             "select {[Measures].[Org Salary], [Measures].[Count]} on columns,\n"
             + " {[Employees].children} on rows\n"
@@ -294,7 +295,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-75">MONDRIAN-75,
      * "'distinct count' measure cause exception in parent/child"</a>.
      */
-    public void testDistinctAll() {
+    @Test public void testDistinctAll() {
         // parent/child dimension not expanded, and the query works
         assertQueryReturns(
             "select {[Measures].[Count], [Measures].[Org Salary], \n"
@@ -316,7 +317,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $64.01\n");
     }
 
-    public void testDistinctChildrenOfAll() {
+    @Test public void testDistinctChildrenOfAll() {
         // parent/child dimension expanded: fails with
         // java.lang.UnsupportedOperationException at
         // mondrian.rolap.RolapAggregator$6.aggregate(RolapAggregator.java:72)
@@ -341,7 +342,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
     }
 
     // same two tests, but on a subtree
-    public void testDistinctSubtree() {
+    @Test public void testDistinctSubtree() {
         // also fails with UnsupportedOperationException
         assertQueryReturns(
             "select {[Measures].[Count], [Measures].[Org Salary], \n"
@@ -368,7 +369,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * Verifies that COUNT DISTINCT works against the explict closure of the
      * parent/child hierarchy. (Repeats the last 4 tests.)
      */
-    public void testDistinctAllExplicitClosure() {
+    @Test public void testDistinctAllExplicitClosure() {
         getEmpClosureTestContext().assertQueryReturns(
             "select {[Measures].[Count], [Measures].[Org Salary], \n"
             + "[Measures].[Number Of Employees], [Measures].[Avg Salary]} on columns,\n"
@@ -389,7 +390,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $64.01\n");
     }
 
-    public void testDistinctChildrenOfAllExplicitClosure() {
+    @Test public void testDistinctChildrenOfAllExplicitClosure() {
         // the children of the closed relation are all the descendants, so limit
         // results
         getEmpClosureTestContext().assertQueryReturns(
@@ -412,7 +413,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $64.01\n");
     }
 
-    public void testDistinctSubtreeExplicitClosure() {
+    @Test public void testDistinctSubtreeExplicitClosure() {
         getEmpClosureTestContext().assertQueryReturns(
             "select {[Measures].[Count], [Measures].[Org Salary], \n"
             + "[Measures].[Number Of Employees], [Measures].[Avg Salary]} on columns,\n"
@@ -433,7 +434,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $117.18\n");
     }
 
-    public void testLeaf() {
+    @Test public void testLeaf() {
         // Juanita Sharp has no reports
         assertQueryReturns(
             "select {[Measures].[Org Salary], [Measures].[Count]} on columns,\n"
@@ -450,7 +451,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: 12\n");
     }
 
-    public void testOneAboveLeaf() {
+    @Test public void testOneAboveLeaf() {
         // Rebecca Kanagaki has 2 direct reports, and they have no reports
         assertQueryReturns(
             "select {[Measures].[Org Salary], [Measures].[Count]} on columns,\n"
@@ -471,7 +472,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * Script That Uses the LEAVES Flag to Return the Bottom 10 Dimension
      * Members, from <a href="http://www.winscriptingsolutions.com/Files/09/27139/Listing_01.txt">here</a>.
      */
-    public void testParentChildDescendantsLeavesBottom() {
+    @Test public void testParentChildDescendantsLeavesBottom() {
         assertQueryReturns(
             "WITH SET [NonEmptyEmployees] AS 'FILTER(DESCENDANTS([Employees].[All Employees], 10, LEAVES),\n"
             + "  NOT ISEMPTY([Measures].[Employee Salary]))'\n"
@@ -520,7 +521,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
     /**
      * Script from <a href="http://www.winscriptingsolutions.com/Files/09/27139/Listing_02.txt">here</a>.
      */
-    public void testParentChildDescendantsLeavesTop() {
+    @Test public void testParentChildDescendantsLeavesTop() {
         if (Bug.avoidSlowTestOnLucidDB(getTestContext().getDialect())) {
             return;
         }
@@ -559,7 +560,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #9: 19\n");
     }
 
-    public void testAllMembersParent() {
+    @Test public void testAllMembersParent() {
         final String expected =
             "Axis #0:\n"
             + "{}\n"
@@ -635,7 +636,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * the number of dimensions in the cube. So create a cube with fewer
      * dimensions (3) than the depth of the emp dimension (6).
      */
-    public void testHierarchyFalseCycle() {
+    @Test public void testHierarchyFalseCycle() {
         if (Bug.avoidSlowTestOnLucidDB(getTestContext().getDialect())) {
             return;
         }
@@ -698,7 +699,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $271,552.44\n");
     }
 
-    public void testGenuineCycle() {
+    @Test public void testGenuineCycle() {
         Result result = executeQuery(
             "with member [Measures].[Foo] as \n"
             + "  '([Measures].[Foo], OpeningPeriod([Time].[Month]))'\n"
@@ -765,7 +766,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
         }
     }
 
-    public void testParentChildDrillThrough() {
+    @Test public void testParentChildDrillThrough() {
         Result result = executeQuery(
             "select {[Measures].Members} ON columns,\n"
             + "  {[Employees].Members} ON rows\n"
@@ -833,7 +834,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             12);
     }
 
-    public void testParentChildDrillThroughWithContext() {
+    @Test public void testParentChildDrillThroughWithContext() {
         Result result = executeQuery(
             "select {[Measures].Members} ON columns,\n"
             + "  {[Employees].Members} ON rows\n"
@@ -909,10 +910,10 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
     {
         final Member empMember =
             result.getAxes()[1].getPositions().get(row).get(0);
-        assertEquals(expectedMember, empMember.getUniqueName());
+        assertThat(empMember.getUniqueName(), is(expectedMember));
         // drill through member
         final Cell cell = result.getCell(new int[]{0, row});
-        assertEquals(expectedCell, cell.getFormattedValue());
+        assertThat(cell.getFormattedValue(), is(expectedCell));
         String sql = cell.getDrillThroughSQL(extendedContext);
 
         getTestContext().assertSqlEquals(expectedSql, sql, expectedRows);
@@ -923,7 +924,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-168">MONDRIAN-168,
      * "NullPointerException in RolapEvaluator.setContext(....)"</a>.
      */
-    public void testBugMondrian168() {
+    @Test public void testBugMondrian168() {
         assertQueryReturns(
             "select \n"
             + "     {[Employee Salary]} on columns, \n"
@@ -957,7 +958,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-203">MONDRIAN-203,
      * "Sorting of Parent/Child Hierarchy is wrong"</a>.
      */
-    public void testParentChildOrdinal() {
+    @Test public void testParentChildOrdinal() {
         if (Bug.avoidSlowTestOnLucidDB(getTestContext().getDialect())) {
             return;
         }
@@ -1024,7 +1025,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $182.40\n");
     }
 
-    public void testLevelMembers() {
+    @Test public void testLevelMembers() {
         final TestContext testContext =
             getTestContext().withCube("HR");
         // <Dimension>.MEMBERS
@@ -1165,9 +1166,8 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "from [HR4C]";
         expected =
             TestContext.toString(testClosureContext.executeQuery(mdx));
-        assertTrue(
-            expected,
-            TestContext.unfold(expected).contains("Row #0: 21,252\n"));
+        assertThat(expected,
+            TestContext.unfold(expected).contains("Row #0: 21,252\n"), is(true));
         // Need to unfold because 'expect' has platform-specific line-endings,
         // yet assertQueryReturns assumes that it contains linefeeds.
         testNoClosureContext.assertQueryReturns(
@@ -1208,7 +1208,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
         testNoClosureContext.assertQueryReturns(mdx, expected);
     }
 
-    public void testSchemaReaderLevelMembers()
+    @Test public void testSchemaReaderLevelMembers()
     {
         final SchemaReader schemaReader =
             getTestContext().getConnection().getSchemaReader().withLocus();
@@ -1226,20 +1226,18 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
                     }
                     ++found;
                     final Level level = hierarchy.getLevelList().get(1);
-                    assertEquals("Employee Id", level.getName());
+                    assertThat(level.getName(), is("Employee Id"));
                     final List<Member> memberList =
                         schemaReader.getLevelMembers(level, true);
-                    assertEquals(1155, memberList.size());
-                    assertEquals(
-                        "[Employee].[Employees].[Sheri Nowmer]",
-                        memberList.get(0).getUniqueName());
-                    assertEquals(
-                        "[Employee].[Employees].[Sheri Nowmer].[Derrick Whelply]",
-                        memberList.get(1).getUniqueName());
+                    assertThat(memberList.size(), is(1155));
+                    assertThat(memberList.get(0).getUniqueName(),
+                        is("[Employee].[Employees].[Sheri Nowmer]"));
+                    assertThat(memberList.get(1).getUniqueName(),
+                        is("[Employee].[Employees].[Sheri Nowmer].[Derrick Whelply]"));
                 }
             }
         }
-        assertEquals(1, found);
+        assertThat(found, is(1));
     }
 
     /**
@@ -1247,7 +1245,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-441">MONDRIAN-441,
      * "Parent-child hierarchies: &lt;Join&gt; used in dimension"</a>.
      */
-    public void testBridgeTable() {
+    @Test public void testBridgeTable() {
         if (!Bug.BugMondrian441Fixed) {
             return;
         }

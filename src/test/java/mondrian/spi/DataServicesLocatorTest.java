@@ -11,37 +11,41 @@ package mondrian.spi;
 
 import mondrian.rolap.DefaultDataServicesProvider;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import static mondrian.spi.DataServicesLocator.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
-public class DataServicesLocatorTest extends TestCase {
-    public void testEmptyNameReturnsDefaultProvider() {
+public class DataServicesLocatorTest {
+    @Test public void testEmptyNameReturnsDefaultProvider() {
         assertDefaultProvider(null);
         assertDefaultProvider("");
     }
 
-    public void testUnrecognizedNameThrowsException() {
+    @Test public void testUnrecognizedNameThrowsException() {
         try {
             getDataServicesProvider("somename");
             fail("Expected exception");
         } catch (Exception e) {
-            assertEquals(
-                "Unrecognized Service Provider: somename", e.getMessage());
+            assertThat(e.getMessage(), is(
+                "Unrecognized Service Provider: somename"));
         }
     }
 
-    public void testLocatesValidProvider() {
+    @Test public void testLocatesValidProvider() {
         DataServicesProvider provider =
             getDataServicesProvider("mondrian.spi.FakeDataServicesProvider");
-        assertTrue(provider instanceof FakeDataServicesProvider);
+        assertThat(provider, instanceOf(FakeDataServicesProvider.class));
     }
 
     private void assertDefaultProvider(String providerName) {
         DataServicesProvider provider = getDataServicesProvider(providerName);
-        assertTrue(
-            "Expected Default implementation",
-            provider instanceof DefaultDataServicesProvider);
+        assertThat("Expected Default implementation", provider,
+            instanceOf(DefaultDataServicesProvider.class));
     }
 }
+
 // End DataServicesLocatorTest.java

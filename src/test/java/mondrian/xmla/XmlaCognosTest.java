@@ -17,6 +17,7 @@ import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
 import org.eigenbase.util.property.BooleanProperty;
+import org.junit.Test;
 
 /**
  * Test suite for compatibility of Mondrian XMLA with Cognos8.2 connected via
@@ -24,16 +25,7 @@ import org.eigenbase.util.property.BooleanProperty;
  *
  * @author Thiyagu, Shishir
  */
-
 public class XmlaCognosTest extends XmlaBaseTestCase {
-
-    public XmlaCognosTest() {
-    }
-
-    public XmlaCognosTest(String name) {
-        super(name);
-    }
-
     @Override
     protected String filter(
         String testCaseName, String filename, String content)
@@ -54,7 +46,7 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         return content;
     }
 
-    public void testCognosMDXSuiteHR_001() throws Exception {
+    @Test public void testCognosMDXSuiteHR_001() throws Exception {
         Dialect dialect = TestContext.instance().getDialect();
         switch (dialect.getDatabaseProduct()) {
         case DERBY:
@@ -64,7 +56,7 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteHR_002() throws Exception {
+    @Test public void testCognosMDXSuiteHR_002() throws Exception {
         Dialect dialect = TestContext.instance().getDialect();
         switch (dialect.getDatabaseProduct()) {
         case DERBY:
@@ -74,41 +66,41 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteSales_001() throws Exception {
+    @Test public void testCognosMDXSuiteSales_001() throws Exception {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteSales_002() throws Exception {
+    @Test public void testCognosMDXSuiteSales_002() throws Exception {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteSales_003() throws Exception {
+    @Test public void testCognosMDXSuiteSales_003() throws Exception {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteSales_004() throws Exception {
+    @Test public void testCognosMDXSuiteSales_004() throws Exception {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_003()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_003()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_005()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_005()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_006()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_006()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_007()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_007()
         throws Exception
     {
         executeMDX();
@@ -128,7 +120,7 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_013()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_013()
         throws Exception
     {
         executeMDX();
@@ -141,63 +133,63 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_015()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_015()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_016()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_016()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_017()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_017()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_020()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_020()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_021()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_021()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_024()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_024()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_028()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_028()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_029()
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_029()
         throws Exception
     {
         executeMDX();
     }
 
-    public void testDimensionPropertyForPercentageIssue() throws Exception {
+    @Test public void testDimensionPropertyForPercentageIssue() throws Exception {
         executeMDX();
     }
 
-    public void testNegativeSolveOrder() throws Exception {
+    @Test public void testNegativeSolveOrder() throws Exception {
         executeMDX();
     }
 
-    public void testNonEmptyWithCognosCalcOneLiteral() throws Exception {
+    @Test public void testNonEmptyWithCognosCalcOneLiteral() throws Exception {
         final BooleanProperty enableNonEmptyOnAllAxes =
                 MondrianProperties.instance().EnableNonEmptyOnAllAxis;
         boolean nonEmptyAllAxesCurrentState = enableNonEmptyOnAllAxes.get();
@@ -222,23 +214,23 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
 
 
 
-    public void testCellProperties() throws Exception {
+    @Test public void testCellProperties() throws Exception {
         executeMDX();
     }
 
-    public void testCrossJoin() throws Exception {
+    @Test public void testCrossJoin() throws Exception {
         executeMDX();
     }
 
-    public void testWithFilterOn3rdAxis() throws Exception {
+    @Test public void testWithFilterOn3rdAxis() throws Exception {
         executeMDX();
     }
 
-    public void testWithSorting() throws Exception {
+    @Test public void testWithSorting() throws Exception {
         executeMDX();
     }
 
-    public void testWithFilter() throws Exception {
+    @Test public void testWithFilter() throws Exception {
         if (getTestContext().getDialect().getDatabaseProduct()
             == Dialect.DatabaseProduct.ACCESS)
         {
@@ -251,7 +243,7 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    public void testWithAggregation() throws Exception {
+    @Test public void testWithAggregation() throws Exception {
         executeMDX();
     }
 

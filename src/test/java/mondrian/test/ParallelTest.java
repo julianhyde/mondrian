@@ -11,6 +11,11 @@ package mondrian.test;
 
 import mondrian.olap.*;
 
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import java.util.Random;
 
 /**
@@ -21,12 +26,7 @@ import java.util.Random;
  * @since Jun 26, 2006
  */
 public class ParallelTest extends FoodMartTestCase {
-
-    public ParallelTest(String name) {
-        super(name);
-    }
-
-    public void testParallelSchemaFlush() {
+    @Test public void testParallelSchemaFlush() {
         // 5 threads, 8 cycles each, flush cache 1/10 of the time
         checkSchemaFlush(5, 8, 10);
     }
@@ -35,9 +35,9 @@ public class ParallelTest extends FoodMartTestCase {
      * Tests several threads, each of which is creating connections and
      * periodically flushing the schema cache.
      *
-     * @param count
-     * @param cycleCount
-     * @param flushInverseFrequency
+     * @param count Count
+     * @param cycleCount Cycle count
+     * @param flushInverseFrequency Flush inverse frequency
      */
     private void checkSchemaFlush(
         final int count,
@@ -69,7 +69,7 @@ public class ParallelTest extends FoodMartTestCase {
                         + "from [Sales]");
                     Result result = connection.execute(query);
                     String s = result.toString();
-                    assertNotNull(s);
+                    assertThat(s, notNullValue());
 
                     // 20% of the time, flush the schema cache.
                     if (random.nextInt(flushInverseFrequency) == 0) {

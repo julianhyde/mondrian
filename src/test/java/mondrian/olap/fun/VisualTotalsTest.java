@@ -11,7 +11,7 @@ package mondrian.olap.fun;
 
 import mondrian.test.TestContext;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import org.olap4j.*;
 import org.olap4j.metadata.Member;
@@ -21,52 +21,57 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+
 /**
  * <code>VisualTotalsTest</code> tests the internal functions defined in
  * {@link VisualTotalsFunDef}. Right now, only tests substitute().
  *
  * @author efine
  */
-public class VisualTotalsTest extends TestCase {
-    public void testSubstituteEmpty() {
+public class VisualTotalsTest {
+    @Test public void testSubstituteEmpty() {
         final String actual = VisualTotalsFunDef.substitute("", "anything");
         final String expected = "";
-        assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
-    public void testSubstituteOneStarOnly() {
+    @Test public void testSubstituteOneStarOnly() {
         final String actual = VisualTotalsFunDef.substitute("*", "anything");
         final String expected = "anything";
-        assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
-    public void testSubstituteOneStarBegin() {
+    @Test public void testSubstituteOneStarBegin() {
         final String actual =
             VisualTotalsFunDef.substitute("* is the word.", "Grease");
         final String expected = "Grease is the word.";
-        assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
-    public void testSubstituteOneStarEnd() {
+    @Test public void testSubstituteOneStarEnd() {
         final String actual =
             VisualTotalsFunDef.substitute(
                 "Lies, damned lies, and *!", "statistics");
         final String expected = "Lies, damned lies, and statistics!";
-        assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
-    public void testSubstituteTwoStars() {
+    @Test public void testSubstituteTwoStars() {
         final String actual = VisualTotalsFunDef.substitute("**", "anything");
         final String expected = "*";
-        assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
-    public void testSubstituteCombined() {
+    @Test public void testSubstituteCombined() {
         final String actual =
             VisualTotalsFunDef.substitute(
                 "*: see small print**** for *", "disclaimer");
         final String expected = "disclaimer: see small print** for disclaimer";
-        assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
     /**
@@ -75,7 +80,7 @@ public class VisualTotalsTest extends TestCase {
      *
      * @throws java.sql.SQLException on error
      */
-    public void testDrillthroughVisualTotal() throws SQLException {
+    @Test public void testDrillthroughVisualTotal() throws SQLException {
         CellSet cellSet =
             TestContext.instance().executeOlap4jQuery(
                 "select {[Measures].[Unit Sales]} on columns, "
@@ -92,15 +97,15 @@ public class VisualTotalsTest extends TestCase {
 
         cell = cellSet.getCell(Arrays.asList(0, 0));
         member = positions.get(0).getMembers().get(0);
-        assertEquals("*Subtotal - Bread", member.getName());
+        assertThat(member.getName(), is("*Subtotal - Bread"));
         resultSet = cell.drillThrough();
-        assertNull(resultSet);
+        assertThat(resultSet, nullValue());
 
         cell = cellSet.getCell(Arrays.asList(0, 1));
         member = positions.get(1).getMembers().get(0);
-        assertEquals("Bagels", member.getName());
+        assertThat(member.getName(), is("Bagels"));
         resultSet = cell.drillThrough();
-        assertNotNull(resultSet);
+        assertThat(resultSet, notNullValue());
         resultSet.close();
     }
 
@@ -111,7 +116,7 @@ public class VisualTotalsTest extends TestCase {
      *
      * @throws java.sql.SQLException on error
      */
-    public void testVisualTotalCaptionBug() throws SQLException {
+    @Test public void testVisualTotalCaptionBug() throws SQLException {
         CellSet cellSet =
             TestContext.instance().executeOlap4jQuery(
                 "select {[Measures].[Unit Sales]} on columns, "
@@ -127,8 +132,8 @@ public class VisualTotalsTest extends TestCase {
 
         cell = cellSet.getCell(Arrays.asList(0, 0));
         member = positions.get(0).getMembers().get(0);
-        assertEquals("*Subtotal - Bread", member.getName());
-        assertEquals("*Subtotal - Bread", member.getCaption());
+        assertThat(member.getName(), is("*Subtotal - Bread"));
+        assertThat(member.getCaption(), is("*Subtotal - Bread"));
     }
 }
 

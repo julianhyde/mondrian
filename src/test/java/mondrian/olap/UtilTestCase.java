@@ -14,35 +14,36 @@ import mondrian.olap.Util.ByteMatcher;
 import mondrian.rolap.RolapUtil;
 import mondrian.util.*;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.sql.Driver;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 /**
  * Tests for methods in {@link mondrian.olap.Util} and, sometimes, classes in
  * the {@code mondrian.util} package.
  */
-public class UtilTestCase extends TestCase {
-    public UtilTestCase(String s) {
-        super(s);
-    }
-
-    public void testParseConnectStringSimple() {
+public class UtilTestCase {
+    @Test public void testParseConnectStringSimple() {
         // Simple connect string
         Util.PropertyList properties =
             Util.parseConnectString("foo=x;bar=y;foo=z");
-        assertEquals("y", properties.get("bar"));
-        assertEquals("y", properties.get("BAR")); // get is case-insensitive
-        assertNull(properties.get(" bar")); // get does not ignore spaces
-        assertEquals("z", properties.get("foo")); // later occurrence overrides
-        assertNull(properties.get("kipper"));
-        assertEquals(2, properties.list.size());
-        assertEquals("foo=z; bar=y", properties.toString());
+        assertThat(properties.get("bar"), is("y"));
+        assertThat(properties.get("BAR"), is("y"));
+        assertThat(properties.get(" bar"), nullValue());
+        assertThat(properties.get("foo"), is("z"));
+        assertThat(properties.get("kipper"), nullValue());
+        assertThat(properties.list.size(), is(2));
+        assertThat(properties.toString(), is("foo=z; bar=y"));
     }
 
-    public void testParseConnectStringComplex() {
+    @Test public void testParseConnectStringComplex() {
         Util.PropertyList properties =
             Util.parseConnectString(
                 "normalProp=value;"
@@ -59,47 +60,46 @@ public class UtilTestCase extends TestCase {
                 + " singleQuotedValueWithSemi = 'one; two';"
                 + " singleQuotedValueWithSpecials = "
                 + "'one; two \"three''four=five'");
-        assertEquals(11, properties.list.size());
+        assertThat(properties.list.size(), is(11));
         String value;
         value = properties.get("normalProp");
-        assertEquals("value", value);
+        assertThat(value, is("value"));
         value = properties.get("emptyValue");
-        assertEquals("", value); // empty string, not null!
+        assertThat(value, is(""));
         value = properties.get("spaceBeforeProp");
-        assertEquals("abc", value);
+        assertThat(value, is("abc"));
         value = properties.get("spaceBeforeAndAfterProp");
-        assertEquals("def", value);
+        assertThat(value, is("def"));
         value = properties.get("space in prop");
-        assertEquals(value, "foo bar");
+        assertThat("foo bar", is(value));
         value = properties.get("equalsInValue");
-        assertEquals("foo=bar", value);
+        assertThat(value, is("foo=bar"));
         value = properties.get("semiInProp;Name");
-        assertEquals("value", value);
+        assertThat(value, is("value"));
         value = properties.get("singleQuotedValue");
-        assertEquals("single quoted value ending in space ", value);
+        assertThat(value, is("single quoted value ending in space "));
         value = properties.get("doubleQuotedValue");
-        assertEquals("=double quoted value preceded by equals", value);
+        assertThat(value, is("=double quoted value preceded by equals"));
         value = properties.get("singleQuotedValueWithSemi");
-        assertEquals(value, "one; two");
+        assertThat("one; two", is(value));
         value = properties.get("singleQuotedValueWithSpecials");
-        assertEquals(value, "one; two \"three'four=five");
+        assertThat("one; two \"three'four=five", is(value));
 
-        assertEquals(
-            "normalProp=value;"
-            + " emptyValue=;"
-            + " spaceBeforeProp=abc;"
-            + " spaceBeforeAndAfterProp=def;"
-            + " space in prop=foo bar;"
-            + " equalsInValue=foo=bar;"
-            + " semiInProp;Name=value;"
-            + " singleQuotedValue=single quoted value ending in space ;"
-            + " doubleQuotedValue==double quoted value preceded by equals;"
-            + " singleQuotedValueWithSemi='one; two';"
-            + " singleQuotedValueWithSpecials='one; two \"three''four=five'",
-            properties.toString());
+        assertThat(properties.toString(),
+            is("normalProp=value;"
+               + " emptyValue=;"
+               + " spaceBeforeProp=abc;"
+               + " spaceBeforeAndAfterProp=def;"
+               + " space in prop=foo bar;"
+               + " equalsInValue=foo=bar;"
+               + " semiInProp;Name=value;"
+               + " singleQuotedValue=single quoted value ending in space ;"
+               + " doubleQuotedValue==double quoted value preceded by equals;"
+               + " singleQuotedValueWithSemi='one; two';"
+               + " singleQuotedValueWithSpecials='one; two \"three''four=five'"));
     }
 
-    public void testConnectStringMore() {
+    @Test public void testConnectStringMore() {
         p("singleQuote=''''", "singleQuote", "'");
         p("doubleQuote=\"\"\"\"", "doubleQuote", "\"");
         p("empty= ;foo=bar", "empty", "");
@@ -110,20 +110,20 @@ public class UtilTestCase extends TestCase {
      * MONDRIAN-397, "Connect string parser gives
      * StringIndexOutOfBoundsException instead of a meaningful error"</a>.
      */
-    public void testBugMondrian397() {
+    @Test public void testBugMondrian397() {
         Util.PropertyList properties;
 
         // ends in semi
         properties = Util.parseConnectString("foo=true; bar=xxx;");
-        assertEquals(2, properties.list.size());
+        assertThat(properties.list.size(), is(2));
 
         // ends in semi+space
         properties = Util.parseConnectString("foo=true; bar=xxx; ");
-        assertEquals(2, properties.list.size());
+        assertThat(properties.list.size(), is(2));
 
         // ends in space
         properties = Util.parseConnectString("   ");
-        assertEquals(0, properties.list.size());
+        assertThat(properties.list.size(), is(0));
 
         // actual testcase for bug
         properties = Util.parseConnectString(
@@ -132,8 +132,8 @@ public class UtilTestCase extends TestCase {
             + "Catalog=C:\\cygwin\\home\\src\\jfreereport\\engines\\classic"
             + "\\extensions-mondrian\\demo\\steelwheels.mondrian.xml;"
             + "JdbcUser=sa; JdbcPassword=; ");
-        assertEquals(6, properties.list.size());
-        assertEquals("", properties.get("JdbcPassword"));
+        assertThat(properties.list.size(), is(6));
+        assertThat(properties.get("JdbcPassword"), is(""));
     }
 
     /**
@@ -147,22 +147,22 @@ public class UtilTestCase extends TestCase {
     void p(String connectString, String name, String expectedValue) {
         Util.PropertyList list = Util.parseConnectString(connectString);
         String value = list.get(name);
-        assertEquals(expectedValue, value);
+        assertThat(value, is(expectedValue));
     }
 
-    public void testOleDbSpec() {
+    @Test public void testOleDbSpec() {
         p("Provider='MSDASQL'", "Provider", "MSDASQL");
         p("Provider='MSDASQL.1'", "Provider", "MSDASQL.1");
 
         if (false) {
-        // If no Provider keyword is in the string, the OLE DB Provider for
-        // ODBC (MSDASQL) is the default value. This provides backward
-        // compatibility with ODBC connection strings. The ODBC connection
-        // string in the following example can be passed in, and it will
-        // successfully connect.
-        p(
-            "Driver={SQL Server};Server={localhost};Trusted_Connection={yes};"
-            + "db={Northwind};", "Provider", "MSDASQL");
+            // If no Provider keyword is in the string, the OLE DB Provider for
+            // ODBC (MSDASQL) is the default value. This provides backward
+            // compatibility with ODBC connection strings. The ODBC connection
+            // string in the following example can be passed in, and it will
+            // successfully connect.
+            p(
+                "Driver={SQL Server};Server={localhost};Trusted_Connection={yes};"
+                + "db={Northwind};", "Provider", "MSDASQL");
         }
 
         // Specifying a Keyword
@@ -302,42 +302,35 @@ public class UtilTestCase extends TestCase {
     /**
      * Unit test for {@link Util#convertOlap4jConnectStringToNativeMondrian}.
      */
-    public void testConvertConnectString() {
-        assertEquals(
-            "Provider=Mondrian; Datasource=jdbc/SampleData;"
-            + "Catalog=foodmart/FoodMart.mondrian.xml;",
+    @Test public void testConvertConnectString() {
+        assertThat(
             Util.convertOlap4jConnectStringToNativeMondrian(
                 "jdbc:mondrian:Datasource=jdbc/SampleData;"
-                + "Catalog=foodmart/FoodMart.mondrian.xml;"));
+                + "Catalog=foodmart/FoodMart.mondrian.xml;"),
+            is("Provider=Mondrian; Datasource=jdbc/SampleData;"
+               + "Catalog=foodmart/FoodMart.mondrian.xml;"));
     }
 
-    public void testQuoteMdxIdentifier() {
-        assertEquals(
-            "[San Francisco]", Util.quoteMdxIdentifier("San Francisco"));
-        assertEquals(
-            "[a [bracketed]] string]",
-            Util.quoteMdxIdentifier("a [bracketed] string"));
-        assertEquals(
-            "[Store].[USA].[California]",
-            Util.quoteMdxIdentifier(
-                Arrays.<Id.Segment>asList(
-                    new Id.NameSegment("Store"),
-                    new Id.NameSegment("USA"),
-                    new Id.NameSegment("California"))));
+    @Test public void testQuoteMdxIdentifier() {
+        assertThat(Util.quoteMdxIdentifier("San Francisco"), is("[San Francisco]"));
+        assertThat(Util.quoteMdxIdentifier("a [bracketed] string"),
+            is("[a [bracketed]] string]"));
+        assertThat(Util.quoteMdxIdentifier(
+            Arrays.<Id.Segment>asList(
+                new Id.NameSegment("Store"),
+                new Id.NameSegment("USA"),
+                new Id.NameSegment("California"))),
+            is("[Store].[USA].[California]"));
     }
 
-    public void testQuoteJava() {
-        assertEquals(
-            "\"San Francisco\"", Util.quoteJavaString("San Francisco"));
-        assertEquals(
-            "\"null\"", Util.quoteJavaString("null"));
-        assertEquals(
-            "null", Util.quoteJavaString(null));
-        assertEquals(
-            "\"a\\\\b\\\"c\"", Util.quoteJavaString("a\\b\"c"));
+    @Test public void testQuoteJava() {
+        assertThat(Util.quoteJavaString("San Francisco"), is("\"San Francisco\""));
+        assertThat(Util.quoteJavaString("null"), is("\"null\""));
+        assertThat(Util.quoteJavaString(null), is("null"));
+        assertThat(Util.quoteJavaString("a\\b\"c"), is("\"a\\\\b\\\"c\""));
     }
 
-    public void testBufReplace() {
+    @Test public void testBufReplace() {
         // Replace with longer string. Search pattern at beginning & end.
         checkReplace("xoxox", "x", "yy", "yyoyyoyy");
 
@@ -372,95 +365,90 @@ public class UtilTestCase extends TestCase {
     {
         // Check whether the JDK does what we expect. (If it doesn't it's
         // probably a bug in the test, not the JDK.)
-        assertEquals(expected, original.replaceAll(seek, replace));
+        assertThat(original.replaceAll(seek, replace), is(expected));
 
         // Check the StringBuilder version of replace.
         StringBuilder buf = new StringBuilder(original);
         StringBuilder buf2 = Util.replace(buf, 0, seek, replace);
-        assertEquals(expected, buf.toString());
-        assertEquals(expected, buf2.toString());
-        assertTrue(buf == buf2);
+        assertThat(buf.toString(), is(expected));
+        assertThat(buf2.toString(), is(expected));
+        assertThat(buf, is(buf2));
 
         // Check the String version of replace.
-        assertEquals(expected, Util.replace(original, seek, replace));
+        assertThat(Util.replace(original, seek, replace), is(expected));
     }
 
-    public void testImplode() {
+    @Test public void testImplode() {
         List<Id.Segment> fooBar = Arrays.<Id.Segment>asList(
             new Id.NameSegment("foo", Id.Quoting.UNQUOTED),
             new Id.NameSegment("bar", Id.Quoting.UNQUOTED));
-        assertEquals("[foo].[bar]", Util.implode(fooBar));
+        assertThat(Util.implode(fooBar), is("[foo].[bar]"));
 
         List<Id.Segment> empty = Collections.emptyList();
-        assertEquals("", Util.implode(empty));
+        assertThat(Util.implode(empty), is(""));
 
         List<Id.Segment> nasty = Arrays.<Id.Segment>asList(
             new Id.NameSegment("string", Id.Quoting.UNQUOTED),
             new Id.NameSegment("with", Id.Quoting.UNQUOTED),
             new Id.NameSegment("a [bracket] in it", Id.Quoting.UNQUOTED));
-        assertEquals(
-            "[string].[with].[a [bracket]] in it]",
-            Util.implode(nasty));
+        assertThat(Util.implode(nasty), is("[string].[with].[a [bracket]] in it]"));
     }
 
-    public void testParseIdentifier() {
+    @Test public void testParseIdentifier() {
         List<Id.Segment> strings =
-                Util.parseIdentifier("[string].[with].[a [bracket]] in it]");
-        assertEquals(3, strings.size());
-        assertEquals("a [bracket] in it", name(strings, 2));
+            Util.parseIdentifier("[string].[with].[a [bracket]] in it]");
+        assertThat(strings.size(), is(3));
+        assertThat(name(strings, 2), is("a [bracket] in it"));
 
         strings =
             Util.parseIdentifier("[Worklog].[All].[calendar-[LANGUAGE]].js]");
-        assertEquals(3, strings.size());
-        assertEquals("calendar-[LANGUAGE].js", name(strings, 2));
+        assertThat(strings.size(), is(3));
+        assertThat(name(strings, 2), is("calendar-[LANGUAGE].js"));
 
         // allow spaces before, after and between
         strings = Util.parseIdentifier("  [foo] . [bar].[baz]  ");
-        assertEquals(3, strings.size());
+        assertThat(strings.size(), is(3));
         final int index = 0;
-        assertEquals("foo", name(strings, index));
+        assertThat(name(strings, index), is("foo"));
 
         // first segment not quoted
         strings = Util.parseIdentifier("Time.1997.[Q3]");
-        assertEquals(3, strings.size());
-        assertEquals("Time", name(strings, 0));
-        assertEquals("1997", name(strings, 1));
-        assertEquals("Q3", name(strings, 2));
+        assertThat(strings.size(), is(3));
+        assertThat(name(strings, 0), is("Time"));
+        assertThat(name(strings, 1), is("1997"));
+        assertThat(name(strings, 2), is("Q3"));
 
         // spaces ignored after unquoted segment
         strings = Util.parseIdentifier("[Time . Weekly ] . 1997 . [Q3]");
-        assertEquals(3, strings.size());
-        assertEquals("Time . Weekly ", name(strings, 0));
-        assertEquals("1997", name(strings, 1));
-        assertEquals("Q3", name(strings, 2));
+        assertThat(strings.size(), is(3));
+        assertThat(name(strings, 0), is("Time . Weekly "));
+        assertThat(name(strings, 1), is("1997"));
+        assertThat(name(strings, 2), is("Q3"));
 
         // identifier ending in '.' is invalid
         try {
             strings = Util.parseIdentifier("[foo].[bar].");
             fail("expected exception, got " + strings);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "Expected identifier after '.', "
-                + "in member identifier '[foo].[bar].'",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Expected identifier after '.', "
+                   + "in member identifier '[foo].[bar].'"));
         }
 
         try {
             strings = Util.parseIdentifier("[foo].[bar");
             fail("expected exception, got " + strings);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "Expected ']', in member identifier '[foo].[bar'",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Expected ']', in member identifier '[foo].[bar'"));
         }
 
         try {
             strings = Util.parseIdentifier("[Foo].[Bar], [Baz]");
             fail("expected exception, got " + strings);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "Invalid member identifier '[Foo].[Bar], [Baz]'",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Invalid member identifier '[Foo].[Bar], [Baz]'"));
         }
     }
 
@@ -469,7 +457,7 @@ public class UtilTestCase extends TestCase {
         return ((Id.NameSegment) segment).name;
     }
 
-    public void testReplaceProperties() {
+    @Test public void testReplaceProperties() {
         Map<String, String> map = new HashMap<String, String>();
         map.put("foo", "bar");
         map.put("empty", "");
@@ -477,95 +465,75 @@ public class UtilTestCase extends TestCase {
         map.put("foobarbaz", "bang!");
         map.put("malformed${foo", "groovy");
 
-        assertEquals(
-            "abarb",
-            Util.replaceProperties("a${foo}b", map));
-        assertEquals(
-            "twicebarbar",
-            Util.replaceProperties("twice${foo}${foo}", map));
-        assertEquals(
-            "bar at start",
-            Util.replaceProperties("${foo} at start", map));
-        assertEquals(
-            "xyz",
-            Util.replaceProperties("x${empty}y${empty}${empty}z", map));
-        assertEquals(
-            "x${nonexistent}bar",
-            Util.replaceProperties("x${nonexistent}${foo}", map));
+        assertThat(Util.replaceProperties("a${foo}b", map), is("abarb"));
+        assertThat(Util.replaceProperties("twice${foo}${foo}", map),
+            is("twicebarbar"));
+        assertThat(Util.replaceProperties("${foo} at start", map),
+            is("bar at start"));
+        assertThat(Util.replaceProperties("x${empty}y${empty}${empty}z", map),
+            is("xyz"));
+        assertThat(Util.replaceProperties("x${nonexistent}${foo}", map),
+            is("x${nonexistent}bar"));
 
         // malformed tokens are left as is
-        assertEquals(
-            "${malformedbarbar",
-            Util.replaceProperties("${malformed${foo}${foo}", map));
+        assertThat(Util.replaceProperties("${malformed${foo}${foo}", map),
+            is("${malformedbarbar"));
 
         // string can contain '$'
-        assertEquals("x$foo", Util.replaceProperties("x$foo", map));
+        assertThat(Util.replaceProperties("x$foo", map), is("x$foo"));
 
         // property with empty name is always ignored -- even if it's in the map
-        assertEquals("${}", Util.replaceProperties("${}", map));
+        assertThat(Util.replaceProperties("${}", map), is("${}"));
         map.put("", "v");
-        assertEquals("${}", Util.replaceProperties("${}", map));
+        assertThat(Util.replaceProperties("${}", map), is("${}"));
 
         // if a property's value is null, it's as if it doesn't exist
-        assertEquals("${null}", Util.replaceProperties("${null}", map));
+        assertThat(Util.replaceProperties("${null}", map), is("${null}"));
 
         // nested properties are expanded, but not recursively
-        assertEquals(
-            "${foobarbaz}",
-            Util.replaceProperties("${foo${foo}baz}", map));
+        assertThat(Util.replaceProperties("${foo${foo}baz}", map),
+            is("${foobarbaz}"));
     }
 
-    public void testWildcard() {
-        assertEquals(
-            ".\\QFoo\\E.|\\QBar\\E.*\\QBAZ\\E",
-            Util.wildcardToRegexp(
-                Arrays.asList("_Foo_", "Bar%BAZ")));
+    @Test public void testWildcard() {
+        assertThat(Util.wildcardToRegexp(Arrays.asList("_Foo_", "Bar%BAZ")),
+            is(".\\QFoo\\E.|\\QBar\\E.*\\QBAZ\\E"));
     }
 
-    public void testCamel() {
-        assertEquals(
-            "FOO_BAR",
-            Util.camelToUpper("FooBar"));
-        assertEquals(
-            "FOO_BAR",
-            Util.camelToUpper("fooBar"));
-        assertEquals(
-            "URL",
-            Util.camelToUpper("URL"));
-        assertEquals(
-            "URLTO_CLICK_ON",
-            Util.camelToUpper("URLtoClickOn"));
-        assertEquals(
-            "",
-            Util.camelToUpper(""));
+    @Test public void testCamel() {
+        assertThat(Util.camelToUpper("FooBar"), is("FOO_BAR"));
+        assertThat(Util.camelToUpper("fooBar"), is("FOO_BAR"));
+        assertThat(Util.camelToUpper("URL"), is("URL"));
+        assertThat(Util.camelToUpper("URLtoClickOn"), is("URLTO_CLICK_ON"));
+        assertThat(Util.camelToUpper(""), is(""));
     }
 
-    public void testParseCommaList() {
-        assertEquals(new ArrayList<String>(), Util.parseCommaList(""));
-        assertEquals(Arrays.asList("x"), Util.parseCommaList("x"));
-        assertEquals(Arrays.asList("x", "y"), Util.parseCommaList("x,y"));
-        assertEquals(Arrays.asList("x,y"), Util.parseCommaList("x,,y"));
-        assertEquals(Arrays.asList(",x", "y"), Util.parseCommaList(",,x,y"));
-        assertEquals(Arrays.asList("x,", "y"), Util.parseCommaList("x,,,y"));
-        assertEquals(Arrays.asList("x,,y"), Util.parseCommaList("x,,,,y"));
+    @Test public void testParseCommaList() {
+        assertThat(Util.parseCommaList(""), is((List<String>) new ArrayList<String>()));
+        assertThat(Util.parseCommaList("x"), is(Arrays.asList("x")));
+        assertThat(Util.parseCommaList("x,y"), is(Arrays.asList("x", "y")));
+        assertThat(Util.parseCommaList("x,,y"), is(Arrays.asList("x,y")));
+        assertThat(Util.parseCommaList(",,x,y"), is(Arrays.asList(",x", "y")));
+        assertThat(Util.parseCommaList("x,,,y"), is(Arrays.asList("x,", "y")));
+        assertThat(Util.parseCommaList("x,,,,y"), is(Arrays.asList("x,,y")));
         // ignore trailing comma
-        assertEquals(Arrays.asList("x", "y"), Util.parseCommaList("x,y,"));
-        assertEquals(Arrays.asList("x", "y,"), Util.parseCommaList("x,y,,"));
+        assertThat(Util.parseCommaList("x,y,"), is(Arrays.asList("x", "y")));
+        assertThat(Util.parseCommaList("x,y,,"), is(Arrays.asList("x", "y,")));
     }
 
     /**
      * Unit test for {@link Util#bit}.
      */
-    public void testBit() {
-        assertEquals(1, Util.bit(0, 0, true)); // set unset bit
-        assertEquals(0, Util.bit(0, 0, false)); // clear unset bit
-        assertEquals(5, Util.bit(1, 2, true)); // set unset bit, keep other
-        assertEquals(1, Util.bit(1, 2, false)); // clear unset bit, keep other
-        assertEquals(5, Util.bit(5, 2, true)); // set set bit, keep other
-        assertEquals(1, Util.bit(5, 2, false)); // clear set bit, keep other
+    @Test public void testBit() {
+        assertThat(Util.bit(0, 0, true), is(1));
+        assertThat(Util.bit(0, 0, false), is(0));
+        assertThat(Util.bit(1, 2, true), is(5));
+        assertThat(Util.bit(1, 2, false), is(1));
+        assertThat(Util.bit(5, 2, true), is(5));
+        assertThat(Util.bit(5, 2, false), is(1));
     }
 
-    public void testUnionIterator() {
+    @Test public void testUnionIterator() {
         final List<String> xyList = Arrays.asList("x", "y");
         final List<String> abcList = Arrays.asList("a", "b", "c");
         final List<String> emptyList = Collections.emptyList();
@@ -574,25 +542,25 @@ public class UtilTestCase extends TestCase {
         for (String s : UnionIterator.over(xyList, abcList)) {
             total += s + ";";
         }
-        assertEquals("x;y;a;b;c;", total);
+        assertThat(total, is("x;y;a;b;c;"));
 
         total = "";
         for (String s : UnionIterator.over(xyList, emptyList)) {
             total += s + ";";
         }
-        assertEquals("x;y;", total);
+        assertThat(total, is("x;y;"));
 
         total = "";
         for (String s : UnionIterator.over(emptyList, xyList, emptyList)) {
             total += s + ";";
         }
-        assertEquals("x;y;", total);
+        assertThat(total, is("x;y;"));
 
         total = "";
         for (String s : UnionIterator.<String>over()) {
             total += s + ";";
         }
-        assertEquals("", total);
+        assertThat(total, is(""));
 
         total = "";
         UnionIterator<String> unionIterator =
@@ -600,7 +568,7 @@ public class UtilTestCase extends TestCase {
         while (unionIterator.hasNext()) {
             total += unionIterator.next() + ";";
         }
-        assertEquals("x;y;a;b;c;", total);
+        assertThat(total, is("x;y;a;b;c;"));
 
         if (Util.Retrowoven) {
             // Retrowoven code gives 'ArrayStoreException' when it encounters
@@ -613,14 +581,14 @@ public class UtilTestCase extends TestCase {
         {
             total += s + ";";
         }
-        assertEquals("x;y;a;b;c;", total);
+        assertThat(total, is("x;y;a;b;c;"));
     }
 
     /**
      * Unit test for
      * {@link Util#filter(Iterable, mondrian.olap.Util.Predicate1[])}.
      */
-    public void testFilter() {
+    @Test public void testFilter() {
         class NotMultiple extends Util.Predicate1<Integer> {
             private final int n;
 
@@ -671,7 +639,7 @@ public class UtilTestCase extends TestCase {
         for (Integer integer : filter) {
             buf.append(integer).append(";");
         }
-        assertEquals("1;7;11;13;17;19;", buf.toString());
+        assertThat(buf.toString(), is("1;7;11;13;17;19;"));
         buf.setLength(0);
 
         // underlying iterable is empty
@@ -683,7 +651,7 @@ public class UtilTestCase extends TestCase {
         for (Integer integer : filter0) {
             buf.append(integer).append(";");
         }
-        assertEquals("", buf.toString());
+        assertThat(buf.toString(), is(""));
         buf.setLength(0);
 
         // some "always true" predicates to be eliminated
@@ -697,28 +665,28 @@ public class UtilTestCase extends TestCase {
         for (Integer integer : filter8) {
             buf.append(integer).append(";");
         }
-        assertEquals("1;3;7;", buf.toString());
+        assertThat(buf.toString(), is("1;3;7;"));
         buf.setLength(0);
     }
 
-    public void testAreOccurrencesEqual() {
-        assertFalse(Util.areOccurencesEqual(Collections.<String>emptyList()));
-        assertTrue(Util.areOccurencesEqual(Arrays.asList("x")));
-        assertTrue(Util.areOccurencesEqual(Arrays.asList("x", "x")));
-        assertFalse(Util.areOccurencesEqual(Arrays.asList("x", "y")));
-        assertFalse(Util.areOccurencesEqual(Arrays.asList("x", "y", "x")));
-        assertTrue(Util.areOccurencesEqual(Arrays.asList("x", "x", "x")));
-        assertFalse(Util.areOccurencesEqual(Arrays.asList("x", "x", "y", "z")));
+    @Test public void testAreOccurrencesEqual() {
+        assertThat(Util.areOccurencesEqual(Collections.<String>emptyList()), is(false));
+        assertThat(Util.areOccurencesEqual(Arrays.asList("x")), is(true));
+        assertThat(Util.areOccurencesEqual(Arrays.asList("x", "x")), is(true));
+        assertThat(Util.areOccurencesEqual(Arrays.asList("x", "y")), is(false));
+        assertThat(Util.areOccurencesEqual(Arrays.asList("x", "y", "x")), is(false));
+        assertThat(Util.areOccurencesEqual(Arrays.asList("x", "x", "x")), is(true));
+        assertThat(Util.areOccurencesEqual(Arrays.asList("x", "x", "y", "z")), is(false));
     }
 
     /**
      * Tests {@link mondrian.util.ServiceDiscovery}.
      */
-    public void testServiceDiscovery() {
+    @Test public void testServiceDiscovery() {
         final ServiceDiscovery<Driver>
             serviceDiscovery = ServiceDiscovery.forClass(Driver.class);
         final List<Class<Driver>> list = serviceDiscovery.getImplementor();
-        assertFalse(list.isEmpty());
+        assertThat(list.isEmpty(), is(false));
 
         // Check that discovered classes include AT LEAST:
         // JdbcOdbcDriver (in the JDK),
@@ -738,34 +706,34 @@ public class UtilTestCase extends TestCase {
             // JDK only discovers services from jars in JDK 1.5 and later.
             return;
         }
-        assertTrue(expectedClassNames.toString(), expectedClassNames.isEmpty());
+        assertThat(expectedClassNames.toString(), expectedClassNames.isEmpty(), is(true));
     }
 
     /**
      * Unit test for {@link mondrian.util.ArrayStack}.
      */
-    public void testArrayStack() {
+    @Test public void testArrayStack() {
         final ArrayStack<String> stack = new ArrayStack<String>();
-        assertEquals(0, stack.size());
+        assertThat(stack.size(), is(0));
         stack.add("a");
-        assertEquals(1, stack.size());
-        assertEquals("a", stack.peek());
+        assertThat(stack.size(), is(1));
+        assertThat(stack.peek(), is("a"));
         stack.push("b");
-        assertEquals(2, stack.size());
-        assertEquals("b", stack.peek());
-        assertEquals("b", stack.pop());
-        assertEquals(1, stack.size());
+        assertThat(stack.size(), is(2));
+        assertThat(stack.peek(), is("b"));
+        assertThat(stack.pop(), is("b"));
+        assertThat(stack.size(), is(1));
         stack.add(0, "z");
-        assertEquals("a", stack.peek());
-        assertEquals(2, stack.size());
+        assertThat(stack.peek(), is("a"));
+        assertThat(stack.size(), is(2));
         stack.push(null);
-        assertEquals(3, stack.size());
-        assertEquals(stack, Arrays.asList("z", "a", null));
+        assertThat(stack.size(), is(3));
+        assertThat(Arrays.asList("z", "a", null), is((List<String>) stack));
         String z = "";
         for (String s : stack) {
             z += s;
         }
-        assertEquals("zanull", z);
+        assertThat(z, is("zanull"));
         stack.clear();
         try {
             String x = stack.peek();
@@ -784,53 +752,46 @@ public class UtilTestCase extends TestCase {
     /**
      * Tests {@link Util#appendArrays(Object[], Object[][])}.
      */
-    public void testAppendArrays() {
+    @Test public void testAppendArrays() {
         String[] a0 = {"a", "b", "c"};
         String[] a1 = {"foo", "bar"};
         String[] empty = {};
 
         final String[] strings1 = Util.appendArrays(a0, a1);
-        assertEquals(5, strings1.length);
-        assertEquals(
-            Arrays.asList("a", "b", "c", "foo", "bar"),
-            Arrays.asList(strings1));
+        assertThat(strings1.length, is(5));
+        assertThat(Arrays.asList(strings1), is(Arrays.asList("a", "b", "c", "foo", "bar")));
 
         final String[] strings2 = Util.appendArrays(
             empty, a0, empty, a1, empty);
-        assertEquals(
-            Arrays.asList("a", "b", "c", "foo", "bar"),
-            Arrays.asList(strings2));
+        assertThat(Arrays.asList(strings2), is(Arrays.asList("a", "b", "c", "foo", "bar")));
 
         Number[] n0 = {Math.PI};
         Integer[] i0 = {123, null, 45};
         Float[] f0 = {0f};
 
         final Number[] numbers = Util.appendArrays(n0, i0, f0);
-        assertEquals(5, numbers.length);
-        assertEquals(
-            Arrays.asList((Number) Math.PI, 123, null, 45, 0f),
-            Arrays.asList(numbers));
+        assertThat(numbers.length, is(5));
+        assertThat(Arrays.asList(numbers), is(Arrays.asList((Number) Math.PI, 123, null, 45, 0f)));
     }
 
-    public void testCanCast() {
-        assertTrue(Util.canCast(Collections.EMPTY_LIST, Integer.class));
-        assertTrue(Util.canCast(Collections.EMPTY_LIST, String.class));
-        assertTrue(Util.canCast(Collections.EMPTY_SET, String.class));
-        assertTrue(Util.canCast(Arrays.asList(1, 2), Integer.class));
-        assertTrue(Util.canCast(Arrays.asList(1, 2), Number.class));
-        assertFalse(Util.canCast(Arrays.asList(1, 2), String.class));
-        assertTrue(Util.canCast(Arrays.asList(1, null, 2d), Number.class));
-        assertTrue(
-            Util.canCast(
-                new HashSet<Object>(Arrays.asList(1, null, 2d)),
-                Number.class));
-        assertFalse(Util.canCast(Arrays.asList(1, null, 2d), Integer.class));
+    @Test public void testCanCast() {
+        assertThat(Util.canCast(Collections.EMPTY_LIST, Integer.class), is(true));
+        assertThat(Util.canCast(Collections.EMPTY_LIST, String.class), is(true));
+        assertThat(Util.canCast(Collections.EMPTY_SET, String.class), is(true));
+        assertThat(Util.canCast(Arrays.asList(1, 2), Integer.class), is(true));
+        assertThat(Util.canCast(Arrays.asList(1, 2), Number.class), is(true));
+        assertThat(Util.canCast(Arrays.asList(1, 2), String.class), is(false));
+        assertThat(Util.canCast(Arrays.asList(1, null, 2d), Number.class), is(true));
+        assertThat(Util.canCast(
+            new HashSet<Object>(Arrays.asList(1, null, 2d)),
+            Number.class), is(true));
+        assertThat(Util.canCast(Arrays.asList(1, null, 2d), Integer.class), is(false));
     }
 
     /**
      * Unit test for {@link Util#parseLocale(String)} method.
      */
-    public void testParseLocale() {
+    @Test public void testParseLocale() {
         Locale[] locales = {
             Locale.CANADA,
             Locale.CANADA_FRENCH,
@@ -839,21 +800,21 @@ public class UtilTestCase extends TestCase {
             Locale.TRADITIONAL_CHINESE,
         };
         for (Locale locale : locales) {
-            assertEquals(locale, Util.parseLocale(locale.toString()));
+            assertThat(Util.parseLocale(locale.toString()), is(locale));
         }
         // Example locale names in Locale.toString() javadoc.
         String[] localeNames = {
             "en", "de_DE", "_GB", "en_US_WIN", "de__POSIX", "fr__MAC"
         };
         for (String localeName : localeNames) {
-            assertEquals(localeName, Util.parseLocale(localeName).toString());
+            assertThat(Util.parseLocale(localeName).toString(), is(localeName));
         }
     }
 
     /**
      * Unit test for {@link mondrian.util.LockBox}.
      */
-    public void testLockBox() {
+    @Test public void testLockBox() {
         final LockBox box =
             new LockBox();
 
@@ -862,89 +823,89 @@ public class UtilTestCase extends TestCase {
 
         // Register an object.
         final LockBox.Entry abcEntry0 = box.register(abc);
-        assertNotNull(abcEntry0);
-        assertSame(abc, abcEntry0.getValue());
+        assertThat(abcEntry0, notNullValue());
+        assertThat(abcEntry0.getValue(), sameInstance((Object) abc));
         checkMonikerValid(abcEntry0.getMoniker());
 
         // Register another object
         final LockBox.Entry xyEntry = box.register(xy);
         checkMonikerValid(xyEntry.getMoniker());
-        assertNotSame(abcEntry0.getMoniker(), xyEntry.getMoniker());
+        assertThat(xyEntry.getMoniker(),
+            not(sameInstance(abcEntry0.getMoniker())));
 
         // Register first object again. Moniker is different. It is a different
         // registration.
         final LockBox.Entry abcEntry1 = box.register(abc);
         checkMonikerValid(abcEntry1.getMoniker());
-        assertFalse(abcEntry1.getMoniker().equals(abcEntry0.getMoniker()));
-        assertSame(abcEntry1.getValue(), abc);
+        assertThat(abcEntry1.getMoniker().equals(abcEntry0.getMoniker()),
+            is(false));
+        assertThat(abc, sameInstance(abcEntry1.getValue()));
 
         // Retrieve.
         final LockBox.Entry abcEntry0b = box.get(abcEntry0.getMoniker());
-        assertNotNull(abcEntry0b);
-        assertEquals(abcEntry0b.getMoniker(), abcEntry0.getMoniker());
-        assertSame(abcEntry0, abcEntry0b);
-        assertNotSame(abcEntry0b, abcEntry1);
-        assertTrue(!abcEntry0b.getMoniker().equals(abcEntry1.getMoniker()));
+        assertThat(abcEntry0b, notNullValue());
+        assertThat(abcEntry0.getMoniker(), is(abcEntry0b.getMoniker()));
+        assertThat(abcEntry0b, sameInstance(abcEntry0));
+        assertThat(abcEntry1, not(sameInstance(abcEntry0b)));
+        assertThat(!abcEntry0b.getMoniker().equals(abcEntry1.getMoniker()),
+            is(true));
 
         // Arbitrary moniker retrieves nothing. (A random moniker might,
         // with very very small probability, happen to match that of one of
         // the two registered entries. However, I know that our generation
         // scheme never generates monikers starting with 'x'.)
-        assertNull(box.get("xxx"));
+        assertThat(box.get("xxx"), nullValue());
 
         // Deregister.
-        assertTrue(abcEntry0b.isRegistered());
-        final boolean b = box.deregister(abcEntry0b);
-        assertTrue(b);
-        assertFalse(abcEntry0b.isRegistered());
-        assertNull(box.get(abcEntry0.getMoniker()));
+        assertThat(abcEntry0b.isRegistered(), is(true));
+        assertThat(box.deregister(abcEntry0b), is(true));
+        assertThat(abcEntry0b.isRegistered(), is(false));
+        assertThat(box.get(abcEntry0.getMoniker()), nullValue());
 
         // The other entry created by the same call to 'register' is also
         // deregistered.
-        assertFalse(abcEntry0.isRegistered());
-        assertTrue(abcEntry1.isRegistered());
+        assertThat(abcEntry0.isRegistered(), is(false));
+        assertThat(abcEntry1.isRegistered(), is(true));
 
         // Deregister again.
-        final boolean b2 = box.deregister(abcEntry0b);
-        assertFalse(b2);
-        assertFalse(abcEntry0b.isRegistered());
-        assertFalse(abcEntry0.isRegistered());
-        assertNull(box.get(abcEntry0.getMoniker()));
+        assertThat(box.deregister(abcEntry0b), is(false));
+        assertThat(abcEntry0b.isRegistered(), is(false));
+        assertThat(abcEntry0.isRegistered(), is(false));
+        assertThat(box.get(abcEntry0.getMoniker()), nullValue());
 
         // Entry it no longer registered, therefore cannot get value.
         try {
             Object value = abcEntry0.getValue();
             fail("expected exception, got " + value);
         } catch (RuntimeException e) {
-            assertTrue(
-                e.getMessage().startsWith("LockBox has no entry with moniker"));
+            assertThat(e.getMessage().startsWith("LockBox has no entry with moniker"), is(true));
         }
-        assertNotNull(abcEntry0.getMoniker());
+        assertThat(abcEntry0.getMoniker(), notNullValue());
 
         // Other registration of same object still works.
         final LockBox.Entry abcEntry1b = box.get(abcEntry1.getMoniker());
-        assertNotNull(abcEntry1b);
-        assertSame(abcEntry1b, abcEntry1);
-        assertSame(abcEntry1b.getValue(), abc);
-        assertSame(abcEntry1.getValue(), abc);
+        assertThat(abcEntry1b, notNullValue());
+        assertThat(abcEntry1, sameInstance(abcEntry1b));
+        assertThat(abc, sameInstance(abcEntry1b.getValue()));
+        assertThat(abc, sameInstance(abcEntry1.getValue()));
 
         // Other entry still exists.
         final LockBox.Entry xyEntry2 = box.get(xyEntry.getMoniker());
-        assertNotNull(xyEntry2);
-        assertSame(xyEntry2, xyEntry);
-        assertSame(xyEntry2.getValue(), xy);
-        assertSame(xyEntry.getValue(), xy);
+        assertThat(xyEntry2, notNullValue());
+        assertThat(xyEntry, sameInstance(xyEntry2));
+        assertThat(xy, sameInstance(xyEntry2.getValue()));
+        assertThat(xy, sameInstance(xyEntry.getValue()));
 
         // Register again. Moniker is different. (Monikers are never recycled.)
         final LockBox.Entry abcEntry3 = box.register(abc);
         checkMonikerValid(abcEntry3.getMoniker());
-        assertFalse(abcEntry3.getMoniker().equals(abcEntry0.getMoniker()));
-        assertFalse(abcEntry3.getMoniker().equals(abcEntry1.getMoniker()));
-        assertFalse(abcEntry3.getMoniker().equals(abcEntry0b.getMoniker()));
+        assertThat(abcEntry3.getMoniker().equals(abcEntry0.getMoniker()), is(false));
+        assertThat(abcEntry3.getMoniker().equals(abcEntry1.getMoniker()), is(false));
+        assertThat(abcEntry3.getMoniker().equals(abcEntry0b.getMoniker()), is(false));
 
         // Previous entry is no longer valid.
-        assertTrue(abcEntry1.isRegistered());
-        assertFalse(abcEntry0.isRegistered());
+        assertThat(abcEntry1.isRegistered(), is(true));
+        assertThat(abcEntry0.isRegistered(), is(false));
     }
 
     void checkMonikerValid(String moniker) {
@@ -954,20 +915,20 @@ public class UtilTestCase extends TestCase {
             + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             + "abcdefghijklmnopqrstuvwxyz"
             + "$_";
-        assertTrue(moniker.length() > 0);
+        assertThat(moniker.length() > 0, is(true));
         // all chars are valid
         for (int i = 0; i < moniker.length(); i++) {
-            assertTrue(moniker, validChars.indexOf(moniker.charAt(i)) >= 0);
+            assertThat(moniker, validChars.indexOf(moniker.charAt(i)) >= 0, is(true));
         }
         // does not start with digit
-        assertFalse(moniker, digits.indexOf(moniker.charAt(0)) >= 0);
+        assertThat(moniker, digits.indexOf(moniker.charAt(0)) >= 0, is(false));
     }
 
     /**
      * Unit test that ensures that {@link mondrian.util.LockBox} can "forget"
      * entries whose key has been forgotten.
      */
-    public void testLockBoxFull() {
+    @Test public void testLockBoxFull() {
         final LockBox box =
             new LockBox();
 
@@ -994,23 +955,22 @@ public class UtilTestCase extends TestCase {
             entries[i % entries.length] = entry;
 
             // Test one of the previous entries.
-            assertNotNull(entries[Math.min(i, (i * 19) % 567)].getValue());
+            assertThat(entries[Math.min(i, (i * 19) % 567)].getValue(), notNullValue());
         }
     }
 
-    public void testCartesianProductList() {
+    @Test public void testCartesianProductList() {
         final CartesianProductList<String> list =
             new CartesianProductList<String>(
                 Arrays.asList(
                     Arrays.asList("a", "b"),
                     Arrays.asList("1", "2", "3")));
-        assertEquals(6, list.size());
-        assertFalse(list.isEmpty());
+        assertThat(list.size(), is(6));
+        assertThat(list.isEmpty(), is(false));
         checkCartesianListContents(list);
 
-        assertEquals(
-            "[[a, 1], [a, 2], [a, 3], [b, 1], [b, 2], [b, 3]]",
-            list.toString());
+        assertThat(list.toString(),
+            is("[[a, 1], [a, 2], [a, 3], [b, 1], [b, 2], [b, 3]]"));
 
         // One element empty
         final CartesianProductList<String> list2 =
@@ -1018,8 +978,8 @@ public class UtilTestCase extends TestCase {
                 Arrays.asList(
                     Arrays.<String>asList(),
                     Arrays.asList("1", "2", "3")));
-        assertTrue(list2.isEmpty());
-        assertEquals("[]", list2.toString());
+        assertThat(list2.isEmpty(), is(true));
+        assertThat(list2.toString(), is("[]"));
         checkCartesianListContents(list2);
 
         // Other component empty
@@ -1028,16 +988,16 @@ public class UtilTestCase extends TestCase {
                 Arrays.asList(
                     Arrays.asList("a", "b"),
                     Arrays.<String>asList()));
-        assertTrue(list3.isEmpty());
-        assertEquals("[]", list3.toString());
+        assertThat(list3.isEmpty(), is(true));
+        assertThat(list3.toString(), is("[]"));
         checkCartesianListContents(list3);
 
         // Zeroary
         final CartesianProductList<String> list4 =
             new CartesianProductList<String>(
                 Collections.<List<String>>emptyList());
-        assertFalse(list4.isEmpty());
-//        assertEquals("[[]]", list4.toString());
+        assertThat(list4.isEmpty(), is(false));
+        //        assertEquals("[[]]", list4.toString());
         checkCartesianListContents(list4);
 
         // 1-ary
@@ -1045,7 +1005,7 @@ public class UtilTestCase extends TestCase {
             new CartesianProductList<String>(
                 Collections.singletonList(
                     Arrays.asList("a", "b")));
-        assertEquals("[[a], [b]]", list5.toString());
+        assertThat(list5.toString(), is("[[a], [b]]"));
         checkCartesianListContents(list5);
 
         // 3-ary
@@ -1055,18 +1015,17 @@ public class UtilTestCase extends TestCase {
                     Arrays.asList("a", "b", "c", "d"),
                     Arrays.asList("1", "2"),
                     Arrays.asList("x", "y", "z")));
-        assertEquals(24, list6.size()); // 4 * 2 * 3
-        assertFalse(list6.isEmpty());
-        assertEquals("[a, 1, x]", list6.get(0).toString());
-        assertEquals("[a, 1, y]", list6.get(1).toString());
-        assertEquals("[d, 2, z]", list6.get(23).toString());
+        assertThat(list6.size(), is(24));
+        assertThat(list6.isEmpty(), is(false));
+        assertThat(list6.get(0).toString(), is("[a, 1, x]"));
+        assertThat(list6.get(1).toString(), is("[a, 1, y]"));
+        assertThat(list6.get(23).toString(), is("[d, 2, z]"));
         checkCartesianListContents(list6);
 
         final Object[] strings = new Object[6];
         list6.getIntoArray(1, strings);
-        assertEquals(
-            "[a, 1, y, null, null, null]",
-            Arrays.asList(strings).toString());
+        assertThat(Arrays.asList(strings).toString(),
+            is("[a, 1, y, null, null, null]"));
 
         CartesianProductList<Object> list7 =
             new CartesianProductList<Object>(
@@ -1081,13 +1040,11 @@ public class UtilTestCase extends TestCase {
                         "c",
                         "d")));
         list7.getIntoArray(1, strings);
-        assertEquals(
-            "[1, bb, bbb, null, null, null]",
-            Arrays.asList(strings).toString());
+        assertThat(Arrays.asList(strings).toString(),
+            is("[1, bb, bbb, null, null, null]"));
         list7.getIntoArray(5, strings);
-        assertEquals(
-            "[2a, null, 2c, bb, bbb, null]",
-            Arrays.asList(strings).toString());
+        assertThat(Arrays.asList(strings).toString(),
+            is("[2a, null, 2c, bb, bbb, null]"));
         checkCartesianListContents(list7);
     }
 
@@ -1096,26 +1053,26 @@ public class UtilTestCase extends TestCase {
         for (List<T> ts : list) {
             arrayList.add(ts);
         }
-        assertEquals(arrayList, list);
+        assertThat(list, is(arrayList));
     }
 
-    public void testFlatList() {
+    @Test public void testFlatList() {
         final List<String> flatAB = Util.flatList("a", "b");
         final List<String> arrayAB = Arrays.asList("a", "b");
-        assertEquals(flatAB, flatAB);
-        assertEquals(flatAB, arrayAB);
-        assertEquals(arrayAB, flatAB);
-        assertEquals(arrayAB.hashCode(), flatAB.hashCode());
+        assertThat(flatAB, is(flatAB));
+        assertThat(arrayAB, is(flatAB));
+        assertThat(flatAB, is(arrayAB));
+        assertThat(flatAB.hashCode(), is(arrayAB.hashCode()));
 
         final List<String> flatABC = Util.flatList("a", "b", "c");
         final List<String> arrayABC = Arrays.asList("a", "b", "c");
-        assertEquals(flatABC, flatABC);
-        assertEquals(flatABC, arrayABC);
-        assertEquals(arrayABC, flatABC);
-        assertEquals(arrayABC.hashCode(), flatABC.hashCode());
+        assertThat(flatABC, is(flatABC));
+        assertThat(arrayABC, is(flatABC));
+        assertThat(flatABC, is(arrayABC));
+        assertThat(flatABC.hashCode(), is(arrayABC.hashCode()));
 
-        assertEquals("[a, b, c]", flatABC.toString());
-        assertEquals("[a, b]", flatAB.toString());
+        assertThat(flatABC.toString(), is("[a, b, c]"));
+        assertThat(flatAB.toString(), is("[a, b]"));
 
         final List<String> arrayEmpty = Arrays.asList();
         final List<String> arrayA = Collections.singletonList("a");
@@ -1124,21 +1081,21 @@ public class UtilTestCase extends TestCase {
         final List<List<String>> notAB =
             Arrays.asList(arrayEmpty, arrayA, arrayABC, flatABC);
         for (List<String> strings : notAB) {
-            assertFalse(strings.equals(flatAB));
-            assertFalse(flatAB.equals(strings));
+            assertThat(strings.equals(flatAB), is(false));
+            assertThat(flatAB.equals(strings), is(false));
         }
         final List<List<String>> notABC =
             Arrays.asList(arrayEmpty, arrayA, arrayAB, flatAB);
         for (List<String> strings : notABC) {
-            assertFalse(strings.equals(flatABC));
-            assertFalse(flatABC.equals(strings));
+            assertThat(strings.equals(flatABC), is(false));
+            assertThat(flatABC.equals(strings), is(false));
         }
     }
 
     /**
      * Unit test for {@link Composite#of(Iterable[])}.
      */
-    public void testCompositeIterable() {
+    @Test public void testCompositeIterable() {
         final Iterable<String> beatles =
             Arrays.asList("john", "paul", "george", "ringo");
         final Iterable<String> stones =
@@ -1149,114 +1106,105 @@ public class UtilTestCase extends TestCase {
         for (String s : Composite.of(beatles, stones)) {
             buf.append(s).append(";");
         }
-        assertEquals(
-            "john;paul;george;ringo;mick;keef;brian;bill;charlie;",
-            buf.toString());
+        assertThat(buf.toString(),
+            is("john;paul;george;ringo;mick;keef;brian;bill;charlie;"));
 
         buf.setLength(0);
         for (String s : Composite.of(empty, stones)) {
             buf.append(s).append(";");
         }
-        assertEquals(
-            "mick;keef;brian;bill;charlie;",
-            buf.toString());
+        assertThat(buf.toString(), is("mick;keef;brian;bill;charlie;"));
 
         buf.setLength(0);
         for (String s : Composite.of(stones, empty)) {
             buf.append(s).append(";");
         }
-        assertEquals(
-            "mick;keef;brian;bill;charlie;",
-            buf.toString());
+        assertThat(buf.toString(), is("mick;keef;brian;bill;charlie;"));
 
         buf.setLength(0);
         for (String s : Composite.of(empty)) {
             buf.append(s).append(";");
         }
-        assertEquals(
-            "",
-            buf.toString());
+        assertThat(buf.toString(), is(""));
 
         buf.setLength(0);
         for (String s : Composite.of(empty, empty, beatles, empty, empty)) {
             buf.append(s).append(";");
         }
-        assertEquals(
-            "john;paul;george;ringo;",
-            buf.toString());
+        assertThat(buf.toString(), is("john;paul;george;ringo;"));
     }
 
     /**
      * Unit test for {@link ByteString}.
      */
-    public void testByteString() {
+    @Test public void testByteString() {
         final ByteString empty0 = new ByteString(new byte[]{});
         final ByteString empty1 = new ByteString(new byte[]{});
-        assertTrue(empty0.equals(empty1));
-        assertEquals(empty0.hashCode(), empty1.hashCode());
-        assertEquals("", empty0.toString());
-        assertEquals(0, empty0.length());
-        assertEquals(0, empty0.compareTo(empty0));
-        assertEquals(0, empty0.compareTo(empty1));
+        assertThat(empty0.equals(empty1), is(true));
+        assertThat(empty1.hashCode(), is(empty0.hashCode()));
+        assertThat(empty0.toString(), is(""));
+        assertThat(empty0.length(), is(0));
+        assertThat(empty0.compareTo(empty0), is(0));
+        assertThat(empty0.compareTo(empty1), is(0));
 
         final ByteString two =
             new ByteString(new byte[]{ (byte) 0xDE, (byte) 0xAD});
-        assertFalse(empty0.equals(two));
-        assertFalse(two.equals(empty0));
-        assertEquals("dead", two.toString());
-        assertEquals(2, two.length());
-        assertEquals(0, two.compareTo(two));
-        assertTrue(empty0.compareTo(two) < 0);
-        assertTrue(two.compareTo(empty0) > 0);
+        assertThat(empty0.equals(two), is(false));
+        assertThat(two.equals(empty0), is(false));
+        assertThat(two.toString(), is("dead"));
+        assertThat(two.length(), is(2));
+        assertThat(two.compareTo(two), is(0));
+        assertThat(empty0.compareTo(two) < 0, is(true));
+        assertThat(two.compareTo(empty0) > 0, is(true));
 
         final ByteString three =
             new ByteString(new byte[]{ (byte) 0xDE, (byte) 0x02, (byte) 0xAD});
-        assertEquals(3, three.length());
-        assertEquals("de02ad", three.toString());
-        assertTrue(two.compareTo(three) < 0);
-        assertTrue(three.compareTo(two) > 0);
-        assertEquals(0x02, three.byteAt(1));
+        assertThat(three.length(), is(3));
+        assertThat(three.toString(), is("de02ad"));
+        assertThat(two.compareTo(three) < 0, is(true));
+        assertThat(three.compareTo(two) > 0, is(true));
+        assertThat(three.byteAt(1), is((byte) 0x02));
 
         final HashSet<ByteString> set = new HashSet<ByteString>();
         set.addAll(Arrays.asList(empty0, two, three, two, empty1, three));
-        assertEquals(3, set.size());
+        assertThat(set.size(), is(3));
     }
 
     /**
      * Unit test for {@link Util#binarySearch}.
      */
-    public void testBinarySearch() {
+    @Test public void testBinarySearch() {
         final String[] abce = {"a", "b", "c", "e"};
-        assertEquals(0, Util.binarySearch(abce, 0, 4, "a"));
-        assertEquals(1, Util.binarySearch(abce, 0, 4, "b"));
-        assertEquals(1, Util.binarySearch(abce, 1, 4, "b"));
-        assertEquals(-4, Util.binarySearch(abce, 0, 4, "d"));
-        assertEquals(-4, Util.binarySearch(abce, 1, 4, "d"));
-        assertEquals(-4, Util.binarySearch(abce, 2, 4, "d"));
-        assertEquals(-4, Util.binarySearch(abce, 2, 3, "d"));
-        assertEquals(-4, Util.binarySearch(abce, 2, 3, "e"));
-        assertEquals(-4, Util.binarySearch(abce, 2, 3, "f"));
-        assertEquals(-5, Util.binarySearch(abce, 0, 4, "f"));
-        assertEquals(-5, Util.binarySearch(abce, 2, 4, "f"));
+        assertThat(Util.binarySearch(abce, 0, 4, "a"), is(0));
+        assertThat(Util.binarySearch(abce, 0, 4, "b"), is(1));
+        assertThat(Util.binarySearch(abce, 1, 4, "b"), is(1));
+        assertThat(Util.binarySearch(abce, 0, 4, "d"), is(-4));
+        assertThat(Util.binarySearch(abce, 1, 4, "d"), is(-4));
+        assertThat(Util.binarySearch(abce, 2, 4, "d"), is(-4));
+        assertThat(Util.binarySearch(abce, 2, 3, "d"), is(-4));
+        assertThat(Util.binarySearch(abce, 2, 3, "e"), is(-4));
+        assertThat(Util.binarySearch(abce, 2, 3, "f"), is(-4));
+        assertThat(Util.binarySearch(abce, 0, 4, "f"), is(-5));
+        assertThat(Util.binarySearch(abce, 2, 4, "f"), is(-5));
     }
 
     /**
      * Unit test for {@link mondrian.util.ArraySortedSet}.
      */
-    public void testArraySortedSet() {
+    @Test public void testArraySortedSet() {
         String[] abce = {"a", "b", "c", "e"};
         final SortedSet<String> abceSet =
             new ArraySortedSet<String>(abce);
 
         // test size, isEmpty, contains
-        assertEquals(4, abceSet.size());
-        assertFalse(abceSet.isEmpty());
-        assertEquals("a", abceSet.first());
-        assertEquals("e", abceSet.last());
-        assertTrue(abceSet.contains("a"));
-        assertFalse(abceSet.contains("aa"));
-        assertFalse(abceSet.contains("z"));
-        assertFalse(abceSet.contains(null));
+        assertThat(abceSet.size(), is(4));
+        assertThat(abceSet.isEmpty(), is(false));
+        assertThat(abceSet.first(), is("a"));
+        assertThat(abceSet.last(), is("e"));
+        assertThat(abceSet.contains("a"), is(true));
+        assertThat(abceSet.contains("aa"), is(false));
+        assertThat(abceSet.contains("z"), is(false));
+        assertThat(abceSet.contains(null), is(false));
         checkToString("[a, b, c, e]", abceSet);
 
         // test iterator
@@ -1264,7 +1212,7 @@ public class UtilTestCase extends TestCase {
         for (String s : abceSet) {
             z += s + ";";
         }
-        assertEquals("a;b;c;e;", z);
+        assertThat(z, is("a;b;c;e;"));
 
         // empty set
         String[] empty = {};
@@ -1275,9 +1223,9 @@ public class UtilTestCase extends TestCase {
             Util.discard(s);
             ++n;
         }
-        assertEquals(0, n);
-        assertEquals(0, emptySet.size());
-        assertTrue(emptySet.isEmpty());
+        assertThat(n, is(0));
+        assertThat(emptySet.size(), is(0));
+        assertThat(emptySet.isEmpty(), is(true));
         try {
             String s = emptySet.first();
             fail("expected exception, got " + s);
@@ -1290,62 +1238,62 @@ public class UtilTestCase extends TestCase {
         } catch (NoSuchElementException e) {
             // ok
         }
-        assertFalse(emptySet.contains("a"));
-        assertFalse(emptySet.contains("aa"));
-        assertFalse(emptySet.contains("z"));
+        assertThat(emptySet.contains("a"), is(false));
+        assertThat(emptySet.contains("aa"), is(false));
+        assertThat(emptySet.contains("z"), is(false));
         checkToString("[]", emptySet);
 
         // same hashCode etc. as similar hashset
         final HashSet<String> abcHashset = new HashSet<String>();
         abcHashset.addAll(Arrays.asList(abce));
-        assertEquals(abcHashset, abceSet);
-        assertEquals(abceSet, abcHashset);
-        assertEquals(abceSet.hashCode(), abcHashset.hashCode());
+        assertThat(abceSet, is((Set<String>) abcHashset));
+        assertThat(abcHashset, is((Set<String>) abceSet));
+        assertThat(abcHashset.hashCode(), is(abceSet.hashCode()));
 
         // subset to end
         final Set<String> subsetEnd = new ArraySortedSet<String>(abce, 1, 4);
         checkToString("[b, c, e]", subsetEnd);
-        assertEquals(3, subsetEnd.size());
-        assertFalse(subsetEnd.isEmpty());
-        assertTrue(subsetEnd.contains("c"));
-        assertFalse(subsetEnd.contains("a"));
-        assertFalse(subsetEnd.contains("z"));
+        assertThat(subsetEnd.size(), is(3));
+        assertThat(subsetEnd.isEmpty(), is(false));
+        assertThat(subsetEnd.contains("c"), is(true));
+        assertThat(subsetEnd.contains("a"), is(false));
+        assertThat(subsetEnd.contains("z"), is(false));
 
         // subset from start
         final Set<String> subsetStart = new ArraySortedSet<String>(abce, 0, 2);
         checkToString("[a, b]", subsetStart);
-        assertEquals(2, subsetStart.size());
-        assertFalse(subsetStart.isEmpty());
-        assertTrue(subsetStart.contains("a"));
-        assertFalse(subsetStart.contains("c"));
+        assertThat(subsetStart.size(), is(2));
+        assertThat(subsetStart.isEmpty(), is(false));
+        assertThat(subsetStart.contains("a"), is(true));
+        assertThat(subsetStart.contains("c"), is(false));
 
         // subset from neither start or end
         final Set<String> subset = new ArraySortedSet<String>(abce, 1, 2);
         checkToString("[b]", subset);
-        assertEquals(1, subset.size());
-        assertFalse(subset.isEmpty());
-        assertTrue(subset.contains("b"));
-        assertFalse(subset.contains("a"));
-        assertFalse(subset.contains("e"));
+        assertThat(subset.size(), is(1));
+        assertThat(subset.isEmpty(), is(false));
+        assertThat(subset.contains("b"), is(true));
+        assertThat(subset.contains("a"), is(false));
+        assertThat(subset.contains("e"), is(false));
 
         // empty subset
         final Set<String> subsetEmpty = new ArraySortedSet<String>(abce, 1, 1);
         checkToString("[]", subsetEmpty);
-        assertEquals(0, subsetEmpty.size());
-        assertTrue(subsetEmpty.isEmpty());
-        assertFalse(subsetEmpty.contains("e"));
+        assertThat(subsetEmpty.size(), is(0));
+        assertThat(subsetEmpty.isEmpty(), is(true));
+        assertThat(subsetEmpty.contains("e"), is(false));
 
         // subsets based on elements, not ordinals
-        assertEquals(abceSet.subSet("a", "c"), subsetStart);
-        assertEquals("[a, b, c]", abceSet.subSet("a", "d").toString());
-        assertFalse(abceSet.subSet("a", "e").equals(subsetStart));
-        assertFalse(abceSet.subSet("b", "c").equals(subsetStart));
-        assertEquals("[c, e]", abceSet.subSet("c", "z").toString());
-        assertEquals("[e]", abceSet.subSet("d", "z").toString());
-        assertFalse(abceSet.subSet("e", "c").equals(subsetStart));
-        assertEquals("[]", abceSet.subSet("e", "c").toString());
-        assertFalse(abceSet.subSet("z", "c").equals(subsetStart));
-        assertEquals("[]", abceSet.subSet("z", "c").toString());
+        assertThat(subsetStart, is((Set<String>) abceSet.subSet("a", "c")));
+        assertThat(abceSet.subSet("a", "d").toString(), is("[a, b, c]"));
+        assertThat(abceSet.subSet("a", "e").equals(subsetStart), is(false));
+        assertThat(abceSet.subSet("b", "c").equals(subsetStart), is(false));
+        assertThat(abceSet.subSet("c", "z").toString(), is("[c, e]"));
+        assertThat(abceSet.subSet("d", "z").toString(), is("[e]"));
+        assertThat(abceSet.subSet("e", "c").equals(subsetStart), is(false));
+        assertThat(abceSet.subSet("e", "c").toString(), is("[]"));
+        assertThat(abceSet.subSet("z", "c").equals(subsetStart), is(false));
+        assertThat(abceSet.subSet("z", "c").toString(), is("[]"));
 
         // merge
         final ArraySortedSet<String> ar1 = new ArraySortedSet<String>(abce);
@@ -1363,20 +1311,20 @@ public class UtilTestCase extends TestCase {
     }
 
     private void checkToString(String expected, Set<String> set) {
-        assertEquals(expected, set.toString());
+        assertThat(set.toString(), is(expected));
 
         final List<String> list = new ArrayList<String>();
         list.addAll(set);
-        assertEquals(expected, list.toString());
+        assertThat(list.toString(), is(expected));
 
         list.clear();
         for (String s : set) {
             list.add(s);
         }
-        assertEquals(expected, list.toString());
+        assertThat(list.toString(), is(expected));
     }
 
-    public void testIntersectSortedSet() {
+    @Test public void testIntersectSortedSet() {
         final ArraySortedSet<String> ace =
             new ArraySortedSet<String>(new String[]{ "a", "c", "e"});
         final ArraySortedSet<String> cd =
@@ -1402,33 +1350,33 @@ public class UtilTestCase extends TestCase {
     @SuppressWarnings("UnnecessaryBoxing")
     public void _testIdentityHashSet() {
         final Set<Integer> set = Util.newIdentityHashSet();
-        assertTrue(set.isEmpty());
-        assertEquals(0, set.size());
+        assertThat(set.isEmpty(), is(true));
+        assertThat(set.size(), is(0));
 
         final Integer oneA = new Integer(1);
-        assertTrue(set.add(oneA));
-        assertEquals(1, set.size());
+        assertThat(set.add(oneA), is(true));
+        assertThat(set.size(), is(1));
 
         Integer twoA = new Integer(2);
-        assertTrue(set.add(twoA));
-        assertEquals(2, set.size());
+        assertThat(set.add(twoA), is(true));
+        assertThat(set.size(), is(2));
 
-        assertFalse(set.add(oneA));
-        assertEquals(2, set.size());
+        assertThat(set.add(oneA), is(false));
+        assertThat(set.size(), is(2));
 
         final Integer oneB = new Integer(1);
-        assertTrue(set.add(oneB));
-        assertEquals(3, set.size());
+        assertThat(set.add(oneB), is(true));
+        assertThat(set.size(), is(3));
 
-        assertTrue(set.contains(oneA));
-        assertTrue(set.contains(oneA));
+        assertThat(set.contains(oneA), is(true));
+        assertThat(set.contains(oneA), is(true));
         final Integer oneC = new Integer(1);
-        assertFalse(set.contains(oneC));
-        assertTrue(set.contains(twoA));
+        assertThat(set.contains(oneC), is(false));
+        assertThat(set.contains(twoA), is(true));
 
         final List<Integer> list = new ArrayList<Integer>(set);
         Collections.sort(list);
-        assertEquals("[1, 1, 2]", list.toString());
+        assertThat(list.toString(), is("[1, 1, 2]"));
 
         // add via iterator
         list.clear();
@@ -1436,26 +1384,26 @@ public class UtilTestCase extends TestCase {
             list.add(integer);
         }
         Collections.sort(list);
-        assertEquals("[1, 1, 2]", list.toString());
+        assertThat(list.toString(), is("[1, 1, 2]"));
 
         set.clear();
-        assertTrue(set.isEmpty());
+        assertThat(set.isEmpty(), is(true));
 
         set.addAll(list);
-        assertFalse(set.isEmpty());
-        assertEquals(3, set.size());
+        assertThat(set.isEmpty(), is(false));
+        assertThat(set.size(), is(3));
 
-        assertTrue(set.remove(oneA));
-        assertFalse(set.remove(oneC));
-        assertTrue(set.remove(oneB));
-        assertTrue(set.remove(twoA));
-        assertTrue(set.isEmpty());
+        assertThat(set.remove(oneA), is(true));
+        assertThat(set.remove(oneC), is(false));
+        assertThat(set.remove(oneB), is(true));
+        assertThat(set.remove(twoA), is(true));
+        assertThat(set.isEmpty(), is(true));
     }
 
     /**
      * Unit test for {@link Tuple3}.
      */
-    public void testTuple3() {
+    @Test public void testTuple3() {
         if (Util.PreJdk15) {
             // Boolean is not Comparable until JDK 1.5. Tuple3 works, but this
             // test does not.
@@ -1470,113 +1418,88 @@ public class UtilTestCase extends TestCase {
         final Tuple3<Integer, String, Boolean> tuple3 =
             Tuple3.of(null, "foo", true);
 
-        assertEquals(tuple0, tuple0);
-        assertFalse(tuple0.equals(tuple1));
-        assertFalse(tuple1.equals(tuple0));
-        assertFalse(tuple0.hashCode() == tuple1.hashCode());
-        assertEquals(tuple0, tuple2);
-        assertEquals(tuple0.hashCode(), tuple2.hashCode());
-        assertEquals(tuple3, tuple3);
-        assertFalse(tuple0.equals(tuple3));
-        assertFalse(tuple3.equals(tuple0));
-        assertFalse(tuple0.hashCode() == tuple3.hashCode());
+        assertThat(tuple0, is(tuple0));
+        assertThat(tuple0.equals(tuple1), is(false));
+        assertThat(tuple1.equals(tuple0), is(false));
+        assertThat(tuple0.hashCode() == tuple1.hashCode(), is(false));
+        assertThat(tuple2, is(tuple0));
+        assertThat(tuple2.hashCode(), is(tuple0.hashCode()));
+        assertThat(tuple3, is(tuple3));
+        assertThat(tuple0.equals(tuple3), is(false));
+        assertThat(tuple3.equals(tuple0), is(false));
+        assertThat(tuple0.hashCode() == tuple3.hashCode(), is(false));
 
         final SortedSet<Tuple3<Integer, String, Boolean>> set =
             new TreeSet<Tuple3<Integer, String, Boolean>>(
                 Arrays.asList(tuple0, tuple1, tuple2, tuple3, tuple1));
-        assertEquals(3, set.size());
-        assertEquals(
-            "[<null, foo, true>, <5, foo, false>, <5, foo, true>]",
-            set.toString());
+        assertThat(set.size(), is(3));
+        assertThat(set.toString(),
+            is("[<null, foo, true>, <5, foo, false>, <5, foo, true>]"));
 
-        assertEquals("<5, foo, true>", tuple0.toString());
-        assertEquals("<5, foo, false>", tuple1.toString());
-        assertEquals("<5, foo, true>", tuple2.toString());
-        assertEquals("<null, foo, true>", tuple3.toString());
+        assertThat(tuple0.toString(), is("<5, foo, true>"));
+        assertThat(tuple1.toString(), is("<5, foo, false>"));
+        assertThat(tuple2.toString(), is("<5, foo, true>"));
+        assertThat(tuple3.toString(), is("<null, foo, true>"));
 
         // Unzip and zip.
-        assertEquals(
-            Util.toList(
-                Tuple3.iterate(
-                    Tuple3.slice0(set),
-                    Tuple3.slice1(set),
-                    Tuple3.slice2(set))),
-            Util.toList(set));
+        assertThat(Util.toList(set), is(Util.toList(
+            Tuple3.iterate(
+                Tuple3.slice0(set),
+                Tuple3.slice1(set),
+                Tuple3.slice2(set)))));
     }
 
-    public void testRolapUtilComparator() throws Exception {
+    @Test public void testRolapUtilComparator() throws Exception {
         final Comparable[] compArray =
             new Comparable[] {
                 "1",
                 "2",
                 "3",
                 "4"
-        };
+            };
         // Will throw a ClassCastException if it fails.
         Util.binarySearch(
             compArray, 0, compArray.length,
             RolapUtil.sqlNullValue);
     }
 
-    public void testDirectedGraph() {
+    @Test public void testDirectedGraph() {
         final DirectedGraph<String, EdgeImpl<String>> graph =
             new DirectedGraph<String, EdgeImpl<String>>();
 
         // empty graph has no paths
-        assertEquals(
-            "[]",
-            graph.findAllPaths("C", "Z").toString());
+        assertThat(graph.findAllPaths("C", "Z").toString(), is("[]"));
         // there is one path of length 0 from C to C, even in the empty graph
-        assertEquals(
-            "[[]]",
-            graph.findAllPaths("C", "C").toString());
+        assertThat(graph.findAllPaths("C", "C").toString(), is("[[]]"));
 
         graph.addEdge(new EdgeImpl<String>("A", "B"));
         graph.addEdge(new EdgeImpl<String>("B", "C"));
 
         // there is one path of length 0 from A to A
-        assertEquals(
-            "[[]]",
-            graph.findAllPaths("A", "A").toString());
-        assertEquals(
-            "[[]]",
-            graph.findAllPathsUndirected("A", "A").toString());
-        assertEquals(
-            "[[A-B]]",
-            graph.findAllPaths("A", "B").toString());
-        assertEquals(
-            "[[<A-B, true>]]",
-            graph.findAllPathsUndirected("A", "B").toString());
-        assertEquals(
-            "[[A-B, B-C]]",
-            graph.findAllPaths("A", "C").toString());
-        assertEquals(
-            "[[<A-B, true>, <B-C, true>]]",
-            graph.findAllPathsUndirected("A", "C").toString());
+        assertThat(graph.findAllPaths("A", "A").toString(), is("[[]]"));
+        assertThat(graph.findAllPathsUndirected("A", "A").toString(), is("[[]]"));
+        assertThat(graph.findAllPaths("A", "B").toString(), is("[[A-B]]"));
+        assertThat(graph.findAllPathsUndirected("A", "B").toString(),
+            is("[[<A-B, true>]]"));
+        assertThat(graph.findAllPaths("A", "C").toString(), is("[[A-B, B-C]]"));
+        assertThat(graph.findAllPathsUndirected("A", "C").toString(),
+            is("[[<A-B, true>, <B-C, true>]]"));
 
         // there are no paths C to A
-        assertEquals(
-            "[]",
-            graph.findAllPaths("C", "A").toString());
+        assertThat(graph.findAllPaths("C", "A").toString(), is("[]"));
 
         // undirected, there is a path from C to A
-        assertEquals(
-            "[[<B-C, false>, <A-B, false>]]",
-            graph.findAllPathsUndirected("C", "A").toString());
+        assertThat(graph.findAllPathsUndirected("C", "A").toString(),
+            is("[[<B-C, false>, <A-B, false>]]"));
 
         // no paths to nodes outside graph
-        assertEquals(
-            "[]",
-            graph.findAllPaths("C", "Z").toString());
-        assertEquals(
-            "[]",
-            graph.findAllPaths("A", "Z").toString());
+        assertThat(graph.findAllPaths("C", "Z").toString(), is("[]"));
+        assertThat(graph.findAllPaths("A", "Z").toString(), is("[]"));
 
         // add alternative path from A-C
         graph.addEdge(new EdgeImpl<String>("A", "C"));
-        assertEquals(
-            "[[A-B, B-C], [A-C]]",
-            graph.findAllPaths("A", "C").toString());
+        assertThat(graph.findAllPaths("A", "C").toString(),
+            is("[[A-B, B-C], [A-C]]"));
 
         graph.addEdge(new EdgeImpl<String>("C", "B"));
         try {
@@ -1584,13 +1507,11 @@ public class UtilTestCase extends TestCase {
                 graph.findAllPaths("A", "B");
             fail("expected error, got " + pathList);
         } catch (RuntimeException e) {
-            assertEquals(
-                "Graph contains cycle: [A-B, B-C, C-B]",
-                e.getMessage());
+            assertThat(e.getMessage(), is("Graph contains cycle: [A-B, B-C, C-B]"));
         }
     }
 
-    public void testLazy() {
+    @Test public void testLazy() {
         final int[] calls = {0};
         final Lazy<Integer> integerLazy =
             new Lazy<Integer>(
@@ -1600,11 +1521,11 @@ public class UtilTestCase extends TestCase {
                     }
                 }
             );
-        assertEquals(0, calls[0]); // constructor does not call factory
-        assertEquals(0, (int) integerLazy.get());
-        assertEquals(1, calls[0]); // first call to get calls factory
-        assertEquals(0, (int) integerLazy.get());
-        assertEquals(1, calls[0]); // factory not used again
+        assertThat(calls[0], is(0));
+        assertThat((int) integerLazy.get(), is(0));
+        assertThat(calls[0], is(1));
+        assertThat((int) integerLazy.get(), is(0));
+        assertThat(calls[0], is(1));
 
         final Lazy<String> nullLazy =
             new Lazy<String>(
@@ -1615,150 +1536,116 @@ public class UtilTestCase extends TestCase {
                     }
                 }
             );
-        assertEquals(1, calls[0]); // constructor does not call factory
-        assertEquals(null, nullLazy.get());
-        assertEquals(2, calls[0]); // first call to get calls factory
-        assertEquals(null, nullLazy.get());
-        assertEquals(2, calls[0]); // factory not used again
+        assertThat(calls[0], is(1));
+        assertThat(nullLazy.get(), is((String) null));
+        assertThat(calls[0], is(2));
+        assertThat(nullLazy.get(), is((String) null));
+        assertThat(calls[0], is(2));
     }
 
     /**
      * Unit test for {@link Util.PropertyList}.
      */
-    public void testPropertyList() {
+    @Test public void testPropertyList() {
         final Util.PropertyList list = new Util.PropertyList();
         list.put("x", "1");
         list.put("y", "2");
         list.put("x", "3");
-        assertEquals("x=3; y=2", list.toString());
+        assertThat(list.toString(), is("x=3; y=2"));
 
         // modifying the clone does not affect the original
         final Util.PropertyList list2 = list.clone();
-        assertEquals("x=3; y=2", list.toString());
+        assertThat(list.toString(), is("x=3; y=2"));
         list2.put("x", "4");
-        assertEquals("x=4; y=2", list2.toString());
-        assertEquals("x=3; y=2", list.toString());
+        assertThat(list2.toString(), is("x=4; y=2"));
+        assertThat(list.toString(), is("x=3; y=2"));
 
         // modifying the original does not affect the clone
         list.remove("y");
         list.put("z", "foo bar");
-        assertEquals("x=4; y=2", list2.toString());
-        assertEquals("x=3; z=foo bar", list.toString());
+        assertThat(list2.toString(), is("x=4; y=2"));
+        assertThat(list.toString(), is("x=3; z=foo bar"));
     }
 
     /**
      * Unit test for {@link Util#first}.
      */
-    public void testFirst() {
-        assertEquals("x", Util.first("x", "y"));
-        assertEquals("y", Util.first(null, "y"));
-        assertEquals(null, Util.first(null, null));
+    @Test public void testFirst() {
+        assertThat(Util.first("x", "y"), is("x"));
+        assertThat(Util.first(null, "y"), is("y"));
+        assertThat(Util.first(null, null), nullValue());
     }
 
     /**
      * Unit test for {@link Util#julian(long, long, long)}.
      */
-    public void testJulian() {
-        assertEquals(-327, Util.julian(-4713, 1, 1)); // should be 0?
-        assertEquals(-32044, Util.julian(-4800, 3, 1));
-        assertEquals(1721426, Util.julian(1, 1, 1));
-        assertEquals(2454115, Util.julian(2007, 1, 14));
-        assertEquals(2455976, Util.julian(2012, 2, 18));
+    @Test public void testJulian() {
+        assertThat(Util.julian(-4713, 1, 1), is(-327L));
+        assertThat(Util.julian(-4800, 3, 1), is(-32044L));
+        assertThat(Util.julian(1, 1, 1), is(1721426L));
+        assertThat(Util.julian(2007, 1, 14), is(2454115L));
+        assertThat(Util.julian(2012, 2, 18), is(2455976L));
     }
 
     /**
      * Unit test for {@link Util#parseInterval}.
      */
-    public void testParseInterval() {
+    @Test public void testParseInterval() {
         // no default unit
-        assertEquals(
-            Pair.of(1L, TimeUnit.SECONDS),
-            Util.parseInterval("1s", null));
+        assertThat(Util.parseInterval("1s", null), is(Pair.of(1L, TimeUnit.SECONDS)));
         // same default unit as actual
-        assertEquals(
-            Pair.of(1L, TimeUnit.SECONDS),
-            Util.parseInterval("1s", TimeUnit.SECONDS));
+        assertThat(Util.parseInterval("1s", TimeUnit.SECONDS), is(Pair.of(1L, TimeUnit.SECONDS)));
         // different default than actual
-        assertEquals(
-            Pair.of(1L, TimeUnit.SECONDS),
-            Util.parseInterval("1s", TimeUnit.MILLISECONDS));
-        assertEquals(
-            Pair.of(2L, TimeUnit.NANOSECONDS),
-            Util.parseInterval("2ns", TimeUnit.MICROSECONDS));
+        assertThat(Util.parseInterval("1s", TimeUnit.MILLISECONDS), is(Pair.of(1L, TimeUnit.SECONDS)));
+        assertThat(Util.parseInterval("2ns", TimeUnit.MICROSECONDS), is(Pair.of(2L, TimeUnit.NANOSECONDS)));
         // now each unit in turn (ns, us, ms, s, h, m, d)
-        assertEquals(
-            Pair.of(5L, TimeUnit.NANOSECONDS),
-            Util.parseInterval("5ns", null));
-        assertEquals(
-            Pair.of(3L, TimeUnit.MICROSECONDS),
-            Util.parseInterval("3us", null));
-        assertEquals(
-            Pair.of(4L, TimeUnit.MILLISECONDS),
-            Util.parseInterval("4ms", null));
+        assertThat(Util.parseInterval("5ns", null), is(Pair.of(5L, TimeUnit.NANOSECONDS)));
+        assertThat(Util.parseInterval("3us", null), is(Pair.of(3L, TimeUnit.MICROSECONDS)));
+        assertThat(Util.parseInterval("4ms", null), is(Pair.of(4L, TimeUnit.MILLISECONDS)));
         if (!Util.PreJdk16) {
             // JDK1.5 does not have TimeUnit.MINUTES, .HOURS or .DAYS.
-            assertEquals(
-                Pair.of(5L, TimeUnit.valueOf("MINUTES")),
-                Util.parseInterval("5m", null));
-            assertEquals(
-                Pair.of(6L, TimeUnit.valueOf("HOURS")),
-                Util.parseInterval("6h", null));
-            assertEquals(
-                Pair.of(7L, TimeUnit.valueOf("DAYS")),
-                Util.parseInterval("7d", null));
+            assertThat(Util.parseInterval("5m", null), is(Pair.of(5L, TimeUnit.valueOf("MINUTES"))));
+            assertThat(Util.parseInterval("6h", null), is(Pair.of(6L, TimeUnit.valueOf("HOURS"))));
+            assertThat(Util.parseInterval("7d", null), is(Pair.of(7L, TimeUnit.valueOf("DAYS"))));
         }
         // negative
-        assertEquals(
-            Pair.of(-8L, TimeUnit.SECONDS),
-            Util.parseInterval("-8s", null));
-        assertEquals(
-            Pair.of(3L, TimeUnit.MICROSECONDS),
-            Util.parseInterval("3", TimeUnit.MICROSECONDS));
+        assertThat(Util.parseInterval("-8s", null), is(Pair.of(-8L, TimeUnit.SECONDS)));
+        assertThat(Util.parseInterval("3", TimeUnit.MICROSECONDS), is(Pair.of(3L, TimeUnit.MICROSECONDS)));
         try {
             Pair<Long, TimeUnit> x = Util.parseInterval("4", null);
             fail("expected error, got " + x);
         } catch (NumberFormatException e) {
-            assertTrue(
-                e.getMessage(),
-                e.getMessage().startsWith(
-                    "Invalid time interval '4'. Does not contain a time "
-                    + "unit."));
+            assertThat(e.getMessage(),
+                e.getMessage().startsWith("Invalid time interval '4'. Does "
+                + "not contain a time unit."), is(true));
         }
         // fractional part rounded away
-        assertEquals(
-            Pair.of(1234L, TimeUnit.SECONDS),
-            Util.parseInterval("1234.567s", TimeUnit.MICROSECONDS));
+        assertThat(Util.parseInterval("1234.567s", TimeUnit.MICROSECONDS), is(Pair.of(1234L, TimeUnit.SECONDS)));
         // Invalid unit means that interval cannot be parsed.
         // (No 'S' is not valid for 's'. See 'man sleep'.)
         try {
             Pair<Long, TimeUnit> x = Util.parseInterval("40S", null);
             fail("expected error, got " + x);
         } catch (NumberFormatException e) {
-            assertTrue(
-                e.getMessage(),
-                e.getMessage().startsWith(
-                    "Invalid time interval '40S'. Does not contain a time "
-                    + "unit."));
+            assertThat(e.getMessage(), e.getMessage().startsWith(
+                "Invalid time interval '40S'. Does not contain a time "
+                + "unit."), is(true));
         }
         // Even a space is not allowed.
         try {
             Pair<Long, TimeUnit> x = Util.parseInterval("40 m", null);
             fail("expected error, got " + x);
         } catch (NumberFormatException e) {
-            assertTrue(
-                e.getMessage(),
-                e.getMessage().startsWith(
-                    "Invalid time interval '40 m'"));
+            assertThat(e.getMessage(), e.getMessage().startsWith(
+                "Invalid time interval '40 m'"), is(true));
         }
         // Two time units.
         try {
             Pair<Long, TimeUnit> x = Util.parseInterval("40sms", null);
             fail("expected error, got " + x);
         } catch (NumberFormatException e) {
-            assertTrue(
-                e.getMessage(),
-                e.getMessage().startsWith(
-                    "Invalid time interval '40sms'"));
+            assertThat(e.getMessage(), e.getMessage().startsWith(
+                "Invalid time interval '40sms'"), is(true));
         }
         // Null
         try {
@@ -1778,50 +1665,50 @@ public class UtilTestCase extends TestCase {
         for (String s : new IteratorIterable<String>(list.iterator())) {
             list2.add(s);
         }
-        assertEquals(list2, list);
+        assertThat(list, is(list2));
 
         // On empty list.
         final IteratorIterable<Object> iterable =
             new IteratorIterable<Object>(Collections.emptyList().iterator());
-        assertFalse(iterable.iterator().hasNext());
-        assertFalse(iterable.iterator().hasNext());
+        assertThat(iterable.iterator().hasNext(), is(false));
+        assertThat(iterable.iterator().hasNext(), is(false));
 
         // Part way through on iterator 1.
         final Iterable<String> iterable1 =
             new IteratorIterable<String>(list.iterator());
         final Iterator<String> iterator1 = iterable1.iterator();
-        assertTrue(iterator1.hasNext());
-        assertEquals("a", iterator1.next());
-        assertTrue(iterator1.hasNext());
-        assertEquals("b", iterator1.next());
+        assertThat(iterator1.hasNext(), is(true));
+        assertThat(iterator1.next(), is("a"));
+        assertThat(iterator1.hasNext(), is(true));
+        assertThat(iterator1.next(), is("b"));
 
         // Start another iterator 2.
         final Iterator<String> iterator2 = iterable1.iterator();
-        assertTrue(iterator2.hasNext());
-        assertEquals("a", iterator2.next());
+        assertThat(iterator2.hasNext(), is(true));
+        assertThat(iterator2.next(), is("a"));
 
         // A bit more on 1.
-        assertTrue(iterator1.hasNext());
-        assertEquals("c", iterator1.next());
+        assertThat(iterator1.hasNext(), is(true));
+        assertThat(iterator1.next(), is("c"));
 
         // Finish on 2.
-        assertTrue(iterator2.hasNext());
-        assertEquals("b", iterator2.next());
-        assertTrue(iterator2.hasNext());
-        assertEquals("c", iterator2.next());
-        assertTrue(iterator2.hasNext());
-        assertEquals("d", iterator2.next());
-        assertFalse(iterator2.hasNext());
+        assertThat(iterator2.hasNext(), is(true));
+        assertThat(iterator2.next(), is("b"));
+        assertThat(iterator2.hasNext(), is(true));
+        assertThat(iterator2.next(), is("c"));
+        assertThat(iterator2.hasNext(), is(true));
+        assertThat(iterator2.next(), is("d"));
+        assertThat(iterator2.hasNext(), is(false));
 
         // Finish on 1.
-        assertTrue(iterator1.hasNext());
-        assertEquals("d", iterator1.next());
-        assertFalse(iterator1.hasNext());
+        assertThat(iterator1.hasNext(), is(true));
+        assertThat(iterator1.next(), is("d"));
+        assertThat(iterator1.hasNext(), is(false));
 
         // Start on 3.
         final Iterator<String> iterator3 = iterable1.iterator();
-        assertTrue(iterator3.hasNext());
-        assertEquals("a", iterator3.next());
+        assertThat(iterator3.hasNext(), is(true));
+        assertThat(iterator3.next(), is("a"));
     }
 
     /**
@@ -1849,7 +1736,7 @@ public class UtilTestCase extends TestCase {
         }
     }
 
-    public void testByteMatcher() throws Exception {
+    @Test public void testByteMatcher() throws Exception {
         final ByteMatcher bm = new ByteMatcher(new byte[] {(byte)0x2A});
         final byte[] bytesNotPresent =
             new byte[] {(byte)0x2B, (byte)0x2C};
@@ -1858,11 +1745,11 @@ public class UtilTestCase extends TestCase {
         final byte[] bytesPresentLast =
             new byte[] {(byte)0x2B, (byte)0x2C, (byte)0x2A};
         final byte[] bytesPresentFirst =
-                new byte[] {(byte)0x2A, (byte)0x2C, (byte)0x2B};
-        assertEquals(-1, bm.match(bytesNotPresent));
-        assertEquals(1, bm.match(bytesPresent));
-        assertEquals(2, bm.match(bytesPresentLast));
-        assertEquals(0, bm.match(bytesPresentFirst));
+            new byte[] {(byte)0x2A, (byte)0x2C, (byte)0x2B};
+        assertThat(bm.match(bytesNotPresent), is(-1));
+        assertThat(bm.match(bytesPresent), is(1));
+        assertThat(bm.match(bytesPresentLast), is(2));
+        assertThat(bm.match(bytesPresentFirst), is(0));
     }
 }
 

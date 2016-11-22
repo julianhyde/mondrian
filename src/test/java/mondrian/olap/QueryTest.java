@@ -16,6 +16,13 @@ import mondrian.server.Statement;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Query test.
  */
@@ -30,9 +37,7 @@ public class QueryTest extends FoodMartTestCase {
     private Query queryWithCellProps;
     private Query queryWithoutCellProps;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before public void setUp() throws Exception {
         TestContext testContext = getTestContext();
         ConnectionBase connection =
             (ConnectionBase) testContext.getConnection();
@@ -53,19 +58,18 @@ public class QueryTest extends FoodMartTestCase {
         }
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After public void tearDown() throws Exception {
         queryWithCellProps = null;
         queryWithoutCellProps = null;
     }
 
-    public void testHasCellPropertyWhenQueryHasCellProperties() {
-        assertTrue(queryWithCellProps.hasCellProperty("Value"));
-        assertFalse(queryWithCellProps.hasCellProperty("Language"));
+    @Test public void testHasCellPropertyWhenQueryHasCellProperties() {
+        assertThat(queryWithCellProps.hasCellProperty("Value"), is(true));
+        assertThat(queryWithCellProps.hasCellProperty("Language"), is(false));
     }
 
-    public void testIsCellPropertyEmpty() {
-        assertTrue(queryWithoutCellProps.isCellPropertyEmpty());
+    @Test public void testIsCellPropertyEmpty() {
+        assertThat(queryWithoutCellProps.isCellPropertyEmpty(), is(true));
     }
 }
 

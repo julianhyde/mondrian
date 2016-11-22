@@ -15,6 +15,16 @@ import mondrian.olap.Util;
 
 import org.olap4j.*;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -28,19 +38,19 @@ public class ScenarioTest extends FoodMartTestCase {
     /**
      * Tests creating a scenario and setting a connection's active scenario.
      */
-    public void testCreateScenario() throws SQLException {
+    @Test public void testCreateScenario() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         try {
-            assertNull(connection.getScenario());
+            assertThat(connection.getScenario(), nullValue());
             final Scenario scenario = connection.createScenario();
-            assertNotNull(scenario);
+            assertThat(scenario, notNullValue());
             connection.setScenario(scenario);
-            assertSame(scenario, connection.getScenario());
+            assertThat(connection.getScenario(), sameInstance(scenario));
             connection.setScenario(null);
-            assertNull(connection.getScenario());
+            assertThat(connection.getScenario(), nullValue());
             final Scenario scenario2 = connection.createScenario();
-            assertNotNull(scenario2);
+            assertThat(scenario2, notNullValue());
             connection.setScenario(scenario2);
         } finally {
             connection.setScenario(null);
@@ -50,11 +60,11 @@ public class ScenarioTest extends FoodMartTestCase {
     /**
      * Tests setting the value of one cell.
      */
-    public void testSetCell() throws SQLException {
+    @Test public void testSetCell() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         try {
-            assertNull(connection.getScenario());
+            assertThat(connection.getScenario(), nullValue());
             final Scenario scenario = connection.createScenario();
             connection.setScenario(scenario);
             connection.prepareOlapStatement(
@@ -69,11 +79,11 @@ public class ScenarioTest extends FoodMartTestCase {
     /**
      * Tests that setting a cell's value without an active scenario is illegal.
      */
-    public void testSetCellWithoutScenarioFails() throws SQLException {
+    @Test public void testSetCellWithoutScenarioFails() throws SQLException {
         final OlapConnection connection =
             getTestContext().getOlap4jConnection();
         try {
-            assertNull(connection.getScenario());
+            assertThat(connection.getScenario(), nullValue());
             final PreparedOlapStatement pstmt = connection.prepareOlapStatement(
                 "select {[Measures].[Unit Sales]} on 0,\n"
                 + "{[Product].Children} on 1\n"
@@ -94,7 +104,7 @@ public class ScenarioTest extends FoodMartTestCase {
     /**
      * Tests that setting a calculated member is illegal.
      */
-    public void testSetCellCalcError() throws SQLException {
+    @Test public void testSetCellCalcError() throws SQLException {
         final TestContext testContext = TestContext.instance().withScenario();
         final OlapConnection connection = testContext.getOlap4jConnection();
         PreparedOlapStatement pstmt = connection.prepareOlapStatement(
@@ -141,7 +151,7 @@ public class ScenarioTest extends FoodMartTestCase {
     /**
      * Tests that allocation policies that are not supported give an error.
      */
-    public void testUnsupportedAllocationPolicyFails() throws SQLException {
+    @Test public void testUnsupportedAllocationPolicyFails() throws SQLException {
         final TestContext testContext = TestContext.instance().withScenario();
         final OlapConnection connection = testContext.getOlap4jConnection();
         final PreparedOlapStatement pstmt = connection.prepareOlapStatement(
@@ -177,14 +187,14 @@ public class ScenarioTest extends FoodMartTestCase {
     /**
      * Tests setting cells by the "equal increment" allocation policy.
      */
-    public void testEqualIncrement() throws SQLException {
+    @Test public void testEqualIncrement() throws SQLException {
         assertAllocation(AllocationPolicy.EQUAL_INCREMENT);
     }
 
     /**
      * Tests setting cells by the "equal allocation" allocation policy.
      */
-    public void testEqualAllocation() throws SQLException {
+    @Test public void testEqualAllocation() throws SQLException {
         assertAllocation(AllocationPolicy.EQUAL_ALLOCATION);
     }
 
@@ -317,7 +327,7 @@ public class ScenarioTest extends FoodMartTestCase {
                 + id
                 + "]");
         value = cellSet.getCell(Arrays.asList(0, 0)).getFormattedValue();
-        assertEquals("23,597", value);
+        assertThat(value, is("23,597"));
 
         // With slicer=scenario2, value as per scenario2.
         cellSet =
@@ -329,7 +339,7 @@ public class ScenarioTest extends FoodMartTestCase {
                 + id2
                 + "]");
         value = cellSet.getCell(Arrays.asList(0, 0)).getFormattedValue();
-        assertEquals("100", value);
+        assertThat(value, is("100"));
 
         // With no slicer, value as per connection's scenario, scenario1.
         assert connection.getScenario() == scenario;
@@ -339,7 +349,7 @@ public class ScenarioTest extends FoodMartTestCase {
                 + "{[Product].Children} on 1\n"
                 + "from [Sales]\n");
         value = cellSet.getCell(Arrays.asList(0, 0)).getFormattedValue();
-        assertEquals("23,597", value);
+        assertThat(value, is("23,597"));
 
         // Set connection's scenario to null, and we get the unmodified value.
         connection.setScenario(null);
@@ -349,7 +359,7 @@ public class ScenarioTest extends FoodMartTestCase {
                 + "{[Product].Children} on 1\n"
                 + "from [Sales]\n");
         value = cellSet.getCell(Arrays.asList(0, 0)).getFormattedValue();
-        assertEquals("24,597", value);
+        assertThat(value, is("24,597"));
     }
 
     public TestContext getTestContext2() {
@@ -374,7 +384,7 @@ public class ScenarioTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-815">MONDRIAN-815</a>,
      * "NPE from query if use a scenario and one of the cells is empty/null".
      */
-    public void testBugMondrian815() throws SQLException {
+    @Test public void testBugMondrian815() throws SQLException {
         final TestContext testContext = getTestContext2();
         final OlapConnection connection = testContext.getOlap4jConnection();
         final Scenario scenario = connection.createScenario();
@@ -437,7 +447,7 @@ public class ScenarioTest extends FoodMartTestCase {
             TestContext.toString(cellSet2));
     }
 
-    public void testScenarioPropertyBug1496() {
+    @Test public void testScenarioPropertyBug1496() {
         // looking up the $scenario property for a non ScenarioCalc member
         // causes class cast exception
         // http://jira.pentaho.com/browse/MONDRIAN-1496
@@ -447,7 +457,7 @@ public class ScenarioTest extends FoodMartTestCase {
         // non calc member, should return null
         Object o = result.getAxes()[0].getPositions().get(0).get(0)
             .getPropertyValue(Property.SCENARIO);
-        assertEquals(null, o);
+        assertThat(o, nullValue());
 
         result = TestContext.instance().executeQuery(
             "with member Customer.Customers.cal as '1' "
@@ -455,7 +465,7 @@ public class ScenarioTest extends FoodMartTestCase {
         // calc member, should return null
         o = result.getAxes()[0].getPositions().get(0).get(0)
             .getPropertyValue(Property.SCENARIO);
-        assertEquals(null, o);
+        assertThat(o, nullValue());
     }
 
 

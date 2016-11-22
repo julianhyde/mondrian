@@ -15,8 +15,9 @@
 */
 package mondrian.test;
 
-import junit.framework.Test;
+import org.junit.Test;
 import junit.framework.TestResult;
+import junit.framework.TestSuite;
 import junit.runner.*;
 
 import java.io.PrintStream;
@@ -64,11 +65,11 @@ public class MondrianTestRunner extends BaseTestRunner {
         return new StandardTestSuiteLoader();
     }
 
-    public void testFailed(int status, Test test, Throwable t) {
+    @Test public void testFailed(int status, junit.framework.Test test, Throwable t) {
     }
-    public void testStarted(String testName) {
+    @Test public void testStarted(String testName) {
     }
-    public void testEnded(String testName) {
+    @Test public void testEnded(String testName) {
     }
     /**
      * Creates the TestResult to be used for the test run.
@@ -77,7 +78,7 @@ public class MondrianTestRunner extends BaseTestRunner {
         return new TestResult();
     }
 
-    public TestResult doRun(final Test suite) {
+    public TestResult doRun(final TestSuite suite) {
         final TestResult result = createTestResult();
        result.addListener(fPrinter);
         /*
@@ -214,6 +215,8 @@ public class MondrianTestRunner extends BaseTestRunner {
         return stopReason;
     }
 
+    static class TestSuiteLoader {}
+    static class StandardTestSuiteLoader extends TestSuiteLoader {}
 }
 
 // End MondrianTestRunner.java

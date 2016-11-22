@@ -12,6 +12,7 @@ package mondrian.xmla;
 import mondrian.olap.Util;
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Test;
 import junit.framework.Assert;
 
 import java.math.BigDecimal;
@@ -27,15 +28,8 @@ import java.math.BigInteger;
  * @author Richard M. Emberson
  * @since Jul 12 2007
  */
-
 public class XmlaTests extends FoodMartTestCase {
-    public XmlaTests() {
-    }
-
-    public XmlaTests(String name) {
-        super(name);
-    }
-    public void testXmlaUtilNormalizeNumericString() throws Exception {
+    @Test public void testXmlaUtilNormalizeNumericString() throws Exception {
         String vin = "1.0E10";
         String expected = "1.0E10";
         doXmlaUtilNormalizeNumericString(vin, expected);
@@ -73,7 +67,7 @@ public class XmlaTests extends FoodMartTestCase {
         doXmlaUtilNormalizeNumericString(vin, expected);
     }
 
-    public void testXmlaHandlerGetValueTypeHint() throws Exception {
+    @Test public void testXmlaHandlerGetValueTypeHint() throws Exception {
         String dataType = "Integer";
         doXmlaHandlerGetValueTypeHint(dataType, XmlaHandler.XSD_INT);
 
@@ -87,7 +81,7 @@ public class XmlaTests extends FoodMartTestCase {
         doXmlaHandlerGetValueTypeHint(dataType, null);
     }
 
-    public void testXmlaHandlerValueInfo() throws Exception {
+    @Test public void testXmlaHandlerValueInfo() throws Exception {
         // Integer or null
         String dataType = "Integer";
         Object inputValue = new Integer(4);
@@ -301,4 +295,3 @@ System.out.println("    value=" +value);
 }
 
 // End XmlaTests.java
-

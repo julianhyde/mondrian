@@ -21,11 +21,20 @@ import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the MDX parser.
@@ -33,17 +42,13 @@ import java.util.List;
  * @author gjohnson
  */
 public class ParserTest extends FoodMartTestCase {
-    public ParserTest(String name) {
-        super(name);
-    }
-
     static final BuiltinFunTable funTable = BuiltinFunTable.instance();
 
     protected TestParser createParser() {
         return new TestParser(new Factory());
     }
 
-    public void testAxisParsing() throws Exception {
+    @Test public void testAxisParsing() throws Exception {
         checkAxisAllWays(0, "COLUMNS");
         checkAxisAllWays(1, "ROWS");
         checkAxisAllWays(2, "PAGES");
@@ -65,15 +70,13 @@ public class ParserTest extends FoodMartTestCase {
         String q = "select [member] on " + s + " from [cube]";
         QueryPart query =
             p.parseInternal(mockStmt(), q, false, funTable, false);
-        assertNull("Test parser should return null query", query);
+        assertThat("Test parser should return null query", query, nullValue());
 
         QueryAxis[] axes = p.getFactory().getAxes();
 
-        assertEquals("Number of axes must be 1", 1, axes.length);
-        assertEquals(
-            "Axis index name must be correct",
-            expectedName,
-            axes[0].getAxisName());
+        assertThat("Number of axes must be 1", axes.length, is(1));
+        assertThat("Axis index name must be correct",
+            axes[0].getAxisName(), is(expectedName));
     }
 
     private Statement mockStmt() {
@@ -140,7 +143,7 @@ public class ParserTest extends FoodMartTestCase {
         };
     }
 
-    public void testNegativeCases() throws Exception {
+    @Test public void testNegativeCases() throws Exception {
         assertParseQueryFails(
             "select [member] on axis(1.7) from sales",
             "Invalid axis specification. "
@@ -177,7 +180,7 @@ public class ParserTest extends FoodMartTestCase {
      * must be a letter (per the unicode standard 2.0) or underscore. Subsequent
      * characters must be a letter, and underscore, or a digit.
      */
-    public void testScannerPunc() {
+    @Test public void testScannerPunc() {
         assertParseQuery(
             "with member [Measures].__Foo as 1 + 2\n"
             + "select __Foo on 0\n"
@@ -220,10 +223,10 @@ public class ParserTest extends FoodMartTestCase {
             "Encountered: \"]\"");
     }
 
-    public void testUnderscore() {
+    @Test public void testUnderscore() {
     }
 
-    public void testUnparse() {
+    @Test public void testUnparse() {
         checkUnparse(
             "with member [Measures].[Foo] as ' 123 '\n"
             + "select {[Measures].members} on columns,\n"
@@ -264,72 +267,67 @@ public class ParserTest extends FoodMartTestCase {
             }
             String message = e.getMessage();
             if (message == null || message.indexOf(expected) < 0) {
-                fail(
-                    "Actual result [" + message
-                    + "] did not contain [" + expected + "]");
+                fail("Actual result [" + message
+                     + "] did not contain [" + expected + "]");
             }
         }
     }
 
-    public void testMultipleAxes() throws Exception {
+    @Test public void testMultipleAxes() throws Exception {
         TestParser p = createParser();
         String query = "select {[axis0mbr]} on axis(0), "
                 + "{[axis1mbr]} on axis(1) from cube";
 
-        assertNull(
-            "Test parser should return null query",
-            p.parseInternal(mockStmt(), query, false, funTable, false));
+        assertThat("Test parser should return null query",
+            p.parseInternal(mockStmt(), query, false, funTable, false),
+            nullValue());
 
         QueryAxis[] axes = p.getFactory().getAxes();
 
-        assertEquals("Number of axes", 2, axes.length);
-        assertEquals(
-            "Axis index name must be correct",
-            AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(0).name(),
-            axes[0].getAxisName());
-        assertEquals(
-            "Axis index name must be correct",
-            AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(1).name(),
-            axes[1].getAxisName());
+        assertThat("Number of axes", axes.length, is(2));
+        assertThat("Axis index name must be correct",
+            axes[0].getAxisName(),
+            is(AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(0).name()));
+        assertThat("Axis index name must be correct",
+            axes[1].getAxisName(),
+            is(AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(1).name()));
 
         query = "select {[axis1mbr]} on aXiS(1), "
                 + "{[axis0mbr]} on AxIs(0) from cube";
 
-        assertNull(
-            "Test parser should return null query",
-            p.parseInternal(mockStmt(), query, false, funTable, false));
+        assertThat("Test parser should return null query",
+            p.parseInternal(mockStmt(), query, false, funTable, false),
+            nullValue());
 
-        assertEquals("Number of axes", 2, axes.length);
-        assertEquals(
-            "Axis index name must be correct",
-            AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(0).name(),
-            axes[0].getAxisName());
-        assertEquals(
-            "Axis index name must be correct",
-            AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(1).name(),
-            axes[1].getAxisName());
+        assertThat("Number of axes", axes.length, is(2));
+        assertThat("Axis index name must be correct",
+            axes[0].getAxisName(),
+            is(AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(0).name()));
+        assertThat("Axis index name must be correct",
+            axes[1].getAxisName(),
+            is(AxisOrdinal.StandardAxisOrdinal.forLogicalOrdinal(1).name()));
 
         Exp colsSetExpr = axes[0].getSet();
-        assertNotNull("Column tuples", colsSetExpr);
+        assertThat("Column tuples", colsSetExpr, notNullValue());
 
         UnresolvedFunCall fun = (UnresolvedFunCall)colsSetExpr;
         Id arg0 = (Id) (fun.getArgs()[0]);
         Id.NameSegment id = (Id.NameSegment) arg0.getElement(0);
-        assertEquals("Correct member on axis", "axis0mbr", id.name);
+        assertThat("Correct member on axis", id.name, is("axis0mbr"));
 
         Exp rowsSetExpr = axes[1].getSet();
-        assertNotNull("Row tuples", rowsSetExpr);
+        assertThat("Row tuples", rowsSetExpr, notNullValue());
 
         fun = (UnresolvedFunCall) rowsSetExpr;
         arg0 = (Id) (fun.getArgs()[0]);
         id = (Id.NameSegment) arg0.getElement(0);
-        assertEquals("Correct member on axis", "axis1mbr", id.name);
+        assertThat("Correct member on axis", id.name, is("axis1mbr"));
     }
 
     /**
      * If an axis expression is a member, implicitly convert it to a set.
      */
-    public void testMemberOnAxis() {
+    @Test public void testMemberOnAxis() {
         assertParseQuery(
             "select [Measures].[Sales Count] on 0, non empty [Store].[Store State].members on 1 from [Sales]",
             "select [Measures].[Sales Count] ON COLUMNS,\n"
@@ -337,7 +335,7 @@ public class ParserTest extends FoodMartTestCase {
             + "from [Sales]\n");
     }
 
-    public void testCaseTest() {
+    @Test public void testCaseTest() {
         assertParseQuery(
             "with member [Measures].[Foo] as "
             + " ' case when x = y then \"eq\" when x < y then \"lt\" else \"gt\" end '"
@@ -347,7 +345,7 @@ public class ParserTest extends FoodMartTestCase {
             + "from [cube]\n");
     }
 
-    public void testCaseSwitch() {
+    @Test public void testCaseSwitch() {
         assertParseQuery(
             "with member [Measures].[Foo] as "
             + " ' case x when 1 then 2 when 3 then 4 else 5 end '"
@@ -362,7 +360,7 @@ public class ParserTest extends FoodMartTestCase {
      * MONDRIAN-306, "Parser should not require braces around range op in WITH
      * SET"</a>.
      */
-    public void testSetExpr() {
+    @Test public void testSetExpr() {
         assertParseQuery(
             "with set [Set1] as '[Product].[Drink]:[Product].[Food]' \n"
             + "select [Set1] on columns, {[Measures].defaultMember} on rows \n"
@@ -382,14 +380,14 @@ public class ParserTest extends FoodMartTestCase {
             + "from [Sales]\n");
     }
 
-    public void testDimensionProperties() {
+    @Test public void testDimensionProperties() {
         assertParseQuery(
             "select {[foo]} properties p1,   p2 on columns from [cube]",
             "select {[foo]} DIMENSION PROPERTIES p1, p2 ON COLUMNS\n"
             + "from [cube]\n");
     }
 
-    public void testCellProperties() {
+    @Test public void testCellProperties() {
         assertParseQuery(
             "select {[foo]} on columns "
             + "from [cube] CELL PROPERTIES FORMATTED_VALUE",
@@ -398,7 +396,7 @@ public class ParserTest extends FoodMartTestCase {
             + "[FORMATTED_VALUE]");
     }
 
-    public void testIsEmpty() {
+    @Test public void testIsEmpty() {
         assertParseExpr(
             "[Measures].[Unit Sales] IS EMPTY",
             "([Measures].[Unit Sales] IS EMPTY)");
@@ -415,7 +413,7 @@ public class ParserTest extends FoodMartTestCase {
         //     true);
     }
 
-    public void testIs() {
+    @Test public void testIs() {
         assertParseExpr(
             "[Measures].[Unit Sales] IS [Measures].[Unit Sales] "
             + "AND [Measures].[Unit Sales] IS NULL",
@@ -423,7 +421,7 @@ public class ParserTest extends FoodMartTestCase {
             + "AND ([Measures].[Unit Sales] IS NULL))");
     }
 
-    public void testIsNull() {
+    @Test public void testIsNull() {
         assertParseExpr(
             "[Measures].[Unit Sales] IS NULL",
             "([Measures].[Unit Sales] IS NULL)");
@@ -449,13 +447,13 @@ public class ParserTest extends FoodMartTestCase {
         //     true);
     }
 
-    public void testNull() {
+    @Test public void testNull() {
         assertParseExpr(
             "Filter({[Measures].[Foo]}, Iif(1 = 2, NULL, 'X'))",
             "Filter({[Measures].[Foo]}, Iif((1 = 2), NULL, \"X\"))");
     }
 
-    public void testCast() {
+    @Test public void testCast() {
         assertParseExpr(
             "Cast([Measures].[Unit Sales] AS Numeric)",
             "CAST([Measures].[Unit Sales] AS Numeric)");
@@ -469,7 +467,7 @@ public class ParserTest extends FoodMartTestCase {
      * Verifies that calculated measures made of several '*' operators
      * can resolve them correctly.
      */
-    public void testMultiplication() {
+    @Test public void testMultiplication() {
         JavaccParserValidatorImpl p = new JavaccParserValidatorImpl();
         final String mdx =
             wrapExpr(
@@ -484,28 +482,29 @@ public class ParserTest extends FoodMartTestCase {
                 p.parseInternal(
                     statement, mdx, false,
                     funTable, false);
-            assertTrue(query instanceof Query);
+            boolean b = query instanceof Query;
+            assertThat(b, is(true));
             ((Query) query).resolve();
         } finally {
             statement.close();
         }
     }
 
-    public void testBangFunction() {
+    @Test public void testBangFunction() {
         // Parser accepts '<id> [! <id>] *' as a function name, but ignores
         // all but last name.
         assertParseExpr("foo!bar!Exp(2.0)", "Exp(2.0)");
         assertParseExpr("1 + VBA!Exp(2.0 + 3)", "(1 + Exp((2.0 + 3)))");
     }
 
-    public void testId() {
+    @Test public void testId() {
         assertParseExpr("foo", "foo");
         assertParseExpr("fOo", "fOo");
         assertParseExpr("[Foo].[Bar Baz]", "[Foo].[Bar Baz]");
         assertParseExpr("[Foo].&[Bar]", "[Foo].&[Bar]");
     }
 
-    public void testIdWithKey() {
+    @Test public void testIdWithKey() {
         // two segments each with a compound key
         final String mdx = "[Foo].&Key1&Key2.&[Key3]&Key4&[5]";
         assertParseExpr(mdx, mdx);
@@ -516,46 +515,41 @@ public class ParserTest extends FoodMartTestCase {
             new JavaccParserValidatorImpl(factory);
         parser.parseInternal(
             null, mdxQuery, false, funTable, false);
-        assertEquals(1, factory.getFormulas().length);
+        assertThat(factory.getFormulas().length, is(1));
         Formula withMember = factory.getFormulas()[0];
         final Exp expr = withMember.getExpression();
         Id id = (Id) expr;
-        assertEquals(3, id.getSegments().size());
+        assertThat(id.getSegments().size(), is(3));
 
         final Id.NameSegment seg0 = (Id.NameSegment) id.getSegments().get(0);
-        assertEquals("Foo", seg0.getName());
-        assertEquals(Id.Quoting.QUOTED, seg0.getQuoting());
+        assertThat(seg0.getName(), is("Foo"));
+        assertThat(seg0.getQuoting(), is(Id.Quoting.QUOTED));
 
         final Id.KeySegment seg1 = (Id.KeySegment) id.getSegments().get(1);
-        assertEquals(Id.Quoting.KEY, seg1.getQuoting());
+        assertThat(seg1.getQuoting(), is(Id.Quoting.KEY));
         List<Id.NameSegment> keyParts = seg1.getKeyParts();
-        assertNotNull(keyParts);
-        assertEquals(2, keyParts.size());
-        assertEquals("Key1", keyParts.get(0).getName());
-        assertEquals(
-            Id.Quoting.UNQUOTED, keyParts.get(0).getQuoting());
-        assertEquals("Key2", keyParts.get(1).getName());
-        assertEquals(
-            Id.Quoting.UNQUOTED, keyParts.get(1).getQuoting());
+        assertThat(keyParts, notNullValue());
+        assertThat(keyParts.size(), is(2));
+        assertThat(keyParts.get(0).getName(), is("Key1"));
+        assertThat(keyParts.get(0).getQuoting(), is(Id.Quoting.UNQUOTED));
+        assertThat(keyParts.get(1).getName(), is("Key2"));
+        assertThat(keyParts.get(1).getQuoting(), is(Id.Quoting.UNQUOTED));
 
         final Id.Segment seg2 = id.getSegments().get(2);
-        assertEquals(Id.Quoting.KEY, seg2.getQuoting());
+        assertThat(seg2.getQuoting(), is(Id.Quoting.KEY));
         List<Id.NameSegment> keyParts2 = seg2.getKeyParts();
-        assertNotNull(keyParts2);
-        assertEquals(3, keyParts2.size());
-        assertEquals(
-            Id.Quoting.QUOTED, keyParts2.get(0).getQuoting());
-        assertEquals(
-            Id.Quoting.UNQUOTED, keyParts2.get(1).getQuoting());
-        assertEquals(
-            Id.Quoting.QUOTED, keyParts2.get(2).getQuoting());
-        assertEquals("5", keyParts2.get(2).getName());
+        assertThat(keyParts2, notNullValue());
+        assertThat(keyParts2.size(), is(3));
+        assertThat(keyParts2.get(0).getQuoting(), is(Id.Quoting.QUOTED));
+        assertThat(keyParts2.get(1).getQuoting(), is(Id.Quoting.UNQUOTED));
+        assertThat(keyParts2.get(2).getQuoting(), is(Id.Quoting.QUOTED));
+        assertThat(keyParts2.get(2).getName(), is("5"));
 
         final String actual = expr.toString();
         TestContext.assertEqualsVerbose(mdx, actual);
     }
 
-    public void testIdComplex() {
+    @Test public void testIdComplex() {
         // simple key
         assertParseExpr(
             "[Foo].&[Key1]&[Key2].[Bar]",
@@ -589,7 +583,7 @@ public class ParserTest extends FoodMartTestCase {
             "[Foo].&[_Key2].[Bar]");
     }
 
-    public void testCloneQuery() {
+    @Test public void testCloneQuery() {
         Connection connection = TestContext.instance().getConnection();
         Query query = connection.parseQuery(
             "select {[Measures].Members} on columns,\n"
@@ -598,14 +592,15 @@ public class ParserTest extends FoodMartTestCase {
             + "where ([Gender].[M])");
 
         Object queryClone = query.clone();
-        assertTrue(queryClone instanceof Query);
-        assertEquals(query.toString(), queryClone.toString());
+        boolean b = queryClone instanceof Query;
+        assertThat(b, is(true));
+        assertThat(queryClone.toString(), is(query.toString()));
     }
 
     /**
      * Tests parsing of numbers.
      */
-    public void testNumbers() {
+    @Test public void testNumbers() {
         // Number: [+-] <digits> [ . <digits> ] [e [+-] <digits> ]
         assertParseExpr("2", "2");
 
@@ -661,7 +656,7 @@ public class ParserTest extends FoodMartTestCase {
      * The problem was that "5000001234" exceeded the precision of the int being
      * used to gather the mantissa.
      */
-    public void testLargePrecision() {
+    @Test public void testLargePrecision() {
         // Now, a query with several numeric literals. This is the original
         // testcase for the bug.
         assertParseQuery(
@@ -679,7 +674,7 @@ public class ParserTest extends FoodMartTestCase {
             + "where ([Time].[1997].[Q2].[4])\n");
     }
 
-    public void testIdentifier() {
+    @Test public void testIdentifier() {
         // must have at least one segment
         Id id;
         try {
@@ -690,16 +685,16 @@ public class ParserTest extends FoodMartTestCase {
         }
 
         id = new Id(new Id.NameSegment("foo"));
-        assertEquals("[foo]", id.toString());
+        assertThat(id.toString(), is("[foo]"));
 
-        // append does not mutate
+      // append does not mutate
         Id id2 = id.append(
             new Id.KeySegment(
                 new Id.NameSegment(
                     "bar", Id.Quoting.QUOTED)));
-        assertTrue(id != id2);
-        assertEquals("[foo]", id.toString());
-        assertEquals("[foo].&[bar]", id2.toString());
+        assertThat(id != id2, is(true));
+        assertThat(id.toString(), is("[foo]"));
+        assertThat(id2.toString(), is("[foo].&[bar]"));
 
         // cannot mutate segment list
         final List<Id.Segment> segments = id.getSegments();
@@ -729,7 +724,7 @@ public class ParserTest extends FoodMartTestCase {
      * <a href="http://sf.net/tracker/?func=detail&aid=3030772&group_id=168953&atid=848534">
      * olap4j bug 3030772, "DrilldownLevelTop parser error"</a>.
      */
-    public void testEmptyExpr() {
+    @Test public void testEmptyExpr() {
         assertParseQuery(
             "select NON EMPTY HIERARCHIZE(\n"
             + "  {DrillDownLevelTop(\n"
@@ -777,7 +772,7 @@ public class ParserTest extends FoodMartTestCase {
      * <p>Currently that bug is not fixed. We give the AS operator low
      * precedence, so CAST works as it should but 'expr AS namedSet' does not.
      */
-    public void testAsPrecedence() {
+    @Test public void testAsPrecedence() {
         // low precedence operator (AND) in CAST.
         assertParseQuery(
             "select cast(a and b as string) on 0 from cube",
@@ -787,7 +782,8 @@ public class ParserTest extends FoodMartTestCase {
         // medium precedence operator (:) in CAST
         assertParseQuery(
             "select cast(a : b as string) on 0 from cube",
-            "select CAST((a : b) AS string) ON COLUMNS\n" + "from [cube]\n");
+            "select CAST((a : b) AS string) ON COLUMNS\n"
+            + "from [cube]\n");
 
         // high precedence operator (IS) in CAST
         assertParseQuery(
@@ -844,7 +840,7 @@ public class ParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testDrillThrough() {
+    @Test public void testDrillThrough() {
         assertParseQuery(
             "DRILLTHROUGH SELECT [Foo] on 0, [Bar] on 1 FROM [Cube]",
             "drillthrough\n"
@@ -853,7 +849,7 @@ public class ParserTest extends FoodMartTestCase {
             + "from [Cube]\n");
     }
 
-    public void testDrillThroughExtended1() {
+    @Test public void testDrillThroughExtended1() {
         assertParseQuery(
             "DRILLTHROUGH MAXROWS 5 FIRSTROWSET 7\n"
             + "SELECT [Foo] on 0, [Bar] on 1 FROM [Cube]\n"
@@ -865,7 +861,7 @@ public class ParserTest extends FoodMartTestCase {
             + " return  return [Xxx].[AAa]");
     }
 
-    public void testDrillThroughExtended() {
+    @Test public void testDrillThroughExtended() {
         assertParseQuery(
             "DRILLTHROUGH MAXROWS 5 FIRSTROWSET 7\n"
             + "SELECT [Foo] on 0, [Bar] on 1 FROM [Cube]\n"
@@ -877,7 +873,7 @@ public class ParserTest extends FoodMartTestCase {
             + " return  return [Xxx].[AAa], [YYY]");
     }
 
-    public void testDrillThroughExtended3() {
+    @Test public void testDrillThroughExtended3() {
         assertParseQuery(
             "DRILLTHROUGH MAXROWS 5 FIRSTROWSET 7\n"
             + "SELECT [Foo] on 0, [Bar] on 1 FROM [Cube]\n"
@@ -889,7 +885,7 @@ public class ParserTest extends FoodMartTestCase {
             + " return  return [Xxx].[AAa], [YYY], [zzz]");
     }
 
-    public void testExplain() {
+    @Test public void testExplain() {
         assertParseQuery(
             "explain plan for\n"
             + "with member [Mesaures].[Foo] as 1 + 3\n"
@@ -920,7 +916,7 @@ public class ParserTest extends FoodMartTestCase {
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-924">
      * MONDRIAN-924, "Parsing fails with multiple spaces between words"</a>.
      */
-    public void testMultipleSpaces() {
+    @Test public void testMultipleSpaces() {
         assertParseQuery(
             "select [Store].[With   multiple  spaces] on 0\n"
             + "from [Sales]",
@@ -979,7 +975,7 @@ public class ParserTest extends FoodMartTestCase {
         if (!(query instanceof DrillThrough
             || query instanceof Explain))
         {
-            assertNull("Test parser should return null query", query);
+            assertThat("Test parser should return null query", query, nullValue());
         }
         final String actual = factory.toMdxString();
         TestContext.assertEqualsVerbose(expected, actual);
@@ -1000,7 +996,7 @@ public class ParserTest extends FoodMartTestCase {
         final QueryPart query =
             parser.parseInternal(
                 null, mdx, false, funTable, false);
-        assertNull("Test parser should return null query", query);
+        assertThat("Test parser should return null query", query, nullValue());
         final String actual =
             Util.unparse(factory.formulas[0].getExpression());
         TestContext.assertEqualsVerbose(expected, actual);

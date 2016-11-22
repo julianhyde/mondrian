@@ -14,6 +14,11 @@ import mondrian.util.Bug;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Test for the extended syntax of Order
  * function. See
@@ -27,15 +32,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class OrderTest extends ClearViewBase {
-
-    public OrderTest() {
-        super();
-    }
-
-    public OrderTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -44,12 +40,13 @@ public class OrderTest extends ClearViewBase {
         return DiffRepository.lookup(OrderTest.class);
     }
 
-    public static TestSuite suite() {
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
         if (!Bug.LayoutWrongCardinalty) {
             // OrderTest.testSortRowAtt fails until this is fixed
-            return new TestSuite();
+            return Collections.emptyList();
         }
-        return constructSuite(getDiffReposStatic(), OrderTest.class);
+        return DiffRepository.parameters(OrderTest.class);
     }
 
 }

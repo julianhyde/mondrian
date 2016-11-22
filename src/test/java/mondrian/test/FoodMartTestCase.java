@@ -14,8 +14,14 @@ import mondrian.calc.TupleList;
 import mondrian.calc.impl.UnaryTupleList;
 import mondrian.olap.*;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.*;
 
@@ -26,22 +32,57 @@ import java.util.*;
  * @author jhyde
  * @since 29 March, 2002
  */
-public class FoodMartTestCase extends TestCase {
+public class FoodMartTestCase {
+    protected static <T> void assertEquals(T expected, T actual) {
+        assertThat(actual, is(expected));
+    }
+    protected static <T> void assertEquals(String s, T expected, T actual) {
+        assertThat(s, actual, is(expected));
+    }
+    protected static void assertEquals(double expected, double actual, double delta) {
+        assertThat(actual, TestTemp.range(expected, delta));
+    }
+    protected static void assertEquals(String s, double expected, double actual, double delta) {
+        assertThat(s, actual, TestTemp.range(expected, delta));
+    }
 
-    /**
+    protected static <T> void assertSame(T expected, T actual) {
+        assertThat(actual, sameInstance(expected));
+    }
+
+    protected static void assertTrue(boolean b) {
+        assertThat(b, is(true));
+    }
+    protected static void assertTrue(String s, boolean b) {
+        assertThat(s, b, is(true));
+    }
+
+    protected static void assertFalse(String s, boolean b) {
+        assertThat(s, b, is(false));
+    }
+    protected static <T> void assertNull(T t) {
+        assertThat(t, nullValue());
+    }
+    protected static <T> void assertNull(String s, T t) {
+        assertThat(s, t, nullValue());
+    }
+    protected static <T> void assertNotNull(T t) {
+        assertThat(t, notNullValue());
+    }
+    protected static <T> void assertNotNull(String s, T t) {
+        assertThat(s, t, notNullValue());
+    }
+    protected static void fail(String t) {
+        Assert.fail(t);
+    }
+
+  /**
      * Access properties via this object and their values will be reset on
      * {@link #tearDown()}.
      */
     protected final PropertySaver propSaver = new PropertySaver();
 
-    public FoodMartTestCase(String name) {
-        super(name);
-    }
-
-    public FoodMartTestCase() {
-    }
-
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         // revert any properties that have been set during this test
         propSaver.reset();
     }
@@ -69,9 +110,9 @@ public class FoodMartTestCase extends TestCase {
     {
         Result result = executeQuery(queryString);
         Axis[] axes = result.getAxes();
-        Assert.assertTrue(axes.length == 2);
-        Assert.assertTrue(axes[0].getPositions().size() == columnCount);
-        Assert.assertTrue(axes[1].getPositions().size() == rowCount);
+        assertTrue(axes.length == 2);
+        assertTrue(axes[0].getPositions().size() == columnCount);
+        assertTrue(axes[1].getPositions().size() == rowCount);
     }
 
     /**
@@ -152,7 +193,7 @@ public class FoodMartTestCase extends TestCase {
             "Iif (" + expression + ",\"true\",\"false\")";
         final String actual = executeExpr(iifExpression);
         final String expectedString = expected ? "true" : "false";
-        assertEquals(expectedString, actual);
+        assertThat(actual, is(expectedString));
     }
 
     /**
@@ -183,9 +224,7 @@ public class FoodMartTestCase extends TestCase {
             TestContext.toString(testContext.executeQuery(query1));
         String resultString2 =
             TestContext.toString(testContext.executeQuery(query2));
-        assertEquals(
-            measureValues(resultString1),
-            measureValues(resultString2));
+        assertThat(measureValues(resultString2), is(measureValues(resultString1)));
     }
 
     /**
@@ -440,10 +479,8 @@ public class FoodMartTestCase extends TestCase {
 
         Result resultNonNative = context.executeQuery(query);
 
-        assertEquals(
-            message,
-            TestContext.toString(resultNative),
-            TestContext.toString(resultNonNative));
+        assertThat(message, TestContext.toString(resultNonNative),
+            is(TestContext.toString(resultNative)));
 
         propSaver.reset();
     }
@@ -513,7 +550,7 @@ class TestCaseForker {
             for (Throwable throwable : failures) {
                 throwable.printStackTrace();
             }
-            TestCase.fail(failures.size() + " threads failed");
+            fail(failures.size() + " threads failed");
         }
     }
 }

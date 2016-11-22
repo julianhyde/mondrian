@@ -11,8 +11,16 @@ package mondrian.util;
 
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Unit-test for FilteredIterable
@@ -21,14 +29,7 @@ import java.util.List;
  * @since May, 2008
  */
 public class FilteredIterableTest extends FoodMartTestCase {
-    public FilteredIterableTest() {
-    }
-
-    public FilteredIterableTest(String name) {
-        super(name);
-    }
-
-    public void testEmptyList() throws Exception {
+    @Test public void testEmptyList() throws Exception {
         final List<Integer> base = new ArrayList<Integer>();
         for (int i = 0; i < 10; i++) {
             base.add(i);
@@ -48,7 +49,7 @@ public class FilteredIterableTest extends FoodMartTestCase {
     }
 
 
-    public void testGetter() throws Exception {
+    @Test public void testGetter() throws Exception {
         final List<Integer> base = new ArrayList<Integer>();
         for (int i = 0; i < 10; i++) {
             base.add(i);
@@ -63,11 +64,11 @@ public class FilteredIterableTest extends FoodMartTestCase {
                     }
                 });
         for (int i = 0; i < 2; i++) {
-            assertEquals(new Integer(i), empty.get(i));
+            assertThat(empty.get(i), is(new Integer(i)));
         }
     }
 
-    public void test2Elements() throws Exception {
+    @Test public void test2Elements() throws Exception {
         final List<Integer> base = new ArrayList<Integer>();
         for (int i = 0; i < 2; i++) {
             base.add(i);
@@ -81,11 +82,11 @@ public class FilteredIterableTest extends FoodMartTestCase {
                         return true;
                     }
                 });
-        assertFalse(identical.isEmpty());
-        assertNotNull(identical.get(0));
+        assertThat(identical.isEmpty(), is(false));
+        assertThat(identical.get(0), notNullValue());
         int k = 0;
         for (final Integer i : identical) {
-            assertEquals(i, identical.get(k));
+            assertThat(identical.get(k), is(i));
             k++;
         }
     }

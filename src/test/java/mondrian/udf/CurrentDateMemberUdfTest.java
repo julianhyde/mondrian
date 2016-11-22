@@ -12,20 +12,15 @@ package mondrian.udf;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
 /**
  * Tests the CurrentDateMemberUdf class.
  *
  * @author Luc Boudreau
  */
 public class CurrentDateMemberUdfTest extends FoodMartTestCase {
-    public CurrentDateMemberUdfTest() {
-        super();
-    }
-    public CurrentDateMemberUdfTest(String name) {
-        super(name);
-    }
-
-    public void testCurrentDateMemberUdf() {
+    @Test public void testCurrentDateMemberUdf() {
         TestContext context = TestContext.instance().create(
             null,
             null,

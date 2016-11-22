@@ -16,6 +16,9 @@ import mondrian.spi.Dialect;
 import mondrian.spi.impl.JdbcDialectImpl;
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class SqlTupleReaderTest extends FoodMartTestCase {
@@ -24,19 +27,17 @@ public class SqlTupleReaderTest extends FoodMartTestCase {
         .getMeasureGroups().get(0);
     private SqlTupleReader.ColumnLayoutBuilder layoutBuilder;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         propSaver.set(MondrianProperties.instance().GenerateFormattedSql, true);
         layoutBuilder = new SqlTupleReader.ColumnLayoutBuilder();
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         propSaver.reset();
     }
 
-    public void testAddLevelMembersSqlOrderByAliasCalcExpr() {
+    @Test public void testAddLevelMembersSqlOrderByAliasCalcExpr() {
         RolapStarSet starSet = new RolapStarSet(
             salesMeasureGroup.getStar(), salesMeasureGroup, null);
         SqlTupleReader sqlTupleReader = new SqlTupleReader(
@@ -77,7 +78,7 @@ public class SqlTupleReaderTest extends FoodMartTestCase {
             queryBuilder.toSqlAndTypes().getKey(), -1);
     }
 
-    public void testAddLevelMembersSqlWithOneLevel() {
+    @Test public void testAddLevelMembersSqlWithOneLevel() {
         RolapStarSet starSet = new RolapStarSet(
             salesMeasureGroup.getStar(), salesMeasureGroup, null);
         SqlTupleReader sqlTupleReader = new SqlTupleReader(
@@ -109,7 +110,7 @@ public class SqlTupleReaderTest extends FoodMartTestCase {
             queryBuilder.toSqlAndTypes().getKey(), -1);
     }
 
-    public void testAddLevelMembersSqlWithTwoLevels() {
+    @Test public void testAddLevelMembersSqlWithTwoLevels() {
         RolapStarSet starSet = new RolapStarSet(
             salesMeasureGroup.getStar(), salesMeasureGroup, null);
         SqlTupleReader sqlTupleReader = new SqlTupleReader(
@@ -166,7 +167,7 @@ public class SqlTupleReaderTest extends FoodMartTestCase {
             queryBuilder.toSqlAndTypes().getKey(), -1);
     }
 
-    public void testAddLevelMembersSqlWithOneLevelReqOrderAlias() {
+    @Test public void testAddLevelMembersSqlWithOneLevelReqOrderAlias() {
         RolapStarSet starSet = new RolapStarSet(
             salesMeasureGroup.getStar(), salesMeasureGroup, null);
         SqlTupleReader sqlTupleReader = new SqlTupleReader(
@@ -197,7 +198,7 @@ public class SqlTupleReaderTest extends FoodMartTestCase {
             queryBuilder.toSqlAndTypes().getKey(), -1);
     }
 
-    public void testAddLevelMembersSqlWithTwoLevelsReqOrderAlias() {
+    @Test public void testAddLevelMembersSqlWithTwoLevelsReqOrderAlias() {
         RolapStarSet starSet = new RolapStarSet(
             salesMeasureGroup.getStar(), salesMeasureGroup, null);
         SqlTupleReader sqlTupleReader = new SqlTupleReader(
@@ -254,7 +255,7 @@ public class SqlTupleReaderTest extends FoodMartTestCase {
     }
 
 
-    public void testMakeLevelMembersSqlMultipleMeasureGroups() {
+    @Test public void testMakeLevelMembersSqlMultipleMeasureGroups() {
         TupleConstraint mockConstraint = mock(TupleConstraint.class);
         RolapCube warehouseSales = getCube("Warehouse and Sales");
         when(mockConstraint.getMeasureGroupList()).thenReturn(

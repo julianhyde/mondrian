@@ -16,6 +16,16 @@ import mondrian.olap.*;
 import mondrian.rolap.RolapConnection;
 import mondrian.server.Locus;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.util.*;
 
 /**
@@ -24,49 +34,43 @@ import java.util.*;
  * @author jhyde
  */
 public class TupleListTest extends FoodMartTestCase {
-    public TupleListTest(String name) {
-        super(name);
+    @Test public void testTupleList() {
+        assertThat(TupleCollections.createList(1) instanceof UnaryTupleList,
+            is(true));
+        assertThat(TupleCollections.createList(2) instanceof ArrayTupleList,
+            is(true));
     }
 
-    public TupleListTest() {
-        super();
-    }
-
-    public void testTupleList() {
-        assertTrue(TupleCollections.createList(1) instanceof UnaryTupleList);
-        assertTrue(TupleCollections.createList(2) instanceof ArrayTupleList);
-    }
-
-    public void testUnaryTupleList() {
+    @Test public void testUnaryTupleList() {
         // empty list
         final TupleList list0 = new UnaryTupleList();
-        assertTrue(list0.isEmpty());
-        assertEquals(0, list0.size());
+        assertThat(list0.isEmpty(), is(true));
+        assertThat(list0.size(), is(0));
 
-        assertEquals(list0, TupleCollections.emptyList(1));
+        assertThat(TupleCollections.emptyList(1), is(list0));
 
         TupleList list1 = new UnaryTupleList();
-        assertEquals(list0, list1);
+        assertThat(list1, is(list0));
         final Member storeUsaMember = xxx("[Store].[USA]");
         list1.add(Collections.singletonList(storeUsaMember));
-        assertFalse(list1.isEmpty());
-        assertEquals(1, list1.size());
-        assertNotSame(list0, list1);
+        assertThat(list1.isEmpty(), is(false));
+        assertThat(list1.size(), is(1));
+        assertThat(list1, not(sameInstance(list0)));
 
         TupleList list2 = new UnaryTupleList();
         list2.addTuple(new Member[]{storeUsaMember});
-        assertFalse(list2.isEmpty());
-        assertEquals(1, list2.size());
-        assertEquals(list1, list2);
+        assertThat(list2.isEmpty(), is(false));
+        assertThat(list2.size(), is(1));
+        assertThat(list2, is(list1));
 
         list2.clear();
-        assertEquals(list0, list2);
-        assertEquals(list2, list0);
+        assertThat(list2, is(list0));
+        assertThat(list0, is(list2));
 
         // For various lists, sublist returns the whole thing.
         for (TupleList list : Arrays.asList(list0, list1, list2)) {
-            assertEquals(list, list.subList(0, list.size()));
-            assertNotSame(list, list.subList(0, list.size()));
+            assertThat(list.subList(0, list.size()), is(list));
+            assertThat(list.subList(0, list.size()), not(sameInstance(list)));
         }
 
         // Null members OK (at least for TupleList).
@@ -74,74 +78,74 @@ public class TupleListTest extends FoodMartTestCase {
         list1.add(Collections.<Member>singletonList(null));
     }
 
-    public void testArrayTupleList() {
+    @Test public void testArrayTupleList() {
         final Member genderFMember = xxx("[Gender].[F]");
         final Member genderMMember = xxx("[Gender].[M]");
 
         // empty list
         final TupleList list0 = new ArrayTupleList(2);
-        assertTrue(list0.isEmpty());
-        assertEquals(0, list0.size());
+        assertThat(list0.isEmpty(), is(true));
+        assertThat(list0.size(), is(0));
 
-        assertEquals(list0, TupleCollections.emptyList(2));
+        assertThat(TupleCollections.emptyList(2), is(list0));
 
         TupleList list1 = new ArrayTupleList(2);
-        assertEquals(list0, list1);
+        assertThat(list1, is(list0));
         final Member storeUsaMember = xxx("[Store].[USA]");
         list1.add(Arrays.asList(storeUsaMember, genderFMember));
-        assertFalse(list1.isEmpty());
-        assertEquals(1, list1.size());
-        assertNotSame(list0, list1);
+        assertThat(list1.isEmpty(), is(false));
+        assertThat(list1.size(), is(1));
+        assertThat(list1, not(sameInstance(list0)));
 
         try {
             list1.add(Arrays.asList(storeUsaMember));
             fail("expected error");
         } catch (IllegalArgumentException e) {
-            assertEquals("Tuple length does not match arity", e.getMessage());
+            assertThat(e.getMessage(), is("Tuple length does not match arity"));
         }
         try {
             list1.addTuple(new Member[] {storeUsaMember});
             fail("expected error");
         } catch (IllegalArgumentException e) {
-            assertEquals("Tuple length does not match arity", e.getMessage());
+            assertThat(e.getMessage(), is("Tuple length does not match arity"));
         }
         try {
             list1.add(
                 Arrays.asList(storeUsaMember, genderFMember, genderFMember));
             fail("expected error");
         } catch (IllegalArgumentException e) {
-            assertEquals("Tuple length does not match arity", e.getMessage());
+            assertThat(e.getMessage(), is("Tuple length does not match arity"));
         }
         try {
             list1.addTuple(
                 new Member[]{storeUsaMember, genderFMember, genderFMember});
             fail("expected error");
         } catch (IllegalArgumentException e) {
-            assertEquals("Tuple length does not match arity", e.getMessage());
+            assertThat(e.getMessage(), is("Tuple length does not match arity"));
         }
 
         TupleList list2 = new ArrayTupleList(2);
         list2.addTuple(new Member[]{storeUsaMember, genderFMember});
-        assertFalse(list2.isEmpty());
-        assertEquals(1, list2.size());
-        assertEquals(list1, list2);
+        assertThat(list2.isEmpty(), is(false));
+        assertThat(list2.size(), is(1));
+        assertThat(list2, is(list1));
 
         list2.clear();
-        assertEquals(list0, list2);
-        assertEquals(list2, list0);
+        assertThat(list2, is(list0));
+        assertThat(list0, is(list2));
 
-        assertEquals("[]", list0.toString());
-        assertEquals("[[[Store].[USA], [Gender].[F]]]", list1.toString());
-        assertEquals("[]", list2.toString());
+        assertThat(list0.toString(), is("[]"));
+        assertThat(list1.toString(), is("[[[Store].[USA], [Gender].[F]]]"));
+        assertThat(list2.toString(), is("[]"));
 
         // For various lists, sublist returns the whole thing.
         for (TupleList list : Arrays.asList(list0, list1, list2)) {
             final TupleList sublist = list.subList(0, list.size());
-            assertNotNull(sublist);
-            assertNotNull(sublist.toString());
-            assertEquals(sublist.isEmpty(), list.isEmpty());
-            assertEquals(list, sublist);
-            assertNotSame(list, sublist);
+            assertThat(sublist, notNullValue());
+            assertThat(sublist.toString(), notNullValue());
+            assertThat(list.isEmpty(), is(sublist.isEmpty()));
+            assertThat(sublist, is(list));
+            assertThat(sublist, not(sameInstance(list)));
         }
 
         // Null members OK (at least for TupleList).
@@ -154,7 +158,7 @@ public class TupleListTest extends FoodMartTestCase {
         checkProject(fm);
     }
 
-    public void testDelegatingTupleList() {
+    @Test public void testDelegatingTupleList() {
         final Member genderFMember = xxx("[Gender].[F]");
         final Member genderMMember = xxx("[Gender].[M]");
         final Member storeUsaMember = xxx("[Store].[USA]");
@@ -165,11 +169,10 @@ public class TupleListTest extends FoodMartTestCase {
         fm.addTuple(genderFMember, storeUsaMember);
         fm.addTuple(genderMMember, storeUsaMember);
 
-        assertEquals(2, fm.size());
-        assertEquals(2, fm.getArity());
-        assertEquals(
-            "[[[Gender].[F], [Store].[USA]], [[Gender].[M], [Store].[USA]]]",
-            fm.toString());
+        assertThat(fm.size(), is(2));
+        assertThat(fm.getArity(), is(2));
+        assertThat(fm.toString(),
+            is("[[[Gender].[F], [Store].[USA]], [[Gender].[M], [Store].[USA]]]"));
 
         checkProject(fm);
     }
@@ -178,7 +181,7 @@ public class TupleListTest extends FoodMartTestCase {
      * This is a test for MONDRIAN-1040. The DelegatingTupleList.slice()
      * method was mixing up the column and index variables.
      */
-    public void testDelegatingTupleListSlice() {
+    @Test public void testDelegatingTupleListSlice() {
         // Functional test.
         assertQueryReturns(
             "select {[Measures].[Store Sales]} ON COLUMNS, Hierarchize(Except({[Customers].[All Customers], [Customers].[All Customers].Children}, {[Customers].[All Customers]})) ON ROWS from [Sales] ",
@@ -207,31 +210,29 @@ public class TupleListTest extends FoodMartTestCase {
                         new DelegatingTupleList(2, arrayList);
                     fm.addTuple(genderFMember, storeUsaMember);
                     final List<Member> sliced = fm.slice(0);
-                    assertEquals(2, sliced.size());
-                    assertEquals(1, fm.size());
+                    assertThat(sliced.size(), is(2));
+                    assertThat(fm.size(), is(1));
                     return null;
                 }
             });
     }
 
     private void checkProject(TupleList fm) {
-        assertEquals(2, fm.size());
-        assertEquals(2, fm.getArity());
-        assertEquals(2, fm.project(new int[] {0}).size());
-        assertEquals(fm.slice(0), fm.project(new int[] {0}).slice(0));
-        assertEquals(fm.slice(1), fm.project(new int[] {1}).slice(0));
-        assertEquals(
-            "[[[Gender].[F]], [[Gender].[M]]]",
-            fm.project(new int[] {0}).toString());
-        assertEquals(
-            "[[[Store].[USA]], [[Store].[USA]]]",
-            fm.project(new int[] {1}).toString());
+        assertThat(fm.size(), is(2));
+        assertThat(fm.getArity(), is(2));
+        assertThat(fm.project(new int[] {0}).size(), is(2));
+        assertThat(fm.project(new int[] {0}).slice(0), is(fm.slice(0)));
+        assertThat(fm.project(new int[] {1}).slice(0), is(fm.slice(1)));
+        assertThat(fm.project(new int[] {0}).toString(),
+            is("[[[Gender].[F]], [[Gender].[M]]]"));
+        assertThat(fm.project(new int[] {1}).toString(),
+            is("[[[Store].[USA]], [[Store].[USA]]]"));
 
         // Also check cloneList.
-        assertEquals(0, fm.cloneList(100).size());
-        assertEquals(fm.size(), fm.cloneList(-1).size());
-        assertEquals(fm, fm.cloneList(-1));
-        assertNotSame(fm, fm.cloneList(-1));
+        assertThat(fm.cloneList(100).size(), is(0));
+        assertThat(fm.cloneList(-1).size(), is(fm.size()));
+        assertThat(fm.cloneList(-1), is(fm));
+        assertThat(fm.cloneList(-1), not(sameInstance(fm)));
     }
 
     /**

@@ -11,7 +11,9 @@ package mondrian.test.clearview;
 
 import mondrian.test.DiffRepository;
 
-import junit.framework.TestSuite;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
 
 /**
  * <code>TopBottomTest</code> is a test suite which tests scenarios of
@@ -22,15 +24,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class TopBottomTest extends ClearViewBase {
-
-    public TopBottomTest() {
-        super();
-    }
-
-    public TopBottomTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -39,8 +32,9 @@ public class TopBottomTest extends ClearViewBase {
         return DiffRepository.lookup(TopBottomTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), TopBottomTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(TopBottomTest.class);
     }
 
 }

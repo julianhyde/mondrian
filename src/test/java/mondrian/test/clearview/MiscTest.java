@@ -11,7 +11,9 @@ package mondrian.test.clearview;
 
 import mondrian.test.DiffRepository;
 
-import junit.framework.TestSuite;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
 
 /**
  * <code>MiscTest</code> is a test suite which tests miscellaneous
@@ -22,14 +24,6 @@ import junit.framework.TestSuite;
  */
 public class MiscTest extends ClearViewBase {
 
-    public MiscTest() {
-        super();
-    }
-
-    public MiscTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +32,9 @@ public class MiscTest extends ClearViewBase {
         return DiffRepository.lookup(MiscTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), MiscTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(MiscTest.class);
     }
 
 }

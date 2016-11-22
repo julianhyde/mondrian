@@ -13,6 +13,8 @@ import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
+import org.junit.Test;
+
 /**
  * Unit test for shared dimensions.
  *
@@ -325,14 +327,7 @@ public class SharedDimensionTest extends FoodMartTestCase {
         + "non empty [Buyer].[USA].[OR].[Portland].children on rows\n"
         + "from [Alternate Sales]";
 
-    public SharedDimensionTest() {
-    }
-
-    public SharedDimensionTest(String name) {
-        super(name);
-    }
-
-    public void testA() {
+    @Test public void testA() {
         // Schema has two cubes sharing a dimension.
         // Query from the first cube.
         TestContext testContext = getTestContextForSharedDimCubeACubeB();
@@ -340,7 +335,7 @@ public class SharedDimensionTest extends FoodMartTestCase {
         testContext.assertQueryReturns(queryCubeA, resultCubeA);
     }
 
-    public void testB() {
+    @Test public void testB() {
         if (!Bug.BugMondrian1324Fixed) {
             return;
         }
@@ -351,7 +346,7 @@ public class SharedDimensionTest extends FoodMartTestCase {
         testContext.assertQueryReturns(queryCubeB, resultCubeB);
     }
 
-    public void testNECJMemberList() {
+    @Test public void testNECJMemberList() {
         if (!Bug.BugMondrian1324Fixed) {
             return;
         }
@@ -364,7 +359,7 @@ public class SharedDimensionTest extends FoodMartTestCase {
             resultNECJMemberList);
     }
 
-    public void testNECJMultiLevelMemberList() {
+    @Test public void testNECJMultiLevelMemberList() {
         if (!Bug.BugMondrian1324Fixed) {
             return;
         }
@@ -383,13 +378,13 @@ public class SharedDimensionTest extends FoodMartTestCase {
      * Test case for <a href="http://jira.pentaho.com/browse/MONDRIAN-286">
      * MONDRIAN-286, "NullPointerException for certain mdx using [Sales 2]"</a>.
      */
-    public void testBugMondrian286() {
+    @Test public void testBugMondrian286() {
         // Test for sourceforge.net bug 1711865 (MONDRIAN-286).
         // Use the default FoodMart schema
         getTestContext().assertQueryReturns(querySF1711865, resultSF1711865);
     }
 
-    public void testStoreCube() {
+    @Test public void testStoreCube() {
         // Use the default FoodMart schema
         getTestContext().assertQueryReturns(queryStoreCube, resultStoreCube);
     }
@@ -399,11 +394,11 @@ public class SharedDimensionTest extends FoodMartTestCase {
      * MONDRIAN-1243, "Wrong table alias in SQL generated to populate member
      * cache"</a>.
      */
-    public void testBugMondrian1243WrongAlias() {
+    @Test public void testBugMondrian1243WrongAlias() {
         getTestContextForSharedDimCubeAltSales().executeQuery(queryIssue1243);
     }
 
-    public void testMemberUniqueNameForSharedWithChangedName() {
+    @Test public void testMemberUniqueNameForSharedWithChangedName() {
         if (Bug.BugMondrian1416Fixed) {
             getTestContextForSharedDimCubeAltSales().assertQueryReturns(
                 "with "

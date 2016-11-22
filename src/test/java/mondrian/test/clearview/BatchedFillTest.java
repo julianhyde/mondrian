@@ -12,7 +12,13 @@ package mondrian.test.clearview;
 import mondrian.olap.MondrianProperties;
 import mondrian.test.DiffRepository;
 
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.junit.runners.Parameterized;
+
 import junit.framework.TestSuite;
+
+import java.util.List;
 
 /**
  * <code>BatchedFillTest</code> is a test suite which tests
@@ -22,15 +28,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class BatchedFillTest extends ClearViewBase {
-
-    public BatchedFillTest() {
-        super();
-    }
-
-    public BatchedFillTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -39,12 +36,13 @@ public class BatchedFillTest extends ClearViewBase {
         return DiffRepository.lookup(BatchedFillTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), BatchedFillTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(BatchedFillTest.class);
     }
 
-    protected void runTest() throws Exception {
-        if (getName().equals("testBatchedFill2")
+    @Override public void runTest() throws Exception {
+        if (name.getMethodName().equals("testBatchedFill2")
             && MondrianProperties.instance().ReadAggregates.get()
             && MondrianProperties.instance().UseAggregates.get())
         {

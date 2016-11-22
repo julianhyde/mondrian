@@ -16,6 +16,9 @@ import mondrian.test.*;
 
 import org.olap4j.impl.Olap4jUtil;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.*;
 
 /**
@@ -37,9 +40,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
             Dialect.DatabaseProduct.ORACLE,
             Dialect.DatabaseProduct.TERADATA);
 
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before public void setUp() throws Exception {
         propSaver.props.GenerateFormattedSql.set(false);
 
         // This test warns of missing sql patterns for
@@ -60,7 +61,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
         }
     }
 
-    public void testGroupingSetsWithAggregateOverDefaultMember() {
+    @Test public void testGroupingSetsWithAggregateOverDefaultMember() {
         // testcase for MONDRIAN-705
         if (getTestContext().getDialect().supportsGroupingSets()) {
             propSaver.set(propSaver.props.EnableGroupingSets, true);
@@ -85,7 +86,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
             + "Row #2: 225,627.23\n");
     }
 
-    public void testGroupingSetForSingleColumnConstraint() {
+    @Test public void testGroupingSetForSingleColumnConstraint() {
         final TestContext testContext = getTestContext();
         propSaver.set(propSaver.props.DisableCaching, false);
 
@@ -183,7 +184,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
                 patternsWithoutGsets);
         }
     }
-    public void testNotUsingGroupingSetWhenGroupUsesDifferentAggregateTable() {
+    @Test public void testNotUsingGroupingSetWhenGroupUsesDifferentAggregateTable() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -233,7 +234,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
             patternsWithoutGsets);
     }
 
-    public void testNotUsingGroupingSet() {
+    @Test public void testNotUsingGroupingSet() {
         if (propSaver.props.ReadAggregates.get()
             && propSaver.props.UseAggregates.get())
         {
@@ -288,7 +289,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
             patternsWithoutGsets);
     }
 
-    public void testGroupingSetForMultipleMeasureAndSingleConstraint() {
+    @Test public void testGroupingSetForMultipleMeasureAndSingleConstraint() {
         if (propSaver.props.ReadAggregates.get()
             && propSaver.props.UseAggregates.get())
         {
@@ -369,7 +370,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
             patternsWithoutGsets);
     }
 
-    public void testGroupingSetForASummaryCanBeGroupedWith2DetailBatch() {
+    @Test public void testGroupingSetForASummaryCanBeGroupedWith2DetailBatch() {
         if (propSaver.props.ReadAggregates.get()
             && propSaver.props.UseAggregates.get())
         {
@@ -455,7 +456,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
             patternWithoutGsets);
     }
 
-    public void testGroupingSetForMultipleColumnConstraint() {
+    @Test public void testGroupingSetForMultipleColumnConstraint() {
         if (propSaver.props.ReadAggregates.get()
             && propSaver.props.UseAggregates.get())
         {
@@ -625,7 +626,7 @@ public class GroupingSetQueryTest extends BatchTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-426">
      * bug MONDRIAN-426, "Except not working with grouping sets"</a>.
      */
-    public void testBugMondrian426() {
+    @Test public void testBugMondrian426() {
         assertQueryReturns(
             "with member store.stores.allbutwallawalla as\n"
             + " 'aggregate(\n"

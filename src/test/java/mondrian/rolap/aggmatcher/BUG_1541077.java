@@ -11,6 +11,11 @@ package mondrian.rolap.aggmatcher;
 
 import mondrian.olap.Result;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Testcase for
  * <a href="http://jira.pentaho.com/browse/MONDRIAN-214">MONDRIAN-214</a>
@@ -23,14 +28,7 @@ public class BUG_1541077 extends AggTableTestCase {
 
     private static final String BUG_1541077 = "BUG_1541077.csv";
 
-    public BUG_1541077() {
-        super();
-    }
-    public BUG_1541077(String name) {
-        super(name);
-    }
-
-    public void testStoreCount() throws Exception {
+    @Test public void testStoreCount() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -48,10 +46,10 @@ public class BUG_1541077 extends AggTableTestCase {
         Result result1 = getCubeTestContext().executeQuery(mdx);
         Object v1 = result1.getCell(new int[]{0}).getValue();
 
-        assertTrue(v.equals(v1));
+        assertThat(v.equals(v1), is(true));
     }
 
-    public void testSalesCount() throws Exception {
+    @Test public void testSalesCount() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -69,10 +67,10 @@ public class BUG_1541077 extends AggTableTestCase {
         Result result1 = getCubeTestContext().executeQuery(mdx);
         Object v1 = result1.getCell(new int[]{0}).getValue();
 
-        assertTrue(v.equals(v1));
+        assertThat(v.equals(v1), is(true));
     }
 
-    public void testTotalAmount() throws Exception {
+    @Test public void testTotalAmount() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -90,10 +88,10 @@ public class BUG_1541077 extends AggTableTestCase {
         Result result1 = getCubeTestContext().executeQuery(mdx);
         Object v1 = result1.getCell(new int[]{0}).getValue();
 
-        assertTrue(v.equals(v1));
+        assertThat(v.equals(v1), is(true));
     }
 
-    public void testBug1541077() throws Exception {
+    @Test public void testBug1541077() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -112,7 +110,7 @@ public class BUG_1541077 extends AggTableTestCase {
         Result result1 = getCubeTestContext().executeQuery(mdx);
         Object v1 = result1.getCell(new int[]{0}).getFormattedValue();
 
-        assertTrue(v.equals(v1));
+        assertThat(v.equals(v1), is(true));
     }
 
     protected String getFileName() {

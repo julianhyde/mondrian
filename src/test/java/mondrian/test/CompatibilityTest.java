@@ -13,7 +13,12 @@ package mondrian.test;
 import mondrian.olap.*;
 import mondrian.spi.Dialect;
 
+import org.junit.Test;
 import junit.framework.Assert;
+
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test for MDX syntax compatibility with Microsoft and SAS servers.
@@ -27,14 +32,10 @@ import junit.framework.Assert;
  * @since March 30, 2005
  */
 public class CompatibilityTest extends FoodMartTestCase {
-    public CompatibilityTest(String name) {
-        super(name);
-    }
-
     /**
      * Cube names are case insensitive.
      */
-    public void testCubeCase() {
+    @Test public void testCubeCase() {
         String queryFrom = "select {[Measures].[Unit Sales]} on columns from ";
         String result =
             "Axis #0:\n"
@@ -52,7 +53,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Brackets around cube names are optional.
      */
-    public void testCubeBrackets() {
+    @Test public void testCubeBrackets() {
         String queryFrom = "select {[Measures].[Unit Sales]} on columns from ";
         String result =
             "Axis #0:\n"
@@ -70,7 +71,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * See how we are at diagnosing reserved words.
      */
-    public void testReservedWord() {
+    @Test public void testReservedWord() {
         assertAxisThrows(
             "with member [Measures].ordinal as '1'\n"
             + " select {[Measures].ordinal} on columns from Sales",
@@ -88,7 +89,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Dimension names are case insensitive.
      */
-    public void testDimensionCase() {
+    @Test public void testDimensionCase() {
         checkAxis("[Measures].[Unit Sales]", "[Measures].[Unit Sales]");
         checkAxis("[Measures].[Unit Sales]", "[MEASURES].[Unit Sales]");
         checkAxis("[Measures].[Unit Sales]", "[mEaSuReS].[Unit Sales]");
@@ -111,7 +112,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Brackets around dimension names are optional.
      */
-    public void testDimensionBrackets() {
+    @Test public void testDimensionBrackets() {
         checkAxis("[Measures].[Unit Sales]", "Measures.[Unit Sales]");
         checkAxis("[Measures].[Unit Sales]", "MEASURES.[Unit Sales]");
         checkAxis("[Measures].[Unit Sales]", "mEaSuReS.[Unit Sales]");
@@ -134,7 +135,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Member names are case insensitive.
      */
-    public void testMemberCase() {
+    @Test public void testMemberCase() {
         checkAxis("[Measures].[Unit Sales]", "[Measures].[UNIT SALES]");
         checkAxis("[Measures].[Unit Sales]", "[Measures].[uNiT sAlEs]");
         checkAxis("[Measures].[Unit Sales]", "[Measures].[unit sales]");
@@ -166,7 +167,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Calculated member names are case insensitive.
      */
-    public void testCalculatedMemberCase() {
+    @Test public void testCalculatedMemberCase() {
         propSaver.set(propSaver.props.CaseSensitive, false);
         assertQueryReturns(
             "with member [Measures].[CaLc] as '1'\n"
@@ -197,7 +198,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Solve order is case insensitive.
      */
-    public void testSolveOrderCase() {
+    @Test public void testSolveOrderCase() {
         checkSolveOrder("SOLVE_ORDER");
         checkSolveOrder("SoLvE_OrDeR");
         checkSolveOrder("solve_order");
@@ -226,7 +227,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     /**
      * Brackets around member names are optional.
      */
-    public void testMemberBrackets() {
+    @Test public void testMemberBrackets() {
         checkAxis("[Measures].[Profit]", "[Measures].Profit");
         checkAxis("[Measures].[Profit]", "[Measures].pRoFiT");
         checkAxis("[Measures].[Profit]", "[Measures].PROFIT");
@@ -250,7 +251,7 @@ public class CompatibilityTest extends FoodMartTestCase {
      * Hierarchy names of the form [Dim].[Hier], [Dim.Hier], and
      * Dim.Hier are accepted.
      */
-    public void testHierarchyNames() {
+    @Test public void testHierarchyNames() {
         checkAxis(
             "[Customer].[Customers].[All Customers]",
             "[Customers].[All Customers]");
@@ -281,7 +282,7 @@ public class CompatibilityTest extends FoodMartTestCase {
      * Tests that a #null member on a Hiearchy Level of type String can
      * still be looked up when case sensitive is off.
      */
-    public void testCaseInsensitiveNullMember() {
+    @Test public void testCaseInsensitiveNullMember() {
         final Dialect dialect = getTestContext().getDialect();
         if (dialect.getDatabaseProduct() == Dialect.DatabaseProduct.LUCIDDB) {
             // TODO jvs 29-Nov-2006:  LucidDB is strict about
@@ -349,7 +350,7 @@ public class CompatibilityTest extends FoodMartTestCase {
      * Tests that data in Hierarchy.Level attribute "nameColumn" can be null.
      * This will map to the #null memeber.
      */
-    public void testNullNameColumn() {
+    @Test public void testNullNameColumn() {
         switch (getTestContext().getDialect().getDatabaseProduct()) {
         case LUCIDDB:
             // TODO jvs 29-Nov-2006:  See corresponding comment in
@@ -429,7 +430,7 @@ public class CompatibilityTest extends FoodMartTestCase {
      * such as MySQL, NULLs naturally come before other values, so we have to
      * generate a modified ORDER BY clause.
      */
-    public void testNullCollation() {
+    @Test public void testNullCollation() {
         if (!getTestContext().getDialect().supportsGroupByExpressions()) {
             // Derby does not support expressions in the GROUP BY clause,
             // therefore this testing strategy of using an expression for the
@@ -508,7 +509,7 @@ public class CompatibilityTest extends FoodMartTestCase {
      * that you run the test once with mondrian.olap.case.sensitive=true,
      * and once with mondrian.olap.case.sensitive=false.
      */
-    public void testPropertyCaseSensitivity() {
+    @Test public void testPropertyCaseSensitivity() {
         boolean caseSensitive = propSaver.props.CaseSensitive.get();
 
         // A user-defined property of a member.
@@ -546,15 +547,15 @@ public class CompatibilityTest extends FoodMartTestCase {
             + " {[Gender].[M]} on rows\n"
             + "from Sales");
         Cell cell = result.getCell(new int[]{0, 0});
-        assertEquals("135,215", cell.getPropertyValue("FORMATTED_VALUE"));
+        assertThat(cell.getPropertyValue("FORMATTED_VALUE"), is((Object) "135,215"));
         if (caseSensitive) {
-            assertNull(cell.getPropertyValue("Formatted_Value"));
+            assertThat(cell.getPropertyValue("Formatted_Value"), nullValue());
         } else {
-            assertEquals("135,215", cell.getPropertyValue("Formatted_Value"));
+            assertThat(cell.getPropertyValue("Formatted_Value"), is((Object) "135,215"));
         }
     }
 
-    public void testWithDimensionPrefix() {
+    @Test public void testWithDimensionPrefix() {
         assertAxisWithDimensionPrefix(true);
         assertAxisWithDimensionPrefix(false);
     }
@@ -569,7 +570,7 @@ public class CompatibilityTest extends FoodMartTestCase {
             "[Store].[All Stores].[USA]", "[Store].[Stores].[USA]");
     }
 
-    public void testWithNoDimensionPrefix() {
+    @Test public void testWithNoDimensionPrefix() {
         propSaver.set(propSaver.props.NeedDimensionPrefix, false);
         assertAxisReturns("{[M]}", "[Customer].[Gender].[M]");
         assertAxisReturns("{M}", "[Customer].[Gender].[M]");

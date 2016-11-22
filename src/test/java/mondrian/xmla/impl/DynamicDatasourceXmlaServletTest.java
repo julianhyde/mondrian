@@ -14,6 +14,7 @@ import mondrian.server.DynamicContentFinder;
 import mondrian.util.Pair;
 import mondrian.xmla.DataSourcesConfig;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import org.eigenbase.xom.*;
@@ -63,7 +64,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
     private static final String DATASOURCE_1_NAME = "DATASOURCENAME1";
     private static final String DATASOURCE_2_NAME = "DATASOURCENAME2";
 
-    public void testFlushObsoleteCatalogsForNewCatalog() throws Exception {
+    @Test public void testFlushObsoleteCatalogsForNewCatalog() throws Exception {
         DataSourcesConfig.DataSources newDataSources =
             getDataSources(CATALOG_0_DEFINITION, CATALOG_1_DEFINITION);
         final MockDynamicContentFinder finder =
@@ -74,7 +75,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         finder.shutdown();
     }
 
-    public void testFlushObsoleteCatalogsForUpdateCatalog() throws Exception {
+    @Test public void testFlushObsoleteCatalogsForUpdateCatalog() throws Exception {
         DataSourcesConfig.DataSources newDataSources =
             getDataSources(CATALOG_0_UPDATED_DEFINITION);
         final MockDynamicContentFinder finder =
@@ -85,7 +86,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         finder.shutdown();
     }
 
-    public void testFlushObsoleteCatalogsForUnchangedCatalog() throws Exception
+    @Test public void testFlushObsoleteCatalogsForUnchangedCatalog() throws Exception
     {
         DataSourcesConfig.DataSources newDataSources =
             getDataSources(CATALOG_0_DEFINITION, CATALOG_1_DEFINITION);
@@ -97,7 +98,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         finder.shutdown();
     }
 
-    public void testFlushObsoleteCatalogsForDeletedCatalog() throws Exception {
+    @Test public void testFlushObsoleteCatalogsForDeletedCatalog() throws Exception {
         DataSourcesConfig.DataSources newDataSources =
             getDataSources(CATALOG_1_DEFINITION);
         final MockDynamicContentFinder finder =
@@ -108,7 +109,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         finder.shutdown();
     }
 
-    public void testMergeDataSourcesForAlteringCatalogAcrossDataSources()
+    @Test public void testMergeDataSourcesForAlteringCatalogAcrossDataSources()
         throws Exception
     {
         DataSourcesConfig.DataSources newDataSources =
@@ -129,7 +130,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         finder.shutdown();
     }
 
-    public void testAreCatalogsEqual() throws Exception {
+    @Test public void testAreCatalogsEqual() throws Exception {
         DataSourcesConfig.DataSources newDataSources =
             getDataSources(
                 CATALOG_0_DEFINITION,
@@ -214,7 +215,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         return ds.toString();
     }
 
-    public void testReloadDataSources() throws Exception {
+    @Test public void testReloadDataSources() throws Exception {
         DataSourcesConfig.DataSources ds1 =
             getDataSources(CATALOG_0_DEFINITION, CATALOG_1_DEFINITION);
         DataSourcesConfig.DataSources ds2 =
@@ -258,7 +259,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         finder.shutdown();
     }
 
-    public void testAutoReloadDataSources() throws Exception {
+    @Test public void testAutoReloadDataSources() throws Exception {
         DataSourcesConfig.DataSources ds1 =
             getDataSources(CATALOG_0_DEFINITION, CATALOG_1_DEFINITION);
         DataSourcesConfig.DataSources ds2 =

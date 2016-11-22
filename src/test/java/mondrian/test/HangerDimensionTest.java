@@ -13,6 +13,11 @@ import mondrian.olap.Util;
 
 import org.olap4j.*;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.sql.*;
 
 /**
@@ -20,7 +25,7 @@ import java.sql.*;
  */
 public class HangerDimensionTest extends FoodMartTestCase {
     /** Unit test for a simple hanger dimension with values true and false. */
-    public void testHangerDimension() {
+    @Test public void testHangerDimension() {
         getTestContext()
             .insertDimension(
                 "Sales",
@@ -62,7 +67,7 @@ public class HangerDimensionTest extends FoodMartTestCase {
 
     /** Unit test that if a hierarchy has no real members, only calculated
      * members, then the default member is the first calculated member. */
-    public void testHangerDimensionImplicitCalculatedDefaultMember() {
+    @Test public void testHangerDimensionImplicitCalculatedDefaultMember() {
         getTestContext()
             .insertDimension(
                 "Sales",
@@ -82,7 +87,7 @@ public class HangerDimensionTest extends FoodMartTestCase {
 
     /** Tests that it is an error if an attribute has no members.
      * (No all member, no real members, no calculated members.) */
-    public void testHangerDimensionEmptyIsError() {
+    @Test public void testHangerDimensionEmptyIsError() {
         getTestContext()
             .insertDimension(
                 "Sales",
@@ -99,7 +104,7 @@ public class HangerDimensionTest extends FoodMartTestCase {
     /** Tests that it is an error if an attribute in a hanger dimension has a
      * keyColumn specified. (All other mappings to columns, e.g. nameColumn
      * or included Key element, are illegal too.) */
-    public void testHangerDimensionKeyColumnNotAllowed() {
+    @Test public void testHangerDimensionKeyColumnNotAllowed() {
         getTestContext()
             .insertDimension(
                 "Sales",
@@ -114,7 +119,7 @@ public class HangerDimensionTest extends FoodMartTestCase {
     }
 
     /** Tests drill-through of a query involving a hanger dimension. */
-    public void testHangerDimensionDrillThrough() throws SQLException {
+    @Test public void testHangerDimensionDrillThrough() throws SQLException {
         OlapConnection connection = null;
         OlapStatement statement = null;
         CellSet cellSet = null;
@@ -144,7 +149,7 @@ public class HangerDimensionTest extends FoodMartTestCase {
             while (resultSet.next()) {
                 ++n;
             }
-            assertEquals(12, n);
+            assertThat(n, is(12));
         } finally {
             Util.close(resultSet, null, null);
             Util.close(cellSet, statement, connection);

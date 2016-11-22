@@ -26,6 +26,11 @@ import mondrian.test.SqlPattern;
 import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.*;
 
 /**
@@ -41,7 +46,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
     private SchemaReader schemaReader = null;
     private RolapCube salesCube;
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         schemaReader =
             getTestContext().getConnection().getSchemaReader().withLocus();
         salesCube = (RolapCube) cubeByName(
@@ -82,7 +87,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             null);
     }
 
-    public void testTupleWithAllLevelMembersOnly() {
+    @Test public void testTupleWithAllLevelMembersOnly() {
         assertQueryReturns(
             "WITH MEMBER GENDER.X AS 'AGGREGATE({([GENDER].DEFAULTMEMBER,\n"
             + "[STORE].DEFAULTMEMBER)})'\n"
@@ -96,7 +101,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testCrossJoinOfAllMembers() {
+    @Test public void testCrossJoinOfAllMembers() {
         assertQueryReturns(
             "WITH MEMBER GENDER.X AS 'AGGREGATE({CROSSJOIN({[GENDER].DEFAULTMEMBER},\n"
             + "{[STORE].DEFAULTMEMBER})})'\n"
@@ -110,7 +115,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testCrossJoinMembersWithASingleMember() {
+    @Test public void testCrossJoinMembersWithASingleMember() {
         String query =
             "WITH MEMBER GENDER.X AS 'AGGREGATE({[GENDER].[GENDER].members} * "
             + "{[STORE].[ALL STORES].[USA].[CA]})', solve_order=100 "
@@ -175,7 +180,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(getTestContext(), query, patterns);
     }
 
-    public void testCrossJoinMembersWithSetOfMembers() {
+    @Test public void testCrossJoinMembersWithSetOfMembers() {
         String query =
             "WITH MEMBER GENDER.X AS 'AGGREGATE({[GENDER].[GENDER].members} * "
             + "{[STORE].[ALL STORES].[USA].[CA], [Store].[All Stores].[Canada]})', solve_order=100 "
@@ -244,7 +249,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(getTestContext(), query, patterns);
     }
 
-    public void testCrossJoinParticularMembersFromTwoDimensions() {
+    @Test public void testCrossJoinParticularMembersFromTwoDimensions() {
         assertQueryReturns(
             "WITH MEMBER GENDER.X AS 'AGGREGATE({[GENDER].M} * "
             + "{[STORE].[ALL STORES].[USA].[CA]})', solve_order=100 "
@@ -258,7 +263,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 1,389\n");
     }
 
-    public void testDistinctCountOnSetOfMembersFromOneDimension() {
+    @Test public void testDistinctCountOnSetOfMembersFromOneDimension() {
         assertQueryReturns(
             "WITH MEMBER GENDER.X AS 'AGGREGATE({[GENDER].[GENDER].members})'"
             + "SELECT GENDER.X ON 0, [MEASURES].[CUSTOMER COUNT] ON 1 FROM SALES",
@@ -271,7 +276,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testDistinctCountWithAMeasureAsPartOfTuple() {
+    @Test public void testDistinctCountWithAMeasureAsPartOfTuple() {
         assertQueryReturns(
             "SELECT [STORE].[ALL STORES].[USA].[CA] ON 0, "
             + "([MEASURES].[CUSTOMER COUNT], [Gender].[m]) ON 1 FROM SALES",
@@ -284,7 +289,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 1,389\n");
     }
 
-    public void testDistinctCountOnSetOfMembers() {
+    @Test public void testDistinctCountOnSetOfMembers() {
         assertQueryReturns(
             "WITH MEMBER STORE.STORE.X as 'Aggregate({[STORE].[ALL STORES].[USA].[CA],"
             + "[STORE].[ALL STORES].[USA].[WA]})'"
@@ -300,7 +305,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 4,544\n");
     }
 
-    public void testDistinctCountOnTuplesWithSomeNonJoiningDimensions() {
+    @Test public void testDistinctCountOnTuplesWithSomeNonJoiningDimensions() {
         propSaver.set(
             propSaver.props.IgnoreMeasureForNonJoiningDimension, false);
         String mdx =
@@ -323,7 +328,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQueryReturns(mdx, expectedResult);
     }
 
-    public void testAggregationListOptimizationForChildren() {
+    @Test public void testAggregationListOptimizationForChildren() {
         assertQueryReturns(
             "WITH MEMBER GENDER.X AS 'AGGREGATE({[GENDER].[GENDER].members} * "
             + "{[STORE].[ALL STORES].[USA].[CA], [STORE].[ALL STORES].[USA].[OR], "
@@ -338,7 +343,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testDistinctCountOnMembersWithNonJoiningDimensionNotAtAllLevel()
+    @Test public void testDistinctCountOnMembersWithNonJoiningDimensionNotAtAllLevel()
     {
         assertQueryReturns(
             "WITH MEMBER WAREHOUSE.X as "
@@ -355,7 +360,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: \n");
     }
 
-    public void testNonJoiningDimensionWithAllMember() {
+    @Test public void testNonJoiningDimensionWithAllMember() {
         assertQueryReturns(
             "WITH MEMBER WAREHOUSE.X as 'Aggregate({WAREHOUSE.MEMBERS})'"
             + "SELECT WAREHOUSE.X  ON ROWS, "
@@ -370,7 +375,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testCrossJoinOfJoiningAndNonJoiningDimensionWithAllMember() {
+    @Test public void testCrossJoinOfJoiningAndNonJoiningDimensionWithAllMember() {
         assertQueryReturns(
             "WITH MEMBER WAREHOUSE.X AS "
             + "'AGGREGATE({GENDER.GENDER.MEMBERS} * {WAREHOUSE.MEMBERS})'"
@@ -400,7 +405,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testCrossJoinOfJoiningAndNonJoiningDimension() {
+    @Test public void testCrossJoinOfJoiningAndNonJoiningDimension() {
         assertQueryReturns(
             "WITH MEMBER WAREHOUSE.X AS "
             + "'AGGREGATE({GENDER.GENDER.MEMBERS} * {WAREHOUSE.[STATE PROVINCE].MEMBERS})'"
@@ -430,7 +435,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #0: 5,581\n");
     }
 
-    public void testAggregationOverLargeListGeneratesError() {
+    @Test public void testAggregationOverLargeListGeneratesError() {
         propSaver.set(propSaver.props.MaxConstraints, 7);
 
         String result;
@@ -481,7 +486,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
      *
      * @see #testAggregationOverLargeListGeneratesError
      */
-    public void testAggregateMaxConstraints() {
+    @Test public void testAggregateMaxConstraints() {
         propSaver.set(propSaver.props.MaxConstraints, 5);
         TestContext.instance().assertQueryReturns(
             "SELECT\n"
@@ -513,7 +518,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #2: 937\n");
     }
 
-    public void testMultiLevelMembersNullParents() {
+    @Test public void testMultiLevelMembersNullParents() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -567,7 +572,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(testContext, query, sql);
     }
 
-    public void testMultiLevelMembersMixedNullNonNullParent() {
+    @Test public void testMultiLevelMembersMixedNullNonNullParent() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -622,7 +627,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         testContext.assertQueryReturns(query, result);
     }
 
-    public void testMultiLevelsMixedNullNonNullChild() {
+    @Test public void testMultiLevelsMixedNullNonNullChild() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -677,7 +682,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         testContext.assertQueryReturns(query, result);
     }
 
-    public void testAggregationOnCJofMembersGeneratesOptimalQuery() {
+    @Test public void testAggregationOnCJofMembersGeneratesOptimalQuery() {
         // Mondrian does not use GROUPING SETS for distinct-count measures.
         // So, this test should not use GROUPING SETS, even if they are enabled.
         // See change 12310, bug MONDRIAN-470 (aka SF.net 2207515).
@@ -724,7 +729,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             patterns);
     }
 
-    public void testCanNotBatchForDifferentCompoundPredicate() {
+    @Test public void testCanNotBatchForDifferentCompoundPredicate() {
         propSaver.set(propSaver.props.EnableGroupingSets, true);
         String mdxQueryWithFewMembers =
             "WITH "
@@ -800,7 +805,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
      * Test distinct count agg happens in non gs query for subset of members
      * with mixed measures.
      */
-    public void testDistinctCountInNonGroupingSetsQuery() {
+    @Test public void testDistinctCountInNonGroupingSetsQuery() {
         propSaver.set(propSaver.props.EnableGroupingSets, true);
         String mdxQueryWithFewMembers =
             "WITH "
@@ -875,7 +880,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(getTestContext(), mdxQueryWithFewMembers, patterns);
     }
 
-    public void testAggregationOfMembersAndDefaultMemberWithoutGroupingSets() {
+    @Test public void testAggregationOfMembersAndDefaultMemberWithoutGroupingSets() {
         propSaver.set(propSaver.props.EnableGroupingSets, false);
         String mdxQueryWithMembers =
             "WITH "
@@ -934,7 +939,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(getTestContext(), mdxQueryWithDefaultMember, patterns);
     }
 
-    public void testOptimizeChildren() {
+    @Test public void testOptimizeChildren() {
         String query =
             "with member gender.x as "
             + "'aggregate("
@@ -987,7 +992,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(getTestContext(), query, patterns);
     }
 
-    public void testOptimizeListWhenTuplesAreFormedWithDifferentLevels() {
+    @Test public void testOptimizeListWhenTuplesAreFormedWithDifferentLevels() {
         String query =
             "WITH\n"
             + "MEMBER Product.Agg AS \n"
@@ -1048,7 +1053,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQuerySql(getTestContext(), query, mysqlSql);
     }
 
-    public void testOptimizeListWithTuplesOfLength3() {
+    @Test public void testOptimizeListWithTuplesOfLength3() {
         String query =
             "WITH\n"
             + "MEMBER Product.Agg AS \n"
@@ -1084,50 +1089,46 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         assertQueryReturns(query, expected);
     }
 
-    public void testOptimizeChildrenForTuplesWithLength1() {
+    @Test public void testOptimizeChildrenForTuplesWithLength1() {
         TupleList memberList =
             productMembersPotScrubbersPotsAndPans(
                 salesCubeSchemaReader);
 
         TupleList tuples = optimizeChildren(memberList);
-        assertTrue(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pot Scrubbers",
-                        "Cormorant"),
-                    salesCubeSchemaReader)));
-        assertFalse(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pot Scrubbers"),
-                    salesCubeSchemaReader)));
-        assertFalse(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pots and Pans",
-                        "Cormorant"),
-                    salesCubeSchemaReader)));
-        assertTrue(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pots and Pans"),
-                    salesCubeSchemaReader)));
-        assertEquals(4, tuples.size());
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pot Scrubbers",
+                            "Cormorant"),
+                        salesCubeSchemaReader)), is(true));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pot Scrubbers"),
+                        salesCubeSchemaReader)), is(false));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pots and Pans",
+                            "Cormorant"),
+                        salesCubeSchemaReader)), is(false));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pots and Pans"),
+                        salesCubeSchemaReader)), is(true));
+        assertThat(tuples.size(), is(4));
     }
 
-    public void testOptimizeChildrenForTuplesWithLength3() {
+    @Test public void testOptimizeChildrenForTuplesWithLength3() {
         TupleList memberList =
             CrossJoinFunDef.mutableCrossJoin(
                 genderMembersIncludingAll(
@@ -1137,60 +1138,55 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             CrossJoinFunDef.mutableCrossJoin(
                 memberList, storeMembersCAAndOR(salesCubeSchemaReader));
         TupleList tuples = optimizeChildren(memberList);
-        assertFalse(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Store", "All Stores", "USA", "OR", "Portland"),
-                    salesCubeSchemaReader)));
-        assertTrue(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList("Store", "All Stores", "USA", "OR"),
-                    salesCubeSchemaReader)));
-        assertEquals(16, tuples.size());
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Store", "All Stores", "USA", "OR", "Portland"),
+                        salesCubeSchemaReader)), is(false));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList("Store", "All Stores", "USA", "OR"),
+                        salesCubeSchemaReader)), is(true));
+        assertThat(tuples.size(), is(16));
     }
 
-    public void testOptimizeChildrenWhenTuplesAreFormedWithDifferentLevels() {
+    @Test public void testOptimizeChildrenWhenTuplesAreFormedWithDifferentLevels() {
         TupleList memberList =
             CrossJoinFunDef.mutableCrossJoin(
                 genderMembersIncludingAll(
                     false, salesCubeSchemaReader, salesCube),
                 productMembersPotScrubbersPotsAndPans(salesCubeSchemaReader));
         TupleList tuples = optimizeChildren(memberList);
-        assertEquals(4, tuples.size());
+        assertThat(tuples.size(), is(4));
 
-        assertFalse(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pots and Pans",
-                        "Cormorant"),
-                salesCubeSchemaReader)));
-        assertTrue(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pots and Pans"),
-                salesCubeSchemaReader)));
-        assertTrue(
-            tuppleListContains(
-                tuples,
-                member(
-                    Id.Segment.toList(
-                        "Product", "All Products", "Non-Consumable",
-                        "Household", "Kitchen Products", "Pot Scrubbers",
-                        "Cormorant"),
-                salesCubeSchemaReader)));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pots and Pans",
+                            "Cormorant"),
+                    salesCubeSchemaReader)), is(false));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pots and Pans"),
+                    salesCubeSchemaReader)), is(true));
+        assertThat(tuppleListContains(
+                    tuples,
+                    member(
+                        Id.Segment.toList(
+                            "Product", "All Products", "Non-Consumable",
+                            "Household", "Kitchen Products", "Pot Scrubbers",
+                            "Cormorant"),
+                    salesCubeSchemaReader)), is(true));
     }
 
-    public void testWhetherCJOfChildren() {
+    @Test public void testWhetherCJOfChildren() {
         TupleList memberList =
             CrossJoinFunDef.mutableCrossJoin(
                 genderMembersIncludingAll(
@@ -1199,10 +1195,10 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
                     false, salesCubeSchemaReader, salesCube));
 
         List tuples = optimizeChildren(memberList);
-        assertEquals(2, tuples.size());
+        assertThat(tuples.size(), is(2));
     }
 
-    public void testShouldNotRemoveDuplicateTuples() {
+    @Test public void testShouldNotRemoveDuplicateTuples() {
         Member maleChildMember = member(
             Id.Segment.toList("Gender", "All Gender", "M"),
             salesCubeSchemaReader);
@@ -1216,10 +1212,10 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
         memberList.add(femaleChildMember);
         TupleList tuples = new UnaryTupleList(memberList);
         tuples = optimizeChildren(tuples);
-        assertEquals(3, tuples.size());
+        assertThat(tuples.size(), is(3));
     }
 
-    public void testMemberCountIsSameForAllMembersInTuple() {
+    @Test public void testMemberCountIsSameForAllMembersInTuple() {
         TupleList memberList =
             CrossJoinFunDef.mutableCrossJoin(
                 genderMembersIncludingAll(
@@ -1230,15 +1226,13 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             AggregateFunDef.AggregateCalc.membersVersusOccurencesInTuple(
                 memberList);
 
-        assertTrue(
-            Util.areOccurencesEqual(
-                memberCounterMap[0].values()));
-        assertTrue(
-            Util.areOccurencesEqual(
-                memberCounterMap[1].values()));
+        assertThat(Util.areOccurencesEqual(
+                    memberCounterMap[0].values()), is(true));
+        assertThat(Util.areOccurencesEqual(
+                    memberCounterMap[1].values()), is(true));
     }
 
-    public void testMemberCountIsNotSameForAllMembersInTuple() {
+    @Test public void testMemberCountIsNotSameForAllMembersInTuple() {
         Member maleChild =
             member(
                 Id.Segment.toList("Gender", "All Gender", "M"),
@@ -1267,15 +1261,13 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             AggregateFunDef.AggregateCalc.membersVersusOccurencesInTuple(
                 memberList);
 
-        assertFalse(
-            Util.areOccurencesEqual(
-                memberCounterMap[0].values()));
-        assertTrue(
-            Util.areOccurencesEqual(
-                memberCounterMap[1].values()));
+        assertThat(Util.areOccurencesEqual(
+                    memberCounterMap[0].values()), is(false));
+        assertThat(Util.areOccurencesEqual(
+                    memberCounterMap[1].values()), is(true));
     }
 
-    public void testAggregatesAtTheSameLevelForNormalAndDistinctCountMeasure() {
+    @Test public void testAggregatesAtTheSameLevelForNormalAndDistinctCountMeasure() {
         propSaver.set(propSaver.props.EnableGroupingSets, true);
         assertQueryReturns(
             "WITH "
@@ -1299,7 +1291,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
             + "Row #1: 135,215\n");
     }
 
-    public void testDistinctCountForAggregatesAtTheSameLevel() {
+    @Test public void testDistinctCountForAggregatesAtTheSameLevel() {
         propSaver.set(propSaver.props.EnableGroupingSets, true);
         assertQueryReturns(
             "WITH "
@@ -1323,7 +1315,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
      * results in wrong data for a distinct count operation when using roles to
      * narrow down the members access.
      */
-    public void testMondrian906() {
+    @Test public void testMondrian906() {
         final TestContext context =
             TestContext.instance().create(
                 null, null, null, null, null,
@@ -1392,7 +1384,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-1370">MONDRIAN-1370</a>
      * <br> Wrong results for aggregate with distinct count measure.
      */
-    public void testDistinctCountAggMeasure() {
+    @Test public void testDistinctCountAggMeasure() {
         final String dimension =
             "<Dimension name='Time' table='time_by_day' type='TIME' key='Time Id'> \n"
             + "  <Attributes>\n"

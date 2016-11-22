@@ -11,7 +11,11 @@ package mondrian.rolap.aggmatcher;
 
 import mondrian.recorder.ListRecorder;
 
-import junit.framework.TestCase;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import org.apache.log4j.Logger;
 
@@ -26,7 +30,8 @@ import java.util.Iterator;
  *
  * @author Richard M. Emberson
  */
-public class DefaultRuleTest extends TestCase {
+@Ignore("OPTIONAL_TEST")
+public class DefaultRuleTest {
     private static final Logger LOGGER =
         Logger.getLogger(DefaultRuleTest.class);
     private static final String DIRECTORY =
@@ -35,19 +40,11 @@ public class DefaultRuleTest extends TestCase {
 
     private DefaultDef.AggRules rules;
 
-    public DefaultRuleTest() {
-        super();
-    }
-
-    public DefaultRuleTest(String name) {
-        super(name);
-    }
-
     private DefaultDef.AggRule getAggRule(String tag) {
         return rules.getAggRule(tag);
     }
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         File file = new File(DIRECTORY, TEST_RULE_XML);
         FileReader reader = new FileReader(file);
 
@@ -66,9 +63,6 @@ public class DefaultRuleTest extends TestCase {
                 LOGGER.error("message=" + e.getMessage());
             }
         }
-    }
-
-    protected void tearDown() throws Exception {
     }
 
     private Recognizer.Matcher getTableMatcher(String tag, String tableName) {
@@ -139,7 +133,7 @@ public class DefaultRuleTest extends TestCase {
     //
     //
 
-    public void testTableNameDefault() {
+    @Test public void testTableNameDefault() {
         final String tag = "default";
         final String factTableName = "FACT_TABLE";
 
@@ -161,7 +155,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "agg_10_Mytable");
     }
 
-    public void testTableNameBBBB() {
+    @Test public void testTableNameBBBB() {
         final String tag = "bbbb";
         final String factTableName = "FACT_TABLE";
 
@@ -177,7 +171,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "Mytable_agg_10");
     }
 
-    public void testTableNameCCCCBAD() {
+    @Test public void testTableNameCCCCBAD() {
         final String tag = "cccc";
         final String basename = "WAREHOUSE";
         final String factTableName = "RF_" + basename + "_TABLE";
@@ -197,7 +191,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "agg_10_Mytable");
     }
 
-    public void testTableNameCCCCGOOD() {
+    @Test public void testTableNameCCCCGOOD() {
         final String tag = "cccc";
         final String basename = "WAREHOUSE";
         final String factTableName = "RF_" + basename + "_TABLE";
@@ -214,7 +208,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "agg_10_Mytable");
     }
 
-    public void testFactCountDefault() {
+    @Test public void testFactCountDefault() {
         final String tag = "default";
         Recognizer.Matcher matcher = getFactCountMatcher(tag);
 
@@ -229,7 +223,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "FACT_COUNT_MY");
     }
 
-    public void testFactCountBBBB() {
+    @Test public void testFactCountBBBB() {
         final String tag = "bbbb";
         Recognizer.Matcher matcher = getFactCountMatcher(tag);
 
@@ -244,7 +238,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "FACT_COUNT_MY");
     }
 
-    public void testFactCountCCCC() {
+    @Test public void testFactCountCCCC() {
         final String tag = "cccc";
         Recognizer.Matcher matcher = getFactCountMatcher(tag);
 
@@ -259,7 +253,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "FACT_COUNT_MY");
     }
 
-    public void testForeignKeyDefault() {
+    @Test public void testForeignKeyDefault() {
         final String tag = "default";
         final String foreignKeyName = "foo_key";
         Recognizer.Matcher matcher = getForeignKeyMatcher(tag, foreignKeyName);
@@ -271,7 +265,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "my_foo_key");
     }
 
-    public void testForeignKeyBBBB() {
+    @Test public void testForeignKeyBBBB() {
         final String tag = "bbbb";
         final String foreignKeyName = "fk_ham_n_eggs";
         Recognizer.Matcher matcher = getForeignKeyMatcher(tag, foreignKeyName);
@@ -289,7 +283,7 @@ public class DefaultRuleTest extends TestCase {
                 posttemplate="_[fF][kK]"
                 charcase="exact" />
 */
-    public void testForeignKeyCCCC() {
+    @Test public void testForeignKeyCCCC() {
         final String tag = "cccc";
         final String foreignKeyName1 = "fk_toast";
         final String foreignKeyName2 = "FK_TOAST";
@@ -314,7 +308,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher3, "TOAST_FK");
     }
 
-    public void testLevelDefaultOne() {
+    @Test public void testLevelDefaultOne() {
         final String tag = "default";
         final String usagePrefix = null;
         final String hierarchyName = "Time";
@@ -331,7 +325,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "Time Day in Year");
     }
 
-    public void testLevelDefaultTwo() {
+    @Test public void testLevelDefaultTwo() {
         final String tag = "default";
         final String usagePrefix = "boo_";
         final String hierarchyName = "Time";
@@ -351,7 +345,7 @@ public class DefaultRuleTest extends TestCase {
         doNotMatch(matcher, "Time Day in Year");
     }
 
-    public void testLevelBBBB() {
+    @Test public void testLevelBBBB() {
         final String tag = "bbbb";
         final String usagePrefix = "boo_";
         final String hierarchyName = "Time.Period";
@@ -363,7 +357,7 @@ public class DefaultRuleTest extends TestCase {
         doMatch(matcher, "boo_time_DOT_period_day_SP_in_SP_year_days");
     }
 
-    public void testMeasureDefault() {
+    @Test public void testMeasureDefault() {
         final String tag = "default";
         final String measureName = "Total Sales";
         final String measureColumnName = "sales";
@@ -389,11 +383,12 @@ public class DefaultRuleTest extends TestCase {
     //
     //
     private void doMatch(Recognizer.Matcher matcher, String s) {
-        assertTrue("Recognizer.Matcher: " + s, matcher.matches(s));
+        assertThat("Recognizer.Matcher: " + s, matcher.matches(s), is(true));
     }
 
     private void doNotMatch(Recognizer.Matcher matcher, String s) {
-        assertTrue("Recognizer.Matcher: " + s, !matcher.matches(s));
+        boolean b = !matcher.matches(s);
+        assertThat("Recognizer.Matcher: " + s, b, is(true));
     }
     //
     //////////////////////////////////////////////////////////////////////////

@@ -10,16 +10,15 @@
 */
 package mondrian.test.clearview;
 
-import mondrian.olap.MondrianProperties;
 import mondrian.olap.Util;
 import mondrian.rolap.BatchTestCase;
 import mondrian.spi.Dialect;
 import mondrian.test.*;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import java.lang.reflect.Constructor;
+import org.junit.*;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * <code>ClearViewBase</code> is the base class to build test cases which test
@@ -33,54 +32,26 @@ import java.lang.reflect.Constructor;
  *
  * @since Jan 25, 2007
  */
+@RunWith(Parameterized.class)
 public abstract class ClearViewBase extends BatchTestCase {
+    @Rule public final TestName name = new TestName();
 
-    public ClearViewBase() {
-        super();
-    }
-
-    public ClearViewBase(String name) {
-        super(name);
-    }
+    @Parameterized.Parameter public String testCaseName;
 
     public abstract DiffRepository getDiffRepos();
 
-    // implement TestCase
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         DiffRepository diffRepos = getDiffRepos();
-        diffRepos.setCurrentTestCaseName(getName());
+        diffRepos.setCurrentTestCaseName(testCaseName);
     }
 
-    // implement TestCase
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         DiffRepository diffRepos = getDiffRepos();
         diffRepos.setCurrentTestCaseName(null);
         super.tearDown();
     }
 
-    // implement TestCase
-    public static TestSuite constructSuite(
-        DiffRepository diffRepos,
-        Class clazz)
-    {
-        TestSuite suite = new TestSuite();
-        Class[] types = new Class[] { String.class };
-
-        for (String name : diffRepos.getTestCaseNames()) {
-            try {
-                Constructor cons = clazz.getConstructor(types);
-                Object[] args = new Object[] { name };
-                suite.addTest((Test) cons.newInstance(args));
-            } catch (Exception e) {
-                throw new Error(e.getMessage());
-            }
-        }
-        return suite;
-    }
-
-    // implement TestCase
-    protected void runTest() throws Exception {
+    @Test public void runTest() throws Exception {
         DiffRepository diffRepos = getDiffRepos();
         TestContext testContext = getTestContext();
 
@@ -168,7 +139,7 @@ public abstract class ClearViewBase extends BatchTestCase {
         DiffRepository diffRepos = getDiffRepos();
         Dialect d = getTestContext().getDialect();
         Dialect.DatabaseProduct dialect = d.getDatabaseProduct();
-        String testCaseName = getName();
+        String testCaseName = name.getMethodName();
         String sql = diffRepos.get(
             testCaseName, "expectedSql", dialect.name());
         if (sql != null) {

@@ -9,7 +9,7 @@
 */
 package mondrian.test;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import org.apache.log4j.Logger;
 
@@ -17,18 +17,15 @@ import org.apache.log4j.Logger;
  * Those performance tests use the steel wheels schema
  * and are not meant to be run as part of the CI test suite.
  * They must be deactivated by default.
+ *
  * @author LBoudreau
  */
-public class SteelWheelsPerformanceTest extends TestCase {
+public class SteelWheelsPerformanceTest {
     /**
      * Certain tests are enabled only if logging is enabled.
      */
     private static final Logger LOGGER =
         Logger.getLogger(SteelWheelsPerformanceTest.class);
-
-    public SteelWheelsPerformanceTest(String name) {
-        super(name);
-    }
 
     /**
      * Returns the test context. Override this method if you wish to use a
@@ -43,7 +40,7 @@ public class SteelWheelsPerformanceTest extends TestCase {
      * tons of filters and sort to test the performance
      * of some bug fixes before/after.
      */
-    public void testComplexFilters() throws Exception {
+    @Test public void testComplexFilters() throws Exception {
         if (!LOGGER.isDebugEnabled()) {
             return;
         }

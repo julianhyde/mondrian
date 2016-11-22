@@ -15,6 +15,9 @@ import mondrian.spi.Dialect;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.After;
+import org.junit.Before;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -38,14 +41,6 @@ public abstract class CsvDBTestCase extends FoodMartTestCase {
     private CsvDBLoader.Table[] tables;
     private TestContext testContext;
 
-    public CsvDBTestCase() {
-        super();
-    }
-
-    public CsvDBTestCase(String name) {
-        super(name);
-    }
-
     protected final boolean isApplicable() {
         final Dialect dialect = getTestContext().getDialect();
         return dialect.allowsDdl()
@@ -53,14 +48,12 @@ public abstract class CsvDBTestCase extends FoodMartTestCase {
             != Dialect.DatabaseProduct.INFOBRIGHT;
     }
 
-    protected void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         // If this database does not allow DDL, the test won't run. Don't bother
         // setting up.
         if (!isApplicable()) {
             return;
         }
-
-        super.setUp();
 
         Connection connection = getSqlConnection();
         String dirName = getDirectoryName();
@@ -93,7 +86,7 @@ public abstract class CsvDBTestCase extends FoodMartTestCase {
             roleDefs);
     }
 
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         // If this database does not allow DDL, we didn't run setUp; so, nothing
         // to tear down.
         if (!isApplicable()) {

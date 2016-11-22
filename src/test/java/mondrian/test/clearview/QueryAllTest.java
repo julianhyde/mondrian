@@ -13,6 +13,11 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.Ignore;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>QueryAllTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
@@ -22,14 +27,6 @@ import junit.framework.TestSuite;
  */
 public class QueryAllTest extends ClearViewBase {
 
-    public QueryAllTest() {
-        super();
-    }
-
-    public QueryAllTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +35,9 @@ public class QueryAllTest extends ClearViewBase {
         return DiffRepository.lookup(QueryAllTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), QueryAllTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(QueryAllTest.class);
     }
 
 }

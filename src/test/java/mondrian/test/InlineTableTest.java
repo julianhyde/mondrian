@@ -12,6 +12,8 @@ package mondrian.test;
 import mondrian.olap.MondrianProperties;
 import mondrian.spi.Dialect;
 
+import org.junit.Test;
+
 /**
  * Unit test for the InlineTable element, defining tables whose values are held
  * in the Mondrian schema file, not in the database.
@@ -19,12 +21,7 @@ import mondrian.spi.Dialect;
  * @author jhyde
  */
 public class InlineTableTest extends FoodMartTestCase {
-
-    public InlineTableTest(String name) {
-        super(name);
-    }
-
-    public void testInlineTable() {
+    @Test public void testInlineTable() {
         final String cubeName = "Sales_inline";
         TestContext testContext = getTestContext().create(
             null,
@@ -77,7 +74,7 @@ public class InlineTableTest extends FoodMartTestCase {
         return super.getTestContext().legacy();
     }
 
-    public void testInlineTableInSharedDim() {
+    @Test public void testInlineTableInSharedDim() {
         final String cubeName = "Sales_inline_shared";
         final TestContext testContext = getTestContext().create(
             null,
@@ -129,7 +126,7 @@ public class InlineTableTest extends FoodMartTestCase {
             + "Row #0: \n");
     }
 
-    public void testInlineTableSnowflake() {
+    @Test public void testInlineTableSnowflake() {
         if (getTestContext().getDialect().getDatabaseProduct()
             == Dialect.DatabaseProduct.INFOBRIGHT)
         {
@@ -198,7 +195,7 @@ public class InlineTableTest extends FoodMartTestCase {
             + "Row #0: 266,773\n");
     }
 
-    public void testInlineTableDate() {
+    @Test public void testInlineTableDate() {
         final String cubeName = "Sales_Inline_Date";
         final TestContext testContext = getTestContext().create(
             null,

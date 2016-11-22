@@ -13,8 +13,12 @@ import mondrian.calc.ResultStyle;
 import mondrian.olap.*;
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.*;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.fail;
 
 /**
  * Test case for {@link ObjectPool}.
@@ -75,24 +79,14 @@ public class MemoryMonitorTest extends FoodMartTestCase {
     }
 
     protected boolean enabled;
-    public MemoryMonitorTest() {
-        super();
-    }
-    public MemoryMonitorTest(String name) {
-        super(name);
-    }
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         enabled = MondrianProperties.instance().MemoryMonitor.get();
-    }
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
 /*
 Does not work without the notify on add feature.
-    public void testZeroUsage() throws Exception {
+    @Test public void testZeroUsage() throws Exception {
         if (Util.PreJdk15 || !enabled) {
             return;
         }
@@ -118,7 +112,7 @@ Does not work without the notify on add feature.
         }
     }
 */
-    public void testDeltaUsage() throws Exception {
+    @Test public void testDeltaUsage() throws Exception {
         if (Util.PreJdk15 || !enabled) {
             return;
         }
@@ -160,7 +154,7 @@ Does not work without the notify on add feature.
     }
 /*
 Does not work without the notify on add feature.
-    public void testUpdatePercent() throws Exception {
+    @Test public void testUpdatePercent() throws Exception {
         if (Util.PreJdk15 || !enabled) {
             return;
         }

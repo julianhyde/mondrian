@@ -21,7 +21,14 @@ import mondrian.olap.Schema;
 import mondrian.spi.Dialect;
 import mondrian.util.Bug;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import org.olap4j.metadata.*;
 
@@ -35,16 +42,12 @@ import java.util.*;
  */
 public class LegacySchemaTest extends FoodMartTestCase {
 
-    public LegacySchemaTest(String name) {
-        super(name);
-    }
-
     @Override
     public TestContext getTestContext() {
         return TestContext.instance().with(TestContext.DataSet.LEGACY_FOODMART);
     }
 
-    public void testAllLevelName() {
+    @Test public void testAllLevelName() {
         TestContext testContext = getTestContext().createSubstitutingCube(
             "Sales",
             "<Dimension name=\"Gender4\" foreignKey=\"customer_id\">\n"
@@ -64,7 +67,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
         Assert.assertEquals(caption, "GenderLevel");
     }
 
-    public void testCatalogHierarchyBasedOnView() {
+    @Test public void testCatalogHierarchyBasedOnView() {
         // Don't run this test if aggregates are enabled: two levels mapped to
         // the "gender" column confuse the agg engine.
         if (MondrianProperties.instance().ReadAggregates.get()) {
@@ -119,7 +122,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Run a query against a large hierarchy, to make sure that we can generate
      * joins correctly. This probably won't work in MySQL.
      */
-    public void testCatalogHierarchyBasedOnView2() {
+    @Test public void testCatalogHierarchyBasedOnView2() {
         // Don't run this test if aggregates are enabled: two levels mapped to
         // the "gender" column confuse the agg engine.
         if (MondrianProperties.instance().ReadAggregates.get()) {
@@ -222,7 +225,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #3: 3,396\n");
     }
 
-    public void testBadMeasure1() {
+    @Test public void testBadMeasure1() {
         final TestContext testContext = TestContext.instance().legacy().create(
             null,
             "<Cube name=\"SalesWithBadMeasure\">\n"
@@ -253,7 +256,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * "bug with hierarchy with no all member when in query"</a>. It caused a
      * dimension with no 'all' member to be constrained twice.
      */
-    public void testDimWithoutAll() {
+    @Test public void testDimWithoutAll() {
         // Create a test context with a new ""Sales_DimWithoutAll" cube, and
         // which evaluates expressions against that cube.
         final String schema = TestContext.instance().legacy().getSchema(
@@ -334,7 +337,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * map to the same column via the same join-path. If the constraints are
      * inconsistent, no data will be returned.
      */
-    public void testMultipleConstraintsOnSameColumn() {
+    @Test public void testMultipleConstraintsOnSameColumn() {
         final String cubeName = "Sales_withCities";
         final TestContext testContext = TestContext.instance().legacy().create(
             null,
@@ -410,7 +413,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
     // AggPattern (or any other aggregate elements that cannot be converted)
 
 
-    public void testHierarchyDefaultMember() {
+    @Test public void testHierarchyDefaultMember() {
         TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -433,7 +436,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #0: 135,215\n");
     }
 
-    public void testLevelUniqueMembers() {
+    @Test public void testLevelUniqueMembers() {
         // If uniqueMembers is not specified for first level of hierarchy,
         // defaults to false.
         createLevelUniqueMembersTestContext("")
@@ -456,7 +459,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "</Dimension>");
     }
 
-    public void testDimensionRequiresForeignKey() {
+    @Test public void testDimensionRequiresForeignKey() {
         getTestContext().legacy().createSubstitutingCube(
             "Sales",
             "    <Dimension name='Store'>\n"
@@ -472,7 +475,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
                 "<Dimension name='Store'>");
     }
 
-    public void testDimensionUsageWithInvalidForeignKey() {
+    @Test public void testDimensionUsageWithInvalidForeignKey() {
         getTestContext().legacy().create(
             null,
             "<Cube name='Sales77'>\n"
@@ -493,7 +496,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Alias the fact table to avoid issues with aggregation rules
      * and multiple column names
      */
-    public void testMultipleDimensionHierarchyCaptionUsages() {
+    @Test public void testMultipleDimensionHierarchyCaptionUsages() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='Sales Two Dimensions'>\n"
@@ -521,15 +524,15 @@ public class LegacySchemaTest extends FoodMartTestCase {
                 .next();
 
         // NOTE: The caption is modified at the dimension, not the hierarchy
-        assertEquals("TimeTwo", member1.getLevel().getDimension().getCaption());
+        assertThat(member1.getLevel().getDimension().getCaption(), is("TimeTwo"));
 
         Member member2 =
             result.getAxes()[1].getPositions().iterator().next().iterator()
                 .next();
-        assertEquals("TimeOne", member2.getLevel().getDimension().getCaption());
+        assertThat(member2.getLevel().getDimension().getCaption(), is("TimeOne"));
     }
 
-    public void testPropertyFormatter() {
+    @Test public void testPropertyFormatter() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -557,7 +560,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
     /**
      * Tests that an invalid aggregator causes an error.
      */
-    public void testInvalidAggregator() {
+    @Test public void testInvalidAggregator() {
         TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -580,7 +583,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Measure@aggregator attribute still works. The preferred value these days
      * is "distinct-count".
      */
-    public void testDeprecatedDistinctCountAggregator() {
+    @Test public void testDeprecatedDistinctCountAggregator() {
         TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -631,7 +634,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Alias the fact table to avoid issues with aggregation rules
      * and multiple column names
      */
-    public void testMultipleDimensionUsages() {
+    @Test public void testMultipleDimensionUsages() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='Sales Two Dimensions'>\n"
@@ -663,7 +666,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests two dimensions using same table (via different join paths).
      * both using a table alias.
      */
-    public void testTwoAliasesDimensionsShareTable() {
+    @Test public void testTwoAliasesDimensionsShareTable() {
         final TestContext testContext = getTestContext().create(
             null,
             "<Cube name='AliasedDimensionsTesting' defaultMeasure='Supply Time'>\n"
@@ -714,7 +717,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests two dimensions using same table with same foreign key.
      * both using a table alias.
      */
-    public void testTwoAliasesDimensionsShareTableSameForeignKeys() {
+    @Test public void testTwoAliasesDimensionsShareTableSameForeignKeys() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='AliasedDimensionsTesting' defaultMeasure='Supply Time'>\n"
@@ -759,7 +762,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #0: 10,425\n");
     }
 
-    public void testCubeWithNoDimensions() {
+    @Test public void testCubeWithNoDimensions() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='NoDim' defaultMeasure='Unit Sales'>\n"
@@ -780,7 +783,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #0: 266,773\n");
     }
 
-    public void testAllMemberNoStringReplace() {
+    @Test public void testAllMemberNoStringReplace() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='Sales Special Time'>\n"
@@ -814,7 +817,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #0: 266,773\n");
     }
 
-    public void testCubeHasFact() {
+    @Test public void testCubeHasFact() {
         getTestContext().legacy().create(
             null,
             "<Cube name='Cube with caption' caption='Cube with name'/>\n",
@@ -830,7 +833,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * what is the expected result?  Also, in this case, they share the same
      * table without an alias, and the system doesn't complain.
      */
-    public void testDuplicateTableAliasSameForeignKey() {
+    @Test public void testDuplicateTableAliasSameForeignKey() {
         TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -861,7 +864,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
     /**
      * Tests a cube whose fact table is a &lt;View&gt; element.
      */
-    public void testViewFactTable() {
+    @Test public void testViewFactTable() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             // Warehouse cube where the default member in the Warehouse
@@ -925,7 +928,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests a cube whose fact table is a &lt;View&gt; element, and which
      * has dimensions based on the fact table.
      */
-    public void testViewFactTable2() {
+    @Test public void testViewFactTable2() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             // Similar to "Store" cube in FoodMart.mondrian.xml.
@@ -981,7 +984,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests a cube whose fact table is a &lt;View&gt; element, and which
      * has dimensions based on the fact table.
      */
-    public void testViewFactTableInvalid() {
+    @Test public void testViewFactTableInvalid() {
         TestContext testContext = getTestContext().legacy().create(
             null,
             // Similar to "Store" cube in FoodMart.mondrian.xml.
@@ -1011,7 +1014,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-303">
      * MONDRIAN-303, "Property column shifting when use captionColumn"</a>.
      */
-    public void testBugMondrian303() {
+    @Test public void testBugMondrian303() {
         // In order to reproduce the problem a dimension specifying
         // captionColumn and Properties were required.
         TestContext testContext =
@@ -1084,7 +1087,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #12: Supermarket\n");
     }
 
-    public void testCubeWithOneDimensionUsageOneMeasure() {
+    @Test public void testCubeWithOneDimensionUsageOneMeasure() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='OneDimUsage' defaultMeasure='Unit Sales'>\n"
@@ -1107,7 +1110,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #0: 50,236\n");
     }
 
-    public void testCubeCaption() throws SQLException {
+    @Test public void testCubeCaption() throws SQLException {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='Cube with caption' caption='Cube with name'>"
@@ -1126,13 +1129,13 @@ public class LegacySchemaTest extends FoodMartTestCase {
         final NamedList<org.olap4j.metadata.Cube> cubes =
             testContext.getOlap4jConnection().getOlapSchema().getCubes();
         final org.olap4j.metadata.Cube cube = cubes.get("Cube with caption");
-        assertEquals("Cube with name", cube.getCaption());
+        assertThat(cube.getCaption(), is("Cube with name"));
         final org.olap4j.metadata.Cube cube2 =
             cubes.get("Warehouse and Sales with caption");
-        assertEquals("Warehouse and Sales with name", cube2.getCaption());
+        assertThat(cube2.getCaption(), is("Warehouse and Sales with name"));
     }
 
-    public void testHierarchiesWithDifferentPrimaryKeysThrows() {
+    @Test public void testHierarchiesWithDifferentPrimaryKeysThrows() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1166,7 +1169,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
         }
     }
 
-    public void testVirtualCubeDimensionMustJoinToAtLeastOneCube() {
+    @Test public void testVirtualCubeDimensionMustJoinToAtLeastOneCube() {
         TestContext testContext = getTestContext().legacy().create(
             null,
             null,
@@ -1190,7 +1193,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             "Virtual cube dimension must join to at least one cube: dimension 'Store' in cube 'Sales vs HR'");
     }
 
-    public void testStoredMeasureMustHaveColumns() {
+    @Test public void testStoredMeasureMustHaveColumns() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='Warehouse-old'>\n"
@@ -1222,7 +1225,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             "Expression must belong to one and only one relation (at line 177, column 8)");
     }
 
-    public void testCubesVisibility() throws Exception {
+    @Test public void testCubesVisibility() throws Exception {
         for (Boolean testValue : new Boolean[] {true, false}) {
             String cubeDef =
                 "<Cube name='Foo' visible='@REPLACE_ME@'>\n"
@@ -1244,11 +1247,11 @@ public class LegacySchemaTest extends FoodMartTestCase {
             final Cube cube =
                 context.getConnection().getSchema()
                     .lookupCube("Foo", true);
-            assertTrue(testValue.equals(cube.isVisible()));
+            assertThat(testValue.equals(cube.isVisible()), is(true));
         }
     }
 
-    public void testLevelVisibility() throws Exception {
+    @Test public void testLevelVisibility() throws Exception {
         for (Boolean testValue : new Boolean[] {true, false}) {
             String cubeDef =
                 "<Cube name='Foo'>\n"
@@ -1276,19 +1279,17 @@ public class LegacySchemaTest extends FoodMartTestCase {
                     dim = dimCheck;
                 }
             }
-            assertNotNull(dim);
+            assertThat(dim, notNullValue());
             final Hierarchy hier = dim.getHierarchy();
-            assertNotNull(hier);
-            assertEquals(
-                "Bacon",
-                hier.getName());
+            assertThat(hier, notNullValue());
+            assertThat(hier.getName(), is("Bacon"));
             final mondrian.olap.Level level = hier.getLevelList().get(0);
-            assertEquals("Samosa", level.getName());
-            assertTrue(testValue.equals(level.isVisible()));
+            assertThat(level.getName(), is("Samosa"));
+            assertThat(testValue.equals(level.isVisible()), is(true));
         }
     }
 
-    public void testInvalidRoleError() {
+    @Test public void testInvalidRoleError() {
         String schema =
             TestContext.getRawSchema(TestContext.DataSet.LEGACY_FOODMART);
         schema =
@@ -1302,7 +1303,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             "<Schema name='FoodMart' defaultRole='Unknown'>");
     }
 
-    public void testVirtualCubeNamedSetSupportInSchema() {
+    @Test public void testVirtualCubeNamedSetSupportInSchema() {
         TestContext testContext = getTestContext().createSubstitutingCube(
             "Warehouse and Sales",
             null,
@@ -1347,7 +1348,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #0: 192,025\n");
     }
 
-    public void testVirtualCubeNamedSetSupportInSchemaError() {
+    @Test public void testVirtualCubeNamedSetSupportInSchemaError() {
         TestContext testContext = getTestContext().createSubstitutingCube(
             "Warehouse and Sales",
             null,
@@ -1374,9 +1375,9 @@ public class LegacySchemaTest extends FoodMartTestCase {
                 + "{[Measures].[Unit Sales]}\n"
                 + "Row #0: 266,773\n"
                 + "Row #0: 192,025\n");
-            fail();
+            fail("expected exception");
         } catch (MondrianException e) {
-            assertTrue(e.getMessage().indexOf("bad formula") >= 0);
+            assertThat(e.getMessage().indexOf("bad formula") >= 0, is(true));
         }
     }
 
@@ -1385,7 +1386,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * MONDRIAN-413, "RolapMember causes ClassCastException in compare()"</a>,
      * caused by binary column value.
      */
-    public void testBinaryLevelKey() {
+    @Test public void testBinaryLevelKey() {
         if (!Bug.BugMondrian1330Fixed) {
             return;
         }
@@ -1470,7 +1471,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * table snowflake, and the table nearer to the fact table is not used by
      * any level.
      */
-    public void testScdJoin() {
+    @Test public void testScdJoin() {
         final TestContext testContext =
             getTestContext().createSubstitutingCube(
                 "Sales",
@@ -1505,7 +1506,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
     }
 
 
-    public void testCubeRequiresFactTable() {
+    @Test public void testCubeRequiresFactTable() {
         getTestContext().create(
             null, "<Cube name='cube without fact table'/>",
             null, null, null, null)
@@ -1521,7 +1522,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * <p>See bug <a href="http://jira.pentaho.com/browse/MONDRIAN-896">
      * MONDRIAN-896, "Oracle integer columns overflow if value &gt;>2^31"</a>.
      */
-    public void testLevelInternalType() {
+    @Test public void testLevelInternalType() {
         // One of the keys is larger than Integer.MAX_VALUE (2 billion), so
         // will only work if we use long values.
         TestContext testContext = getTestContext().createSubstitutingCube(
@@ -1569,7 +1570,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
     /**
      * Negative test for Level@internalType attribute.
      */
-    public void testLevelInternalTypeErr() {
+    @Test public void testLevelInternalTypeErr() {
         TestContext testContext = getTestContext().createSubstitutingCube(
             "Sales",
             "  <Dimension name='Big numbers' foreignKey='promotion_id'>\n"
@@ -1601,7 +1602,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Test case for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-482">
      * MONDRIAN-482, "ClassCastException when obtaining RolapCubeLevel"</a>.
      */
-    public void testBugMondrian482() {
+    @Test public void testBugMondrian482() {
         // until bug MONDRIAN-495, "Table filter concept does not support
         // dialects." is fixed, this test case only works on MySQL
         if (!Bug.BugMondrian495Fixed
@@ -1690,7 +1691,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-355">Bug MONDRIAN-355,
      * "adding hours/mins as levelType for level of type Dimension"</a>.
      */
-    public void testBugMondrian355() {
+    @Test public void testBugMondrian355() {
         if (!Bug.BugMondrian1329Fixed) {
             return;
         }
@@ -1759,7 +1760,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-463">
      * MONDRIAN-463, "Snowflake dimension with 3-way join."</a>.
      */
-    public void testBugMondrian463() {
+    @Test public void testBugMondrian463() {
         if (!Bug.BugMondrian1335Fixed) {
             return;
         }
@@ -1882,7 +1883,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
             + "Row #9: 186\n");
     }
 
-    public void testVirtualCubesVisibility() throws Exception {
+    @Test public void testVirtualCubesVisibility() throws Exception {
         for (Boolean testValue : new Boolean[] {true, false}) {
             String cubeDef =
                 "<VirtualCube name='Foo' defaultMeasure='Store Sales' visible='@REPLACE_ME@'>\n"
@@ -1899,11 +1900,11 @@ public class LegacySchemaTest extends FoodMartTestCase {
             final Cube cube =
                 context.getConnection().getSchema()
                     .lookupCube("Foo", true);
-            assertTrue(testValue.equals(cube.isVisible()));
+            assertThat(testValue.equals(cube.isVisible()), is(true));
         }
     }
 
-    public void testVirtualDimensionVisibility() throws Exception {
+    @Test public void testVirtualDimensionVisibility() throws Exception {
         for (Boolean testValue : new Boolean[] {true, false}) {
             String cubeDef =
                 "<VirtualCube name='Foo' defaultMeasure='Store Sales'>\n"
@@ -1926,12 +1927,12 @@ public class LegacySchemaTest extends FoodMartTestCase {
                     dim = dimCheck;
                 }
             }
-            assertNotNull(dim);
-            assertTrue(testValue.equals(dim.isVisible()));
+            assertThat(dim, notNullValue());
+            assertThat(dim.isVisible(), is(testValue));
         }
     }
 
-    public void testDimensionVisibility() throws Exception {
+    @Test public void testDimensionVisibility() throws Exception {
         for (Boolean testValue : new Boolean[] {true, false}) {
             String cubeDef =
                 "<Cube name='Foo'>\n"
@@ -1959,15 +1960,15 @@ public class LegacySchemaTest extends FoodMartTestCase {
                     dim = dimCheck;
                 }
             }
-            assertNotNull(dim);
-            assertTrue(testValue.equals(dim.isVisible()));
+            assertThat(dim, notNullValue());
+            assertThat(testValue.equals(dim.isVisible()), is(true));
         }
     }
 
     /**
      * Test for MONDRIAN-943 and MONDRIAN-465.
      */
-    public void testCaptionWithOrdinalColumn() {
+    @Test public void testCaptionWithOrdinalColumn() {
         final TestContext tc =
             getTestContext().createSubstitutingCube(
                 "HR",
@@ -1987,19 +1988,19 @@ public class LegacySchemaTest extends FoodMartTestCase {
         List<Position> positions = axes[1].getPositions();
         Member mall = positions.get(0).get(0);
         String caption = mall.getHierarchy().getCaption();
-        assertEquals("Position2", caption);
+        assertThat(caption, is("Position2"));
         String captionValue = mall.getCaption();
-        assertEquals("HQ Information Systems", captionValue);
+        assertThat(captionValue, is("HQ Information Systems"));
         mall = positions.get(14).get(0);
         captionValue = mall.getCaption();
-        assertEquals("Store Manager", captionValue);
+        assertThat(captionValue, is("Store Manager"));
         mall = positions.get(15).get(0);
         captionValue = mall.getCaption();
-        assertEquals("Store Assistant Manager", captionValue);
+        assertThat(captionValue, is("Store Assistant Manager"));
     }
 
 
-    public void testHierarchyVisibility() throws Exception {
+    @Test public void testHierarchyVisibility() throws Exception {
         for (Boolean testValue : new Boolean[] {true, false}) {
             String cubeDef =
                 "<Cube name='Foo'>\n"
@@ -2027,13 +2028,11 @@ public class LegacySchemaTest extends FoodMartTestCase {
                     dim = dimCheck;
                 }
             }
-            assertNotNull(dim);
+            assertThat(dim, notNullValue());
             final Hierarchy hier = dim.getHierarchy();
-            assertNotNull(hier);
-            assertEquals(
-                "Bacon",
-                hier.getName());
-            assertTrue(testValue.equals(hier.isVisible()));
+            assertThat(hier, notNullValue());
+            assertThat(hier.getName(), is("Bacon"));
+            assertThat(testValue.equals(hier.isVisible()), is(true));
         }
     }
 
@@ -2044,7 +2043,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * which was done at cube init time when resolving the calculated members
      * of the base cubes.
      */
-    public void testBugMondrian923() throws Exception {
+    @Test public void testBugMondrian923() throws Exception {
         if (!Bug.VirtualCubeConversionMissesHiddenFixed) {
             return;
         }
@@ -2079,21 +2078,12 @@ public class LegacySchemaTest extends FoodMartTestCase {
                                 .getSchemaReader().getLevelMembers(
                                     dim.getHierarchy().getLevelList().get(0),
                                 true);
-                        assertTrue(
-                            members.toString().contains(
-                                "[Measures].[Profit Per Unit Shipped]"));
-                        assertTrue(
-                            members.toString().contains(
-                                "[Measures].[Image Unit Sales]"));
-                        assertTrue(
-                            members.toString().contains(
-                                "[Measures].[Arrow Unit Sales]"));
-                        assertTrue(
-                            members.toString().contains(
-                                "[Measures].[Style Unit Sales]"));
-                        assertTrue(
-                            members.toString().contains(
-                                "[Measures].[Average Warehouse Sale]"));
+                        assertThat(members.toString().contains("[Measures].[Profit Per Unit Shipped]"),
+                            is(true));
+                        assertThat(members.toString().contains("[Measures].[Image Unit Sales]"), is(true));
+                        assertThat(members.toString().contains("[Measures].[Arrow Unit Sales]"), is(true));
+                        assertThat(members.toString().contains("[Measures].[Style Unit Sales]"), is(true));
+                        assertThat(members.toString().contains("[Measures].[Average Warehouse Sale]"), is(true));
                         return;
                     }
                 }
@@ -2108,7 +2098,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * "IllegalArgumentException when cube has closure tables and many
      * levels"</a>.
      */
-    public void testBugMondrian1047() {
+    @Test public void testBugMondrian1047() {
         // Test case only works under MySQL, due to how columns are quoted.
         switch (getTestContext().getDialect().getDatabaseProduct()) {
         case MYSQL:
@@ -2141,7 +2131,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Test for descriptions, captions and annotations of various schema
      * elements.
      */
-    public void testCaptionDescriptionAndAnnotation() {
+    @Test public void testCaptionDescriptionAndAnnotation() {
         if (!Bug.VirtualCubeConversionMissesHiddenFixed) {
             return;
         }
@@ -2269,25 +2259,25 @@ public class LegacySchemaTest extends FoodMartTestCase {
         final Result result =
             testContext.executeQuery("select from [" + salesCubeName + "]");
         final Cube cube = result.getQuery().getCube();
-        assertEquals("Cube description", cube.getDescription());
+        assertThat(cube.getDescription(), is("Cube description"));
         checkAnnotations(cube.getAnnotationMap(), "a", "Cube");
 
         final Schema schema = cube.getSchema();
         checkAnnotations(schema.getAnnotationMap(), "a", "Schema", "b", "Xyz");
 
         final Dimension dimension = cube.getDimensionList().get(1);
-        assertEquals("Dimension description", dimension.getDescription());
-        assertEquals("Dimension caption", dimension.getCaption());
+        assertThat(dimension.getDescription(), is("Dimension description"));
+        assertThat(dimension.getCaption(), is("Dimension caption"));
         checkAnnotations(dimension.getAnnotationMap(), "a", "Dimension");
 
         final Hierarchy hierarchy = dimension.getHierarchyList().get(0);
-        assertEquals("Hierarchy description", hierarchy.getDescription());
-        assertEquals("Hierarchy caption", hierarchy.getCaption());
+        assertThat(hierarchy.getDescription(), is("Hierarchy description"));
+        assertThat(hierarchy.getCaption(), is("Hierarchy caption"));
         checkAnnotations(hierarchy.getAnnotationMap(), "a", "Hierarchy");
 
         final mondrian.olap.Level level = hierarchy.getLevelList().get(1);
-        assertEquals("Level description", level.getDescription());
-        assertEquals("Level caption", level.getCaption());
+        assertThat(level.getDescription(), is("Level description"));
+        assertThat(level.getCaption(), is("Level caption"));
         checkAnnotations(level.getAnnotationMap(), "a", "Level");
 
         // Caption comes from the CAPTION member property, defaults to name.
@@ -2297,30 +2287,30 @@ public class LegacySchemaTest extends FoodMartTestCase {
             cube.getSchemaReader(null).withLocus()
                 .getLevelMembers(level, false);
         final Member member = memberList.get(0);
-        assertEquals("Canada", member.getName());
-        assertEquals("Canada", member.getCaption());
-        assertNull(member.getDescription());
+        assertThat(member.getName(), is("Canada"));
+        assertThat(member.getCaption(), is("Canada"));
+        assertThat(member.getDescription(), nullValue());
         checkAnnotations(member.getAnnotationMap());
 
         // All member. Caption defaults to name; description is null.
         final Member allMember = member.getParentMember();
-        assertEquals("All Stores", allMember.getName());
-        assertEquals("All Stores", allMember.getCaption());
-        assertNull(allMember.getDescription());
+        assertThat(allMember.getName(), is("All Stores"));
+        assertThat(allMember.getCaption(), is("All Stores"));
+        assertThat(allMember.getDescription(), nullValue());
 
         // All level.
         final mondrian.olap.Level allLevel = hierarchy.getLevelList().get(0);
-        assertEquals("(All)", allLevel.getName());
-        assertNull(allLevel.getDescription());
-        assertEquals(allLevel.getName(), allLevel.getCaption());
+        assertThat(allLevel.getName(), is("(All)"));
+        assertThat(allLevel.getDescription(), nullValue());
+        assertThat(allLevel.getCaption(), is(allLevel.getName()));
         checkAnnotations(allLevel.getAnnotationMap());
 
         // the first time dimension overrides the caption and description of the
         // shared time dimension
         final Dimension timeDimension = cube.getDimensionList().get(2);
-        assertEquals("Time1", timeDimension.getName());
-        assertEquals("Time usage description", timeDimension.getDescription());
-        assertEquals("Time usage caption", timeDimension.getCaption());
+        assertThat(timeDimension.getName(), is("Time1"));
+        assertThat(timeDimension.getDescription(), is("Time usage description"));
+        assertThat(timeDimension.getCaption(), is("Time usage caption"));
         checkAnnotations(timeDimension.getAnnotationMap(), "a", "Time usage");
 
         // Time1 is a usage of a shared dimension Time.
@@ -2330,44 +2320,39 @@ public class LegacySchemaTest extends FoodMartTestCase {
         final Hierarchy timeHierarchy = timeDimension.getHierarchyList().get(0);
         // The hierarchy in the shared dimension does not have a name, so the
         // hierarchy usage inherits the name of the dimension usage, Time1.
-        assertEquals("Time", timeHierarchy.getName());
-        assertEquals("Time1", timeHierarchy.getDimension().getName());
+        assertThat(timeHierarchy.getName(), is("Time"));
+        assertThat(timeHierarchy.getDimension().getName(), is("Time1"));
         // The description is prefixed by the dimension usage name.
-        assertEquals(
-            "Time usage caption.Time shared hierarchy description",
-            timeHierarchy.getDescription());
+        assertThat(timeHierarchy.getDescription(),
+            is("Time usage caption.Time shared hierarchy description"));
         // The hierarchy caption is prefixed by the caption of the dimension
         // usage.
-        assertEquals(
-            "Time usage caption.Time shared hierarchy caption",
-            timeHierarchy.getCaption());
+        assertThat(timeHierarchy.getCaption(),
+            is("Time usage caption.Time shared hierarchy caption"));
         // No annotations.
         checkAnnotations(timeHierarchy.getAnnotationMap());
 
         // the second time dimension does not overrides caption and description
         final Dimension time2Dimension = cube.getDimensionList().get(3);
-        assertEquals("Time2", time2Dimension.getName());
-        assertEquals(
-            "Time shared description", time2Dimension.getDescription());
-        assertEquals("Time shared caption", time2Dimension.getCaption());
+        assertThat(time2Dimension.getName(), is("Time2"));
+        assertThat(time2Dimension.getDescription(), is("Time shared description"));
+        assertThat(time2Dimension.getCaption(), is("Time shared caption"));
         checkAnnotations(time2Dimension.getAnnotationMap());
 
         final Hierarchy time2Hierarchy =
             time2Dimension.getHierarchyList().get(0);
         // The hierarchy in the shared dimension does not have a name, so the
         // hierarchy usage inherits the name of the dimension usage, Time2.
-        assertEquals("Time", time2Hierarchy.getName());
-        assertEquals("Time2", time2Hierarchy.getDimension().getName());
+        assertThat(time2Hierarchy.getName(), is("Time"));
+        assertThat(time2Hierarchy.getDimension().getName(), is("Time2"));
         // The description is prefixed by the dimension usage name (because
         // dimension usage has no caption).
-        assertEquals(
-            "Time2.Time shared hierarchy description",
-            time2Hierarchy.getDescription());
+        assertThat(time2Hierarchy.getDescription(),
+            is("Time2.Time shared hierarchy description"));
         // The hierarchy caption is prefixed by the dimension usage name
         // (because the dimension usage has no caption.
-        assertEquals(
-            "Time2.Time shared hierarchy caption",
-            time2Hierarchy.getCaption());
+        assertThat(time2Hierarchy.getCaption(),
+            is("Time2.Time shared hierarchy caption"));
         // No annotations.
         checkAnnotations(time2Hierarchy.getAnnotationMap());
 
@@ -2380,52 +2365,38 @@ public class LegacySchemaTest extends FoodMartTestCase {
         final List<Member> measures =
             schemaReader.getLevelMembers(measuresLevel, true);
         final Member measure = measures.get(0);
-        assertEquals("Unit Sales", measure.getName());
-        assertEquals("Measure caption", measure.getCaption());
-        assertEquals("Measure description", measure.getDescription());
-        assertEquals(
-            measure.getDescription(),
-            measure.getPropertyValue(Property.DESCRIPTION));
-        assertEquals(
-            measure.getCaption(),
-            measure.getPropertyValue(Property.CAPTION));
-        assertEquals(
-            measure.getCaption(),
-            measure.getPropertyValue(Property.MEMBER_CAPTION));
+        assertThat(measure.getName(), is("Unit Sales"));
+        assertThat(measure.getCaption(), is("Measure caption"));
+        assertThat(measure.getDescription(), is("Measure description"));
+        assertThat(measure.getPropertyValue(Property.DESCRIPTION), is((Object) measure.getDescription()));
+        assertThat(measure.getPropertyValue(Property.CAPTION), is((Object) measure.getCaption()));
+        assertThat(measure.getPropertyValue(Property.MEMBER_CAPTION), is((Object) measure.getCaption()));
         checkAnnotations(measure.getAnnotationMap(), "a", "Measure");
 
         // The implicitly created [Fact Count] measure
         final Member factCountMeasure = measures.get(1);
-        assertEquals("Fact Count", factCountMeasure.getName());
-        assertEquals(
-            false,
-            factCountMeasure.getPropertyValue(Property.VISIBLE));
+        assertThat(factCountMeasure.getName(), is("Fact Count"));
+        assertThat(factCountMeasure.getPropertyValue(Property.VISIBLE), is((Object) false));
 
         final Member calcMeasure = measures.get(2);
-        assertEquals("Foo", calcMeasure.getName());
-        assertEquals("Calc member caption", calcMeasure.getCaption());
-        assertEquals("Calc member description", calcMeasure.getDescription());
-        assertEquals(
-            calcMeasure.getDescription(),
-            calcMeasure.getPropertyValue(Property.DESCRIPTION));
-        assertEquals(
-            calcMeasure.getCaption(),
-            calcMeasure.getPropertyValue(Property.CAPTION));
-        assertEquals(
-            calcMeasure.getCaption(),
-            calcMeasure.getPropertyValue(Property.MEMBER_CAPTION));
+        assertThat(calcMeasure.getName(), is("Foo"));
+        assertThat(calcMeasure.getCaption(), is("Calc member caption"));
+        assertThat(calcMeasure.getDescription(), is("Calc member description"));
+        assertThat(calcMeasure.getPropertyValue(Property.DESCRIPTION), is((Object) calcMeasure.getDescription()));
+        assertThat(calcMeasure.getPropertyValue(Property.CAPTION), is((Object) calcMeasure.getCaption()));
+        assertThat(calcMeasure.getPropertyValue(Property.MEMBER_CAPTION), is((Object) calcMeasure.getCaption()));
         checkAnnotations(calcMeasure.getAnnotationMap(), "a", "Calc member");
 
         final NamedSet namedSet = cube.getNamedSets()[0];
-        assertEquals("Top Periods", namedSet.getName());
-        assertEquals("Named set caption", namedSet.getCaption());
-        assertEquals("Named set description", namedSet.getDescription());
+        assertThat(namedSet.getName(), is("Top Periods"));
+        assertThat(namedSet.getCaption(), is("Named set caption"));
+        assertThat(namedSet.getDescription(), is("Named set description"));
         checkAnnotations(namedSet.getAnnotationMap(), "a", "Named set");
 
         final Result result2 =
             testContext.executeQuery("select from [" + virtualCubeName + "]");
         final Cube cube2 = result2.getQuery().getCube();
-        assertEquals("Virtual cube description", cube2.getDescription());
+        assertThat(cube2.getDescription(), is("Virtual cube description"));
         checkAnnotations(cube2.getAnnotationMap(), "a", "Virtual cube");
 
         final SchemaReader schemaReader2 = cube2.getSchemaReader(null);
@@ -2437,37 +2408,32 @@ public class LegacySchemaTest extends FoodMartTestCase {
         final List<Member> measures2 =
             schemaReader2.getLevelMembers(measuresLevel2, true);
         final Member measure2 = measures2.get(0);
-        assertEquals("Unit Sales", measure2.getName());
-        assertEquals("Measure caption", measure2.getCaption());
-        assertEquals("Measure description", measure2.getDescription());
-        assertEquals(
-            measure2.getDescription(),
-            measure2.getPropertyValue(Property.DESCRIPTION));
-        assertEquals(
-            measure2.getCaption(),
-            measure2.getPropertyValue(Property.CAPTION));
-        assertEquals(
-            measure2.getCaption(),
-            measure2.getPropertyValue(Property.MEMBER_CAPTION));
-        checkAnnotations(
-            measure2.getAnnotationMap(), "a", "Virtual cube measure");
+        assertThat(measure2.getName(), is("Unit Sales"));
+        assertThat(measure2.getCaption(), is("Measure caption"));
+        assertThat(measure2.getDescription(), is("Measure description"));
+        assertThat(measure2.getPropertyValue(Property.DESCRIPTION), is((Object) measure2.getDescription()));
+        assertThat(measure2.getPropertyValue(Property.CAPTION), is((Object) measure2.getCaption()));
+        assertThat(measure2.getPropertyValue(Property.MEMBER_CAPTION), is((Object) measure2.getCaption()));
+        checkAnnotations(measure2.getAnnotationMap(), "a", "Virtual cube measure");
     }
 
     private static void checkAnnotations(
         Map<String, Annotation> annotationMap,
         String... nameVal)
     {
-        assertNotNull(annotationMap);
-        assertEquals(0, nameVal.length % 2);
-        assertEquals(nameVal.length / 2, annotationMap.size());
+        assertThat(annotationMap, notNullValue());
+        assertThat(nameVal.length % 2, is(0));
+        assertThat(annotationMap.size(), is(nameVal.length / 2));
         int i = 0;
         for (Map.Entry<String, Annotation> entry : annotationMap.entrySet()) {
-            assertEquals(nameVal[i++], entry.getKey());
-            assertEquals(nameVal[i++], entry.getValue().getValue());
+            String expected1 = nameVal[i++];
+            assertThat(entry.getKey(), is(expected1));
+            Object expected = nameVal[i++];
+            assertThat(entry.getValue().getValue(), is(expected));
         }
     }
 
-    public void testCaptionExpression() {
+    @Test public void testCaptionExpression() {
         TestContext testContext = getTestContext().createSubstitutingCube(
             "Sales",
             "  <Dimension name='Gender2' foreignKey='customer_id'>\n"
@@ -2497,16 +2463,15 @@ public class LegacySchemaTest extends FoodMartTestCase {
         }
         Result result = testContext.executeQuery(
             "select {[Gender2].Children} on columns from [Sales]");
-        assertEquals(
-            "foobar",
-            result.getAxes()[0].getPositions().get(0).get(0).getCaption());
+        assertThat(result.getAxes()[0].getPositions().get(0).get(0).getCaption(),
+            is("foobar"));
     }
 
     /**
      * Tests that mondrian gives an error if a level is not functionally
      * dependent on the level immediately below it.
      */
-    public void testSnowflakeNotFunctionallyDependent() {
+    @Test public void testSnowflakeNotFunctionallyDependent() {
         final String cubeName = "SalesNotFD";
         final TestContext testContext = getTestContext().create(
             null,
@@ -2543,7 +2508,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * first hierarchy. tables from first and second hierarchy should contain
      * the same join aliases to the fact table.
      */
-    public void testSnowflakeHierarchyValidationNotNeeded() {
+    @Test public void testSnowflakeHierarchyValidationNotNeeded() {
         if (!Bug.BugMondrian1324Fixed) {
             return;
         }
@@ -2613,7 +2578,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests two dimensions using same table (via different join paths).
      * both using a table alias.
      */
-    public void testDimensionsShareJoinTable() {
+    @Test public void testDimensionsShareJoinTable() {
         if (!Bug.BugMondrian1324Fixed) {
             return;
         }
@@ -2672,7 +2637,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests two dimensions using same table (via different join paths).
      * both using a table alias.
      */
-    public void testDimensionsShareJoinTableOneAlias() {
+    @Test public void testDimensionsShareJoinTableOneAlias() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='AliasedDimensionsTesting' defaultMeasure='Unit Sales'>\n"
@@ -2728,7 +2693,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests two dimensions using same table (via different join paths).
      * both using a table alias.
      */
-    public void testDimensionsShareJoinTableTwoAliases() {
+    @Test public void testDimensionsShareJoinTableTwoAliases() {
         final TestContext testContext = getTestContext().legacy().create(
             null,
             "<Cube name='AliasedDimensionsTesting' defaultMeasure='Unit Sales'>\n"
@@ -2789,7 +2754,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      *
      * <p>NOTE: bug is not marked fixed yet.</p>
      */
-    public void testSnowFlakeNameExpressions() {
+    @Test public void testSnowFlakeNameExpressions() {
         final TestContext testContext =
             getTestContext().createSubstitutingCube(
                 "Sales",
@@ -2835,7 +2800,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * The correct way to use a join is right-deep, that is (Join A (Join B C)).
      * Same schema as {@link #testBugMondrian463}, except left-deep.
      */
-    public void testLeftDeepJoinFails() {
+    @Test public void testLeftDeepJoinFails() {
         TestContext testContext = getTestContext().createSubstitutingCube(
             "Sales",
             "<Dimension name='Product3' foreignKey='product_id'>\n"
@@ -2860,9 +2825,8 @@ public class LegacySchemaTest extends FoodMartTestCase {
             testContext.assertSimpleQuery();
             fail("expected error");
         } catch (MondrianException e) {
-            assertEquals(
-                "Mondrian Error:Left side of join must not be a join; mondrian only supports right-deep joins.",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("Mondrian Error:Left side of join must not be a join; mondrian only supports right-deep joins."));
         }
     }
 
@@ -2871,7 +2835,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * native non empty cross join sql generation returns empty query.
      * note that this works when native cross join is disabled
      */
-    public void testDimensionsShareTableNativeNonEmptyCrossJoin() {
+    @Test public void testDimensionsShareTableNativeNonEmptyCrossJoin() {
         final TestContext testContext = getTestContext().createSubstitutingCube(
             "Sales",
             "<Dimension name='Yearly Income2' foreignKey='product_id'>\n"
@@ -2898,7 +2862,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
      * Tests two dimensions using same table (via different join paths).
      * Without the table alias, generates SQL which is missing a join condition.
      */
-    public void testDimensionsShareTable() {
+    @Test public void testDimensionsShareTable() {
         final TestContext legacy = getTestContext().legacy();
         final TestContext testContext = legacy.createSubstitutingCube(
             "Sales",

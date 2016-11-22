@@ -13,6 +13,10 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>GrandTotalTest</code> is a test suite which tests scenarios of
  * using grand total against the FoodMart database. MDX queries and their
@@ -21,15 +25,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class GrandTotalTest extends ClearViewBase {
-
-    public GrandTotalTest() {
-        super();
-    }
-
-    public GrandTotalTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +33,9 @@ public class GrandTotalTest extends ClearViewBase {
         return DiffRepository.lookup(GrandTotalTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), GrandTotalTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(GrandTotalTest.class);
     }
 
 }

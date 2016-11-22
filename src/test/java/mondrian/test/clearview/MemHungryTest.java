@@ -13,6 +13,11 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.Ignore;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>MemHungryTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
@@ -20,15 +25,8 @@ import junit.framework.TestSuite;
  *
  * @author Khanh Vu
  */
+@Ignore("OPTIONAL_TEST")
 public class MemHungryTest extends ClearViewBase {
-
-    public MemHungryTest() {
-        super();
-    }
-
-    public MemHungryTest(String name) {
-        super(name);
-    }
 
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
@@ -38,8 +36,9 @@ public class MemHungryTest extends ClearViewBase {
         return DiffRepository.lookup(MemHungryTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), MemHungryTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(MemHungryTest.class);
     }
 }
 // End MemHungryTest.java

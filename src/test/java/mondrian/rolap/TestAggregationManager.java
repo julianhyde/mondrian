@@ -20,6 +20,14 @@ import mondrian.test.*;
 
 import org.olap4j.impl.Olap4jUtil;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.*;
 
 /**
@@ -38,9 +46,7 @@ public class TestAggregationManager extends BatchTestCase {
     private Execution execution;
     private AggregationManager aggMgr;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         final Statement statement =
             ((RolapConnection) getTestContext().getConnection())
                 .getInternalStatement();
@@ -53,8 +59,7 @@ public class TestAggregationManager extends BatchTestCase {
         Locus.push(locus);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         Locus.pop(locus);
 
         // allow gc
@@ -65,15 +70,7 @@ public class TestAggregationManager extends BatchTestCase {
         super.tearDown();
     }
 
-    public TestAggregationManager(String name) {
-        super(name);
-    }
-
-    public TestAggregationManager() {
-        super();
-    }
-
-    public void testFemaleUnitSales() {
+    @Test public void testFemaleUnitSales() {
         final TestContext testContext = getTestContext();
         final FastBatchingCellReader fbcr =
             new FastBatchingCellReader(
@@ -84,15 +81,16 @@ public class TestAggregationManager extends BatchTestCase {
                 "Sales", "[Measures].[Unit Sales]",
                 "customer", "gender", "F");
         Object value = aggMgr.getCellFromCache(request);
-        assertNull(value); // before load, the cell is not found
+        assertThat(value, nullValue());
         fbcr.recordCellRequest(request);
         fbcr.loadAggregations();
         value = aggMgr.getCellFromCache(request); // after load, cell found
-        assertTrue(value instanceof Number);
-        assertEquals(131558, ((Number) value).intValue());
+        boolean b = value instanceof Number;
+        assertThat(b, is(true));
+        assertThat(((Number) value).intValue(), is(131558));
     }
 
-    public void testFemaleCustomerCount() {
+    @Test public void testFemaleCustomerCount() {
         final TestContext testContext = getTestContext();
         final FastBatchingCellReader fbcr =
             new FastBatchingCellReader(
@@ -103,15 +101,16 @@ public class TestAggregationManager extends BatchTestCase {
                 "Sales", "[Measures].[Customer Count]",
                 "customer", "gender", "F");
         Object value = aggMgr.getCellFromCache(request);
-        assertNull(value); // before load, the cell is not found
+        assertThat(value, nullValue());
         fbcr.recordCellRequest(request);
         fbcr.loadAggregations();
         value = aggMgr.getCellFromCache(request); // after load, cell found
-        assertTrue(value instanceof Number);
-        assertEquals(2755, ((Number) value).intValue());
+        boolean b = value instanceof Number;
+        assertThat(b, is(true));
+        assertThat(((Number) value).intValue(), is(2755));
     }
 
-    public void testFemaleCustomerCountWithConstraints() {
+    @Test public void testFemaleCustomerCountWithConstraints() {
         final TestContext testContext = getTestContext();
 
         List<List<String>> Q1M1 = list(list("1997", "Q1", "1"));
@@ -149,7 +148,7 @@ public class TestAggregationManager extends BatchTestCase {
                 execution, getCube(testContext, "Sales"), aggMgr);
 
         Object value = aggMgr.getCellFromCache(request1);
-        assertNull(value); // before load, the cell is not found
+        assertThat(value, nullValue());
 
         fbcr.recordCellRequest(request1);
         fbcr.recordCellRequest(request2);
@@ -157,16 +156,16 @@ public class TestAggregationManager extends BatchTestCase {
         fbcr.loadAggregations();
 
         value = aggMgr.getCellFromCache(request1); // after load, found
-        assertTrue(value instanceof Number);
-        assertEquals(694, ((Number) value).intValue());
+        assertThat(value instanceof Number, is(true));
+        assertThat(((Number) value).intValue(), is(694));
 
         value = aggMgr.getCellFromCache(request2); // after load, found
-        assertTrue(value instanceof Number);
-        assertEquals(672, ((Number) value).intValue());
+        assertThat(value instanceof Number, is(true));
+        assertThat(((Number) value).intValue(), is(672));
 
         value = aggMgr.getCellFromCache(request3); // after load, found
-        assertTrue(value instanceof Number);
-        assertEquals(1122, ((Number) value).intValue());
+        assertThat(value instanceof Number, is(true));
+        assertThat(((Number) value).intValue(), is(1122));
         // Note: 1122 != (694 + 672)
     }
 
@@ -174,7 +173,7 @@ public class TestAggregationManager extends BatchTestCase {
      * Tests that a request for ([Measures].[Unit Sales], [Gender].[F])
      * generates the correct SQL.
      */
-    public void testFemaleUnitSalesSql() {
+    @Test public void testFemaleUnitSalesSql() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -244,7 +243,7 @@ public class TestAggregationManager extends BatchTestCase {
      *   (store_state=CA, gender=M, measure=[Store Sales])
      *   (store_state=OR, gender=M, measure=[Unit Sales])
      */
-    public void testMultipleMeasures() {
+    @Test public void testMultipleMeasures() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -397,7 +396,7 @@ public class TestAggregationManager extends BatchTestCase {
      * Tests that if a level is marked 'unique members', then its parent
      * is not constrained.
      */
-    public void testUniqueMembers() {
+    @Test public void testUniqueMembers() {
         // [Store].[Store State] is unique, so we don't expect to see any
         // references to country.
         final String mdxQuery =
@@ -459,7 +458,7 @@ public class TestAggregationManager extends BatchTestCase {
      * where the query only has one result axis.  The setup here is necessarily
      * elaborate because the original bug was quite arbitrary.
      */
-    public void testNonEmptyCrossJoinLoneAxis() {
+    @Test public void testNonEmptyCrossJoinLoneAxis() {
         // Not sure what this test is checking.
         // For now, only run it for derby.
         final TestContext testContext = getTestContext();
@@ -520,7 +519,7 @@ public class TestAggregationManager extends BatchTestCase {
     /**
      * If a hierarchy lives in the fact table, we should not generate a join.
      */
-    public void testHierarchyInFactTable() {
+    @Test public void testHierarchyInFactTable() {
         final TestContext testContext = getTestContext();
         CellRequest request =
             createRequest(
@@ -565,7 +564,7 @@ public class TestAggregationManager extends BatchTestCase {
             patterns);
     }
 
-    public void testCountDistinctAggMiss() {
+    @Test public void testCountDistinctAggMiss() {
         final TestContext testContext = getTestContext();
         CellRequest request =
             createRequest(
@@ -604,7 +603,7 @@ public class TestAggregationManager extends BatchTestCase {
             patterns);
     }
 
-    public void testCountDistinctAggMatch() {
+    @Test public void testCountDistinctAggMatch() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -642,7 +641,7 @@ public class TestAggregationManager extends BatchTestCase {
             patterns);
     }
 
-    public void testCountDistinctCannotRollup() {
+    @Test public void testCountDistinctCannotRollup() {
         // Summary "agg_g_ms_pcat_sales_fact_1997" doesn't match,
         // because we'd need to roll-up the distinct-count measure over
         // "month_of_year".
@@ -700,7 +699,7 @@ public class TestAggregationManager extends BatchTestCase {
      * count is counting, it's OK. In this case, you know that every member
      * can only belong to one group.
      */
-    public void testCountDistinctRollupAlongDim() {
+    @Test public void testCountDistinctRollupAlongDim() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -779,7 +778,7 @@ public class TestAggregationManager extends BatchTestCase {
      * As {@link #testCountDistinctRollupAlongDim}, but we rollup
      * [Marital Status] but not [Gender].
      */
-    public void testCountDistinctRollup2() {
+    @Test public void testCountDistinctRollup2() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -853,7 +852,7 @@ public class TestAggregationManager extends BatchTestCase {
      *
      * <pre>{[1997].[Q1].[1], [1997].[Q3].[7]}</pre>
      */
-    public void testCountDistinctBatchLoading() {
+    @Test public void testCountDistinctBatchLoading() {
         final TestContext testContext = getTestContext();
         List<List<String>> compoundMembers = list(
             list("1997", "Q1", "1"),
@@ -916,7 +915,7 @@ public class TestAggregationManager extends BatchTestCase {
      * Tests that an aggregate table is used to speed up a
      * <code>&lt;Member&gt;.Children</code> expression.
      */
-    public void testAggMembers() {
+    @Test public void testAggMembers() {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             return;
         }
@@ -962,7 +961,7 @@ public class TestAggregationManager extends BatchTestCase {
      * Rewrite using an aggregate table is not possible, so just check that it
      * gets the right result.
      */
-    public void testAggChildMembersOfLeaf() {
+    @Test public void testAggChildMembersOfLeaf() {
         assertQueryReturns(
             "select NON EMPTY {[Time].[1997]} ON COLUMNS,\n"
             + "       NON EMPTY Crossjoin(Hierarchize(Union({[Store].[All Stores]},\n"
@@ -983,7 +982,7 @@ public class TestAggregationManager extends BatchTestCase {
      * This test case tests for a null pointer that was being thrown
      * inside of CellRequest.
      */
-    public void testNoNullPtrInCellRequest() {
+    @Test public void testNoNullPtrInCellRequest() {
         TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1020,7 +1019,7 @@ public class TestAggregationManager extends BatchTestCase {
      *  <p>Test also that expressions with only table alias difference do not
      *  share cardinality result.
      */
-    public void testColumnCardinalityCache() {
+    @Test public void testColumnCardinalityCache() {
         String query1 =
             "select "
             + "NonEmptyCrossJoin("
@@ -1068,7 +1067,7 @@ public class TestAggregationManager extends BatchTestCase {
         assertQuerySqlOrNot(context, query2, patterns, true, false, false);
     }
 
-    public void testKeyExpressionCardinalityCache() {
+    @Test public void testKeyExpressionCardinalityCache() {
         String storeDim1 =
             "<Dimension name=\"Store1\">\n"
             + "  <Hierarchy hasAll=\"true\" primaryKey=\"store_id\">\n"
@@ -1182,7 +1181,7 @@ public class TestAggregationManager extends BatchTestCase {
     /**
      * Tests that using compound member constrant disables using AggregateTable.
      */
-    public void testCountDistinctWithConstraintAggMiss() {
+    @Test public void testCountDistinctWithConstraintAggMiss() {
         if (!(propSaver.props.UseAggregates.get()
               && propSaver.props.ReadAggregates.get()))
         {
@@ -1265,7 +1264,7 @@ public class TestAggregationManager extends BatchTestCase {
      * "Improve metadata query (TupleReader) support for aggregation tables to
      * include dimensions defining more than one column"</a>.
      */
-    public void testOrdinalExprAggTuplesAndChildren() {
+    @Test public void testOrdinalExprAggTuplesAndChildren() {
         // this verifies that we can load properties, ordinals, etc out of
         // agg tables in member lookups (tuples and children)
         if (!(propSaver.props.UseAggregates.get()
@@ -1349,12 +1348,10 @@ public class TestAggregationManager extends BatchTestCase {
 
         Result result = testContext.executeQuery(query);
         // this verifies that the caption for meat is Food
-        assertEquals(
-            "Meat",
-            result.getAxes()[1].getPositions().get(0).get(0).getName());
-        assertEquals(
-            "Food",
-            result.getAxes()[1].getPositions().get(0).get(0).getCaption());
+        assertThat(result.getAxes()[1].getPositions().get(0).get(0).getName(),
+            is("Meat"));
+        assertThat(result.getAxes()[1].getPositions().get(0).get(0).getCaption(),
+            is("Food"));
 
         // Test children
         query =
@@ -1375,7 +1372,7 @@ public class TestAggregationManager extends BatchTestCase {
             + "Row #1: 1,262\n");
     }
 
-    public void testAggregatingTuples() {
+    @Test public void testAggregatingTuples() {
         if (!(propSaver.props.UseAggregates.get()
                 && propSaver.props.ReadAggregates.get()))
         {
@@ -1487,7 +1484,7 @@ public class TestAggregationManager extends BatchTestCase {
     /**
      * this test verifies the collapsed children code in SqlMemberSource
      */
-    public void testCollapsedChildren() {
+    @Test public void testCollapsedChildren() {
         if (!(propSaver.props.UseAggregates.get()
                 && propSaver.props.ReadAggregates.get()))
         {
@@ -1538,7 +1535,7 @@ public class TestAggregationManager extends BatchTestCase {
      * This is an adaptation from a test for MONDRIAN-812 which had specifically
      * tested a bug in the DefaultRecognizer, which is no longer used.
      */
-    public void testAttrKeyAsSqlExprWithAgg()
+    @Test public void testAttrKeyAsSqlExprWithAgg()
     {
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
@@ -1629,7 +1626,7 @@ public class TestAggregationManager extends BatchTestCase {
      * aggregation manager can optimize the aggregation tables without
      * having to issue a select count() query.
      */
-    public void testAggNameApproxRowCountLegacy() {
+    @Test public void testAggNameApproxRowCountLegacy() {
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
         final TestContext context =
@@ -1818,7 +1815,7 @@ public class TestAggregationManager extends BatchTestCase {
      * aggregation manager can optimize the aggregation tables without
      * having to issue a select count() query.
      */
-    public void testAggNameApproxRowCount() {
+    @Test public void testAggNameApproxRowCount() {
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
 
@@ -1891,7 +1888,7 @@ public class TestAggregationManager extends BatchTestCase {
             false);
     }
 
-    public void testNonCollapsedAggregate() throws Exception {
+    @Test public void testNonCollapsedAggregate() throws Exception {
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
 
@@ -2059,7 +2056,7 @@ public class TestAggregationManager extends BatchTestCase {
           false, false, true);
     }
 
-    public void testTwoNonCollapsedAggregate() throws Exception {
+    @Test public void testTwoNonCollapsedAggregate() throws Exception {
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
 

@@ -11,12 +11,14 @@ package mondrian.test;
 
 import mondrian.rolap.BatchTestCase;
 
+import org.junit.Test;
+
 public class ClosureSqlTest extends BatchTestCase {
     /**
      * Test that makes sure that the closure table is used
      * when it is defined in the schema.
      */
-    public void testClosureSql_1() throws Exception {
+    @Test public void testClosureSql_1() throws Exception {
         final String mdx =
             "select {Hierarchize([Employee].[Employees].Members)} on columns from [HR]";
         final String mySql =

@@ -12,10 +12,18 @@ package mondrian.olap.fun.vba;
 import mondrian.olap.InvalidArgumentException;
 import mondrian.util.Bug;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.text.*;
 import java.util.*;
+
+import static mondrian.test.TestTemp.range;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Unit tests for implementations of Visual Basic for Applications (VBA)
@@ -30,7 +38,7 @@ import java.util.*;
  * @author jhyde
  * @since Dec 31, 2007
  */
-public class VbaTest extends TestCase {
+public class VbaTest {
     private static final double SMALL = 1e-10d;
     private static final Date SAMPLE_DATE = sampleDate();
 
@@ -42,12 +50,12 @@ public class VbaTest extends TestCase {
 
     // Conversion functions
 
-    public void testCBool() {
-        assertEquals(true, Vba.cBool(Boolean.TRUE)); // not quite to spec
-        assertEquals(false, Vba.cBool(Boolean.FALSE)); // not quite to spec
-        assertEquals(true, Vba.cBool(1.5));
-        assertEquals(true, Vba.cBool("1.5"));
-        assertEquals(false, Vba.cBool("0.00"));
+    @Test public void testCBool() {
+        assertThat(Vba.cBool(Boolean.TRUE), is(true));
+        assertThat(Vba.cBool(Boolean.FALSE), is(false));
+        assertThat(Vba.cBool(1.5), is(true));
+        assertThat(Vba.cBool("1.5"), is(true));
+        assertThat(Vba.cBool("0.00"), is(false));
         try {
             Object o = Vba.cBool("a");
             fail("expected error, got " + o);
@@ -65,28 +73,24 @@ public class VbaTest extends TestCase {
 
     private void assertMessage(RuntimeException e, final String expected) {
         final String message = e.getClass().getName() + ": " + e.getMessage();
-        assertTrue(
-            "expected message to contain '" + expected + "', got '"
-            + message + "'",
-            message.indexOf(expected) >= 0);
+        assertThat("expected message to contain '" + expected + "', got '"
+            + message + "'", message, containsString(expected));
     }
 
-    public void testCInt() {
-        assertEquals(1, Vba.cInt(1));
-        assertEquals(1, Vba.cInt(1.4));
+    @Test public void testCInt() {
+        assertThat(Vba.cInt(1), is(1));
+        assertThat(Vba.cInt(1.4), is(1));
         // CInt rounds to the nearest even number
-        assertEquals(2, Vba.cInt(1.5));
-        assertEquals(2, Vba.cInt(2.5));
-        assertEquals(2, Vba.cInt(1.6));
-        assertEquals(-1, Vba.cInt(-1.4));
-        assertEquals(-2, Vba.cInt(-1.5));
-        assertEquals(-2, Vba.cInt(-1.6));
-        assertEquals(Integer.MAX_VALUE, Vba.cInt((double) Integer.MAX_VALUE));
-        assertEquals(Integer.MIN_VALUE, Vba.cInt((double) Integer.MIN_VALUE));
-        assertEquals(
-            Short.MAX_VALUE, Vba.cInt(((float) Short.MAX_VALUE) + .4));
-        assertEquals(
-            Short.MIN_VALUE, Vba.cInt(((float) Short.MIN_VALUE) + .4));
+        assertThat(Vba.cInt(1.5), is(2));
+        assertThat(Vba.cInt(2.5), is(2));
+        assertThat(Vba.cInt(1.6), is(2));
+        assertThat(Vba.cInt(-1.4), is(-1));
+        assertThat(Vba.cInt(-1.5), is(-2));
+        assertThat(Vba.cInt(-1.6), is(-2));
+        assertThat(Vba.cInt((double) Integer.MAX_VALUE), is(Integer.MAX_VALUE));
+        assertThat(Vba.cInt((double) Integer.MIN_VALUE), is(Integer.MIN_VALUE));
+        assertThat(Vba.cInt(((float) Short.MAX_VALUE) + .4), is((Number) Short.MAX_VALUE));
+        assertThat(Vba.cInt(((float) Short.MIN_VALUE) + .4), is((Number) Short.MIN_VALUE));
         try {
             Object o = Vba.cInt("a");
             fail("expected error, got " + o);
@@ -95,20 +99,20 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testInt() {
+    @Test public void testInt() {
         // if negative, Int() returns the closest number less than or
         // equal to the number.
-        assertEquals(1, Vba.int_(1));
-        assertEquals(1, Vba.int_(1.4));
-        assertEquals(1, Vba.int_(1.5));
-        assertEquals(2, Vba.int_(2.5));
-        assertEquals(1, Vba.int_(1.6));
-        assertEquals(-2, Vba.int_(-2));
-        assertEquals(-2, Vba.int_(-1.4));
-        assertEquals(-2, Vba.int_(-1.5));
-        assertEquals(-2, Vba.int_(-1.6));
-        assertEquals(Integer.MAX_VALUE, Vba.int_((double) Integer.MAX_VALUE));
-        assertEquals(Integer.MIN_VALUE, Vba.int_((double) Integer.MIN_VALUE));
+        assertThat(Vba.int_(1), is(1));
+        assertThat(Vba.int_(1.4), is(1));
+        assertThat(Vba.int_(1.5), is(1));
+        assertThat(Vba.int_(2.5), is(2));
+        assertThat(Vba.int_(1.6), is(1));
+        assertThat(Vba.int_(-2), is(-2));
+        assertThat(Vba.int_(-1.4), is(-2));
+        assertThat(Vba.int_(-1.5), is(-2));
+        assertThat(Vba.int_(-1.6), is(-2));
+        assertThat(Vba.int_((double) Integer.MAX_VALUE), is(Integer.MAX_VALUE));
+        assertThat(Vba.int_((double) Integer.MIN_VALUE), is(Integer.MIN_VALUE));
         try {
             Object o = Vba.int_("a");
             fail("expected error, got " + o);
@@ -117,20 +121,20 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testFix() {
+    @Test public void testFix() {
         // if negative, Fix() returns the closest number greater than or
         // equal to the number.
-        assertEquals(1, Vba.fix(1));
-        assertEquals(1, Vba.fix(1.4));
-        assertEquals(1, Vba.fix(1.5));
-        assertEquals(2, Vba.fix(2.5));
-        assertEquals(1, Vba.fix(1.6));
-        assertEquals(-1, Vba.fix(-1));
-        assertEquals(-1, Vba.fix(-1.4));
-        assertEquals(-1, Vba.fix(-1.5));
-        assertEquals(-1, Vba.fix(-1.6));
-        assertEquals(Integer.MAX_VALUE, Vba.fix((double) Integer.MAX_VALUE));
-        assertEquals(Integer.MIN_VALUE, Vba.fix((double) Integer.MIN_VALUE));
+        assertThat(Vba.fix(1), is(1));
+        assertThat(Vba.fix(1.4), is(1));
+        assertThat(Vba.fix(1.5), is(1));
+        assertThat(Vba.fix(2.5), is(2));
+        assertThat(Vba.fix(1.6), is(1));
+        assertThat(Vba.fix(-1), is(-1));
+        assertThat(Vba.fix(-1.4), is(-1));
+        assertThat(Vba.fix(-1.5), is(-1));
+        assertThat(Vba.fix(-1.6), is(-1));
+        assertThat(Vba.fix((double) Integer.MAX_VALUE), is(Integer.MAX_VALUE));
+        assertThat(Vba.fix((double) Integer.MIN_VALUE), is(Integer.MIN_VALUE));
         try {
             Object o = Vba.fix("a");
             fail("expected error, got " + o);
@@ -140,18 +144,18 @@ public class VbaTest extends TestCase {
     }
 
 
-    public void testCDbl() {
-        assertEquals(1.0, Vba.cDbl(1));
-        assertEquals(1.4, Vba.cDbl(1.4));
+    @Test public void testCDbl() {
+        assertThat(Vba.cDbl(1), is(1.0));
+        assertThat(Vba.cDbl(1.4), is(1.4));
         // CInt rounds to the nearest even number
-        assertEquals(1.5, Vba.cDbl(1.5));
-        assertEquals(2.5, Vba.cDbl(2.5));
-        assertEquals(1.6, Vba.cDbl(1.6));
-        assertEquals(-1.4, Vba.cDbl(-1.4));
-        assertEquals(-1.5, Vba.cDbl(-1.5));
-        assertEquals(-1.6, Vba.cDbl(-1.6));
-        assertEquals(Double.MAX_VALUE, Vba.cDbl(Double.MAX_VALUE));
-        assertEquals(Double.MIN_VALUE, Vba.cDbl(Double.MIN_VALUE));
+        assertThat(Vba.cDbl(1.5), is(1.5));
+        assertThat(Vba.cDbl(2.5), is(2.5));
+        assertThat(Vba.cDbl(1.6), is(1.6));
+        assertThat(Vba.cDbl(-1.4), is(-1.4));
+        assertThat(Vba.cDbl(-1.5), is(-1.5));
+        assertThat(Vba.cDbl(-1.6), is(-1.6));
+        assertThat(Vba.cDbl(Double.MAX_VALUE), is(Double.MAX_VALUE));
+        assertThat(Vba.cDbl(Double.MIN_VALUE), is(Double.MIN_VALUE));
         try {
             Object o = Vba.cDbl("a");
             fail("expected error, got " + o);
@@ -160,14 +164,14 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testHex() {
-        assertEquals("0", Vba.hex(0));
-        assertEquals("1", Vba.hex(1));
-        assertEquals("A", Vba.hex(10));
-        assertEquals("64", Vba.hex(100));
-        assertEquals("FFFFFFFF", Vba.hex(-1));
-        assertEquals("FFFFFFF6", Vba.hex(-10));
-        assertEquals("FFFFFF9C", Vba.hex(-100));
+    @Test public void testHex() {
+        assertThat(Vba.hex(0), is("0"));
+        assertThat(Vba.hex(1), is("1"));
+        assertThat(Vba.hex(10), is("A"));
+        assertThat(Vba.hex(100), is("64"));
+        assertThat(Vba.hex(-1), is("FFFFFFFF"));
+        assertThat(Vba.hex(-10), is("FFFFFFF6"));
+        assertThat(Vba.hex(-100), is("FFFFFF9C"));
         try {
             Object o = Vba.hex("a");
             fail("expected error, got " + o);
@@ -176,14 +180,14 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testOct() {
-        assertEquals("0", Vba.oct(0));
-        assertEquals("1", Vba.oct(1));
-        assertEquals("12", Vba.oct(10));
-        assertEquals("144", Vba.oct(100));
-        assertEquals("37777777777", Vba.oct(-1));
-        assertEquals("37777777766", Vba.oct(-10));
-        assertEquals("37777777634", Vba.oct(-100));
+    @Test public void testOct() {
+        assertThat(Vba.oct(0), is("0"));
+        assertThat(Vba.oct(1), is("1"));
+        assertThat(Vba.oct(10), is("12"));
+        assertThat(Vba.oct(100), is("144"));
+        assertThat(Vba.oct(-1), is("37777777777"));
+        assertThat(Vba.oct(-10), is("37777777766"));
+        assertThat(Vba.oct(-100), is("37777777634"));
         try {
             Object o = Vba.oct("a");
             fail("expected error, got " + o);
@@ -192,16 +196,16 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testStr() {
-        assertEquals(" 0", Vba.str(0));
-        assertEquals(" 1", Vba.str(1));
-        assertEquals(" 10", Vba.str(10));
-        assertEquals(" 100", Vba.str(100));
-        assertEquals("-1", Vba.str(-1));
-        assertEquals("-10", Vba.str(-10));
-        assertEquals("-100", Vba.str(-100));
-        assertEquals("-10.123", Vba.str(-10.123));
-        assertEquals(" 10.123", Vba.str(10.123));
+    @Test public void testStr() {
+        assertThat(Vba.str(0), is(" 0"));
+        assertThat(Vba.str(1), is(" 1"));
+        assertThat(Vba.str(10), is(" 10"));
+        assertThat(Vba.str(100), is(" 100"));
+        assertThat(Vba.str(-1), is("-1"));
+        assertThat(Vba.str(-10), is("-10"));
+        assertThat(Vba.str(-100), is("-100"));
+        assertThat(Vba.str(-10.123), is("-10.123"));
+        assertThat(Vba.str(10.123), is(" 10.123"));
         try {
             Object o = Vba.oct("a");
             fail("expected error, got " + o);
@@ -210,61 +214,52 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testVal() {
-        assertEquals(-1615198.0, Vba.val(" -  1615 198th Street N.E."));
-        assertEquals(1615198.0, Vba.val(" 1615 198th Street N.E."));
-        assertEquals(1615.198, Vba.val(" 1615 . 198th Street N.E."));
-        assertEquals(1615.19, Vba.val(" 1615 . 19 . 8th Street N.E."));
-        assertEquals((double)0xffff, Vba.val("&HFFFF"));
-        assertEquals(668.0, Vba.val("&O1234"));
+    @Test public void testVal() {
+        assertThat(Vba.val(" -  1615 198th Street N.E."), is(-1615198.0));
+        assertThat(Vba.val(" 1615 198th Street N.E."), is(1615198.0));
+        assertThat(Vba.val(" 1615 . 198th Street N.E."), is(1615.198));
+        assertThat(Vba.val(" 1615 . 19 . 8th Street N.E."), is(1615.19));
+        assertThat(Vba.val("&HFFFF"), is((double)0xffff));
+        assertThat(Vba.val("&O1234"), is(668.0));
     }
 
-    public void testCDate() throws ParseException {
+    @Test public void testCDate() throws ParseException {
         Date date = new Date();
-        assertEquals(date, Vba.cDate(date));
-        assertNull(Vba.cDate(null));
+        assertThat(Vba.cDate(date), is(date));
+        assertThat(Vba.cDate(null), nullValue());
         // CInt rounds to the nearest even number
         try {
-            assertEquals(
-                DateFormat.getDateInstance().parse("Jan 12, 1952"),
-                Vba.cDate("Jan 12, 1952"));
-            assertEquals(
-                DateFormat.getDateInstance().parse("October 19, 1962"),
-                Vba.cDate("October 19, 1962"));
-            assertEquals(
-                DateFormat.getTimeInstance().parse("4:35:47 PM"),
-                Vba.cDate("4:35:47 PM"));
-            assertEquals(
-                DateFormat.getDateTimeInstance().parse(
-                    "October 19, 1962 4:35:47 PM"),
-                Vba.cDate("October 19, 1962 4:35:47 PM"));
+            assertThat(Vba.cDate("Jan 12, 1952"), is(DateFormat.getDateInstance().parse("Jan 12, 1952")));
+            assertThat(Vba.cDate("October 19, 1962"), is(DateFormat.getDateInstance().parse("October 19, 1962")));
+            assertThat(Vba.cDate("4:35:47 PM"), is(DateFormat.getTimeInstance().parse("4:35:47 PM")));
+            assertThat(Vba.cDate("October 19, 1962 4:35:47 PM"), is(DateFormat.getDateTimeInstance().parse(
+                        "October 19, 1962 4:35:47 PM")));
         } catch (ParseException e) {
-            e.printStackTrace();
-            fail();
+            throw new RuntimeException(e);
         }
 
         try {
             Vba.cDate("Jan, 1952");
-            fail();
+            fail("expected exception");
         } catch (InvalidArgumentException e) {
-            assertTrue(e.getMessage().indexOf("Jan, 1952") >= 0);
+            assertThat(e.getMessage(), containsString("Jan, 1952"));
         }
     }
 
-    public void testIsDate() throws ParseException {
+    @Test public void testIsDate() throws ParseException {
         // CInt rounds to the nearest even number
-        assertFalse(Vba.isDate(null));
-        assertTrue(Vba.isDate(new Date()));
-        assertTrue(Vba.isDate("Jan 12, 1952"));
-        assertTrue(Vba.isDate("October 19, 1962"));
-        assertTrue(Vba.isDate("4:35:47 PM"));
-        assertTrue(Vba.isDate("October 19, 1962 4:35:47 PM"));
-        assertFalse(Vba.isDate("Jan, 1952"));
+        assertThat(Vba.isDate(null), is(false));
+        assertThat(Vba.isDate(new Date()), is(true));
+        assertThat(Vba.isDate("Jan 12, 1952"), is(true));
+        assertThat(Vba.isDate("October 19, 1962"), is(true));
+        assertThat(Vba.isDate("4:35:47 PM"), is(true));
+        assertThat(Vba.isDate("October 19, 1962 4:35:47 PM"), is(true));
+        assertThat(Vba.isDate("Jan, 1952"), is(false));
     }
 
     // DateTime
 
-    public void testDateAdd() {
+    @Test public void testDateAdd() {
         assertEquals("2008/04/24 19:10:45", SAMPLE_DATE);
 
         // 2008-02-01 0:00:00
@@ -294,10 +289,9 @@ public class VbaTest extends TestCase {
             // We allow "2010/10/24 07:10:45" for computers that have an out of
             // date timezone database. 2010/10/24 is in daylight savings time,
             // but was not according to the old rules.
-            assertTrue(
-                "Got " + dateString,
+            assertThat("Got " + dateString,
                 dateString.equals("2010/10/24 06:40:45")
-                    || dateString.equals("2010/10/24 07:10:45"));
+                || dateString.equals("2010/10/24 07:10:45"), is(true));
         }
         assertEquals("2009/01/24 19:10:45", Vba.dateAdd("q", 3, SAMPLE_DATE));
 
@@ -317,67 +311,63 @@ public class VbaTest extends TestCase {
         assertEquals("2008/04/24 19:10:36", Vba.dateAdd("s", -9, SAMPLE_DATE));
     }
 
-    public void testDateDiff() {
+    @Test public void testDateDiff() {
         // TODO:
     }
 
-    public void testDatePart2() {
-        assertEquals(2008, Vba.datePart("yyyy", SAMPLE_DATE));
-        assertEquals(2, Vba.datePart("q", SAMPLE_DATE)); // 2nd quarter
-        assertEquals(4, Vba.datePart("m", SAMPLE_DATE));
-        assertEquals(5, Vba.datePart("w", SAMPLE_DATE)); // thursday
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE));
-        assertEquals(115, Vba.datePart("y", SAMPLE_DATE));
-        assertEquals(19, Vba.datePart("h", SAMPLE_DATE));
-        assertEquals(10, Vba.datePart("n", SAMPLE_DATE));
-        assertEquals(45, Vba.datePart("s", SAMPLE_DATE));
+    @Test public void testDatePart2() {
+        assertThat(Vba.datePart("yyyy", SAMPLE_DATE), is(2008));
+        assertThat(Vba.datePart("q", SAMPLE_DATE), is(2));
+        assertThat(Vba.datePart("m", SAMPLE_DATE), is(4));
+        assertThat(Vba.datePart("w", SAMPLE_DATE), is(5));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE), is(17));
+        assertThat(Vba.datePart("y", SAMPLE_DATE), is(115));
+        assertThat(Vba.datePart("h", SAMPLE_DATE), is(19));
+        assertThat(Vba.datePart("n", SAMPLE_DATE), is(10));
+        assertThat(Vba.datePart("s", SAMPLE_DATE), is(45));
     }
 
-    public void testDatePart3() {
-        assertEquals(5, Vba.datePart("w", SAMPLE_DATE, Calendar.SUNDAY));
-        assertEquals(4, Vba.datePart("w", SAMPLE_DATE, Calendar.MONDAY));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY));
-        assertEquals(18, Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY));
-        assertEquals(18, Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY));
+    @Test public void testDatePart3() {
+        assertThat(Vba.datePart("w", SAMPLE_DATE, Calendar.SUNDAY), is(5));
+        assertThat(Vba.datePart("w", SAMPLE_DATE, Calendar.MONDAY), is(4));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY), is(18));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY), is(18));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY), is(17));
     }
 
-    public void testDatePart4() {
+    @Test public void testDatePart4() {
         // 2008 starts on a Tuesday
         // 2008-04-29 is a Thursday
         // That puts it in week 17 by most ways of computing weeks
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 0));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 1));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 2));
-        assertEquals(16, Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 3));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 0));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 1));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 2));
-        assertEquals(16, Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 3));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 0));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 1));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 2));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 3));
-        assertEquals(
-            18, Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 0));
-        assertEquals(
-            18, Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 1));
-        assertEquals(
-            17, Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 2));
-        assertEquals(
-            17, Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 3));
-        assertEquals(18, Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 0));
-        assertEquals(18, Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 1));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 2));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 3));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 0));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 1));
-        assertEquals(16, Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 2));
-        assertEquals(16, Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 3));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 0));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 1));
-        assertEquals(17, Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 2));
-        assertEquals(16, Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 3));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 0), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 1), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 2), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 3), is(16));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 0), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 1), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 2), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.MONDAY, 3), is(16));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 0), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 1), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 2), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.TUESDAY, 3), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 0), is(18));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 1), is(18));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 2), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.WEDNESDAY, 3), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 0), is(18));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 1), is(18));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 2), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.THURSDAY, 3), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 0), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 1), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 2), is(16));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.FRIDAY, 3), is(16));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 0), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 1), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 2), is(17));
+        assertThat(Vba.datePart("ww", SAMPLE_DATE, Calendar.SATURDAY, 3), is(16));
         try {
             int i = Vba.datePart("ww", SAMPLE_DATE, Calendar.SUNDAY, 4);
             fail("expected error, got " + i);
@@ -386,16 +376,16 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testDate() {
+    @Test public void testDate() {
         final Date date = Vba.date();
-        assertNotNull(date);
+        assertThat(date, notNullValue());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
-        assertEquals(0, calendar.get(Calendar.MILLISECOND));
+        assertThat(calendar.get(Calendar.HOUR_OF_DAY), is(0));
+        assertThat(calendar.get(Calendar.MILLISECOND), is(0));
     }
 
-    public void testDateSerial() {
+    @Test public void testDateSerial() {
         final Date date = Vba.dateSerial(2008, 2, 1);
         assertEquals("2008/02/01 00:00:00", date);
     }
@@ -407,39 +397,37 @@ public class VbaTest extends TestCase {
         final SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US);
         final String dateString = dateFormat.format(date);
-        assertEquals(expected, dateString);
+        assertThat(dateString, is(expected));
     }
 
-    public void testFormatDateTime() {
+    @Test public void testFormatDateTime() {
         try {
             Date date = DateFormat.getDateTimeInstance().parse(
                 "October 19, 1962 4:35:47 PM");
-            assertEquals("Oct 19, 1962 4:35:47 PM", Vba.formatDateTime(date));
-            assertEquals(
-                "Oct 19, 1962 4:35:47 PM", Vba.formatDateTime(date, 0));
-            assertEquals("October 19, 1962", Vba.formatDateTime(date, 1));
-            assertEquals("10/19/62", Vba.formatDateTime(date, 2));
+            assertThat(Vba.formatDateTime(date), is("Oct 19, 1962 4:35:47 PM"));
+            assertThat(Vba.formatDateTime(date, 0), is("Oct 19, 1962 4:35:47 PM"));
+            assertThat(Vba.formatDateTime(date, 1), is("October 19, 1962"));
+            assertThat(Vba.formatDateTime(date, 2), is("10/19/62"));
             String datestr = Vba.formatDateTime(date, 3);
-            assertNotNull(datestr);
+            assertThat(datestr, notNullValue());
             // skip the timezone so this test runs everywhere
             // in EST, this string is "4:35:47 PM EST"
-            assertTrue(datestr.startsWith("4:35:47 PM"));
-            assertEquals("4:35 PM", Vba.formatDateTime(date, 4));
+            assertThat(datestr.startsWith("4:35:47 PM"), is(true));
+            assertThat(Vba.formatDateTime(date, 4), is("4:35 PM"));
         } catch (ParseException e) {
-            e.printStackTrace();
-            fail();
+            throw new RuntimeException(e);
         }
     }
 
-    public void testDateValue() {
+    @Test public void testDateValue() {
         Date date = new Date();
         final Date date1 = Vba.dateValue(date);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date1);
-        assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
-        assertEquals(0, calendar.get(Calendar.MINUTE));
-        assertEquals(0, calendar.get(Calendar.SECOND));
-        assertEquals(0, calendar.get(Calendar.MILLISECOND));
+        assertThat(calendar.get(Calendar.HOUR_OF_DAY), is(0));
+        assertThat(calendar.get(Calendar.MINUTE), is(0));
+        assertThat(calendar.get(Calendar.SECOND), is(0));
+        assertThat(calendar.get(Calendar.MILLISECOND), is(0));
     }
 
     private static Date sampleDate() {
@@ -451,148 +439,148 @@ public class VbaTest extends TestCase {
         return calendar.getTime();
     }
 
-    public void testDay() {
-        assertEquals(24, Vba.day(SAMPLE_DATE));
+    @Test public void testDay() {
+        assertThat(Vba.day(SAMPLE_DATE), is(24));
     }
 
-    public void testHour() {
-        assertEquals(19, Vba.hour(SAMPLE_DATE));
+    @Test public void testHour() {
+        assertThat(Vba.hour(SAMPLE_DATE), is(19));
     }
 
-    public void testMinute() {
-        assertEquals(10, Vba.minute(SAMPLE_DATE));
+    @Test public void testMinute() {
+        assertThat(Vba.minute(SAMPLE_DATE), is(10));
     }
 
-    public void testMonth() {
-        assertEquals(4, Vba.month(SAMPLE_DATE));
+    @Test public void testMonth() {
+        assertThat(Vba.month(SAMPLE_DATE), is(4));
     }
 
-    public void testNow() {
+    @Test public void testNow() {
         final Date date = Vba.now();
-        assertNotNull(date);
+        assertThat(date, notNullValue());
     }
 
-    public void testSecond() {
-        assertEquals(45, Vba.second(SAMPLE_DATE));
+    @Test public void testSecond() {
+        assertThat(Vba.second(SAMPLE_DATE), is(45));
     }
 
-    public void testTimeSerial() {
+    @Test public void testTimeSerial() {
         final Date date = Vba.timeSerial(17, 42, 10);
         assertEquals("1970/01/01 17:42:10", date);
     }
 
-    public void testTimeValue() {
+    @Test public void testTimeValue() {
         assertEquals("1970/01/01 19:10:45", Vba.timeValue(SAMPLE_DATE));
     }
 
-    public void testTimer() {
+    @Test public void testTimer() {
         final float v = Vba.timer();
-        assertTrue(v >= 0);
-        assertTrue(v < 24 * 60 * 60);
+        assertThat(v >= 0, is(true));
+        assertThat(v < 24 * 60 * 60, is(true));
     }
 
-    public void testWeekday1() {
+    @Test public void testWeekday1() {
         if (Calendar.getInstance().getFirstDayOfWeek() == Calendar.SUNDAY) {
-            assertEquals(Calendar.THURSDAY, Vba.weekday(SAMPLE_DATE));
+            assertThat(Vba.weekday(SAMPLE_DATE), is(Calendar.THURSDAY));
         }
     }
 
-    public void testWeekday2() {
+    @Test public void testWeekday2() {
         // 2008/4/24 falls on a Thursday.
 
         // If Sunday is the first day of the week, Thursday is day 5.
-        assertEquals(5, Vba.weekday(SAMPLE_DATE, Calendar.SUNDAY));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.SUNDAY), is(5));
 
         // If Monday is the first day of the week, then 2008/4/24 falls on the
         // 4th day of the week
-        assertEquals(4, Vba.weekday(SAMPLE_DATE, Calendar.MONDAY));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.MONDAY), is(4));
 
-        assertEquals(3, Vba.weekday(SAMPLE_DATE, Calendar.TUESDAY));
-        assertEquals(2, Vba.weekday(SAMPLE_DATE, Calendar.WEDNESDAY));
-        assertEquals(1, Vba.weekday(SAMPLE_DATE, Calendar.THURSDAY));
-        assertEquals(7, Vba.weekday(SAMPLE_DATE, Calendar.FRIDAY));
-        assertEquals(6, Vba.weekday(SAMPLE_DATE, Calendar.SATURDAY));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.TUESDAY), is(3));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.WEDNESDAY), is(2));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.THURSDAY), is(1));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.FRIDAY), is(7));
+        assertThat(Vba.weekday(SAMPLE_DATE, Calendar.SATURDAY), is(6));
     }
 
-    public void testYear() {
-        assertEquals(2008, Vba.year(SAMPLE_DATE));
+    @Test public void testYear() {
+        assertThat(Vba.year(SAMPLE_DATE), is(2008));
     }
 
-    public void testFormatNumber() {
-        assertEquals("1", Vba.formatNumber(1.0));
-        assertEquals("1.0", Vba.formatNumber(1.0, 1));
+    @Test public void testFormatNumber() {
+        assertThat(Vba.formatNumber(1.0), is("1"));
+        assertThat(Vba.formatNumber(1.0, 1), is("1.0"));
 
-        assertEquals("0.1", Vba.formatNumber(0.1, -1, -1));
-        assertEquals(".1", Vba.formatNumber(0.1, -1, 0));
-        assertEquals("0.1", Vba.formatNumber(0.1, -1, 1));
+        assertThat(Vba.formatNumber(0.1, -1, -1), is("0.1"));
+        assertThat(Vba.formatNumber(0.1, -1, 0), is(".1"));
+        assertThat(Vba.formatNumber(0.1, -1, 1), is("0.1"));
 
-        assertEquals("-1",  Vba.formatNumber(-1, -1, 1, -1));
-        assertEquals("-1",  Vba.formatNumber(-1, -1, 1,  0));
-        assertEquals("(1)", Vba.formatNumber(-1, -1, 1,  1));
+        assertThat(Vba.formatNumber(-1, -1, 1, -1), is("-1"));
+        assertThat(Vba.formatNumber(-1, -1, 1,  0), is("-1"));
+        assertThat(Vba.formatNumber(-1, -1, 1,  1), is("(1)"));
 
-        assertEquals("1", Vba.formatNumber(1, -1, 1, -1));
-        assertEquals("1", Vba.formatNumber(1, -1, 1,  0));
-        assertEquals("1", Vba.formatNumber(1, -1, 1,  1));
+        assertThat(Vba.formatNumber(1, -1, 1, -1), is("1"));
+        assertThat(Vba.formatNumber(1, -1, 1,  0), is("1"));
+        assertThat(Vba.formatNumber(1, -1, 1,  1), is("1"));
 
-        assertEquals("1,000",   Vba.formatNumber(1000.0, -1, -1, -1, -1));
-        assertEquals("1000.0",  Vba.formatNumber(1000.0,  1, -1, -1,  0));
-        assertEquals("1,000.0", Vba.formatNumber(1000.0,  1, -1, -1,  1));
+        assertThat(Vba.formatNumber(1000.0, -1, -1, -1, -1), is("1,000"));
+        assertThat(Vba.formatNumber(1000.0,  1, -1, -1,  0), is("1000.0"));
+        assertThat(Vba.formatNumber(1000.0,  1, -1, -1,  1), is("1,000.0"));
     }
 
-    public void testFormatPercent() {
-        assertEquals("100%", Vba.formatPercent(1.0));
-        assertEquals("100.0%", Vba.formatPercent(1.0, 1));
+    @Test public void testFormatPercent() {
+        assertThat(Vba.formatPercent(1.0), is("100%"));
+        assertThat(Vba.formatPercent(1.0, 1), is("100.0%"));
 
-        assertEquals("0.1%", Vba.formatPercent(0.001,1, -1));
-        assertEquals(".1%", Vba.formatPercent(0.001, 1, 0));
-        assertEquals("0.1%", Vba.formatPercent(0.001, 1, 1));
+        assertThat(Vba.formatPercent(0.001,1, -1), is("0.1%"));
+        assertThat(Vba.formatPercent(0.001, 1, 0), is(".1%"));
+        assertThat(Vba.formatPercent(0.001, 1, 1), is("0.1%"));
 
 
-        assertEquals("11%", Vba.formatPercent(0.111, -1));
-        assertEquals("11%", Vba.formatPercent(0.111, 0));
-        assertEquals("11.100%", Vba.formatPercent(0.111, 3));
+        assertThat(Vba.formatPercent(0.111, -1), is("11%"));
+        assertThat(Vba.formatPercent(0.111, 0), is("11%"));
+        assertThat(Vba.formatPercent(0.111, 3), is("11.100%"));
 
-        assertEquals("-100%",  Vba.formatPercent(-1, -1, 1, -1));
-        assertEquals("-100%",  Vba.formatPercent(-1, -1, 1,  0));
-        assertEquals("(100%)", Vba.formatPercent(-1, -1, 1,  1));
+        assertThat(Vba.formatPercent(-1, -1, 1, -1), is("-100%"));
+        assertThat(Vba.formatPercent(-1, -1, 1,  0), is("-100%"));
+        assertThat(Vba.formatPercent(-1, -1, 1,  1), is("(100%)"));
 
-        assertEquals("100%", Vba.formatPercent(1, -1, 1, -1));
-        assertEquals("100%", Vba.formatPercent(1, -1, 1,  0));
-        assertEquals("100%", Vba.formatPercent(1, -1, 1,  1));
+        assertThat(Vba.formatPercent(1, -1, 1, -1), is("100%"));
+        assertThat(Vba.formatPercent(1, -1, 1,  0), is("100%"));
+        assertThat(Vba.formatPercent(1, -1, 1,  1), is("100%"));
 
-        assertEquals("100,000%",   Vba.formatPercent(1000.0, -1, -1, -1, -1));
-        assertEquals("100000.0%",  Vba.formatPercent(1000.0,  1, -1, -1,  0));
-        assertEquals("100,000.0%", Vba.formatPercent(1000.0,  1, -1, -1,  1));
+        assertThat(Vba.formatPercent(1000.0, -1, -1, -1, -1), is("100,000%"));
+        assertThat(Vba.formatPercent(1000.0,  1, -1, -1,  0), is("100000.0%"));
+        assertThat(Vba.formatPercent(1000.0,  1, -1, -1,  1), is("100,000.0%"));
     }
 
-    public void testFormatCurrency() {
-        assertEquals("$1.00", Vba.formatCurrency(1.0));
-        assertEquals("$0.00", Vba.formatCurrency(0.0));
-        assertEquals("$1.0", Vba.formatCurrency(1.0, 1));
-        assertEquals("$1", Vba.formatCurrency(1.0, 0));
-        assertEquals("$.10", Vba.formatCurrency(0.10, -1, 0));
-        assertEquals("$0.10", Vba.formatCurrency(0.10, -1, -1));
+    @Test public void testFormatCurrency() {
+        assertThat(Vba.formatCurrency(1.0), is("$1.00"));
+        assertThat(Vba.formatCurrency(0.0), is("$0.00"));
+        assertThat(Vba.formatCurrency(1.0, 1), is("$1.0"));
+        assertThat(Vba.formatCurrency(1.0, 0), is("$1"));
+        assertThat(Vba.formatCurrency(0.10, -1, 0), is("$.10"));
+        assertThat(Vba.formatCurrency(0.10, -1, -1), is("$0.10"));
         // todo: still need to implement parens customization
         // assertEquals("-$0.10", Vba.formatCurrency(-0.10, -1, -1, -1));
-        assertEquals("($0.10)", Vba.formatCurrency(-0.10, -1, -1, 0));
+        assertThat(Vba.formatCurrency(-0.10, -1, -1, 0), is("($0.10)"));
 
-        assertEquals("$1,000.00", Vba.formatCurrency(1000.0, -1, -1, 0, 0));
-        assertEquals("$1000.00", Vba.formatCurrency(1000.0, -1, -1, 0, -1));
+        assertThat(Vba.formatCurrency(1000.0, -1, -1, 0, 0), is("$1,000.00"));
+        assertThat(Vba.formatCurrency(1000.0, -1, -1, 0, -1), is("$1000.00"));
     }
 
-    public void testTypeName() {
-        assertEquals("Double", Vba.typeName(1.0));
-        assertEquals("Integer", Vba.typeName(1));
-        assertEquals("Float", Vba.typeName(1.0f));
-        assertEquals("Byte", Vba.typeName((byte)1));
-        assertEquals("NULL", Vba.typeName(null));
-        assertEquals("String", Vba.typeName(""));
-        assertEquals("Date", Vba.typeName(new Date()));
+    @Test public void testTypeName() {
+        assertThat(Vba.typeName(1.0), is("Double"));
+        assertThat(Vba.typeName(1), is("Integer"));
+        assertThat(Vba.typeName(1.0f), is("Float"));
+        assertThat(Vba.typeName((byte)1), is("Byte"));
+        assertThat(Vba.typeName(null), is("NULL"));
+        assertThat(Vba.typeName(""), is("String"));
+        assertThat(Vba.typeName(new Date()), is("Date"));
     }
 
     // Financial
 
-    public void testFv() {
+    @Test public void testFv() {
         double f, r, y, p, x;
         int n;
         boolean t;
@@ -604,7 +592,7 @@ public class VbaTest extends TestCase {
         t = true;
         f = Vba.fV(r, n, y, p, t);
         x = -13;
-        assertEquals(x, f);
+        assertThat(f, is(x));
 
         r = 1;
         n = 10;
@@ -613,7 +601,7 @@ public class VbaTest extends TestCase {
         t = false;
         f = Vba.fV(r, n, y, p, t);
         x = -10342300;
-        assertEquals(x, f);
+        assertThat(f, is(x));
 
         r = 1;
         n = 10;
@@ -622,7 +610,7 @@ public class VbaTest extends TestCase {
         t = true;
         f = Vba.fV(r, n, y, p, t);
         x = -10444600;
-        assertEquals(x, f);
+        assertThat(f, is(x));
 
         r = 2;
         n = 12;
@@ -631,7 +619,7 @@ public class VbaTest extends TestCase {
         t = false;
         f = Vba.fV(r, n, y, p, t);
         x = -6409178400d;
-        assertEquals(x, f);
+        assertThat(f, is(x));
 
         r = 2;
         n = 12;
@@ -640,7 +628,7 @@ public class VbaTest extends TestCase {
         t = true;
         f = Vba.fV(r, n, y, p, t);
         x = -6472951200d;
-        assertEquals(x, f);
+        assertThat(f, is(x));
 
         // cross tests with pv
         r = 2.95;
@@ -650,7 +638,7 @@ public class VbaTest extends TestCase {
         t = false;
         f = Vba.fV(r, n, y, p, t);
         x = 333891.230010986; // as returned by excel
-        assertEquals(x, f, 1e-2);
+        assertThat(f, range(x, 1e-2));
 
         r = 2.95;
         n = 13;
@@ -659,29 +647,29 @@ public class VbaTest extends TestCase {
         t = true;
         f = Vba.fV(r, n, y, p, t);
         x = 333891.230102539; // as returned by excel
-        assertEquals(x, f, 1e-2);
+        assertThat(f, range(x, 1e-2));
     }
 
-    public void testNpv() {
+    @Test public void testNpv() {
         double r, v[], npv, x;
 
         r = 1;
         v = new double[] {100, 200, 300, 400};
         npv = Vba.nPV(r, v);
         x = 162.5;
-        assertEquals(x, npv);
+        assertThat(npv, is(x));
 
         r = 2.5;
         v = new double[] {1000, 666.66666, 333.33, 12.2768416};
         npv = Vba.nPV(r, v);
         x = 347.99232604144827;
-        assertEquals(x, npv, SMALL);
+        assertThat(npv, range(x, SMALL));
 
         r = 12.33333;
         v = new double[] {1000, 0, -900, -7777.5765};
         npv = Vba.nPV(r, v);
         x = 74.3742433377061;
-        assertEquals(x, npv, 1e-12);
+        assertThat(npv, range(x, 1e-12));
 
         r = 0.05;
         v = new double[] {
@@ -689,10 +677,10 @@ public class VbaTest extends TestCase {
         };
         npv = Vba.nPV(r, v);
         x = 11342283.4233124;
-        assertEquals(x, npv, 1e-8);
+        assertThat(npv, range(x, 1e-8));
     }
 
-    public void testPmt() {
+    @Test public void testPmt() {
         double f, r, y, p, x;
         int n;
         boolean t;
@@ -704,7 +692,7 @@ public class VbaTest extends TestCase {
         t = true;
         y = Vba.pmt(r, n, p, f, t);
         x = -3;
-        assertEquals(x, y);
+        assertThat(y, is(x));
 
         // cross check with pv
         r = 1;
@@ -714,7 +702,7 @@ public class VbaTest extends TestCase {
         t = false;
         y = Vba.pmt(r, n, p, f, t);
         x = 100;
-        assertEquals(x, y);
+        assertThat(y, is(x));
 
         r = 1;
         n = 10;
@@ -723,7 +711,7 @@ public class VbaTest extends TestCase {
         t = true;
         y = Vba.pmt(r, n, p, f, t);
         x = 100;
-        assertEquals(x, y);
+        assertThat(y, is(x));
 
         // cross check with fv
         r = 2;
@@ -733,7 +721,7 @@ public class VbaTest extends TestCase {
         t = false;
         y = Vba.pmt(r, n, p, f, t);
         x = 120;
-        assertEquals(x, y);
+        assertThat(y, is(x));
 
         r = 2;
         n = 12;
@@ -742,10 +730,10 @@ public class VbaTest extends TestCase {
         t = true;
         y = Vba.pmt(r, n, p, f, t);
         x = 120;
-        assertEquals(x, y);
+        assertThat(y, is(x));
     }
 
-    public void testPv() {
+    @Test public void testPv() {
         double f, r, y, p, x;
         int n;
         boolean t;
@@ -757,7 +745,7 @@ public class VbaTest extends TestCase {
         t = true;
         f = Vba.pV(r, n, y, f, t);
         x = -13;
-        assertEquals(x, f);
+        assertThat(f, is(x));
 
         r = 1;
         n = 10;
@@ -766,7 +754,7 @@ public class VbaTest extends TestCase {
         t = false;
         p = Vba.pV(r, n, y, f, t);
         x = -109.66796875;
-        assertEquals(x, p);
+        assertThat(p, is(x));
 
         r = 1;
         n = 10;
@@ -775,7 +763,7 @@ public class VbaTest extends TestCase {
         t = true;
         p = Vba.pV(r, n, y, f, t);
         x = -209.5703125;
-        assertEquals(x, p);
+        assertThat(p, is(x));
 
         r = 2.95;
         n = 13;
@@ -784,7 +772,7 @@ public class VbaTest extends TestCase {
         t = false;
         p = Vba.pV(r, n, y, f, t);
         x = -4406.78544294496;
-        assertEquals(x, p, 1e-10);
+        assertThat(p, range(x, 1e-10));
 
         r = 2.95;
         n = 13;
@@ -793,7 +781,7 @@ public class VbaTest extends TestCase {
         t = true;
         p = Vba.pV(r, n, y, f, t);
         x = -17406.7852148156;
-        assertEquals(x, p, 1e-10);
+        assertThat(p, range(x, 1e-10));
 
         // cross tests with fv
         r = 2;
@@ -803,7 +791,7 @@ public class VbaTest extends TestCase {
         t = false;
         p = Vba.pV(r, n, y, f, t);
         x = 12000;
-        assertEquals(x, p);
+        assertThat(p, is(x));
 
         r = 2;
         n = 12;
@@ -812,10 +800,10 @@ public class VbaTest extends TestCase {
         t = true;
         p = Vba.pV(r, n, y, f, t);
         x = 12000;
-        assertEquals(x, p);
+        assertThat(p, is(x));
     }
 
-    public void testDdb() {
+    @Test public void testDdb() {
         double cost, salvage, life, period, factor, result;
         cost = 100;
         salvage = 0;
@@ -823,16 +811,16 @@ public class VbaTest extends TestCase {
         period = 1;
         factor = 2;
         result = Vba.dDB(cost, salvage, life, period, factor);
-        assertEquals(20.0, result);
+        assertThat(result, is(20.0));
         result = Vba.dDB(cost, salvage, life, period + 1, factor);
-        assertEquals(40.0, result);
+        assertThat(result, is(40.0));
         result = Vba.dDB(cost, salvage, life, period + 2, factor);
-        assertEquals(60.0, result);
+        assertThat(result, is(60.0));
         result = Vba.dDB(cost, salvage, life, period + 3, factor);
-        assertEquals(80.0, result);
+        assertThat(result, is(80.0));
     }
 
-    public void testRate() {
+    @Test public void testRate() {
         double nPer, pmt, PV, fv, guess, result;
         boolean type = false;
         nPer = 12 * 30;
@@ -846,130 +834,110 @@ public class VbaTest extends TestCase {
         double expRate = 0.0083333;
         double expPV = Vba.pV(expRate, 12 * 30, -877.57, 0, false);
         result = Vba.rate(12 * 30, -877.57, expPV, 0, false, 0.10 / 12);
-        assertTrue(Math.abs(expRate - result) < 0.0000001);
+        assertThat(result, range(expRate, 0.0000001));
 
         // compare rate to fV calculation
         double expFV = Vba.fV(expRate, 12, -100, 0, false);
         result = Vba.rate(12, -100, 0, expFV, false, 0.10 / 12);
-        assertTrue(Math.abs(expRate - result) < 0.0000001);
+        assertThat(result, range(expRate, 0.0000001));
     }
 
-    public void testIRR() {
+    @Test public void testIRR() {
         double vals[] = {-1000, 50, 50, 50, 50, 50, 1050};
-        assertTrue(Math.abs(0.05 - Vba.IRR(vals, 0.1)) < 0.0000001);
+        assertThat(Vba.IRR(vals, 0.1), range(0.05, 0.0000001));
 
         vals = new double[] {-1000, 200, 200, 200, 200, 200, 200};
-        assertTrue(Math.abs(0.05471796 - Vba.IRR(vals, 0.1)) < 0.0000001);
+        assertThat(Vba.IRR(vals, 0.1), range(0.05471796, 0.0000001));
 
         // what happens if the numbers are inversed? this may not be
         // accurate
 
         vals = new double[] {1000, -200, -200, -200, -200, -200, -200};
-        assertTrue(Math.abs(0.05471796 - Vba.IRR(vals, 0.1)) < 0.0000001);
+        assertThat(Vba.IRR(vals, 0.1), range(0.05471796, 0.0000001));
     }
 
-    public void testMIRR() {
+    @Test public void testMIRR() {
         double vals[] = {-1000, 50, 50, 50, 50, 50, 1050};
-        assertTrue(Math.abs(0.05 - Vba.MIRR(vals, 0.05, 0.05)) < 0.0000001);
+        assertThat(Vba.MIRR(vals, 0.05, 0.05), range(0.05, 0.0000001));
 
         vals = new double[] {-1000, 200, 200, 200, 200, 200, 200};
-        assertTrue(
-            Math.abs(0.05263266 - Vba.MIRR(vals, 0.05, 0.05)) < 0.0000001);
+        assertThat(Vba.MIRR(vals, 0.05, 0.05), range(0.05263266, 0.0000001));
 
         vals = new double[] {-1000, 200, 200, 200, 200, 200, 200};
-        assertTrue(
-            Math.abs(0.04490701 - Vba.MIRR(vals, 0.06, 0.04)) < 0.0000001);
+        assertThat(Vba.MIRR(vals, 0.06, 0.04), range(0.04490701, 0.0000001));
     }
 
-    public void testIPmt() {
-        assertEquals(-10000.0, Vba.iPmt(0.10, 1, 30, 100000, 0, false));
-        assertEquals(
-            -2185.473324557822, Vba.iPmt(0.10, 15, 30, 100000, 0, false));
-        assertEquals(
-            -60.79248252633988, Vba.iPmt(0.10, 30, 30, 100000, 0, false));
+    @Test public void testIPmt() {
+        assertThat(Vba.iPmt(0.10, 1, 30, 100000, 0, false), is(-10000.0));
+        assertThat(Vba.iPmt(0.10, 15, 30, 100000, 0, false), is(-2185.473324557822));
+        assertThat(Vba.iPmt(0.10, 30, 30, 100000, 0, false), is(-60.79248252633988));
     }
 
-    public void testPPmt() {
-        assertEquals(
-            -607.9248252633897, Vba.pPmt(0.10, 1, 30, 100000, 0, false));
-        assertEquals(
-            -8422.451500705567, Vba.pPmt(0.10, 15, 30, 100000, 0, false));
-        assertEquals(
-            -10547.13234273705, Vba.pPmt(0.10, 30, 30, 100000, 0, false));
+    @Test public void testPPmt() {
+        assertThat(Vba.pPmt(0.10, 1, 30, 100000, 0, false), is(-607.9248252633897));
+        assertThat(Vba.pPmt(0.10, 15, 30, 100000, 0, false), is(-8422.451500705567));
+        assertThat(Vba.pPmt(0.10, 30, 30, 100000, 0, false), is(-10547.13234273705));
 
         // verify that pmt, ipmt, and ppmt add up
         double pmt = Vba.pmt(0.10, 30, 100000, 0, false);
         double ipmt = Vba.iPmt(0.10, 15, 30, 100000, 0, false);
         double ppmt = Vba.pPmt(0.10, 15, 30, 100000, 0, false);
-        assertTrue(Math.abs(pmt - (ipmt + ppmt)) < 0.0000001);
+        assertThat(ipmt + ppmt, range(pmt, 0.0000001));
     }
 
-    public void testSLN() {
-        assertEquals(18.0, Vba.sLN(100, 10, 5));
-        assertEquals(Double.POSITIVE_INFINITY, Vba.sLN(100, 10, 0));
+    @Test public void testSLN() {
+        assertThat(Vba.sLN(100, 10, 5), is(18.0));
+        assertThat(Vba.sLN(100, 10, 0), is(Double.POSITIVE_INFINITY));
     }
 
-    public void testSYD() {
-        assertEquals(300.0, Vba.sYD(1000, 100, 5, 5));
-        assertEquals(240.0, Vba.sYD(1000, 100, 4, 5));
-        assertEquals(180.0, Vba.sYD(1000, 100, 3, 5));
-        assertEquals(120.0, Vba.sYD(1000, 100, 2, 5));
-        assertEquals(60.0, Vba.sYD(1000, 100, 1, 5));
+    @Test public void testSYD() {
+        assertThat(Vba.sYD(1000, 100, 5, 5), is(300.0));
+        assertThat(Vba.sYD(1000, 100, 4, 5), is(240.0));
+        assertThat(Vba.sYD(1000, 100, 3, 5), is(180.0));
+        assertThat(Vba.sYD(1000, 100, 2, 5), is(120.0));
+        assertThat(Vba.sYD(1000, 100, 1, 5), is(60.0));
     }
 
-    public void testInStr() {
-        assertEquals(
-            1,
-            Vba.inStr("the quick brown fox jumps over the lazy dog", "the"));
-        assertEquals(
-            32,
-            Vba.inStr(
-                16, "the quick brown fox jumps over the lazy dog", "the"));
-        assertEquals(
-            0,
-            Vba.inStr(
-                16, "the quick brown fox jumps over the lazy dog", "cat"));
-        assertEquals(
-            0,
-            Vba.inStr(1, "the quick brown fox jumps over the lazy dog", "cat"));
-        assertEquals(
-            0,
-            Vba.inStr(1, "", "cat"));
-        assertEquals(
-            0,
-            Vba.inStr(100, "short string", "str"));
+    @Test public void testInStr() {
+        assertThat(Vba.inStr("the quick brown fox jumps over the lazy dog", "the"), is(
+            1));
+        assertThat(Vba.inStr(
+                16, "the quick brown fox jumps over the lazy dog", "the"), is(32));
+        assertThat(Vba.inStr(
+                16, "the quick brown fox jumps over the lazy dog", "cat"), is(0));
+        assertThat(Vba.inStr(1, "the quick brown fox jumps over the lazy dog", "cat"), is(
+            0));
+        assertThat(Vba.inStr(1, "", "cat"), is(0));
+        assertThat(Vba.inStr(100, "short string", "str"), is(0));
         try {
             Vba.inStr(0, "the quick brown fox jumps over the lazy dog", "the");
-            fail();
+            fail("expected exception");
         } catch (InvalidArgumentException e) {
-            assertTrue(e.getMessage().indexOf("-1 or a location") >= 0);
+            assertThat(e.getMessage(), containsString("-1 or a location"));
         }
     }
 
-    public void testInStrRev() {
-        assertEquals(
-            32,
-            Vba.inStrRev("the quick brown fox jumps over the lazy dog", "the"));
-        assertEquals(
-            1,
-            Vba.inStrRev(
-                "the quick brown fox jumps over the lazy dog", "the", 16));
+    @Test public void testInStrRev() {
+        assertThat(Vba.inStrRev("the quick brown fox jumps over the lazy dog", "the"), is(
+            32));
+        assertThat(Vba.inStrRev(
+                "the quick brown fox jumps over the lazy dog", "the", 16), is(1));
         try {
             Vba.inStrRev(
                 "the quick brown fox jumps over the lazy dog", "the", 0);
-            fail();
+            fail("expected exception");
         } catch (InvalidArgumentException e) {
-            assertTrue(e.getMessage().indexOf("-1 or a location") >= 0);
+            assertThat(e.getMessage(), containsString("-1 or a location"));
         }
     }
 
-    public void testStrComp() {
-        assertEquals(-1, Vba.strComp("a", "b", 0));
-        assertEquals(0, Vba.strComp("a", "a", 0));
-        assertEquals(1, Vba.strComp("b", "a", 0));
+    @Test public void testStrComp() {
+        assertThat(Vba.strComp("a", "b", 0), is(-1));
+        assertThat(Vba.strComp("a", "a", 0), is(0));
+        assertThat(Vba.strComp("b", "a", 0), is(1));
     }
 
-    public void testNper() {
+    @Test public void testNper() {
         double f, r, y, p, x, n;
         boolean t;
 
@@ -981,7 +949,7 @@ public class VbaTest extends TestCase {
         n = Vba.nPer(r, y, p, f, t);
         // can you believe it? excel returns nper as a fraction!??
         x = -0.71428571429;
-        assertEquals(x, n, 1e-10);
+        assertThat(n, range(x, 1e-10));
 
         // cross check with pv
         r = 1;
@@ -991,7 +959,7 @@ public class VbaTest extends TestCase {
         t = false;
         n = Vba.nPer(r, y, p, f, t);
         x = 10;
-        assertEquals(x, n, 1e-12);
+        assertThat(n, range(x, 1e-12));
 
         r = 1;
         y = 100;
@@ -1000,7 +968,7 @@ public class VbaTest extends TestCase {
         t = true;
         n = Vba.nPer(r, y, p, f, t);
         x = 10;
-        assertEquals(x, n, 1e-14);
+        assertThat(n, range(x, 1e-14));
 
         // cross check with fv
         r = 2;
@@ -1010,7 +978,7 @@ public class VbaTest extends TestCase {
         t = false;
         n = Vba.nPer(r, y, p, f, t);
         x = 12;
-        assertEquals(x, n, SMALL);
+        assertThat(n, range(x, SMALL));
 
         r = 2;
         y = 120;
@@ -1019,14 +987,14 @@ public class VbaTest extends TestCase {
         t = true;
         n = Vba.nPer(r, y, p, f, t);
         x = 12;
-        assertEquals(x, n, SMALL);
+        assertThat(n, range(x, SMALL));
     }
 
     // String functions
 
-    public void testAsc() {
-        assertEquals(0x61, Vba.asc("abc"));
-        assertEquals(0x1234, Vba.asc("\u1234abc"));
+    @Test public void testAsc() {
+        assertThat(Vba.asc("abc"), is(0x61));
+        assertThat(Vba.asc("\u1234abc"), is(0x1234));
         try {
             Object o = Vba.asc("");
             fail("expected error, got " + o);
@@ -1035,9 +1003,9 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testAscB() {
-        assertEquals(0x61, Vba.ascB("abc"));
-        assertEquals(0x34, Vba.ascB("\u1234abc")); // not sure about this
+    @Test public void testAscB() {
+        assertThat(Vba.ascB("abc"), is(0x61));
+        assertThat(Vba.ascB("\u1234abc"), is(0x34));
         try {
             Object o = Vba.ascB("");
             fail("expected error, got " + o);
@@ -1046,10 +1014,10 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testAscW() {
+    @Test public void testAscW() {
         // ascW behaves identically to asc
-        assertEquals(0x61, Vba.ascW("abc"));
-        assertEquals(0x1234, Vba.ascW("\u1234abc"));
+        assertThat(Vba.ascW("abc"), is(0x61));
+        assertThat(Vba.ascW("\u1234abc"), is(0x1234));
         try {
             Object o = Vba.ascW("");
             fail("expected error, got " + o);
@@ -1058,41 +1026,41 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testChr() {
-        assertEquals("a", Vba.chr(0x61));
-        assertEquals("\u1234", Vba.chr(0x1234));
+    @Test public void testChr() {
+        assertThat(Vba.chr(0x61), is("a"));
+        assertThat(Vba.chr(0x1234), is("\u1234"));
     }
 
-    public void testChrB() {
-        assertEquals("a", Vba.chrB(0x61));
-        assertEquals("\u0034", Vba.chrB(0x1234));
+    @Test public void testChrB() {
+        assertThat(Vba.chrB(0x61), is("a"));
+        assertThat(Vba.chrB(0x1234), is("\u0034"));
     }
 
-    public void testChrW() {
-        assertEquals("a", Vba.chrW(0x61));
-        assertEquals("\u1234", Vba.chrW(0x1234));
+    @Test public void testChrW() {
+        assertThat(Vba.chrW(0x61), is("a"));
+        assertThat(Vba.chrW(0x1234), is("\u1234"));
     }
 
-    public void testLCase() {
-        assertEquals("", Vba.lCase(""));
-        assertEquals("abc", Vba.lCase("AbC"));
+    @Test public void testLCase() {
+        assertThat(Vba.lCase(""), is(""));
+        assertThat(Vba.lCase("AbC"), is("abc"));
     }
 
     // NOTE: BuiltinFunTable already implements Left; todo: use this
-    public void testLeft() {
-        assertEquals("abc", Vba.left("abcxyz", 3));
+    @Test public void testLeft() {
+        assertThat(Vba.left("abcxyz", 3), is("abc"));
         // length=0 is OK
-        assertEquals("", Vba.left("abcxyz", 0));
+        assertThat(Vba.left("abcxyz", 0), is(""));
         // Spec says: "If greater than or equal to the number of characters in
         // string, the entire string is returned."
-        assertEquals("abcxyz", Vba.left("abcxyz", 8));
-        assertEquals("", Vba.left("", 3));
+        assertThat(Vba.left("abcxyz", 8), is("abcxyz"));
+        assertThat(Vba.left("", 3), is(""));
 
         // Length<0 is illegal.
         // Note: SSAS 2005 allows length<0, giving the same result as length=0.
         // We favor the VBA spec over SSAS 2005.
         if (Bug.Ssas2005Compatible) {
-            assertEquals("", Vba.left("xyz", -2));
+            assertThat(Vba.left("xyz", -2), is(""));
         } else {
             try {
                 String s = Vba.left("xyz", -2);
@@ -1102,33 +1070,33 @@ public class VbaTest extends TestCase {
             }
         }
 
-        assertEquals("Hello", Vba.left("Hello World!", 5));
+        assertThat(Vba.left("Hello World!", 5), is("Hello"));
     }
 
-    public void testLTrim() {
-        assertEquals("", Vba.lTrim(""));
-        assertEquals("", Vba.lTrim("  "));
-        assertEquals("abc  \r", Vba.lTrim(" \n\tabc  \r"));
+    @Test public void testLTrim() {
+        assertThat(Vba.lTrim(""), is(""));
+        assertThat(Vba.lTrim("  "), is(""));
+        assertThat(Vba.lTrim(" \n\tabc  \r"), is("abc  \r"));
     }
 
-    public void testMid() {
+    @Test public void testMid() {
         String testString = "Mid Function Demo";
-        assertEquals("Mid", Vba.mid(testString, 1, 3));
-        assertEquals("Demo", Vba.mid(testString, 14, 4));
+        assertThat(Vba.mid(testString, 1, 3), is("Mid"));
+        assertThat(Vba.mid(testString, 14, 4), is("Demo"));
         // It's OK if start+length = string.length
-        assertEquals("Demo", Vba.mid(testString, 14, 5));
+        assertThat(Vba.mid(testString, 14, 5), is("Demo"));
         // It's OK if start+length > string.length
-        assertEquals("Demo", Vba.mid(testString, 14, 500));
-        assertEquals("Function Demo", Vba.mid(testString, 5));
-        assertEquals("o", Vba.mid("yahoo", 5, 1));
+        assertThat(Vba.mid(testString, 14, 500), is("Demo"));
+        assertThat(Vba.mid(testString, 5), is("Function Demo"));
+        assertThat(Vba.mid("yahoo", 5, 1), is("o"));
 
         // Start=0 illegal
         // Note: SSAS 2005 accepts start<=0, treating it as 1, therefore gives
         // different results. We favor the VBA spec over SSAS 2005.
         if (Bug.Ssas2005Compatible) {
-            assertEquals("Mid Function Demo", Vba.mid(testString, 0));
-            assertEquals("Mid Function Demo", Vba.mid(testString, -2));
-            assertEquals("Mid Function Demo", Vba.mid(testString, -2, 5));
+            assertThat(Vba.mid(testString, 0), is("Mid Function Demo"));
+            assertThat(Vba.mid(testString, -2), is("Mid Function Demo"));
+            assertThat(Vba.mid(testString, -2, 5), is("Mid Function Demo"));
         } else {
             try {
                 String s = Vba.mid(testString, 0);
@@ -1162,13 +1130,13 @@ public class VbaTest extends TestCase {
         }
 
         // Length=0 OK
-        assertEquals("", Vba.mid(testString, 14, 0));
+        assertThat(Vba.mid(testString, 14, 0), is(""));
 
         // Length<0 illegal
         // Note: SSAS 2005 accepts length<0, treating it as 0, therefore gives
         // different results. We favor the VBA spec over SSAS 2005.
         if (Bug.Ssas2005Compatible) {
-            assertEquals("", Vba.mid(testString, 14, -1));
+            assertThat(Vba.mid(testString, 14, -1), is(""));
         } else {
             try {
                 String s = Vba.mid(testString, 14, -1);
@@ -1182,10 +1150,10 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testMonthName() {
-        assertEquals("January", Vba.monthName(1, false));
-        assertEquals("Jan", Vba.monthName(1, true));
-        assertEquals("Dec", Vba.monthName(12, true));
+    @Test public void testMonthName() {
+        assertThat(Vba.monthName(1, false), is("January"));
+        assertThat(Vba.monthName(1, true), is("Jan"));
+        assertThat(Vba.monthName(12, true), is("Dec"));
         try {
             String s = Vba.monthName(0, true);
             fail("expected error, got " + s);
@@ -1194,58 +1162,57 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testReplace3() {
+    @Test public void testReplace3() {
         // replace with longer string
-        assertEquals("abczabcz", Vba.replace("xyzxyz", "xy", "abc"));
+        assertThat(Vba.replace("xyzxyz", "xy", "abc"), is("abczabcz"));
         // replace with shorter string
-        assertEquals("wazwaz", Vba.replace("wxyzwxyz", "xy", "a"));
+        assertThat(Vba.replace("wxyzwxyz", "xy", "a"), is("wazwaz"));
         // replace with string which contains seek
-        assertEquals("wxyz", Vba.replace("xyz", "xy", "wxy"));
+        assertThat(Vba.replace("xyz", "xy", "wxy"), is("wxyz"));
         // replace with string which combines with following char to make seek
-        assertEquals("wxyzwx", Vba.replace("xyyzxy", "xy", "wx"));
+        assertThat(Vba.replace("xyyzxy", "xy", "wx"), is("wxyzwx"));
         // replace with empty string
-        assertEquals("wxyza", Vba.replace("wxxyyzxya", "xy", ""));
+        assertThat(Vba.replace("wxxyyzxya", "xy", ""), is("wxyza"));
     }
 
-    public void testReplace4() {
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", 1));
-        assertEquals("xyzaz", Vba.replace("xyzxyz", "xy", "a", 2));
-        assertEquals("xyzxyz", Vba.replace("xyzxyz", "xy", "a", 30));
+    @Test public void testReplace4() {
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1), is("azaz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 2), is("xyzaz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 30), is("xyzxyz"));
         // spec doesn't say, but assume starting before start of string is ok
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", 0));
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", -5));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 0), is("azaz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", -5), is("azaz"));
     }
 
-    public void testReplace5() {
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", 1, -1));
-        assertEquals("azxyz", Vba.replace("xyzxyz", "xy", "a", 1, 1));
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", 1, 2));
-        assertEquals("xyzazxyz", Vba.replace("xyzxyzxyz", "xy", "a", 2, 1));
+    @Test public void testReplace5() {
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1, -1), is("azaz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1, 1), is("azxyz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1, 2), is("azaz"));
+        assertThat(Vba.replace("xyzxyzxyz", "xy", "a", 2, 1), is("xyzazxyz"));
     }
 
-    public void testReplace6() {
+    @Test public void testReplace6() {
         // compare is currently ignored
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", 1, -1, 1000));
-        assertEquals("azxyz", Vba.replace("xyzxyz", "xy", "a", 1, 1, 0));
-        assertEquals("azaz", Vba.replace("xyzxyz", "xy", "a", 1, 2, -6));
-        assertEquals(
-            "xyzazxyz", Vba.replace("xyzxyzxyz", "xy", "a", 2, 1, 11));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1, -1, 1000), is("azaz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1, 1, 0), is("azxyz"));
+        assertThat(Vba.replace("xyzxyz", "xy", "a", 1, 2, -6), is("azaz"));
+        assertThat(Vba.replace("xyzxyzxyz", "xy", "a", 2, 1, 11), is("xyzazxyz"));
     }
 
-    public void testRight() {
-        assertEquals("xyz", Vba.right("abcxyz", 3));
+    @Test public void testRight() {
+        assertThat(Vba.right("abcxyz", 3), is("xyz"));
         // length=0 is OK
-        assertEquals("", Vba.right("abcxyz", 0));
+        assertThat(Vba.right("abcxyz", 0), is(""));
         // Spec says: "If greater than or equal to the number of characters in
         // string, the entire string is returned."
-        assertEquals("abcxyz", Vba.right("abcxyz", 8));
-        assertEquals("", Vba.right("", 3));
+        assertThat(Vba.right("abcxyz", 8), is("abcxyz"));
+        assertThat(Vba.right("", 3), is(""));
 
         // The VBA spec says that length<0 is error.
         // Note: SSAS 2005 allows length<0, giving the same result as length=0.
         // We favor the VBA spec over SSAS 2005.
         if (Bug.Ssas2005Compatible) {
-            assertEquals("", Vba.right("xyz", -2));
+            assertThat(Vba.right("xyz", -2), is(""));
         } else {
             try {
                 String s = Vba.right("xyz", -2);
@@ -1255,19 +1222,19 @@ public class VbaTest extends TestCase {
             }
         }
 
-        assertEquals("World!", Vba.right("Hello World!", 6));
+        assertThat(Vba.right("Hello World!", 6), is("World!"));
     }
 
-    public void testRTrim() {
-        assertEquals("", Vba.rTrim(""));
-        assertEquals("", Vba.rTrim("  "));
-        assertEquals(" \n\tabc", Vba.rTrim(" \n\tabc"));
-        assertEquals(" \n\tabc", Vba.rTrim(" \n\tabc  \r"));
+    @Test public void testRTrim() {
+        assertThat(Vba.rTrim(""), is(""));
+        assertThat(Vba.rTrim("  "), is(""));
+        assertThat(Vba.rTrim(" \n\tabc"), is(" \n\tabc"));
+        assertThat(Vba.rTrim(" \n\tabc  \r"), is(" \n\tabc"));
     }
 
-    public void testSpace() {
-        assertEquals("   ", Vba.space(3));
-        assertEquals("", Vba.space(0));
+    @Test public void testSpace() {
+        assertThat(Vba.space(3), is("   "));
+        assertThat(Vba.space(0), is(""));
         try {
             String s = Vba.space(-2);
             fail("expected error, got " + s);
@@ -1276,120 +1243,141 @@ public class VbaTest extends TestCase {
         }
     }
 
-    public void testString() {
-        assertEquals("xxx", Vba.string(3, 'x'));
-        assertEquals("", Vba.string(0, 'y'));
+    @Test public void testString() {
+        assertThat(Vba.string(3, 'x'), is("xxx"));
+        assertThat(Vba.string(0, 'y'), is(""));
         try {
             String s = Vba.string(-2, 'z');
             fail("expected error, got " + s);
         } catch (RuntimeException e) {
             assertMessage(e, "NegativeArraySizeException");
         }
-        assertEquals("", Vba.string(100, '\0'));
+        assertThat(Vba.string(100, '\0'), is(""));
     }
 
-    public void testStrReverse() {
+    @Test public void testStrReverse() {
         // odd length
-        assertEquals("cba", Vba.strReverse("abc"));
+        assertThat(Vba.strReverse("abc"), is("cba"));
         // even length
-        assertEquals("wxyz", Vba.strReverse("zyxw"));
+        assertThat(Vba.strReverse("zyxw"), is("wxyz"));
         // zero length
-        assertEquals("", Vba.strReverse(""));
+        assertThat(Vba.strReverse(""), is(""));
     }
 
-    public void testTrim() {
-        assertEquals("", Vba.trim(""));
-        assertEquals("", Vba.trim("  "));
-        assertEquals("abc", Vba.trim("abc"));
-        assertEquals("abc", Vba.trim(" \n\tabc  \r"));
+    @Test public void testTrim() {
+        assertThat(Vba.trim(""), is(""));
+        assertThat(Vba.trim("  "), is(""));
+        assertThat(Vba.trim("abc"), is("abc"));
+        assertThat(Vba.trim(" \n\tabc  \r"), is("abc"));
     }
 
-    public void testWeekdayName() {
+    @Test public void testWeekdayName() {
         // If Sunday (1) is the first day of the week
         // then day 1 is Sunday,
         // then day 2 is Monday,
         // and day 7 is Saturday
-        assertEquals("Sunday", Vba.weekdayName(1, false, 1));
-        assertEquals("Monday", Vba.weekdayName(2, false, 1));
-        assertEquals("Saturday", Vba.weekdayName(7, false, 1));
-        assertEquals("Sat", Vba.weekdayName(7, true, 1));
+        assertThat(Vba.weekdayName(1, false, 1), is("Sunday"));
+        assertThat(Vba.weekdayName(2, false, 1), is("Monday"));
+        assertThat(Vba.weekdayName(7, false, 1), is("Saturday"));
+        assertThat(Vba.weekdayName(7, true, 1), is("Sat"));
 
         // If Monday (2) is the first day of the week
         // then day 1 is Monday,
         // and day 7 is Sunday
-        assertEquals("Monday", Vba.weekdayName(1, false, 2));
-        assertEquals("Sunday", Vba.weekdayName(7, false, 2));
+        assertThat(Vba.weekdayName(1, false, 2), is("Monday"));
+        assertThat(Vba.weekdayName(7, false, 2), is("Sunday"));
 
         // Use weekday start from locale. Test for the 2 most common.
         switch (Calendar.getInstance().getFirstDayOfWeek()) {
         case Calendar.SUNDAY:
-            assertEquals("Sunday", Vba.weekdayName(1, false, 0));
-            assertEquals("Monday", Vba.weekdayName(2, false, 0));
-            assertEquals("Saturday", Vba.weekdayName(7, false, 0));
-            assertEquals("Sat", Vba.weekdayName(7, true, 0));
+            assertThat(Vba.weekdayName(1, false, 0), is("Sunday"));
+            assertThat(Vba.weekdayName(2, false, 0), is("Monday"));
+            assertThat(Vba.weekdayName(7, false, 0), is("Saturday"));
+            assertThat(Vba.weekdayName(7, true, 0), is("Sat"));
             break;
         case Calendar.MONDAY:
-            assertEquals("Monday", Vba.weekdayName(1, false, 0));
-            assertEquals("Tuesday", Vba.weekdayName(2, false, 0));
-            assertEquals("Sunday", Vba.weekdayName(7, false, 0));
-            assertEquals("Sun", Vba.weekdayName(7, true, 0));
+            assertThat(Vba.weekdayName(1, false, 0), is("Monday"));
+            assertThat(Vba.weekdayName(2, false, 0), is("Tuesday"));
+            assertThat(Vba.weekdayName(7, false, 0), is("Sunday"));
+            assertThat(Vba.weekdayName(7, true, 0), is("Sun"));
             break;
         }
     }
 
     // Mathematical
 
-    public void testAbs() {
-        assertEquals(Vba.abs(-1.7d), 1.7d);
+    @Test public void testAbs() {
+        assertThat(1.7d, is(Vba.abs(-1.7d)));
     }
 
-    public void testAtn() {
-        assertEquals(0d, Vba.atn(0), SMALL);
-        assertEquals(Math.PI / 4d, Vba.atn(1), SMALL);
+    @Test public void testAtn() {
+        assertThat(Vba.atn(0), range(0d, SMALL));
+        assertThat(Vba.atn(1), range(Math.PI / 4d, SMALL));
     }
 
-    public void testCos() {
-        assertEquals(1d, Vba.cos(0), 0d);
-        assertEquals(Vba.sqr(0.5d), Vba.cos(Math.PI / 4d), 0d);
-        assertEquals(0d, Vba.cos(Math.PI / 2d), SMALL);
-        assertEquals(-1d, Vba.cos(Math.PI), 0d);
+    @Test public void testCos() {
+        assertThat(Vba.cos(0), range(1d, 0d));
+        assertThat(Vba.cos(Math.PI / 4d), range(
+            Vba.sqr(0.5d),
+            0d));
+        assertThat(Vba.cos(Math.PI / 2d), range(
+            0d,
+            SMALL));
+        assertThat(Vba.cos(Math.PI), range(-1d, 0d));
     }
 
-    public void testExp() {
-        assertEquals(1d, Vba.exp(0));
-        assertEquals(Math.E, Vba.exp(1), 1e-10);
+    @Test public void testExp() {
+        assertThat(Vba.exp(0), is(1d));
+        assertThat(Vba.exp(1), range(Math.E, 1e-10));
     }
 
-    public void testRound() {
-        assertEquals(123d, Vba.round(123.4567d), SMALL);
+    @Test public void testRound() {
+        assertThat(Vba.round(123.4567d), range(
+            123d,
+            SMALL));
     }
 
-    public void testRound2() {
-        assertEquals(123d, Vba.round(123.4567d, 0), SMALL);
-        assertEquals(123.46d, Vba.round(123.4567d, 2), SMALL);
-        assertEquals(120d, Vba.round(123.45d, -1), SMALL);
-        assertEquals(-123.46d, Vba.round(-123.4567d, 2), SMALL);
+    @Test public void testRound2() {
+        assertThat(Vba.round(123.4567d, 0), range(
+            123d,
+            SMALL));
+        assertThat(Vba.round(123.4567d, 2), range(
+            123.46d,
+            SMALL));
+        assertThat(Vba.round(123.45d, -1), range(
+            120d,
+            SMALL));
+        assertThat(Vba.round(-123.4567d, 2), range(
+            -123.46d,
+            SMALL));
     }
 
-    public void testSgn() {
-        assertEquals(1, Vba.sgn(3.11111d), 0d);
-        assertEquals(-1, Vba.sgn(-Math.PI), 0d);
-        assertTrue(0 == Vba.sgn(-0d));
-        assertTrue(0 == Vba.sgn(0d));
+    @Test public void testSgn() {
+        assertThat((double) Vba.sgn(3.11111d), range(
+            (double) 1,
+            0d));
+        double actual = Vba.sgn(-Math.PI);
+        assertThat(actual, range((double) -1, 0d));
+        assertThat(Vba.sgn(-0d), is(0));
+        assertThat(Vba.sgn(0d), is(0));
     }
 
-    public void testSin() {
-        assertEquals(Vba.sqr(0.5d), Vba.sin(Math.PI / 4d), SMALL);
+    @Test public void testSin() {
+        assertThat(Vba.sin(Math.PI / 4d), range(
+            Vba.sqr(0.5d),
+            SMALL));
     }
 
-    public void testSqr() {
-        assertEquals(2d, Vba.sqr(4d), 0d);
-        assertEquals(0d, Vba.sqr(0d), 0d);
-        assertTrue(Double.isNaN(Vba.sqr(-4)));
+    @Test public void testSqr() {
+        assertThat(Vba.sqr(4d), range(2d, 0d));
+        assertThat(Vba.sqr(0d), range(0d, 0d));
+        assertThat(Double.isNaN(Vba.sqr(-4)), is(true));
     }
 
-    public void testTan() {
-        assertEquals(1d, Vba.tan(Math.PI / 4d), SMALL);
+    @Test public void testTan() {
+        assertThat(Vba.tan(Math.PI / 4d), range(
+            1d,
+            SMALL));
     }
 }
 

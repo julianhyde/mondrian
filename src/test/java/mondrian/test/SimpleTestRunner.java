@@ -9,6 +9,7 @@
 */
 package mondrian.test;
 
+import org.junit.Test;
 import junit.framework.*;
 
 import java.lang.reflect.Constructor;

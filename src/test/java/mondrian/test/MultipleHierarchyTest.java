@@ -11,6 +11,8 @@ package mondrian.test;
 
 import mondrian.olap.MondrianProperties;
 
+import org.junit.Test;
+
 /**
  * Tests multiple hierarchies within the same dimension.
  *
@@ -23,11 +25,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
     private static final String timeTime =
         TestContext.hierarchyName("Time", "Time");
 
-    public MultipleHierarchyTest(String name) {
-        super(name);
-    }
-
-    public void testWeekly() {
+    @Test public void testWeekly() {
         // [Time.Weekly] has an 'all' member, but [Time] does not.
         assertAxisReturns(
             "{[Time].[Time].CurrentMember}",
@@ -37,7 +35,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
             "[Time].[Weekly].[All Weeklys]");
     }
 
-    public void testWeekly2() {
+    @Test public void testWeekly2() {
         // When the context is one hierarchy,
         // the current member of other hierarchy must be its default member.
         assertQueryReturns(
@@ -75,7 +73,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
             + "Row #3: [Time].[Time].[1997].[Q4]\n");
     }
 
-    public void testMultipleMembersOfSameDimensionInSlicerFails() {
+    @Test public void testMultipleMembersOfSameDimensionInSlicerFails() {
         assertQueryThrows(
             "select {[Measures].[Unit Sales]} on columns,\n"
             + " {[Store].[Stores].children} on rows\n"
@@ -84,7 +82,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
             "Tuple contains more than one member of hierarchy '[Time].[Time]'.");
     }
 
-    public void testMembersOfHierarchiesInSameDimensionInSlicer() {
+    @Test public void testMembersOfHierarchiesInSameDimensionInSlicer() {
         assertQueryReturns(
             "select {[Measures].[Unit Sales]} on columns,\n"
             + " {[Store].[Stores].children} on rows\n"
@@ -105,7 +103,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
             + "Row #2: 33,381\n");
     }
 
-    public void testCalcMember() {
+    @Test public void testCalcMember() {
         assertQueryReturns(
             "with member [Measures].[Sales to Date] as \n"
             + " ' Sum(PeriodsToDate([Time].[Year], [Time].[Time].CurrentMember), [Measures].[Unit Sales])'\n"
@@ -149,7 +147,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
      * Tests <a href="http://jira.pentaho.com/browse/MONDRIAN-191">
      * bug MONDRIAN-191, "Properties not working with multiple hierarchies"</a>.
      */
-    public void testProperty() {
+    @Test public void testProperty() {
         TestContext testContext =
             TestContext.instance().legacy().createSubstitutingCube(
                 "Sales",
@@ -287,7 +285,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
      * at compile time. (SSAS detects at run time, and generates a cell error,
      * but this is better.)
      */
-    public void testAmbiguousHierarchyInCalcMember() {
+    @Test public void testAmbiguousHierarchyInCalcMember() {
         final String query =
             "with member [Measures].[Time Child Count] as\n"
             + "  [Time].Children.Count\n"
@@ -304,7 +302,7 @@ public class MultipleHierarchyTest extends FoodMartTestCase {
      * bug MONDRIAN-750, "... multiple hierarchies beneath a single dimension
      * throws exception"</a>.
      */
-    public void testDefaultNamedHierarchy() {
+    @Test public void testDefaultNamedHierarchy() {
         TestContext testContext =
             TestContext.instance().legacy().createSubstitutingCube(
                 "Sales",

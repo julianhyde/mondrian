@@ -24,6 +24,10 @@ import org.eigenbase.util.property.IntegerProperty;
 import java.util.*;
 import java.util.concurrent.Future;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 /**
  * To support all <code>Batch</code> related tests.
  *
@@ -31,13 +35,6 @@ import java.util.concurrent.Future;
  * @since 06-Jun-2007
  */
 public class BatchTestCase extends FoodMartTestCase {
-
-    public BatchTestCase(String name) {
-        super(name);
-    }
-
-    public BatchTestCase() {
-    }
 
     protected static final String tableTime = "time_by_day";
     protected static final String tableProductClass = "product_class";
@@ -538,11 +535,8 @@ public class BatchTestCase extends FoodMartTestCase {
                 if (bomb == null) {
                     fail("expected query [" + sql + "] did not occur");
                 }
-                assertEquals(
-                    replaceQuotes(
-                        sql.replaceAll("\r\n", "\n")),
-                    replaceQuotes(
-                        bomb.sql.replaceAll("\r\n", "\n")));
+                assertThat(replaceQuotes(bomb.sql.replaceAll("\r\n", "\n")),
+                    is(replaceQuotes(sql.replaceAll("\r\n", "\n"))));
             }
         }
 
@@ -1146,7 +1140,7 @@ public class BatchTestCase extends FoodMartTestCase {
                 int axisCount = result.getAxes().length;
                 Axis a = result.getAxes()[axisCount - 1];
                 final int positionCount = a.getPositions().size();
-                assertEquals(rowCount, positionCount);
+                assertThat(positionCount, is(rowCount));
                 return result;
             } finally {
                 monLimit.set(oldLimit);

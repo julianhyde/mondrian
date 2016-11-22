@@ -14,6 +14,7 @@ import mondrian.server.StringRepositoryContentFinder;
 import mondrian.server.UrlRepositoryContentFinder;
 import mondrian.xmla.test.XmlaTestContext;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import org.olap4j.OlapConnection;
@@ -33,7 +34,7 @@ public class MondrianServerTest extends TestCase {
     /**
      * Tests an embedded server.
      */
-    public void testEmbedded() {
+    @Test public void testEmbedded() {
         TestContext testContext = TestContext.instance();
         final MondrianServer server =
             MondrianServer.forConnection(testContext.getConnection());
@@ -45,7 +46,7 @@ public class MondrianServerTest extends TestCase {
     /**
      * Tests a server with its own repository.
      */
-    public void testStringRepository() throws MalformedURLException {
+    @Test public void testStringRepository() throws MalformedURLException {
         final MondrianServer server =
             MondrianServer.createWithRepository(
                 new StringRepositoryContentFinder("foo bar"),
@@ -58,7 +59,7 @@ public class MondrianServerTest extends TestCase {
     /**
      * Tests a server that reads its repository from a file URL.
      */
-    public void testRepository() throws MalformedURLException, SQLException {
+    @Test public void testRepository() throws MalformedURLException, SQLException {
         final XmlaTestContext xmlaTestContext = new XmlaTestContext();
         final MondrianServer server =
             MondrianServer.createWithRepository(

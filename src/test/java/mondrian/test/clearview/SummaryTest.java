@@ -13,7 +13,14 @@ import mondrian.olap.MondrianProperties;
 import mondrian.test.DiffRepository;
 import mondrian.util.Bug;
 
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.junit.runners.Parameterized;
+
 import junit.framework.TestSuite;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <code>SummaryTest</code> is a test suite which tests scenarios of
@@ -24,14 +31,7 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class SummaryTest extends ClearViewBase {
-
-    public SummaryTest() {
-        super();
-    }
-
-    public SummaryTest(String name) {
-        super(name);
-    }
+    @Rule public final TestName name = new TestName();
 
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
@@ -41,16 +41,20 @@ public class SummaryTest extends ClearViewBase {
         return DiffRepository.lookup(SummaryTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), SummaryTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(SummaryTest.class);
     }
 
     @Override
-    protected void runTest() throws Exception {
+    public void runTest() throws Exception {
+        String[] methods = {
+            "testRankExpandNonNative",
+            "testCountExpandNonNative",
+            "testCountOverTimeExpandNonNative"
+        };
         if (!Bug.BugMondrian785Fixed
-            && (getName().equals("testRankExpandNonNative")
-                || getName().equals("testCountExpandNonNative")
-                || getName().equals("testCountOverTimeExpandNonNative"))
+            && Arrays.asList(methods).contains(name.getMethodName())
             && MondrianProperties.instance().EnableNativeCrossJoin.get())
         {
             // Tests give wrong results if native crossjoin is disabled.

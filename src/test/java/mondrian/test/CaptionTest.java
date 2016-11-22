@@ -12,7 +12,9 @@ package mondrian.test;
 import mondrian.olap.*;
 import mondrian.spi.DynamicSchemaProcessor;
 
+import org.junit.Test;
 import junit.framework.Assert;
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class CaptionTest extends TestCase {
     /**
      * set caption "Anzahl Verkauf" for measure "Unit Sales"
      */
-    public void testMeasureCaption() {
+    @Test public void testMeasureCaption() {
         final Connection monConnection =
             TestContext.instance()
                 .withSchemaProcessor(MyFoodmart.class)
@@ -47,7 +49,7 @@ public class CaptionTest extends TestCase {
     /**
      * set caption "Werbemedium" for nonshared dimension "Promotion Media"
      */
-    public void testDimCaption() {
+    @Test public void testDimCaption() {
         final Connection monConnection =
             TestContext.instance()
                 .withSchemaProcessor(MyFoodmart.class)
@@ -68,7 +70,7 @@ public class CaptionTest extends TestCase {
     /**
      * set caption "Quadrat-Fuesse:-)" for shared dimension "Store Size in SQFT"
      */
-    public void testDimCaptionShared() {
+    @Test public void testDimCaptionShared() {
         String mdxQuery =
             "SELECT {[Measures].[Unit Sales]} ON COLUMNS, "
             + "{[Store Size in SQFT].[All Store Size in SQFTs]} ON ROWS "
@@ -96,7 +98,7 @@ public class CaptionTest extends TestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-236">Bug MONDRIAN-683,
      * "Caption expression for dimension levels missing implementation"</a>.
      */
-    public void testLevelCaptionExpression() {
+    @Test public void testLevelCaptionExpression() {
         TestContext tc = TestContext.instance();
         switch (tc.getDialect().getDatabaseProduct()) {
         case ACCESS:

@@ -18,6 +18,12 @@ import mondrian.test.SqlPattern;
 import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
+import org.junit.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 /**
  * Unit test for the {@code NativizeSet} function.
  *
@@ -25,8 +31,7 @@ import mondrian.util.Bug;
  * @since Oct 14, 2009
  */
 public class NativizeSetFunDefTest extends BatchTestCase {
-    public void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, true);
         propSaver.set(propSaver.props.NativizeMinThreshold, 0);
         propSaver.set(propSaver.props.UseAggregates, false);
@@ -34,11 +39,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    public void testIsNoOpWithAggregatesTablesOn() {
+    @Test public void testIsNoOpWithAggregatesTablesOn() {
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
         checkNotNative(
@@ -50,7 +51,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testLevelHierarchyHighCardinality() {
+    @Test public void testLevelHierarchyHighCardinality() {
         // The cardinality for the hierarchy looks like this:
         //    Year: 2 (level * gender cardinality:2)
         //    Quarter: 16 (level * gender cardinality:2)
@@ -68,7 +69,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         checkNative(mdx);
     }
 
-    public void testLevelHierarchyLowCardinality() {
+    @Test public void testLevelHierarchyLowCardinality() {
         // The cardinality for the hierarchy looks like this:
         //    Year: 2 (level * gender cardinality:2)
         //    Quarter: 16 (level * gender cardinality:2)
@@ -86,7 +87,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         checkNotNative(mdx);
     }
 
-    public void testNamedSetLowCardinality() {
+    @Test public void testNamedSetLowCardinality() {
         propSaver.set(propSaver.props.NativizeMinThreshold, Integer.MAX_VALUE);
         checkNotNative(
             "with "
@@ -96,7 +97,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testCrossjoinWithNamedSetLowCardinality() {
+    @Test public void testCrossjoinWithNamedSetLowCardinality() {
         propSaver.set(propSaver.props.NativizeMinThreshold, Integer.MAX_VALUE);
         checkNotNative(
             "with "
@@ -107,7 +108,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testMeasureInCrossJoinWithTwoDimensions() {
+    @Test public void testMeasureInCrossJoinWithTwoDimensions() {
         checkNative(
             "select NativizeSet("
             + "CrossJoin( "
@@ -119,7 +120,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from sales");
     }
 
-    public void testNativeResultLimitAtZero() {
+    @Test public void testNativeResultLimitAtZero() {
         // This query will return exactly 6 rows:
         // {Female,Male,Agg}x{Married,Single}
         String mdx =
@@ -135,7 +136,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         checkNative(mdx);
     }
 
-    public void testNativeResultLimitBeforeMerge() {
+    @Test public void testNativeResultLimitBeforeMerge() {
         // This query will return exactly 6 rows:
         // {Female,Male,Agg}x{Married,Single}
         String mdx =
@@ -163,7 +164,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         }
     }
 
-    public void testNativeResultLimitDuringMerge() {
+    @Test public void testNativeResultLimitDuringMerge() {
         // This query will return exactly 6 rows:
         // {Female,Male,Agg}x{Married,Single}
         String mdx =
@@ -189,7 +190,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         }
     }
 
-    public void testMeasureAndDimensionInCrossJoin() {
+    @Test public void testMeasureAndDimensionInCrossJoin() {
         checkNotNative(
             // There's no crossjoin left after the measure is set aside,
             // so it's not even a candidate for native evaluation.
@@ -203,7 +204,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from sales");
     }
 
-    public void testDimensionAndMeasureInCrossJoin() {
+    @Test public void testDimensionAndMeasureInCrossJoin() {
         checkNotNative(
             // There's no crossjoin left after the measure is set aside,
             // so it's not even a candidate for native evaluation.
@@ -217,7 +218,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from sales");
     }
 
-    public void testAllByAll() {
+    @Test public void testAllByAll() {
         checkNotNative(
             // There's no crossjoin left after all members are set aside,
             // so it's not even a candidate for native evaluation.
@@ -231,7 +232,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from sales");
     }
 
-    public void testAllByAllByAll() {
+    @Test public void testAllByAllByAll() {
         checkNotNative(
             // There's no crossjoin left after all members are set aside,
             // so it's not even a candidate for native evaluation.
@@ -247,7 +248,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from sales");
     }
 
-    public void testNativizeTwoAxes() {
+    @Test public void testNativizeTwoAxes() {
         String mdx =
             "select "
             + "NativizeSet("
@@ -272,7 +273,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         checkNotNative(mdx);
     }
 
-    public void testCurrentMemberAsFunArg() {
+    @Test public void testCurrentMemberAsFunArg() {
         checkNative(
             "with "
             ////////////////////////////////////////////////////////////
@@ -296,7 +297,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testOnlyMeasureIsLiteral() {
+    @Test public void testOnlyMeasureIsLiteral() {
         checkNotNative(
             //////////////////////////////////////////////////////////////////
             // There's no base cube, so this should NOT be natively evaluated.
@@ -312,7 +313,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testTwoLiteralMeasuresAndUnitAndStoreSales() {
+    @Test public void testTwoLiteralMeasuresAndUnitAndStoreSales() {
         checkNative(
             // Should be natively evaluated because the unit sales
             // measure will bring in a base cube.
@@ -335,7 +336,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testLiteralMeasuresWithinParentheses() {
+    @Test public void testLiteralMeasuresWithinParentheses() {
         checkNative(
             // Should be natively evaluated because the unit sales
             // measure will bring in a base cube.  The extra parens
@@ -360,7 +361,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testIsEmptyOnMeasures() {
+    @Test public void testIsEmptyOnMeasures() {
         checkNative(
             "with "
             ////////////////////////////////////////////////////////
@@ -382,7 +383,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testLagOnMeasures() {
+    @Test public void testLagOnMeasures() {
         checkNotNative(
             "with "
             /////////////////////////////////////////////
@@ -405,7 +406,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testLagOnMeasuresWithinParentheses() {
+    @Test public void testLagOnMeasuresWithinParentheses() {
         checkNotNative(
             "with "
             /////////////////////////////////////////////
@@ -431,7 +432,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testRangeOfMeasures() {
+    @Test public void testRangeOfMeasures() {
         checkNotNative(
             "select "
             + "   NativizeSet(CrossJoin("
@@ -450,7 +451,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
     }
 
 
-    public void testOrderOnMeasures() {
+    @Test public void testOrderOnMeasures() {
         checkNative(
             "with "
             ///////////////////////////////////////////////////
@@ -473,7 +474,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testLiteralMeasureAndUnitSalesUsingSet() {
+    @Test public void testLiteralMeasureAndUnitSalesUsingSet() {
         checkNative(
             // Should be natively evaluated because the unit sales
             "with "   // measure will bring in a base cube.
@@ -497,13 +498,13 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [warehouse and sales]");
     }
 
-    public void testNoSubstitutionsArityOne() {
+    @Test public void testNoSubstitutionsArityOne() {
         checkNotNative(
             // no crossjoin, so not native
             "SELECT NativizeSet({Gender.F, Gender.M}) on 0 from sales");
     }
 
-    public void testNoSubstitutionsArityTwo() {
+    @Test public void testNoSubstitutionsArityTwo() {
         checkNotNative(
             "SELECT NativizeSet(CrossJoin("
             + "{Gender.F, Gender.M}, "
@@ -511,7 +512,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testExplicitCurrentMonth() {
+    @Test public void testExplicitCurrentMonth() {
         checkNative(
             "SELECT NativizeSet(CrossJoin( "
             + "   { [Time].[Month].currentmember }, "
@@ -541,20 +542,20 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [sales]");
     }
 
-    public void testAcceptsAllDimensionMembersSetAsInput() {
+    @Test public void testAcceptsAllDimensionMembersSetAsInput() {
         checkNotNative(
             // no crossjoin, so not native
             "SELECT NativizeSet({[Marital Status].[Marital Status].members})"
             + " on 0 from sales");
     }
 
-    public void testAcceptsCrossJoinAsInput() {
+    @Test public void testAcceptsCrossJoinAsInput() {
         checkNative(
             "SELECT NativizeSet( CrossJoin({ Gender.F, Gender.M }, "
             + "{[Marital Status].[Marital Status].members})) on 0 from sales");
     }
 
-    public void testRedundantEnumMembersFirst() {
+    @Test public void testRedundantEnumMembersFirst() {
         checkNative(
             // In the enumerated marital status values { M, S, S }
             // the second S is clearly redundant, but should be
@@ -571,7 +572,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testRedundantEnumMembersMiddle() {
+    @Test public void testRedundantEnumMembersMiddle() {
         checkNative(
             // In the enumerated gender values { F, M, M, M }
             // the last two M values are redunant, but should be
@@ -588,7 +589,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testRedundantEnumMembersLast() {
+    @Test public void testRedundantEnumMembersLast() {
         checkNative(
             // In the enumerated time quarter values { Q1, Q2, Q2 }
             // the last two Q2 values are redunant, but should be
@@ -605,7 +606,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testRedundantLevelMembersFirst() {
+    @Test public void testRedundantLevelMembersFirst() {
         checkNative(
             // The second marital status members function is clearly
             // redundant, but should be included in the result
@@ -622,7 +623,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testRedundantLevelMembersMiddle() {
+    @Test public void testRedundantLevelMembersMiddle() {
         checkNative(
             // The second gender members function is clearly
             // redundant, but should be included in the result
@@ -639,7 +640,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testRedundantLevelMembersLast() {
+    @Test public void testRedundantLevelMembersLast() {
         checkNative(
             // The second time.quarter members function is clearly
             // redundant, but should be included in the result
@@ -656,7 +657,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testNonEmptyNestedCrossJoins() {
+    @Test public void testNonEmptyNestedCrossJoins() {
         checkNative(
             "SELECT "
             + "NativizeSet(CrossJoin("
@@ -670,7 +671,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ") on 0 from sales");
     }
 
-    public void testLevelMembersAndAll() {
+    @Test public void testLevelMembersAndAll() {
         checkNative(
             "select NativizeSet ("
             + "crossjoin( "
@@ -679,7 +680,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testCrossJoinArgInNestedBraces() {
+    @Test public void testCrossJoinArgInNestedBraces() {
         checkNative(
             "select NativizeSet ("
             + "crossjoin( "
@@ -688,7 +689,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testLevelMembersAndAllWhereOrderMatters() {
+    @Test public void testLevelMembersAndAllWhereOrderMatters() {
         checkNative(
             "select NativizeSet ("
             + "crossjoin( "
@@ -697,7 +698,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testEnumMembersAndAll() {
+    @Test public void testEnumMembersAndAll() {
         checkNative(
             "select NativizeSet ("
             + "crossjoin( "
@@ -706,7 +707,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testNativizeWithASetAtTopLevel() {
+    @Test public void testNativizeWithASetAtTopLevel() {
         checkNative(
             "WITH"
             + "  MEMBER [Gender].[umg1] AS "
@@ -728,7 +729,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + " FROM [Sales]  CELL PROPERTIES VALUE, FORMAT_STRING");
     }
 
-    public void testNativizeWithASetAtTopLevel3Levels() {
+    @Test public void testNativizeWithASetAtTopLevel3Levels() {
         checkNative(
             "WITH\n"
             + "MEMBER [Gender].[COG_OQP_INT_umg2] AS 'IIF([Measures].CURRENTMEMBER IS [Measures].[Unit Sales], "
@@ -761,7 +762,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "FROM [Sales]  CELL PROPERTIES VALUE, FORMAT_STRING\n");
     }
 
-    public void testNativizeWithASetAtTopLevel2() {
+    @Test public void testNativizeWithASetAtTopLevel2() {
         checkNative(
             "WITH"
             + "  MEMBER [Gender].[umg1] AS "
@@ -785,7 +786,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + " FROM [Sales]  CELL PROPERTIES VALUE, FORMAT_STRING");
     }
 
-    public void testGenderMembersAndAggByMaritalStatus() {
+    @Test public void testGenderMembersAndAggByMaritalStatus() {
         checkNative(
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
             + "select NativizeSet("
@@ -795,7 +796,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testGenderAggAndMembersByMaritalStatus() {
+    @Test public void testGenderAggAndMembersByMaritalStatus() {
         checkNative(
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
             + "select NativizeSet("
@@ -805,7 +806,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testGenderAggAndMembersAndAllByMaritalStatus() {
+    @Test public void testGenderAggAndMembersAndAllByMaritalStatus() {
         checkNative(
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
             + "select NativizeSet("
@@ -815,7 +816,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testMaritalStatusByGenderMembersAndAgg() {
+    @Test public void testMaritalStatusByGenderMembersAndAgg() {
         checkNative(
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
             + "select NativizeSet("
@@ -825,7 +826,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testMaritalStatusByGenderAggAndMembers() {
+    @Test public void testMaritalStatusByGenderAggAndMembers() {
         checkNative(
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
             + "select NativizeSet("
@@ -835,7 +836,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testAggWithEnumMembers() {
+    @Test public void testAggWithEnumMembers() {
         checkNative(
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
             + "select NativizeSet("
@@ -845,7 +846,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testCrossjoinArgWithMultipleElementTypes() {
+    @Test public void testCrossjoinArgWithMultipleElementTypes() {
         checkNative(
             // Test for correct handling of a crossjoin arg that contains
             // a combination of element types: a members function, an
@@ -860,7 +861,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testProductFamilyMembers() {
+    @Test public void testProductFamilyMembers() {
         checkNative(
             "select non empty NativizeSet("
             + "crossjoin( "
@@ -869,7 +870,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testNestedCrossJoinWhereAllColsHaveNative() {
+    @Test public void testNestedCrossJoinWhereAllColsHaveNative() {
         checkNative(
             "with "
             + "member gender.agg as 'Aggregate( gender.gender.members )' "
@@ -883,7 +884,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testNestedCrossJoinWhereFirstColumnNonNative() {
+    @Test public void testNestedCrossJoinWhereFirstColumnNonNative() {
         checkNative(
             "with "
             + "member gender.agg as 'Aggregate( gender.gender.members )' "
@@ -897,7 +898,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testNestedCrossJoinWhereMiddleColumnNonNative() {
+    @Test public void testNestedCrossJoinWhereMiddleColumnNonNative() {
         checkNative(
             "with "
             + "member gender.agg as 'Aggregate( gender.gender.members )' "
@@ -911,7 +912,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testNestedCrossJoinWhereLastColumnNonNative() {
+    @Test public void testNestedCrossJoinWhereLastColumnNonNative() {
         checkNative(
             "with "
             + "member gender.agg as 'Aggregate( gender.gender.members )' "
@@ -925,7 +926,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "))) on 0 from sales");
     }
 
-    public void testGenderAggByMaritalStatus() {
+    @Test public void testGenderAggByMaritalStatus() {
         checkNotNative(
             // NativizeSet removes the crossjoin, so not native
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
@@ -936,7 +937,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testGenderAggTwiceByMaritalStatus() {
+    @Test public void testGenderAggTwiceByMaritalStatus() {
         checkNotNative(
             // NativizeSet removes the crossjoin, so not native
             "with "
@@ -949,7 +950,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testSameGenderAggTwiceByMaritalStatus() {
+    @Test public void testSameGenderAggTwiceByMaritalStatus() {
         checkNotNative(
             // NativizeSet removes the crossjoin, so not native
             "with "
@@ -961,7 +962,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testMaritalStatusByGenderAgg() {
+    @Test public void testMaritalStatusByGenderAgg() {
         checkNotNative(
             // NativizeSet removes the crossjoin, so not native
             "with member gender.agg as 'Aggregate( gender.gender.members )' "
@@ -972,7 +973,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testMaritalStatusByTwoGenderAggs() {
+    @Test public void testMaritalStatusByTwoGenderAggs() {
         checkNotNative(
             // NativizeSet removes the crossjoin, so not native
             "with "
@@ -985,7 +986,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testMaritalStatusBySameGenderAggTwice() {
+    @Test public void testMaritalStatusBySameGenderAggTwice() {
         checkNotNative(
             // NativizeSet removes the crossjoin, so not native
             "with "
@@ -997,7 +998,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testMultipleLevelsOfSameDimInConcatenatedJoins() {
+    @Test public void testMultipleLevelsOfSameDimInConcatenatedJoins() {
         checkNotNative(
             // See notes for testMultipleLevelsOfSameDimInSingleArg
             // because the NativizeSetFunDef transforms this mdx into the
@@ -1012,7 +1013,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "} ) on 0 from sales");
     }
 
-    public void testMultipleLevelsOfSameDimInSingleArg() {
+    @Test public void testMultipleLevelsOfSameDimInSingleArg() {
         checkNotNative(
             // Although it's legal MDX, the RolapNativeSet.checkCrossJoinArg
             // can't deal with an arg that contains multiple .members functions.
@@ -1027,7 +1028,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "} ) on 0 from sales");
     }
 
-    public void testDoesNoHarmToPlainEnumeratedMembers() {
+    @Test public void testDoesNoHarmToPlainEnumeratedMembers() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, false);
 
         assertQueryIsReWritten(
@@ -1038,7 +1039,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void testDoesNoHarmToPlainDotMembers() {
+    @Test public void testDoesNoHarmToPlainDotMembers() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, false);
 
         assertQueryIsReWritten(
@@ -1049,7 +1050,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void testTransformsCallToRemoveDotMembersInCrossJoin() {
+    @Test public void testTransformsCallToRemoveDotMembersInCrossJoin() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, false);
 
         assertQueryIsReWritten(
@@ -1092,7 +1093,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void testTransformsComplexQueryWithGenerateAndAggregate() {
+    @Test public void testTransformsComplexQueryWithGenerateAndAggregate() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, false);
 
         assertQueryIsReWritten(
@@ -1142,7 +1143,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "} ) on 0 from sales");
     }
 
-    public void testMultipleHierarchySsasTrue() {
+    @Test public void testMultipleHierarchySsasTrue() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, false);
 
         // Ssas compatible: time.[weekly].[week]
@@ -1160,7 +1161,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void testComplexCrossjoinAggInMiddle() {
+    @Test public void testComplexCrossjoinAggInMiddle() {
         checkNative(
             "WITH\n"
             + "\tMEMBER [Time].[Time].[COG_OQP_USR_Aggregate(Time Values)] AS "
@@ -1209,7 +1210,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "\t[Sales] ");
     }
 
-    public void testTopCountDoesNotGetTransformed() {
+    @Test public void testTopCountDoesNotGetTransformed() {
         assertQueryIsReWritten(
             "select "
             + "   NativizeSet(Crossjoin([Gender].[Gender].members,"
@@ -1224,7 +1225,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void testCrossjoinWithFilter() {
+    @Test public void testCrossjoinWithFilter() {
         assertQueryReturns(
             "select\n"
             + "NON EMPTY {[Measures].[Unit Sales]} ON COLUMNS,   \n"
@@ -1240,7 +1241,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "Row #0: 131,558\n");
     }
 
-    public void testEvaluationIsNonNativeWhenBelowHighcardThreshoold() {
+    @Test public void testEvaluationIsNonNativeWhenBelowHighcardThreshoold() {
         propSaver.set(propSaver.props.NativizeMinThreshold, 10000);
         SqlPattern[] patterns = {
             new SqlPattern(
@@ -1260,7 +1261,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             getTestContext(), mdxQuery, patterns, true, false, true);
     }
 
-    public void testCalculatedLevelsDoNotCauseException() {
+    @Test public void testCalculatedLevelsDoNotCauseException() {
         String mdx =
             "SELECT "
             + "  Nativizeset"
@@ -1273,7 +1274,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         checkNotNative(mdx);
     }
 
-    public void testAxisWithArityOneIsNotNativelyEvaluated() {
+    @Test public void testAxisWithArityOneIsNotNativelyEvaluated() {
         SqlPattern[] patterns = {
             new SqlPattern(
                 Dialect.DatabaseProduct.ACCESS,
@@ -1301,7 +1302,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             getTestContext(), query, patterns, true, false, true);
     }
 
-    public void testAxisWithNamedSetArityOneIsNotNativelyEvaluated() {
+    @Test public void testAxisWithNamedSetArityOneIsNotNativelyEvaluated() {
         checkNotNative(
             "with "
             + "set [COG_OQP_INT_s1] as "
@@ -1311,7 +1312,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]");
     }
 
-    public void testOneAxisHighAndOneLowGetsNativeEvaluation() {
+    @Test public void testOneAxisHighAndOneLowGetsNativeEvaluation() {
         propSaver.set(propSaver.props.NativizeMinThreshold, 19);
         checkNative(
             "select NativizeSet("
@@ -1331,7 +1332,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
-    public void testLeafMembersOfParentChildDimensionAreNativelyEvaluated() {
+    @Test public void testLeafMembersOfParentChildDimensionAreNativelyEvaluated() {
         checkNative(
             "SELECT"
             + " NON EMPTY "
@@ -1347,7 +1348,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from hr");
     }
 
-    public void testAggregatedCrossjoinWithZeroMembersInNativeList() {
+    @Test public void testAggregatedCrossjoinWithZeroMembersInNativeList() {
         propSaver.set(propSaver.props.NativizeMinThreshold, 0);
         checkNative(
             "with"
@@ -1366,7 +1367,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + " where [Store].[Canada].[BC].[Vancouver].[Store 19]");
     }
 
-    public void testCardinalityQueriesOnlyExecuteOnce() {
+    @Test public void testCardinalityQueriesOnlyExecuteOnce() {
         SqlPattern[] patterns = {
             new SqlPattern(
                 Dialect.DatabaseProduct.ORACLE,
@@ -1394,7 +1395,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             getTestContext(), mdxQuery, patterns, true, false, false);
     }
 
-    public void testSingleLevelDotMembersIsNativelyEvaluated() {
+    @Test public void testSingleLevelDotMembersIsNativelyEvaluated() {
         String mdx1 =
             "with member [Customers].[agg] as '"
             + "AGGREGATE({[Customers].[name].MEMBERS}, [Measures].[Unit Sales])'"
@@ -1450,8 +1451,8 @@ public class NativizeSetFunDefTest extends BatchTestCase {
 
     private static String removeNativize(String mdx) {
         String mdxWithoutNativize = mdx.replaceAll("(?i)NativizeSet", "");
-        assertFalse(
-            "Query does use NativizeSet", mdx.equals(mdxWithoutNativize));
+        assertThat("Query does use NativizeSet",
+            mdx.equals(mdxWithoutNativize), is(false));
         return mdxWithoutNativize;
     }
 
@@ -1481,11 +1482,11 @@ public class NativizeSetFunDefTest extends BatchTestCase {
         if (!Util.nl.equals("\n")) {
             actualOutput = actualOutput.replace(Util.nl, "\n");
         }
-        assertEquals(expectedQuery, actualOutput);
+        assertThat(actualOutput, is(expectedQuery));
     }
 
 
-    public void testCompoundSlicerNativeEval() {
+    @Test public void testCompoundSlicerNativeEval() {
         if (!Bug.BugMondrian1420Fixed) {
             return;
         }
@@ -1566,7 +1567,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "Row #0: 1\n");
     }
 
-    public void testSnowflakeDimInSlicerBug1407() {
+    @Test public void testSnowflakeDimInSlicerBug1407() {
         // MONDRIAN-1407 use case
         if (!Bug.BugMondrian1420Fixed) {
             return;
@@ -1654,7 +1655,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "Row #0: 324\n");
     }
 
-    public void testCompoundSlicerNonUniqueMemberNames1413() {
+    @Test public void testCompoundSlicerNonUniqueMemberNames1413() {
         // MONDRIAN-1413 use case
         if (!Bug.BugMondrian1420Fixed) {
             return;

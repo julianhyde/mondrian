@@ -15,6 +15,12 @@ import mondrian.spi.*;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,12 +31,7 @@ import javax.sql.DataSource;
  * Test for {@link RolapSchemaPool}.
  */
 public class RolapSchemaPoolTest extends FoodMartTestCase {
-
-    public RolapSchemaPoolTest(String name) {
-        super(name);
-    }
-
-    public void testBasicSchemaFetch() {
+    @Test public void testBasicSchemaFetch() {
         RolapSchemaPool schemaPool = RolapSchemaPool.instance();
         schemaPool.clear();
 
@@ -53,10 +54,10 @@ public class RolapSchemaPoolTest extends FoodMartTestCase {
                 "aDataSource",
                 connectInfo);
         // same arguments, same object
-        assertTrue(schema == schemaA);
+        assertThat(schema, sameInstance(schemaA));
     }
 
-    public void testSchemaFetchCatalogUrlJdbcUuid() {
+    @Test public void testSchemaFetchCatalogUrlJdbcUuid() {
         RolapSchemaPool schemaPool = RolapSchemaPool.instance();
         schemaPool.clear();
         final String uuid = "UUID-1";
@@ -91,7 +92,7 @@ public class RolapSchemaPoolTest extends FoodMartTestCase {
                 "someDataSource",
                 connectInfoA);
         // must fetch the same object
-        assertTrue(schema == sameSchema);
+        assertThat(schema, sameInstance(sameSchema));
 
         connectInfo.put(
             RolapConnectionProperties.JdbcConnectionUuid.name(),
@@ -104,14 +105,14 @@ public class RolapSchemaPoolTest extends FoodMartTestCase {
                 "aDataSource",
                 connectInfo);
         // must create a new object
-        assertTrue(schema != aNewSchema);
+        assertThat(schema != aNewSchema, is(true));
     }
 
     /**
      * Test using JdbcConnectionUUID and useSchemaChecksum
      * fetches the same schema in all scenarios.
      */
-    public void testSchemaFetchMd5JdbcUid() throws IOException {
+    @Test public void testSchemaFetchMd5JdbcUid() throws IOException {
         RolapSchemaPool pool = RolapSchemaPool.instance();
         pool.clear();
         final String uuid = "UUID-1";
@@ -145,7 +146,7 @@ public class RolapSchemaPoolTest extends FoodMartTestCase {
                 "dsName",
                 connectInfo);
 
-        assertTrue(schema == schemaDyn);
+        assertThat(schema, sameInstance(schemaDyn));
 
         String catalogContent = Util.readVirtualFileAsString(catalogUrl);
         Util.PropertyList connectInfoCont = connectInfo.clone();
@@ -157,7 +158,7 @@ public class RolapSchemaPoolTest extends FoodMartTestCase {
             catalogUrl,
             "connectionKeyC", "--", "--", connectInfo);
 
-        assertTrue(schema == schemaCont);
+        assertThat(schema, sameInstance(schemaCont));
 
         Util.PropertyList connectInfoDS = connectInfo.clone();
         final StringBuilder buf = new StringBuilder();
@@ -167,7 +168,7 @@ public class RolapSchemaPoolTest extends FoodMartTestCase {
             provider.createDataSource(null, connectInfoDS, buf);
         RolapSchema schemaDS = pool.get(catalogUrl, dataSource, connectInfoDS);
 
-        assertTrue(schema == schemaDS);
+        assertThat(schema, sameInstance(schemaDS));
     }
 
 

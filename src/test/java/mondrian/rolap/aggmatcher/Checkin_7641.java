@@ -13,6 +13,11 @@ import mondrian.olap.Result;
 import mondrian.test.TestContext;
 import mondrian.test.loader.CsvDBTestCase;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Checkin 7641 attempted to correct a problem demonstrated by this
  * junit. The original problem involved implicit Time member usage in
@@ -33,20 +38,8 @@ public class Checkin_7641 extends CsvDBTestCase {
     public static final String PROP_NAME =  "mondrian.test.checkin.7641";
 
     //private boolean useImplicitMembers;
-    public Checkin_7641() {
-        super();
-    }
-    public Checkin_7641(String name) {
-        super(name);
-    }
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
-    public void testImplicitMember() throws Exception {
+    @Test public void testImplicitMember() throws Exception {
         // explicit use of [Product].[Class1]
         String mdx =
             " select NON EMPTY Crossjoin("
@@ -64,7 +57,7 @@ public class Checkin_7641 extends CsvDBTestCase {
         Result result2 = getCubeTestContext().executeQuery(mdx);
         String resultString2 = TestContext.toString(result2);
 
-        assertEquals(resultString1, resultString2);
+        assertThat(resultString2, is(resultString1));
     }
 
     protected String getDirectoryName() {

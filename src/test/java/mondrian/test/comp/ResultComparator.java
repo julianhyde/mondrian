@@ -13,6 +13,7 @@ package mondrian.test.comp;
 import mondrian.olap.*;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
 import junit.framework.Assert;
 
 import org.w3c.dom.*;

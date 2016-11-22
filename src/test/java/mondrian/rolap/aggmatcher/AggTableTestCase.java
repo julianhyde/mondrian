@@ -11,6 +11,8 @@ package mondrian.rolap.aggmatcher;
 
 import mondrian.test.loader.CsvDBTestCase;
 
+import org.junit.Before;
+
 /**
  * This abstract class can be used as the basis for writing aggregate table
  * test in the "testsrc/main/mondrian/rolap/aggmatcher" directory. Taken care
@@ -25,15 +27,7 @@ public abstract class AggTableTestCase extends CsvDBTestCase {
     private static final String DIRECTORY =
         "target/test-classes/mondrian/rolap/aggmatcher";
 
-    public AggTableTestCase() {
-        super();
-    }
-
-    public AggTableTestCase(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         // Schema needs to be flushed before DBLoader is created is super.setUp,
         // otherwise AggTableManager can end up loading an old JdbcSchema
         getConnection().getCacheControl(null).flushSchemaCache();

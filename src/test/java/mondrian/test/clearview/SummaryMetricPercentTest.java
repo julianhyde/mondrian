@@ -13,6 +13,10 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>SummaryMetricPercentTest</code> is a test suite which tests scenarios
  * of computing sums and percentages against the FoodMart database.
@@ -23,14 +27,6 @@ import junit.framework.TestSuite;
  */
 public class SummaryMetricPercentTest extends ClearViewBase {
 
-    public SummaryMetricPercentTest() {
-        super();
-    }
-
-    public SummaryMetricPercentTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -39,10 +35,9 @@ public class SummaryMetricPercentTest extends ClearViewBase {
         return DiffRepository.lookup(SummaryMetricPercentTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(
-            getDiffReposStatic(),
-            SummaryMetricPercentTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(SummaryMetricPercentTest.class);
     }
 
 }

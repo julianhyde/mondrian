@@ -16,6 +16,8 @@ import mondrian.olap.*;
 import mondrian.olap.type.*;
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Before;
+import org.junit.Test;
 import junit.framework.Assert;
 
 import java.io.PrintWriter;
@@ -57,27 +59,15 @@ public class CrossJoinTest extends FoodMartTestCase {
 
     private CrossJoinFunDef crossJoinFunDef;
 
-    public CrossJoinTest() {
-    }
-
-    public CrossJoinTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         crossJoinFunDef = new CrossJoinFunDef(new NullFunDef());
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Iterable
     ////////////////////////////////////////////////////////////////////////
 
-    public void testListTupleListTupleIterCalc() {
+    @Test public void testListTupleListTupleIterCalc() {
 if (! Util.Retrowoven) {
         CrossJoinFunDef.CrossJoinIterCalc calc =
             crossJoinFunDef.new CrossJoinIterCalc(
@@ -112,7 +102,7 @@ if (! Util.Retrowoven) {
     // Immutable List
     ////////////////////////////////////////////////////////////////////////
 
-    public void testImmutableListTupleListTupleListCalc() {
+    @Test public void testImmutableListTupleListTupleListCalc() {
         CrossJoinFunDef.ImmutableListCalc calc =
             crossJoinFunDef.new ImmutableListCalc(
                 getResolvedFunCall(), null);
@@ -199,7 +189,7 @@ if (! Util.Retrowoven) {
     // Mutable List
     ////////////////////////////////////////////////////////////////////////
 
-    public void testMutableListTupleListTupleListCalc() {
+    @Test public void testMutableListTupleListTupleListCalc() {
         CrossJoinFunDef.MutableListCalc calc =
             crossJoinFunDef.new MutableListCalc(
                 getResolvedFunCall(), null);

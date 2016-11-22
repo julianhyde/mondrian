@@ -232,7 +232,7 @@ import java.util.Properties;
  *                  }
  *              }
  *          }
- *          public void test1() {
+ *          @Test public void test1() {
  *              try {
  *                  // Factory will creates test class
  *                  BooFactory.setThreadLocalClassName("MyTest.BooTest1");
@@ -250,7 +250,7 @@ import java.util.Properties;
  *                  BooFactory.clearThreadLocalClassName();
  *              }
  *          }
- *          public void test2() {
+ *          @Test public void test2() {
  *              try {
  *                  // Use InvocationHandler and Factory Proxy capability
  *                  BooFactory.setThreadLocalClassName("MyTest.BooTest2");

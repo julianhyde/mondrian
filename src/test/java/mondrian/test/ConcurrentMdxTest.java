@@ -14,6 +14,12 @@ import mondrian.olap.*;
 
 import org.apache.log4j.Logger;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import org.olap4j.*;
 
 import java.util.*;
@@ -28,6 +34,7 @@ import java.util.concurrent.*;
  *
  * @author Thiyagu,Ajit
  */
+@Ignore("OPTIONAL_TEST")
 public class ConcurrentMdxTest extends FoodMartTestCase {
     private static final Logger LOGGER =
         Logger.getLogger(FoodMartTestCase.class);
@@ -1243,33 +1250,30 @@ public class ConcurrentMdxTest extends FoodMartTestCase {
     };
     private int count = 0;
 
-    public void testConcurrentValidatingQueriesInRandomOrder() {
+    @Test public void testConcurrentValidatingQueriesInRandomOrder() {
         propSaver.set(propSaver.props.DisableCaching, false);
         propSaver.set(propSaver.props.UseAggregates, false);
         propSaver.set(propSaver.props.ReadAggregates, false);
 
         FoodMartTestCase.QueryAndResult[] singleQuery = {mdxQueries[0]};
-        assertTrue(
-            ConcurrentValidatingQueryRunner.runTest(
-                1, 1, false, true, singleQuery)
-            .size() == 0);
+        assertThat(ConcurrentValidatingQueryRunner.runTest(
+                    1, 1, false, true, singleQuery)
+                .size(), is(0));
         // ensures same global aggregation is used by 2 or more threads and
         // all of them load the same segment.
         FoodMartTestCase.QueryAndResult[] singleQueryFor2Threads = {
             mdxQueries[1]
         };
-        assertTrue(
-            ConcurrentValidatingQueryRunner.runTest(
-                2, 5, false, true, singleQueryFor2Threads)
-            .size() == 0);
+        assertThat(ConcurrentValidatingQueryRunner.runTest(
+                    2, 5, false, true, singleQueryFor2Threads)
+                .size(), is(0));
 
-        assertTrue(
-            ConcurrentValidatingQueryRunner.runTest(
-                10, 45, true, true, mdxQueries)
-            .size() == 0);
+        assertThat(ConcurrentValidatingQueryRunner.runTest(
+                    10, 45, true, true, mdxQueries)
+                .size(), is(0));
     }
 
-    public void testFlushingDoesNotCauseDeadlock() throws Exception {
+    @Test public void testFlushingDoesNotCauseDeadlock() throws Exception {
         // Create a seeded deterministic random generator.
         final long seed = new Random().nextLong();
         LOGGER.debug("Test seed: " + seed);
@@ -1309,7 +1313,7 @@ public class ConcurrentMdxTest extends FoodMartTestCase {
 
         boolean finished = executorService.awaitTermination(
             45, TimeUnit.SECONDS);
-        assertTrue(finished);
+        assertThat(finished, is(true));
     }
 
     private synchronized void logStatus() {
@@ -1362,13 +1366,6 @@ public class ConcurrentMdxTest extends FoodMartTestCase {
         cacheControl.flush(measuresRegion);
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 }
 
 // End ConcurrentMdxTest.java

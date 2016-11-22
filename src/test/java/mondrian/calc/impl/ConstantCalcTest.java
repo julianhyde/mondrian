@@ -13,21 +13,25 @@ package mondrian.calc.impl;
 import mondrian.olap.fun.FunUtil;
 import mondrian.olap.type.NullType;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
- * Test for <code>ConstantCalc</code>
+ * Test for <code>ConstantCalc</code>.
+ *
  * @author Matt
  */
-public class ConstantCalcTest extends TestCase {
-    public void testNullEvaluatesToConstantDoubleNull() {
+public class ConstantCalcTest {
+    @Test public void testNullEvaluatesToConstantDoubleNull() {
         ConstantCalc constantCalc = new ConstantCalc(new NullType(), null);
-        assertEquals(FunUtil.DoubleNull, constantCalc.evaluateDouble(null));
+        assertThat(constantCalc.evaluateDouble(null), is(FunUtil.DoubleNull));
     }
 
-    public void testNullEvaluatesToConstantIntegerNull() {
+    @Test public void testNullEvaluatesToConstantIntegerNull() {
         ConstantCalc constantCalc = new ConstantCalc(new NullType(), null);
-        assertEquals(FunUtil.IntegerNull, constantCalc.evaluateInteger(null));
+        assertThat(constantCalc.evaluateInteger(null), is(FunUtil.IntegerNull));
     }
 }
 

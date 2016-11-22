@@ -18,7 +18,12 @@ import mondrian.spi.impl.*;
 import mondrian.test.TestContext;
 import mondrian.util.Pair;
 
-import junit.framework.TestCase;
+import org.junit.*;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,18 +38,12 @@ import javax.sql.DataSource;
  * @author jng
  * @since 16 April, 2004
  */
-public class RolapConnectionTest extends TestCase {
+public class RolapConnectionTest {
     private static final ThreadLocal<InitialContext> THREAD_INITIAL_CONTEXT =
         new ThreadLocal<InitialContext>();
     private DataServicesProvider dataServicesProvider;
 
-    public RolapConnectionTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before public void setUp() throws Exception {
         if (!NamingManager.hasInitialContextFactoryBuilder()) {
             NamingManager.setInitialContextFactoryBuilder(
                 new InitialContextFactoryBuilder() {
@@ -67,7 +66,7 @@ public class RolapConnectionTest extends TestCase {
         dataServicesProvider = DataServicesLocator.getDataServicesProvider("");
     }
 
-    public void testPooledConnectionWithProperties() throws SQLException {
+    @Test public void testPooledConnectionWithProperties() throws SQLException {
         Util.PropertyList properties =
             TestContext.instance().getConnectionProperties().clone();
 
@@ -89,7 +88,7 @@ public class RolapConnectionTest extends TestCase {
         DataSource dataSource =
             dataServicesProvider.createDataSource(null, properties, buf);
         final String desc = buf.toString();
-        assertTrue(desc.startsWith("Jdbc="));
+        assertThat(desc.startsWith("Jdbc="), is(true));
 
         Connection connection;
         try {
@@ -118,7 +117,7 @@ public class RolapConnectionTest extends TestCase {
         }
     }
 
-    public void testNonPooledConnectionWithProperties() {
+    @Test public void testNonPooledConnectionWithProperties() {
         Util.PropertyList properties =
             TestContext.instance().getConnectionProperties().clone();
 
@@ -141,7 +140,7 @@ public class RolapConnectionTest extends TestCase {
         DataSource dataSource =
             dataServicesProvider.createDataSource(null, properties, buf);
         final String desc = buf.toString();
-        assertTrue(desc.startsWith("Jdbc="));
+        assertThat(desc.startsWith("Jdbc="), is(true));
 
         Connection connection = null;
         try {
@@ -181,7 +180,7 @@ public class RolapConnectionTest extends TestCase {
             DataSource dataSource =
                 dataServicesProvider.createDataSource(null, properties, buf);
             final String desc = buf.toString();
-            assertTrue(desc.startsWith("Jdbc="));
+            assertThat(desc.startsWith("Jdbc="), is(true));
 
             try {
                 Connection connection1 = dataSource.getConnection();
@@ -197,7 +196,7 @@ public class RolapConnectionTest extends TestCase {
     /**
      * Tests that the FORMAT function uses the connection's locale.
      */
-    public void testFormatLocale() {
+    @Test public void testFormatLocale() {
         String expr = "FORMAT(1234.56, \"#,##.#\")";
         checkLocale("es_ES", expr, "1.234,6", false);
         checkLocale("es_MX", expr, "1,234.6", false);
@@ -207,7 +206,7 @@ public class RolapConnectionTest extends TestCase {
     /**
      * Tests that measures are formatted using the connection's locale.
      */
-    public void testFormatStringLocale() {
+    @Test public void testFormatStringLocale() {
         checkLocale("es_ES", "1234.56", "1.234,6", true);
         checkLocale("es_MX", "1234.56", "1,234.6", true);
         checkLocale("en_US", "1234.56", "1,234.6", true);
@@ -242,19 +241,11 @@ public class RolapConnectionTest extends TestCase {
         }
     }
 
-    public void testConnectSansCatalogFails() {
+    @Test public void testConnectSansCatalogFails() {
         Util.PropertyList properties =
             TestContext.instance().getConnectionProperties().clone();
         properties.remove(RolapConnectionProperties.Catalog.name());
         properties.remove(RolapConnectionProperties.CatalogContent.name());
-
-        if (RolapUtil.SQL_LOGGER.isDebugEnabled()) {
-            RolapUtil.SQL_LOGGER.debug(
-                this.getName() + "\n  [Connection Properties | " + properties
-                + "]\n");
-        } else {
-            System.out.println(properties);
-        }
 
         try {
             DriverManager.getConnection(
@@ -262,15 +253,14 @@ public class RolapConnectionTest extends TestCase {
                 null);
             fail("expected exception");
         } catch (MondrianException e) {
-            assertTrue(
-                e.getMessage().indexOf(
-                    "Connect string must contain property 'Catalog' or "
-                    + "property 'CatalogContent'")
-                >= 0);
+            assertThat(e.getMessage().indexOf(
+                          "Connect string must contain property 'Catalog' or "
+                          + "property 'CatalogContent'")
+                     >= 0, is(true));
         }
     }
 
-    public void testJndiConnection() throws NamingException {
+    @Test public void testJndiConnection() throws NamingException {
         // Cannot guarantee that this test will work if they have chosen to
         // resolve data sources other than by JNDI.
         if (MondrianProperties.instance().DataSourceResolverClass.isSet()) {
@@ -287,7 +277,7 @@ public class RolapConnectionTest extends TestCase {
         // connect string. Best we can do is check that createDataSource is
         // setting it to something.
         final String desc = buf.toString();
-        assertTrue(desc, desc.startsWith("Jdbc="));
+        assertThat(desc, desc.startsWith("Jdbc="), is(true));
 
         final List<String> lookupCalls = new ArrayList<String>();
         // mock the JNDI naming manager to provide that datasource
@@ -317,10 +307,10 @@ public class RolapConnectionTest extends TestCase {
 
         // if we've made it here with lookupCalls,
         // we've successfully used JNDI
-        assertTrue(lookupCalls.size() > 0);
+        assertThat(lookupCalls.size() > 0, is(true));
     }
 
-    public void testDataSourceOverrideUserPass()
+    @Test public void testDataSourceOverrideUserPass()
         throws SQLException, NamingException
     {
         // use the datasource property to connect to the database
@@ -355,11 +345,9 @@ public class RolapConnectionTest extends TestCase {
         final DataSource dataSource =
             dataServicesProvider.createDataSource(null, properties, buf);
         final String desc = buf.toString();
-        assertTrue(desc, desc.startsWith("Jdbc="));
-        assertTrue(
-            desc,
-            desc.indexOf("JdbcUser=bogususer; JdbcPassword=boguspassword")
-            >= 0);
+        assertThat(desc, desc.startsWith("Jdbc="), is(true));
+        assertThat(desc, desc.indexOf("JdbcUser=bogususer; JdbcPassword=boguspassword")
+                       >= 0, is(true));
         final String jndiName = "jndiDataSource";
         THREAD_INITIAL_CONTEXT.set(
             new InitialContext() {
@@ -398,7 +386,7 @@ public class RolapConnectionTest extends TestCase {
                 DriverManager.getConnection(properties2, null);
             Query query = connection.parseQuery("select from [Sales]");
             final Result result = connection.execute(query);
-            assertNotNull(result);
+            assertThat(result, notNullValue());
         } finally {
             if (connection != null) {
                 connection.close();
@@ -422,41 +410,31 @@ public class RolapConnectionTest extends TestCase {
                 fail("Expected exception");
             } catch (MondrianException e) {
                 final String s = TestContext.getStackTrace(e);
-                assertTrue(
-                    s,
-                    s.indexOf(
-                        "Error while creating SQL connection: "
-                        + "DataSource=jndiDataSource") >= 0);
+                assertThat(s, s.indexOf(
+                                  "Error while creating SQL connection: "
+                                  + "DataSource=jndiDataSource") >= 0, is(true));
                 switch (dialect.getDatabaseProduct()) {
                 case DERBY:
-                    assertTrue(
-                        s,
-                        s.indexOf(
-                            "Caused by: java.sql.SQLException: "
-                            + "Schema 'BOGUSUSER' does not exist") >= 0);
+                    assertThat(s,
+                      s.indexOf("Caused by: java.sql.SQLException: "
+                          + "Schema 'BOGUSUSER' does not exist") >= 0, is(true));
                     break;
                 case ORACLE:
-                    assertTrue(
-                        s,
-                        s.indexOf(
-                            "Caused by: java.sql.SQLException: ORA-01017: "
-                            + "invalid username/password; logon denied") >= 0);
+                    assertThat(s,
+                        s.indexOf("Caused by: java.sql.SQLException: ORA-01017: "
+                            + "invalid username/password; logon denied") >= 0, is(true));
                     break;
                 case MYSQL:
-                    assertTrue(
-                        s,
-                        s.matches(
-                            "Caused by: java.sql.SQLException: Access denied "
+                    assertThat(s,
+                        s.matches("Caused by: java.sql.SQLException: Access denied "
                             + "for user 'bogususer'@'[^']+' \\(using "
-                            + "password: YES\\)"));
+                            + "password: YES\\)"), is(true));
                     break;
                 case POSTGRESQL:
-                    assertTrue(
-                        s,
-                        s.indexOf(
-                            "Caused by: org.postgresql.util.PSQLException: "
+                    assertThat(s,
+                        s.indexOf("Caused by: org.postgresql.util.PSQLException: "
                             + "FATAL: password authentication failed for "
-                            + "user \"bogususer\"") >= 0);
+                            + "user \"bogususer\"") >= 0, is(true));
                     break;
                 }
             } finally {
@@ -468,7 +446,7 @@ public class RolapConnectionTest extends TestCase {
         }
     }
 
-    public void testExplicitDialect() {
+    @Test public void testExplicitDialect() {
         TestContext testContext = TestContext.instance();
         switch (testContext.getDialect().getDatabaseProduct()) {
         case MYSQL:
@@ -529,7 +507,7 @@ public class RolapConnectionTest extends TestCase {
             (RolapConnection) DriverManager.getConnection(
                 properties, null);
         final Query query = connection.parseQuery("select from [Sales]");
-        assertNotNull(query);
+        assertThat(query, notNullValue());
     }
 }
 

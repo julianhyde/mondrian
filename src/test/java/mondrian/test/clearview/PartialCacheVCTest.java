@@ -13,6 +13,11 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.Ignore;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>PartialCacheVCTest</code> is a test suite which tests complex queries
  * against the FoodMart database. MDX queries and their expected results are
@@ -22,14 +27,6 @@ import junit.framework.TestSuite;
  */
 public class PartialCacheVCTest extends ClearViewBase {
 
-    public PartialCacheVCTest() {
-        super();
-    }
-
-    public PartialCacheVCTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +35,9 @@ public class PartialCacheVCTest extends ClearViewBase {
         return DiffRepository.lookup(PartialCacheVCTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), PartialCacheVCTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(PartialCacheVCTest.class);
     }
 
 }

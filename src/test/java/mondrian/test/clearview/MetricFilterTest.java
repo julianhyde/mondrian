@@ -13,6 +13,10 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>MetricFilterTest</code> is a test suite which tests scenarios of
  * filtering out measures' values in the FoodMart database.
@@ -22,15 +26,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class MetricFilterTest extends ClearViewBase {
-
-    public MetricFilterTest() {
-        super();
-    }
-
-    public MetricFilterTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -39,8 +34,9 @@ public class MetricFilterTest extends ClearViewBase {
         return DiffRepository.lookup(MetricFilterTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), MetricFilterTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(MetricFilterTest.class);
     }
 
 }

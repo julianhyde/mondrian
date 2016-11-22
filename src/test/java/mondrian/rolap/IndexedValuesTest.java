@@ -9,8 +9,9 @@
 */
 package mondrian.rolap;
 
-import mondrian.olap.MondrianProperties;
 import mondrian.test.FoodMartTestCase;
+
+import org.junit.Test;
 
 /**
  * Test case for '&amp;[..]' capability in MDX identifiers.
@@ -27,7 +28,7 @@ public class IndexedValuesTest extends FoodMartTestCase {
         super();
     }
 
-    public void testQueryWithIndex() {
+    @Test public void testQueryWithIndex() {
         final String desiredResult =
             "Axis #0:\n"
             + "{}\n"
@@ -86,7 +87,7 @@ public class IndexedValuesTest extends FoodMartTestCase {
             + "Row #0: 130\n");
     }
 
-    public void testAttemptInjectionWithNonNumericKeyValue() {
+    @Test public void testAttemptInjectionWithNonNumericKeyValue() {
         // If SQL injection attempt is not caught, will return internal error
         // "More than one member in level [Product].[Products].[Product Name]
         // with key [1 or true or 2]". Mondrian must see that the value is

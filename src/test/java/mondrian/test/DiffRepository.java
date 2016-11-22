@@ -17,6 +17,7 @@ import org.apache.commons.collections.map.ReferenceMap;
 
 import org.eigenbase.xom.XMLOutput;
 
+import org.junit.rules.TestName;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -42,11 +43,11 @@ import javax.xml.parsers.*;
  *         return DiffRepository.lookup(MyTest.class);
  *     }
  *
- *     public void testToUpper() {
+ *     @Test public void testToUpper() {
  *          getDiffRepos().assertEquals("${result}", "${string}");
  *     }
 
- *     public void testToLower() {
+ *     @Test public void testToLower() {
  *          getDiffRepos().assertEquals("Multi-line\nstring", "${string}");
  *     }
  * }</pre></code></blockquote>
@@ -810,6 +811,20 @@ public class DiffRepository
         }
         return diffRepos;
     }
+
+    public static List<Object[]> parameters(Class clazz) {
+        final List<String> names = lookup(clazz).getTestCaseNames();
+        return new AbstractList<Object[]>() {
+            public Object[] get(int index) {
+                return new Object[] {names.get(index)};
+            }
+
+            public int size() {
+                return names.size();
+            }
+        };
+    }
+
 }
 
 // End DiffRepository.java

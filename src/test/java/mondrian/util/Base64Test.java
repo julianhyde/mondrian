@@ -9,6 +9,7 @@
 */
 package mondrian.util;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.io.*;
@@ -56,7 +57,7 @@ public class Base64Test extends TestCase
         assertTrue(Arrays.equals(data, decoded));
     }
 
-    public void testStreams() throws Exception
+    @Test public void testStreams() throws Exception
     {
         for (int i = 0; i < 100; ++i) {
             runStreamTest(i);
@@ -69,7 +70,7 @@ public class Base64Test extends TestCase
         }
     }
 
-    public void testSimple()
+    @Test public void testSimple()
     {
         String s =
             "Man is distinguished, not only by his reason, but by this "

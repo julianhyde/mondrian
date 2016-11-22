@@ -11,8 +11,13 @@ package mondrian.test;
 
 import mondrian.olap.*;
 
+import org.junit.*;
+
 import static mondrian.olap.SolveOrderMode.ABSOLUTE;
 import static mondrian.olap.SolveOrderMode.SCOPED;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * <code>SolveOrderScopeIsolationTest</code> Test conformance to SSAS2005 solve
@@ -36,12 +41,11 @@ import static mondrian.olap.SolveOrderMode.SCOPED;
 public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
     SolveOrderMode defaultSolveOrderMode;
 
-    public void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         defaultSolveOrderMode = getSolveOrderMode();
     }
 
-    public void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         setSolveOrderMode(defaultSolveOrderMode);
         super.tearDown();
     }
@@ -93,31 +97,28 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             "Sales", null, memberDefs);
     }
 
-    public void testAllSolveOrderModesHandled()
-    {
+    @Test public void testAllSolveOrderModesHandled() {
         for (SolveOrderMode mode : SolveOrderMode.values()) {
             switch (mode) {
             case ABSOLUTE:
             case SCOPED:
                 break;
             default:
-                fail(
-                    "Tests for solve order mode " + mode.toString()
-                    + " have not been implemented.");
+                fail("Tests for solve order mode " + mode.toString()
+                     + " have not been implemented.");
             }
         }
     }
 
-    public void testSetSolveOrderMode()
-    {
+    @Test public void testSetSolveOrderMode() {
         setSolveOrderMode(ABSOLUTE);
-        assertEquals(ABSOLUTE, getSolveOrderMode());
+        assertThat(getSolveOrderMode(), is(ABSOLUTE));
 
         setSolveOrderMode(SCOPED);
-        assertEquals(SCOPED, getSolveOrderMode());
+        assertThat(getSolveOrderMode(), is(SCOPED));
     }
 
-    public void testOverrideCubeMemberDoesNotHappenAbsolute() {
+    @Test public void testOverrideCubeMemberDoesNotHappenAbsolute() {
         final String mdx =
             "with\n"
             + "member gender.override as 'gender.maleMinusFemale', "
@@ -147,7 +148,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1,175\n");
     }
 
-    public void testOverrideCubeMemberDoesNotHappenScoped() {
+    @Test public void testOverrideCubeMemberDoesNotHappenScoped() {
         final String mdx =
             "with\n"
             + "member gender.override as 'gender.maleMinusFemale', "
@@ -213,7 +214,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1175\n");
     }
 
-    public void testCubeMemberEvalBeforeQueryMemberAbsolute() {
+    @Test public void testCubeMemberEvalBeforeQueryMemberAbsolute() {
         final String mdx =
             "WITH MEMBER [Customers].USAByWA AS\n"
             + "'[Customers].[Country].[USA] / [Customers].[State Province].[WA]', "
@@ -245,7 +246,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #2: $0.000518\n");
     }
 
-    public void testCubeMemberEvalBeforeQueryMemberScoped() {
+    @Test public void testCubeMemberEvalBeforeQueryMemberScoped() {
         final String mdx =
             "WITH MEMBER [Customers].USAByWA AS\n"
             + "'[Customers].[Country].[USA] / [Customers].[State Province].[WA]', "
@@ -267,7 +268,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #0: $2.143076\n");
     }
 
-    public void testOverrideCubeMemberInTupleDoesNotHappenAbsolute() {
+    @Test public void testOverrideCubeMemberInTupleDoesNotHappenAbsolute() {
         final String mdx =
             "with\n"
             + "member gender.override as "
@@ -297,7 +298,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1,175\n");
     }
 
-    public void testOverrideCubeMemberInTupleDoesNotHappenScoped() {
+    @Test public void testOverrideCubeMemberInTupleDoesNotHappenScoped() {
         final String mdx =
             "with\n"
             + "member gender.override as "
@@ -327,7 +328,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1,175\n");
     }
 
-    public void testConditionalCubeMemberEvalBeforeOtherMembersAbsolute() {
+    @Test public void testConditionalCubeMemberEvalBeforeOtherMembersAbsolute() {
         final String mdx =
             "with\n"
             + "member gender.override as 'iif(1=0,"
@@ -358,7 +359,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1,175\n");
     }
 
-    public void testConditionalCubeMemberEvalBeforeOtherMembersScoped() {
+    @Test public void testConditionalCubeMemberEvalBeforeOtherMembersScoped() {
         final String mdx =
             "with\n"
             + "member gender.override as 'iif(1=0,"
@@ -389,7 +390,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1,175\n");
     }
 
-    public void testOverrideCubeMemberUsingStrToMemberDoesNotHappenAbsolute() {
+    @Test public void testOverrideCubeMemberUsingStrToMemberDoesNotHappenAbsolute() {
         final String mdx =
             "with\n"
             + "member gender.override as 'iif(1=0,[gender].[all gender].[m], "
@@ -420,7 +421,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #1: 1,175\n");
     }
 
-    public void testOverrideCubeMemberUsingStrToMemberDoesNotHappenScoped() {
+    @Test public void testOverrideCubeMemberUsingStrToMemberDoesNotHappenScoped() {
         final String mdx =
             "with\n"
             + "member gender.override as 'iif(1=0,[gender].[all gender].[m], "
@@ -458,7 +459,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
      * solve order of the Aggregate member is higher than the calculations it
      * intersects with).
      */
-    public void testAggregateMemberEvalAfterOtherMembersAbsolute() {
+    @Test public void testAggregateMemberEvalAfterOtherMembersAbsolute() {
         final String mdx =
             "With\n"
             + "member Time.Time.Total1 as "
@@ -500,7 +501,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #3: 20,368\n");
     }
 
-    public void testAggregateMemberEvalAfterOtherMembersScoped() {
+    @Test public void testAggregateMemberEvalAfterOtherMembersScoped() {
         final String mdx =
             "With\n"
             + "member Time.Time.Total1 as "
@@ -549,7 +550,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
      * solve order of the Aggregate member is higher than the calculations it
      * intersects with).
      */
-    public void testConditionalAggregateMemberEvalAfterOtherMembersAbsolute() {
+    @Test public void testConditionalAggregateMemberEvalAfterOtherMembersAbsolute() {
         final String mdx =
             "With\n"
             + "member Time.Time.Total1 as 'IIF(Measures.CURRENTMEMBER IS Measures.Profit, 1, "
@@ -590,7 +591,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #3: 20,368\n");
     }
 
-    public void testConditionalAggregateMemberEvalAfterOtherMembersScoped() {
+    @Test public void testConditionalAggregateMemberEvalAfterOtherMembersScoped() {
         final String mdx =
             "With\n"
             + "member Time.Time.Total1 as 'IIF(Measures.CURRENTMEMBER IS Measures.Profit, 1, "
@@ -638,7 +639,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
      * solve order of the Aggregate member is higher than the calculations it
      * intersects with).
      */
-    public void testStrToMemberReturningAggEvalAfterOtherMembersAbsolute() {
+    @Test public void testStrToMemberReturningAggEvalAfterOtherMembersAbsolute() {
         final String mdx =
             "With\n"
             + "member Time.Time.StrTotal as 'AGGREGATE({[Time].[1997].[Q1],[Time].[1997].[Q2]})', "
@@ -676,7 +677,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #2: 20,368\n");
     }
 
-    public void testStrToMemberReturningAggEvalAfterOtherMembersScoped() {
+    @Test public void testStrToMemberReturningAggEvalAfterOtherMembersScoped() {
         final String mdx =
             "With\n"
             + "member Time.Time.StrTotal as 'AGGREGATE({[Time].[1997].[Q1],[Time].[1997].[Q2]})', "
@@ -714,7 +715,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #2: 20,368\n");
     }
 
-    public void test2LevelOfOverrideCubeMemberDoesNotHappenAbsolute() {
+    @Test public void test2LevelOfOverrideCubeMemberDoesNotHappenAbsolute() {
         final String mdx =
             "With member gender.override1 as 'gender.maleMinusFemale',\n"
             + "SOLVE_ORDER=20\n"
@@ -754,7 +755,7 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
             + "Row #2: 1,175\n");
     }
 
-    public void test2LevelOfOverrideCubeMemberDoesNotHappenScoped() {
+    @Test public void test2LevelOfOverrideCubeMemberDoesNotHappenScoped() {
         final String mdx =
             "With member gender.override1 as 'gender.maleMinusFemale',\n"
             + "SOLVE_ORDER=20\n"

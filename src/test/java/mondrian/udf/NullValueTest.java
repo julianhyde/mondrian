@@ -14,6 +14,11 @@ package mondrian.udf;
 
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * <code>NullValueTest</code> is a test case which tests simple queries
  * expressions.
@@ -22,20 +27,12 @@ import mondrian.test.FoodMartTestCase;
  * @since Mar 01 2007
  */
 public class NullValueTest extends FoodMartTestCase {
-
-    public NullValueTest() {
-        super();
-    }
-    public NullValueTest(String name) {
-        super(name);
-    }
-
-    public void testNullValue() {
+    @Test public void testNullValue() {
         String s = executeExpr(" NullValue()/NullValue() ");
-        assertEquals("", s);
+        assertThat(s, is(""));
 
         s = executeExpr(" NullValue()/NullValue() = NULL ");
-        assertEquals("false", s);
+        assertThat(s, is("false"));
 
         boolean hasException = false;
         try {
@@ -43,12 +40,12 @@ public class NullValueTest extends FoodMartTestCase {
         } catch (Exception ex) {
             hasException = true;
         }
-        assertTrue(hasException);
+        assertThat(hasException, is(true));
 
         // I believe that these IsEmpty results are correct.
         // The NullValue function does not represent a cell.
         s = executeExpr(" IsEmpty(NullValue()) ");
-        assertEquals("false", s);
+        assertThat(s, is("false"));
 
         // NullValue()/NullValue() evaluates to DoubleNull
         // but DoubleNull evaluates to null, so this seems
@@ -57,23 +54,23 @@ public class NullValueTest extends FoodMartTestCase {
         // assertEquals("false", s);
 
         s = executeExpr(" 4 + NullValue() ");
-        assertEquals("4", s);
+        assertThat(s, is("4"));
 
         s = executeExpr(" NullValue() - 4 ");
-        assertEquals("-4", s);
+        assertThat(s, is("-4"));
 
         s = executeExpr(" 4*NullValue() ");
-        assertEquals("", s);
+        assertThat(s, is(""));
 
         s = executeExpr(" NullValue()*4 ");
-        assertEquals("", s);
+        assertThat(s, is(""));
 
         s = executeExpr(" 4/NullValue() ");
-        assertEquals("Infinity", s);
+        assertThat(s, is("Infinity"));
 
         s = executeExpr(" NullValue()/4 ");
-        assertEquals("", s);
-/*
+        assertThat(s, is(""));
+  /*
 */
     }
 }

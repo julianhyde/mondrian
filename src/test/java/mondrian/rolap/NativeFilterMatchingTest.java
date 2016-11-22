@@ -14,11 +14,16 @@ import mondrian.spi.Dialect;
 import mondrian.test.SqlPattern;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Test case for pushing MDX filter conditions down to SQL.
  */
 public class NativeFilterMatchingTest extends BatchTestCase {
-    public void testPositiveMatching() throws Exception {
+    @Test public void testPositiveMatching() throws Exception {
         if (!MondrianProperties.instance().EnableNativeFilter.get()) {
             // No point testing these if the native filters are turned off.
             return;
@@ -91,7 +96,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
         verifySameNativeAndNot(query, null, getTestContext());
     }
 
-    public void testNegativeMatching() throws Exception {
+    @Test public void testNegativeMatching() throws Exception {
         if (!MondrianProperties.instance().EnableNativeFilter.get()) {
             // No point testing these if the native filters are turned off.
             return;
@@ -139,7 +144,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
 
         final Result result = executeQuery(query);
         final String resultString = TestContext.toString(result);
-        assertFalse(resultString.contains("Jeanne"));
+        assertThat(resultString.contains("Jeanne"), is(false));
         verifySameNativeAndNot(query, null, getTestContext());
     }
 
@@ -150,7 +155,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
      *
      * @see mondrian.test.DialectTest#testRegularExpressionSqlInjection()
      */
-    public void testMatchBugMondrian983() {
+    @Test public void testMatchBugMondrian983() {
         assertQueryReturns(
             "With\n"
             + "Set [*NATIVE_CJ_SET] as 'Filter([*BASE_MEMBERS_Product], Not IsEmpty ([Measures].[Unit Sales]))' \n"
@@ -175,7 +180,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
             + "Row #0: \n");
     }
 
-    public void testNativeFilterAgainstAggTableWithNotAllMeasures() {
+    @Test public void testNativeFilterAgainstAggTableWithNotAllMeasures() {
         // http://jira.pentaho.com/browse/MONDRIAN-1703
         // If a filter condition contains one or more measures that are
         // not present in the aggregate table, the SQL should omit the
@@ -262,7 +267,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
     }
 
 
-    public void testNativeFilterSameAsNonNative() {
+    @Test public void testNativeFilterSameAsNonNative() {
         // http://jira.pentaho.com/browse/MONDRIAN-1694
         // In some cases native filter would includes an unnecessary fact table
         // join which incorrectly eliminated some tuples from the set
@@ -293,7 +298,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
             getTestContext());
     }
 
-    public void testCachedNativeFilter() {
+    @Test public void testCachedNativeFilter() {
         // http://jira.pentaho.com/browse/MONDRIAN-1694
 
         // verify that the RolapNativeSet cached values from NON EMPTY context
@@ -308,7 +313,7 @@ public class NativeFilterMatchingTest extends BatchTestCase {
             "Regex filter, not NON EMPTY.", getTestContext());
     }
 
-    public void testMatchesWithAccessControl() {
+    @Test public void testMatchesWithAccessControl() {
         // TODO:  Changes made with commit 51c1ac439 which allow pushdown of
         // some role access to native topcount/filter have not been merged
         // to lagunitas.  Without those changes native evaluation is skipped

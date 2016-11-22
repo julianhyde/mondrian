@@ -13,6 +13,10 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * Test for hanger dimension (a dimension with no base table, not joined to
  * the fact table, and which only contains calculated members).
@@ -23,10 +27,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class HangerDimensionClearViewTest extends ClearViewBase {
-    public HangerDimensionClearViewTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -35,9 +35,9 @@ public class HangerDimensionClearViewTest extends ClearViewBase {
         return DiffRepository.lookup(HangerDimensionClearViewTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(
-            getDiffReposStatic(), HangerDimensionClearViewTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(HangerDimensionClearViewTest.class);
     }
 }
 

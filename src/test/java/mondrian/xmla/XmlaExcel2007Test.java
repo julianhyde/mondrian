@@ -14,6 +14,8 @@ import mondrian.spi.Dialect;
 import mondrian.test.DiffRepository;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
 /**
  * Test suite for compatibility of Mondrian XMLA with Excel 2007.
  *
@@ -29,13 +31,6 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
         Callback() {
             super("XmlaExcel2000Test");
         }
-    }
-
-    public XmlaExcel2007Test() {
-    }
-
-    public XmlaExcel2007Test(String name) {
-        super(name);
     }
 
     protected Class<? extends XmlaRequestCallback> getServletCallbackClass() {
@@ -105,7 +100,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      * bug MONDRIAN-679, "VisualTotals gives ClassCastException when called via
      * XMLA"</a>.
      */
-    public void test01() {
+    @Test public void test01() {
         helperTest(false);
     }
 
@@ -113,7 +108,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      * Test that checks that (a) member properties are in correct format for
      * Excel 2007, (b) the slicer axis is in the correct format for Excel 2007.
      */
-    public void testMemberPropertiesAndSlicer() {
+    @Test public void testMemberPropertiesAndSlicer() {
         helperTestExpect(false);
     }
 
@@ -121,7 +116,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      * Test that executes MDSCHEMA_PROPERTIES with
      * {@link org.olap4j.metadata.Property.TypeFlag#MEMBER}.
      */
-    public void testMdschemaPropertiesMember() {
+    @Test public void testMdschemaPropertiesMember() {
         helperTest(false);
     }
 
@@ -131,7 +126,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      *
      * @throws Exception on error
      */
-    public void testMdschemaPropertiesCell() {
+    @Test public void testMdschemaPropertiesCell() {
         helperTest(false);
     }
 
@@ -140,7 +135,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      * Excel 2007 in bug <a href="http://jira.pentaho.com/browse/MONDRIAN-726">
      * MONDRIAN-726, "Change 13509 is not Excel 2007 compatible"</a>.
      */
-    public void testUniqueName() {
+    @Test public void testUniqueName() {
         assertQueryReturns(
             "WITH MEMBER [Store].[Stores].[XL_PT0] AS 'strtomember(\"[Store].[USA].[CA]\").UniqueName' SELECT {[Store].[XL_PT0]} ON 0 FROM \n"
             + "[HR] CELL PROPERTIES VALUE ",
@@ -171,7 +166,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      * <p>Currently most properties are not implemented or not defined.
      * If they get implemented then test needs to be changed.
      */
-    public void testCellInfo() {
+    @Test public void testCellInfo() {
         helperTest(false);
     }
 
@@ -180,7 +175,7 @@ public class XmlaExcel2007Test extends XmlaBaseTestCase {
      * bug MONDRIAN-761, "VisualTotalMember cannot be cast to
      * RolapCubeMember"</a>.
      */
-    public void testBugMondrian761() {
+    @Test public void testBugMondrian761() {
         helperTest(false);
     }
 }

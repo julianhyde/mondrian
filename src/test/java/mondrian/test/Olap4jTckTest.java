@@ -11,6 +11,7 @@ package mondrian.test;
 
 import mondrian.olap.Util;
 
+import org.junit.Test;
 import junit.framework.*;
 
 import org.olap4j.test.TestContext;
@@ -25,9 +26,9 @@ import java.util.Properties;
  * @since 2010/11/22
  */
 public class Olap4jTckTest extends TestCase {
-    private static final Util.Predicate1<Test> CONDITION =
-        new Util.Predicate1<Test>() {
-            public boolean test(Test test) {
+    private static final Util.Predicate1<junit.framework.Test> CONDITION =
+        new Util.Predicate1<junit.framework.Test>() {
+            public boolean test(junit.framework.Test test) {
                 if (!(test instanceof TestCase)) {
                     return true;
                 }

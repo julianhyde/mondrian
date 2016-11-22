@@ -13,6 +13,11 @@ import mondrian.olap.*;
 import mondrian.test.FoodMartTestCase;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.*;
 
 /**
@@ -23,16 +28,16 @@ import java.util.*;
  */
 public class RolapCubeTest extends FoodMartTestCase {
 
-    public void testProcessFormatStringAttributeToIgnoreNullFormatString() {
+    @Test public void testProcessFormatStringAttributeToIgnoreNullFormatString() {
         final RolapSchema schema = (RolapSchema) getConnection().getSchema();
         StringBuilder builder = new StringBuilder();
         new RolapSchemaLoader(schema)
             .processFormatStringAttribute(
                 new MondrianDef.CalculatedMember(), builder);
-        assertEquals(0, builder.length());
+        assertThat(builder.length(), is(0));
     }
 
-    public void testProcessFormatStringAttribute() {
+    @Test public void testProcessFormatStringAttribute() {
         final RolapSchema schema = (RolapSchema) getConnection().getSchema();
         StringBuilder builder = new StringBuilder();
         MondrianDef.CalculatedMember xmlCalcMember =
@@ -41,12 +46,10 @@ public class RolapCubeTest extends FoodMartTestCase {
         xmlCalcMember.formatString = format;
         new RolapSchemaLoader(schema)
             .processFormatStringAttribute(xmlCalcMember, builder);
-        assertEquals(
-            "," + Util.nl + "FORMAT_STRING = \"" + format + "\"",
-            builder.toString());
+        assertThat(builder.toString(), is("," + Util.nl + "FORMAT_STRING = \"" + format + "\""));
     }
 
-    public void testGetCalculatedMembersWithNoRole() {
+    @Test public void testGetCalculatedMembersWithNoRole() {
         String[] expectedCalculatedMembers = {
             "[Measures].[Profit]",
             "[Measures].[Average Warehouse Sale]",
@@ -71,7 +74,7 @@ public class RolapCubeTest extends FoodMartTestCase {
         }
     }
 
-    public void testGetCalculatedMembersForCaliforniaManager() {
+    @Test public void testGetCalculatedMembersForCaliforniaManager() {
         String[] expectedCalculatedMembers = new String[] {
             "[Measures].[Profit]", "[Measures].[Profit last Period]",
             "[Measures].[Profit Growth]"
@@ -93,7 +96,7 @@ public class RolapCubeTest extends FoodMartTestCase {
         }
     }
 
-    public void testGetCalculatedMembersReturnsOnlyAccessibleMembers() {
+    @Test public void testGetCalculatedMembersReturnsOnlyAccessibleMembers() {
         String[] expectedCalculatedMembers = {
             "[Measures].[Profit]",
             "[Measures].[Profit last Period]",
@@ -145,13 +148,13 @@ public class RolapCubeTest extends FoodMartTestCase {
             calculatedMembers =
                 schemaReader.getCalculatedMembers(
                     getHierarchy(salesCube, "Customer", "Gender"));
-            assertEquals(0, calculatedMembers.size());
+            assertThat(calculatedMembers.size(), is(0));
         } finally {
             connection.close();
         }
     }
 
-    public void testGetCalculatedMembersReturnsOnlyAccessibleMembersForLevel() {
+    @Test public void testGetCalculatedMembersReturnsOnlyAccessibleMembersForLevel() {
         String[] expectedCalculatedMembersFromProduct = new String[]{
             "[Product].[Products].[~Missing]"
         };
@@ -170,9 +173,8 @@ public class RolapCubeTest extends FoodMartTestCase {
                 schemaReader.getCalculatedMembers(
                     getHierarchy(salesCube, "Product", "Products"));
 
-            assertEquals(
-                expectedCalculatedMembersFromProduct.length,
-                calculatedMembers.size());
+            assertThat(calculatedMembers.size(),
+                is(expectedCalculatedMembersFromProduct.length));
             assertCalculatedMemberExists(
                 expectedCalculatedMembersFromProduct,
                 calculatedMembers);
@@ -182,13 +184,13 @@ public class RolapCubeTest extends FoodMartTestCase {
                 schemaReader.getCalculatedMembers(
                     getHierarchy(salesCube, "Customer", "Gender")
                         .getLevelList().get(0));
-            assertEquals(0, calculatedMembers.size());
+            assertThat(calculatedMembers.size(), is(0));
         } finally {
             connection.close();
         }
     }
 
-    public void testNonJoiningDimensions() {
+    @Test public void testNonJoiningDimensions() {
         Connection connection = getTestContext().getConnection();
         try {
             RolapCube warehouseAndSalesCube =
@@ -211,14 +213,14 @@ public class RolapCubeTest extends FoodMartTestCase {
                 Util.<Dimension>toList(
                     warehouseAndSalesCube.getMeasureGroups().get(0)
                         .nonJoiningDimensions(members));
-            assertFalse(nonJoiningDims.contains(storeDim));
-            assertTrue(nonJoiningDims.contains(warehouseDim));
+            assertThat(nonJoiningDims.contains(storeDim), is(false));
+            assertThat(nonJoiningDims.contains(warehouseDim), is(true));
         } finally {
             connection.close();
         }
     }
 
-    public void testRolapCubeDimensionEquality() {
+    @Test public void testRolapCubeDimensionEquality() {
         Connection connection1 = getTestContext().getConnection();
         Connection connection2 =
             getTestContext().withRole("No HR Cube").getConnection();
@@ -229,7 +231,7 @@ public class RolapCubeTest extends FoodMartTestCase {
             List<Member> storeMembersSales =
                 storeMembersCAAndOR(readerSales1).slice(0);
             Dimension storeDim1 = storeMembersSales.get(0).getDimension();
-            assertEquals(storeDim1, storeDim1);
+            assertThat(storeDim1, is(storeDim1));
 
             RolapCube salesCube2 = (RolapCube) cubeByName(connection2, "Sales");
             SchemaReader readerSales2 =
@@ -237,7 +239,7 @@ public class RolapCubeTest extends FoodMartTestCase {
             List<Member> storeMembersSales2 =
                 storeMembersCAAndOR(readerSales2).slice(0);
             Dimension storeDim2 = storeMembersSales2.get(0).getDimension();
-            assertEquals(storeDim1, storeDim2);
+            assertThat(storeDim2, is(storeDim1));
 
 
             RolapCube warehouseAndSalesCube =
@@ -248,12 +250,12 @@ public class RolapCubeTest extends FoodMartTestCase {
                 storeMembersCAAndOR(readerWarehouseAndSales).slice(0);
             Dimension storeDim3 =
                 storeMembersWarehouseAndSales.get(0).getDimension();
-            assertFalse(storeDim1.equals(storeDim3));
+            assertThat(storeDim1.equals(storeDim3), is(false));
 
             List<Member> warehouseMembers =
                 warehouseMembersCanadaMexicoUsa(readerWarehouseAndSales);
             Dimension warehouseDim = warehouseMembers.get(0).getDimension();
-            assertFalse(storeDim3.equals(warehouseDim));
+            assertThat(storeDim3.equals(warehouseDim), is(false));
         } finally {
             connection1.close();
             connection2.close();
@@ -285,9 +287,7 @@ public class RolapCubeTest extends FoodMartTestCase {
         for (Member calculatedMember : calculatedMembers) {
             set.add(calculatedMember.getUniqueName());
         }
-        assertEquals(
-            new TreeSet<String>(Arrays.asList(expectedCalculatedMembers)),
-            set);
+        assertThat(set, is(new TreeSet<String>(Arrays.asList(expectedCalculatedMembers))));
     }
 }
 

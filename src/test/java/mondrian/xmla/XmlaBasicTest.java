@@ -20,6 +20,10 @@ import mondrian.tui.XmlaSupport;
 
 import org.olap4j.metadata.XmlaConstants;
 
+import org.junit.Before;
+import org.junit.Test;
+import static mondrian.test.TestTemp.*;
+
 import org.w3c.dom.Document;
 
 import java.util.*;
@@ -45,15 +49,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
     // content
     public static final String CONTENT_PROP     = "content";
 
-    public XmlaBasicTest() {
-    }
-
-    public XmlaBasicTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         super.setUp();
         Class.forName(MondrianOlap4jDriver.class.getName());
     }
@@ -98,32 +94,32 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
     // DISCOVER
     /////////////////////////////////////////////////////////////////////////
 
-    public void testDDatasource() throws Exception {
+    @Test public void testDDatasource() throws Exception {
         String requestType = "DISCOVER_DATASOURCES";
         doTestRT(requestType, getTestContext());
     }
 
-    public void testDEnumerators() throws Exception {
+    @Test public void testDEnumerators() throws Exception {
         String requestType = "DISCOVER_ENUMERATORS";
         doTestRT(requestType, getTestContext());
     }
 
-    public void testDKeywords() throws Exception {
+    @Test public void testDKeywords() throws Exception {
         String requestType = "DISCOVER_KEYWORDS";
         doTestRT(requestType, getTestContext());
     }
 
-    public void testDLiterals() throws Exception {
+    @Test public void testDLiterals() throws Exception {
         String requestType = "DISCOVER_LITERALS";
         doTestRT(requestType, getTestContext());
     }
 
-    public void testDProperties() throws Exception {
+    @Test public void testDProperties() throws Exception {
         String requestType = "DISCOVER_PROPERTIES";
         doTestRT(requestType, getTestContext());
     }
 
-    public void testDSchemaRowsets() throws Exception {
+    @Test public void testDSchemaRowsets() throws Exception {
         String requestType = "DISCOVER_SCHEMA_ROWSETS";
         doTestRT(requestType, getTestContext());
     }
@@ -132,11 +128,11 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
     // DBSCHEMA
     /////////////////////////////////////////////////////////////////////////
 
-    public void testDBCatalogs() throws Exception {
+    @Test public void testDBCatalogs() throws Exception {
         String requestType = "DBSCHEMA_CATALOGS";
         doTestRT(requestType, getTestContext());
     }
-    public void testDBSchemata() throws Exception {
+    @Test public void testDBSchemata() throws Exception {
         String requestType = "DBSCHEMA_SCHEMATA";
         doTestRT(requestType, getTestContext());
     }
@@ -157,7 +153,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTestRT(requestType, getTestContext());
     }
     // passes 2/25 - I think that this is good but not sure
-    public void testDBTables() throws Exception {
+    @Test public void testDBTables() throws Exception {
         String requestType = "DBSCHEMA_TABLES";
         doTestRT(requestType, getTestContext());
     }
@@ -166,7 +162,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
     // MDSCHEMA
     /////////////////////////////////////////////////////////////////////////
 
-    public void testMDActions() throws Exception {
+    @Test public void testMDActions() throws Exception {
         String requestType = "MDSCHEMA_ACTIONS";
 
         Properties props = new Properties();
@@ -178,7 +174,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDCubes() throws Exception {
+    @Test public void testMDCubes() throws Exception {
         String requestType = "MDSCHEMA_CUBES";
 
         Properties props = new Properties();
@@ -190,7 +186,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDCubesJson() throws Exception {
+    @Test public void testMDCubesJson() throws Exception {
         String requestType = "MDSCHEMA_CUBES";
 
         Properties props = new Properties();
@@ -202,20 +198,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDCubesDeep() throws Exception {
-        String requestType = "MDSCHEMA_CUBES";
-
-        Properties props = new Properties();
-        props.setProperty(REQUEST_TYPE_PROP, requestType);
-        props.setProperty(DATA_SOURCE_INFO_PROP, DATA_SOURCE_INFO);
-        props.setProperty(CATALOG_PROP, CATALOG);
-        props.setProperty(CUBE_NAME_PROP, "HR");
-        props.setProperty(FORMAT_PROP, FORMAT_TABLULAR);
-
-        doTest(requestType, props, getTestContext());
-    }
-
-    public void testMDCubesDeepJson() throws Exception {
+    @Test public void testMDCubesDeep() throws Exception {
         String requestType = "MDSCHEMA_CUBES";
 
         Properties props = new Properties();
@@ -228,7 +211,20 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDCubesLocale() throws Exception {
+    @Test public void testMDCubesDeepJson() throws Exception {
+        String requestType = "MDSCHEMA_CUBES";
+
+        Properties props = new Properties();
+        props.setProperty(REQUEST_TYPE_PROP, requestType);
+        props.setProperty(DATA_SOURCE_INFO_PROP, DATA_SOURCE_INFO);
+        props.setProperty(CATALOG_PROP, CATALOG);
+        props.setProperty(CUBE_NAME_PROP, "HR");
+        props.setProperty(FORMAT_PROP, FORMAT_TABLULAR);
+
+        doTest(requestType, props, getTestContext());
+    }
+
+    @Test public void testMDCubesLocale() throws Exception {
         String requestType = "MDSCHEMA_CUBES";
 
         Properties props = new Properties();
@@ -242,7 +238,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDCubesLcid() throws Exception {
+    @Test public void testMDCubesLcid() throws Exception {
         String requestType = "MDSCHEMA_CUBES";
 
         Properties props = new Properties();
@@ -256,7 +252,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDSets() throws Exception {
+    @Test public void testMDSets() throws Exception {
         String requestType = "MDSCHEMA_SETS";
 
         Properties props = new Properties();
@@ -268,7 +264,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDDimensions() throws Exception {
+    @Test public void testMDDimensions() throws Exception {
         String requestType = "MDSCHEMA_DIMENSIONS";
 
         Properties props = new Properties();
@@ -280,7 +276,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDDimensionsShared() throws Exception {
+    @Test public void testMDDimensionsShared() throws Exception {
         String requestType = "MDSCHEMA_DIMENSIONS";
 
         Properties props = new Properties();
@@ -293,7 +289,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDFunction() throws Exception {
+    @Test public void testMDFunction() throws Exception {
         String requestType = "MDSCHEMA_FUNCTIONS";
         String restrictionName = "FUNCTION_NAME";
         String restrictionValue = "Item";
@@ -314,7 +310,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      *
      * @throws Exception on error
      */
-    public void testMDFunctions() throws Exception {
+    @Test public void testMDFunctions() throws Exception {
         if (Util.PreJdk15 || Util.Retrowoven) {
             // MDSCHEMA_FUNCTIONS produces different output in JDK 1.4.
             return;
@@ -337,7 +333,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      *
      * @throws Exception on error
      */
-    public void testMDFunctionsJdk14() throws Exception {
+    @Test public void testMDFunctionsJdk14() throws Exception {
         if (!(Util.PreJdk15 || Util.Retrowoven)) {
             // MDSCHEMA_FUNCTIONS produces different output in JDK 1.4.
             return;
@@ -352,7 +348,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
     }
 
     // good 2/25 : (partial implementation)
-    public void testMDHierarchies() throws Exception {
+    @Test public void testMDHierarchies() throws Exception {
         if (!MondrianProperties.instance().FilterChildlessSnowflakeMembers
             .get())
         {
@@ -373,7 +369,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         return TestContext.instance().legacy();
     }
 
-    public void testMDLevels() throws Exception {
+    @Test public void testMDLevels() throws Exception {
         String requestType = "MDSCHEMA_LEVELS";
 
         Properties props = new Properties();
@@ -389,7 +385,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDLevelsAccessControlled() throws Exception {
+    @Test public void testMDLevelsAccessControlled() throws Exception {
         String requestType = "MDSCHEMA_LEVELS";
 
         Properties props = new Properties();
@@ -408,7 +404,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, testContext);
     }
 
-    public void testMDMeasures() throws Exception {
+    @Test public void testMDMeasures() throws Exception {
         String requestType = "MDSCHEMA_MEASURES";
 
         Properties props = new Properties();
@@ -427,7 +423,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDMembers() throws Exception {
+    @Test public void testMDMembers() throws Exception {
         String requestType = "MDSCHEMA_MEMBERS";
 
         Properties props = new Properties();
@@ -443,7 +439,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDMembersMulti() throws Exception {
+    @Test public void testMDMembersMulti() throws Exception {
         String requestType = "MDSCHEMA_MEMBERS";
 
         Properties props = new Properties();
@@ -457,7 +453,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDMembersTreeop() throws Exception {
+    @Test public void testMDMembersTreeop() throws Exception {
         String requestType = "MDSCHEMA_MEMBERS";
 
         // Treeop 34 = Ancestors | Siblings
@@ -474,7 +470,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testMDProperties() throws Exception {
+    @Test public void testMDProperties() throws Exception {
         String requestType = "MDSCHEMA_PROPERTIES";
 
         Properties props = new Properties();
@@ -484,7 +480,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testApproxRowCountOverridesCountCallsToDatabase()
+    @Test public void testApproxRowCountOverridesCountCallsToDatabase()
         throws Exception
     {
         String requestType = "MDSCHEMA_LEVELS";
@@ -501,7 +497,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testApproxRowCountInHierarchyOverridesCountCallsToDatabase()
+    @Test public void testApproxRowCountInHierarchyOverridesCountCallsToDatabase()
         throws Exception
     {
         String requestType = "MDSCHEMA_HIERARCHIES";
@@ -523,7 +519,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      *
      * @throws Exception on error
      */
-    public void testDrillThroughMaxRows() throws Exception {
+    @Test public void testDrillThroughMaxRows() throws Exception {
         // NOTE: this test uses the filter method to adjust the expected result
         // for different databases
         if (!MondrianProperties.instance().EnableTotalCount.booleanValue()) {
@@ -546,7 +542,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      *
      * @throws Exception on error
      */
-    public void testDrillThrough() throws Exception {
+    @Test public void testDrillThrough() throws Exception {
         // NOTE: this test uses the filter method to adjust the expected result
         // for different databases
         if (!MondrianProperties.instance().EnableTotalCount.booleanValue()) {
@@ -570,7 +566,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      *
      * @throws Exception on error
      */
-    public void testDrillThroughZeroDimensionalQuery() throws Exception {
+    @Test public void testDrillThroughZeroDimensionalQuery() throws Exception {
         // NOTE: this test uses the filter method to adjust the expected result
         // for different databases
         if (!MondrianProperties.instance().EnableTotalCount.booleanValue()) {
@@ -661,62 +657,62 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         return content;
     }
 
-    public void testExecuteSlicer() throws Exception {
+    @Test public void testExecuteSlicer() throws Exception {
         String requestType = "EXECUTE";
         Properties props = getDefaultRequestProperties(requestType);
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteSlicerJson() throws Exception {
+    @Test public void testExecuteSlicerJson() throws Exception {
         String requestType = "EXECUTE";
         Properties props = getDefaultRequestProperties(requestType);
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteSlicer_ContentDataOmitDefaultSlicer()
+    @Test public void testExecuteSlicer_ContentDataOmitDefaultSlicer()
         throws Exception
     {
         doTestExecuteContent(XmlaConstants.Content.DataOmitDefaultSlicer);
     }
 
-    public void testExecuteNoSlicer_ContentDataOmitDefaultSlicer()
+    @Test public void testExecuteNoSlicer_ContentDataOmitDefaultSlicer()
         throws Exception
     {
         doTestExecuteContent(XmlaConstants.Content.DataOmitDefaultSlicer);
     }
 
-    public void testExecuteSlicer_ContentDataIncludeDefaultSlicer()
+    @Test public void testExecuteSlicer_ContentDataIncludeDefaultSlicer()
         throws Exception
     {
         doTestExecuteContent(XmlaConstants.Content.DataIncludeDefaultSlicer);
     }
 
-    public void testExecuteNoSlicer_ContentDataIncludeDefaultSlicer()
+    @Test public void testExecuteNoSlicer_ContentDataIncludeDefaultSlicer()
         throws Exception
     {
         doTestExecuteContent(XmlaConstants.Content.DataIncludeDefaultSlicer);
     }
 
-    public void testExecuteEmptySlicer_ContentDataIncludeDefaultSlicer()
+    @Test public void testExecuteEmptySlicer_ContentDataIncludeDefaultSlicer()
         throws Exception
     {
         doTestExecuteContent(XmlaConstants.Content.DataIncludeDefaultSlicer);
     }
 
-    public void testExecuteEmptySlicer_ContentDataOmitDefaultSlicer()
+    @Test public void testExecuteEmptySlicer_ContentDataOmitDefaultSlicer()
         throws Exception
     {
         doTestExecuteContent(XmlaConstants.Content.DataOmitDefaultSlicer);
     }
 
-    public void testExecuteWithoutCellProperties() throws Exception
+    @Test public void testExecuteWithoutCellProperties() throws Exception
     {
         String requestType = "EXECUTE";
         Properties props = getDefaultRequestProperties(requestType);
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteWithCellProperties()
+    @Test public void testExecuteWithCellProperties()
             throws Exception
     {
         String requestType = "EXECUTE";
@@ -724,7 +720,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteWithMemberKeyDimensionPropertyForMemberWithoutKey()
+    @Test public void testExecuteWithMemberKeyDimensionPropertyForMemberWithoutKey()
         throws Exception
     {
         String requestType = "EXECUTE";
@@ -732,7 +728,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteWithMemberKeyDimensionPropertyForMemberWithKey()
+    @Test public void testExecuteWithMemberKeyDimensionPropertyForMemberWithKey()
         throws Exception
     {
         String requestType = "EXECUTE";
@@ -740,7 +736,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteWithMemberKeyDimensionPropertyForAllMember()
+    @Test public void testExecuteWithMemberKeyDimensionPropertyForAllMember()
         throws Exception
     {
         String requestType = "EXECUTE";
@@ -748,7 +744,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteWithKeyDimensionProperty()
+    @Test public void testExecuteWithKeyDimensionProperty()
         throws Exception
     {
         String requestType = "EXECUTE";
@@ -756,7 +752,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTest(requestType, props, getTestContext());
     }
 
-    public void testExecuteWithDimensionProperties()
+    @Test public void testExecuteWithDimensionProperties()
         throws Exception
     {
         String requestType = "EXECUTE";
@@ -769,7 +765,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      * MONDRIAN-257, "Crossjoin gives 'Execute unparse results' error in
      * XMLA"</a>.
      */
-    public void testExecuteCrossjoin() throws Exception {
+    @Test public void testExecuteCrossjoin() throws Exception {
         if (!MondrianProperties.instance().FilterChildlessSnowflakeMembers
             .get())
         {
@@ -813,7 +809,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
      * except that the Role used disables accessing
      * [Customers].[All Customers].[Mexico].
      */
-    public void testExecuteCrossjoinRole() throws Exception {
+    @Test public void testExecuteCrossjoinRole() throws Exception {
         if (!MondrianProperties.instance().FilterChildlessSnowflakeMembers
             .get())
         {
@@ -942,7 +938,7 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
             props, getTestContext(), role);
     }
 
-    public void testExecuteBugMondrian1316() throws Exception {
+    @Test public void testExecuteBugMondrian1316() throws Exception {
         String requestType = "EXECUTE";
         Properties props = getDefaultRequestProperties(requestType);
         doTest(requestType, props, TestContext.instance());

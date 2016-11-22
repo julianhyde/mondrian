@@ -16,6 +16,7 @@ import mondrian.olap.Position;
 import mondrian.olap.fun.TestMember;
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Test;
 import junit.framework.Assert;
 
 import java.util.Arrays;
@@ -25,14 +26,7 @@ import java.util.List;
  * Unit test for lists and iterators over members and tuples.
  */
 public class RolapAxisTest extends FoodMartTestCase {
-    public RolapAxisTest() {
-        super();
-    }
-    public RolapAxisTest(String name) {
-        super(name);
-    }
-
-    public void testMemberArrayList() {
+    @Test public void testMemberArrayList() {
         TupleList list = TupleCollections.createList(3);
         list.add(
             Arrays.<Member>asList(

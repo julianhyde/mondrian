@@ -11,6 +11,7 @@ package mondrian.util;
 
 import mondrian.test.TestContext;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.io.PrintWriter;
@@ -32,7 +33,7 @@ public class PrimeFinderTest extends TestCase {
         TestContext.assertEqualsVerbose(expected, sw.toString());
     }
 
-    public void testOne() {
+    @Test public void testOne() {
         assertStatistics(
             1000,
             1000,
@@ -42,7 +43,7 @@ public class PrimeFinderTest extends TestCase {
             + "maxDeviation = 3.9 %\n");
     }
 
-    public void testTwo() {
+    @Test public void testTwo() {
         assertStatistics(
             200,
             1000,
@@ -52,7 +53,7 @@ public class PrimeFinderTest extends TestCase {
             + "maxDeviation = 38.5 %\n");
     }
 
-    public void testThree() {
+    @Test public void testThree() {
         assertStatistics(
             16,
             1000,

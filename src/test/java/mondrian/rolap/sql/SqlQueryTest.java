@@ -17,6 +17,9 @@ import mondrian.spi.impl.JdbcDialectImpl;
 import mondrian.test.SqlPattern;
 import mondrian.test.TestContext;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,8 @@ import java.util.Map;
 
 import static mondrian.spi.Dialect.DatabaseProduct.MYSQL;
 import static mondrian.spi.Dialect.DatabaseProduct.POSTGRESQL;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -36,9 +41,7 @@ import static org.mockito.Mockito.when;
 public class SqlQueryTest extends BatchTestCase {
     private final MondrianProperties prop = propSaver.props;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before public void setUp() throws Exception {
         // This test warns of missing sql patterns for MYSQL.
         final Dialect dialect = getTestContext().getDialect();
         if (prop.WarnIfNoPatternForDialect.get().equals("ANY")
@@ -54,7 +57,7 @@ public class SqlQueryTest extends BatchTestCase {
         }
     }
 
-    public void testToStringForSingleGroupingSetSql() {
+    @Test public void testToStringForSingleGroupingSetSql() {
         if (!isGroupingSetsSupported()) {
             return;
         }
@@ -92,39 +95,34 @@ public class SqlQueryTest extends BatchTestCase {
                     + "group by grouping sets (" + lineSep
                     + "    (gs1, gs2, gs3))";
             }
-            assertEquals(
-                dialectize(dialect.getDatabaseProduct(), expected),
-                dialectize(
-                    sqlQuery.getDialect().getDatabaseProduct(),
-                    sqlQuery.toString()));
+            assertThat(
+                dialectize(sqlQuery.getDialect().getDatabaseProduct(),
+                    sqlQuery.toString()),
+                is(dialectize(dialect.getDatabaseProduct(), expected)));
         }
     }
 
-    public void testOrderBy() throws SQLException {
+    @Test public void testOrderBy() throws SQLException {
         // Test with requireAlias = true
-        assertEquals(
-            "\norder by\n"
-            + "    CASE WHEN alias IS NULL THEN 1 ELSE 0 END, alias ASC",
-            makeTestSqlQuery("expr", "alias", true, true, true, true)
-                .toString());
+        assertThat(
+            makeTestSqlQuery("expr", "alias", true, true, true, true).toString(),
+            is("\norder by\n"
+                + "    CASE WHEN alias IS NULL THEN 1 ELSE 0 END, alias ASC"));
         // requireAlias = false
-        assertEquals(
-            "\norder by\n"
-            + "    CASE WHEN expr IS NULL THEN 1 ELSE 0 END, expr ASC",
-            makeTestSqlQuery("expr", "alias", true, true, true, false)
-                .toString());
+        assertThat(
+            makeTestSqlQuery("expr", "alias", true, true, true, false).toString(),
+            is("\norder by\n"
+                + "    CASE WHEN expr IS NULL THEN 1 ELSE 0 END, expr ASC"));
         //  nullable = false
-        assertEquals(
-            "\norder by\n"
-            + "    expr ASC",
-            makeTestSqlQuery("expr", "alias", true, false, true, false)
-                .toString());
+        assertThat(
+            makeTestSqlQuery("expr", "alias", true, false, true, false).toString(),
+            is("\norder by\n"
+               + "    expr ASC"));
         //  ascending=false, collateNullsLast=false
-        assertEquals(
-            "\norder by\n"
-            + "    CASE WHEN alias IS NULL THEN 0 ELSE 1 END, alias DESC",
-            makeTestSqlQuery("expr", "alias", false, true, false, true)
-                .toString());
+        assertThat(
+            makeTestSqlQuery("expr", "alias", false, true, false, true).toString(),
+            is("\norder by\n"
+               + "    CASE WHEN alias IS NULL THEN 0 ELSE 1 END, alias DESC"));
     }
 
     /**
@@ -144,7 +142,7 @@ public class SqlQueryTest extends BatchTestCase {
         return query;
     }
 
-    public void testToStringForForcedIndexHint() {
+    @Test public void testToStringForForcedIndexHint() {
         Map<String, String> hints = new HashMap<String, String>();
         hints.put("force_index", "myIndex");
 
@@ -214,11 +212,10 @@ public class SqlQueryTest extends BatchTestCase {
 
             trigger = dialectize(d, trigger);
 
-            assertEquals(
-                dialectize(dialect.getDatabaseProduct(), trigger),
-                dialectize(
-                    query.getDialect().getDatabaseProduct(),
-                    query.toString()));
+            assertThat(
+                dialectize(query.getDialect().getDatabaseProduct(),
+                    query.toString()),
+                is(dialectize(dialect.getDatabaseProduct(), trigger)));
         }
 
         // Print warning message that no pattern was specified for the current
@@ -237,7 +234,7 @@ public class SqlQueryTest extends BatchTestCase {
     }
 
 
-    public void testPredicatesAreOptimizedWhenPropertyIsTrue() {
+    @Test public void testPredicatesAreOptimizedWhenPropertyIsTrue() {
         if (prop.ReadAggregates.get() && prop.UseAggregates.get()) {
             // Sql pattner will be different if using aggregate tables.
             // This test cover predicate generation so it's sufficient to
@@ -271,7 +268,7 @@ public class SqlQueryTest extends BatchTestCase {
         assertSqlEqualsOptimzePredicates(true, mdx, sqlPatterns);
     }
 
-    public void testTableNameIsIncludedWithParentChildQuery() {
+    @Test public void testTableNameIsIncludedWithParentChildQuery() {
         String sql =
             "select\n"
             + "    `employee`.`employee_id` as `c0`,\n"
@@ -301,7 +298,7 @@ public class SqlQueryTest extends BatchTestCase {
         assertQuerySql(getTestContext().withFreshConnection(), mdx, sql);
     }
 
-    public void testPredicatesAreNotOptimizedWhenPropertyIsFalse() {
+    @Test public void testPredicatesAreNotOptimizedWhenPropertyIsFalse() {
         if (prop.ReadAggregates.get() && prop.UseAggregates.get()) {
             // Sql pattern will be different if using aggregate tables.
             // This test cover predicate generation so it's sufficient to
@@ -337,7 +334,7 @@ public class SqlQueryTest extends BatchTestCase {
         assertSqlEqualsOptimzePredicates(false, mdx, sqlPatterns);
     }
 
-    public void testPredicatesAreOptimizedWhenAllTheMembersAreIncluded() {
+    @Test public void testPredicatesAreOptimizedWhenAllTheMembersAreIncluded() {
         if (prop.ReadAggregates.get() && prop.UseAggregates.get()) {
             // Sql pattner will be different if using aggregate tables.
             // This test cover predicate generation so it's sufficient to
@@ -395,7 +392,7 @@ public class SqlQueryTest extends BatchTestCase {
         assertQuerySql(getTestContext(), inputMdx, sqlPatterns);
     }
 
-    public void testToStringForGroupingSetSqlWithEmptyGroup() {
+    @Test public void testToStringForGroupingSetSqlWithEmptyGroup() {
         if (!isGroupingSetsSupported()) {
             return;
         }
@@ -436,15 +433,14 @@ public class SqlQueryTest extends BatchTestCase {
                     + "grouping(g2) as \"g1\" from \"s\".\"t1\" =as= \"t1alias\" where a=b "
                     + "group by grouping sets ((), (gs1, gs2, gs3))";
             }
-            assertEquals(
-                dialectize(dialect.getDatabaseProduct(), expected),
-                dialectize(
-                    sqlQuery.getDialect().getDatabaseProduct(),
-                    sqlQuery.toString()));
+            assertThat(
+                dialectize(sqlQuery.getDialect().getDatabaseProduct(),
+                    sqlQuery.toString()),
+                is(dialectize(dialect.getDatabaseProduct(), expected)));
         }
     }
 
-    public void testToStringForMultipleGroupingSetsSql() {
+    @Test public void testToStringForMultipleGroupingSetsSql() {
         if (!isGroupingSetsSupported()) {
             return;
         }
@@ -495,11 +491,10 @@ public class SqlQueryTest extends BatchTestCase {
                     + "from \"s\".\"t1\" =as= \"t1alias\" where a=b "
                     + "group by grouping sets ((c0, c1, c2), (c1, c2))";
             }
-            assertEquals(
-                dialectize(dialect.getDatabaseProduct(), expected),
-                dialectize(
-                    sqlQuery.getDialect().getDatabaseProduct(),
-                    sqlQuery.toString()));
+            assertThat(
+                dialectize(sqlQuery.getDialect().getDatabaseProduct(),
+                    sqlQuery.toString()),
+                is(dialectize(dialect.getDatabaseProduct(), expected)));
         }
     }
 
@@ -510,7 +505,7 @@ public class SqlQueryTest extends BatchTestCase {
      * <p>Mondrian only generates SQL DOUBLE values in a special format for
      * LucidDB; therefore, this test is a no-op on other databases.
      */
-    public void testDoubleInList() {
+    @Test public void testDoubleInList() {
         final Dialect dialect = getTestContext().getDialect();
         if (dialect.getDatabaseProduct() != Dialect.DatabaseProduct.LUCIDDB) {
             return;
@@ -609,7 +604,7 @@ public class SqlQueryTest extends BatchTestCase {
      * "UPPER(`store`.`store_country`) = UPPER('Time.Weekly')" from being
      * generated.
      */
-    public void testInvalidSqlMemberLookup() {
+    @Test public void testInvalidSqlMemberLookup() {
         String sqlMySql =
             "select `store`.`store_type` as `c0` from `store` as `store` "
             + "where UPPER(`store`.`store_type`) = UPPER('Time.Weekly') "
@@ -641,7 +636,7 @@ public class SqlQueryTest extends BatchTestCase {
      * not considering the approxRowCount property. It is fixed and
      * this test will ensure it won't happen again.
      */
-    public void testApproxRowCountOverridesCount() {
+    @Test public void testApproxRowCountOverridesCount() {
         final String cubeSchema =
             "<Cube name=\"ApproxTest\"> \n"
             + "  <Table name=\"sales_fact_1997\"/> \n"
@@ -688,7 +683,7 @@ public class SqlQueryTest extends BatchTestCase {
             true);
     }
 
-    public void testLimitedRollupMemberRetrievableFromCache() throws Exception {
+    @Test public void testLimitedRollupMemberRetrievableFromCache() throws Exception {
         final String mdx =
             "select NON EMPTY { [Store].[Stores].[Store State].members } on 0 from [Sales]";
         final TestContext context =
@@ -740,7 +735,7 @@ public class SqlQueryTest extends BatchTestCase {
      *
      * <p>Avg Aggregates need to be computed in SQL to get correct values.
      */
-    public void testAvgAggregator() {
+    @Test public void testAvgAggregator() {
         propSaver.set(propSaver.props.GenerateFormattedSql, true);
         TestContext context = getTestContext().createSubstitutingCube(
             "Sales",

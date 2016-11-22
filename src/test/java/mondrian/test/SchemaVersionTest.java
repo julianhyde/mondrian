@@ -11,13 +11,14 @@ package mondrian.test;
 
 import mondrian.olap.*;
 
+import org.junit.Test;
 import junit.framework.Assert;
 
 /**
  * Unit test for automatic detection of schema version.
  */
 public class SchemaVersionTest extends FoodMartTestCase {
-    public void testV4SchemaWithHeader() {
+    @Test public void testV4SchemaWithHeader() {
         TestContext testContext =
             TestContext.instance().withSchema(SCHEMA_V4_HEADER + SCHEMA_4_BODY);
         Util.PropertyList connectionInfo =
@@ -26,7 +27,7 @@ public class SchemaVersionTest extends FoodMartTestCase {
         conn.close();
     }
 
-    public void testV4SchemaNoHeader() {
+    @Test public void testV4SchemaNoHeader() {
         TestContext testContext =
             TestContext.instance().withSchema(
                 SCHEMA_NO_VERSION_HEADER + SCHEMA_4_BODY);
@@ -41,7 +42,7 @@ public class SchemaVersionTest extends FoodMartTestCase {
         }
     }
 
-    public void testV3SchemaNoHeaderOK() {
+    @Test public void testV3SchemaNoHeaderOK() {
         TestContext testContext =
             TestContext.instance().withSchema(
                 SCHEMA_NO_VERSION_HEADER + SCHEMA_3_BODY);
@@ -51,7 +52,7 @@ public class SchemaVersionTest extends FoodMartTestCase {
         conn.close();
     }
 
-    public void testV5SchemaWithHeader() {
+    @Test public void testV5SchemaWithHeader() {
         TestContext testContext =
             TestContext.instance().withSchema(SCHEMA_V5_HEADER + SCHEMA_4_BODY);
         Util.PropertyList connectionInfo =

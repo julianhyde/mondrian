@@ -11,6 +11,11 @@ package mondrian.olap.fun;
 
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * <code>SortTest</code> tests the collation order of positive and negative
  * infinity, and {@link Double#NaN}.
@@ -20,7 +25,7 @@ import mondrian.test.FoodMartTestCase;
  */
 public class SortTest extends FoodMartTestCase
 {
-    public void testFoo() {
+    @Test public void testFoo() {
         // Check that each value compares according to its position in the total
         // order. For example, NaN compares greater than
         // Double.NEGATIVE_INFINITY, -34.5, -0.001, 0, 0.00000567, 1, 3.14;
@@ -40,16 +45,14 @@ public class SortTest extends FoodMartTestCase
         for (int i = 0; i < values.length; i++) {
             for (int j = 0; j < values.length; j++) {
                 int expected = i < j ? -1 : i == j ? 0 : 1;
-                assertEquals(
-                    "values[" + i +  "]=" + values[i] + ", values[" + j
+                assertThat("values[" + i + "]=" + values[i] + ", values[" + j
                     + "]=" + values[j],
-                    expected,
-                    FunUtil.compareValues(values[i], values[j]));
+                    FunUtil.compareValues(values[i], values[j]), is(expected));
             }
         }
     }
 
-    public void testOrderDesc() {
+    @Test public void testOrderDesc() {
         // In MSAS, NULLs collate last (or almost last, along with +inf and
         // NaN) whereas in Mondrian NULLs collate least (that is, before -inf).
         assertQueryReturns(
@@ -97,7 +100,7 @@ public class SortTest extends FoodMartTestCase
             + "Row #12: \n");
     }
 
-    public void testOrderAndRank() {
+    @Test public void testOrderAndRank() {
         assertQueryReturns(
             "with "
             + "   member [Measures].[Foo] as '\n"
@@ -162,7 +165,7 @@ public class SortTest extends FoodMartTestCase
             + "Row #13: 1\n");
     }
 
-    public void testSortWithSomeNullValues() throws Exception {
+    @Test public void testSortWithSomeNullValues() throws Exception {
         assertQueryReturns(
             "WITH\n"
             + "SET [*SORTED_ROW_AXIS] AS "

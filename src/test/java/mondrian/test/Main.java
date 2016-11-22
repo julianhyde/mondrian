@@ -32,7 +32,8 @@ import mondrian.xmla.*;
 import mondrian.xmla.impl.DynamicDatasourceXmlaServletTest;
 import mondrian.xmla.test.XmlaTest;
 
-import junit.framework.Test;
+import org.junit.Test;
+import org.junit.Test;
 import junit.framework.*;
 
 import org.apache.log4j.Logger;
@@ -96,7 +97,7 @@ public class Main extends TestSuite {
      */
     private void run(String[] args) throws Exception {
         final MondrianProperties properties = MondrianProperties.instance();
-        Test test = suite();
+        TestSuite test = suite();
         if (args.length == 1 && args[0].equals("-l")) {
             // Only lists the tests to run if invoking ant test-nobuild next.
             return;
@@ -132,7 +133,7 @@ public class Main extends TestSuite {
      * @return test suite
      * @throws Exception on error
      */
-    public static Test suite() throws Exception {
+    public static TestSuite suite() throws Exception {
         MondrianProperties properties = MondrianProperties.instance();
         final String testName = properties.TestName.get();
         String testClass = properties.TestClass.get();
@@ -177,7 +178,7 @@ public class Main extends TestSuite {
                     target = clazz.newInstance();
                 }
                 Object o = method.invoke(target);
-                addTest(suite, (Test) o, clazz.getName() + method.getName());
+                addTest(suite, (junit.framework.Test) o, clazz.getName() + method.getName());
             }
         } else {
             if (RUN_OPTIONAL_TESTS) {
@@ -386,7 +387,7 @@ public class Main extends TestSuite {
 
     private static void addTest(
         TestSuite suite,
-        Class<? extends TestCase> testClass) throws Exception
+        Class testClass) throws Exception
     {
         int startTestCount = suite.countTestCases();
         suite.addTestSuite(testClass);
@@ -396,13 +397,13 @@ public class Main extends TestSuite {
 
     private static void addTest(
         TestSuite suite,
-        Class<? extends TestCase> testClass,
+        Class testClass,
         String testMethod) throws Exception
     {
         Method method = testClass.getMethod(testMethod);
         Object o = method.invoke(null);
         int startTestCount = suite.countTestCases();
-        suite.addTest((Test) o);
+        suite.addTest((junit.framework.Test) o);
         int endTestCount = suite.countTestCases();
         printTestInfo(suite, testClass.getName(), startTestCount, endTestCount);
     }
@@ -410,7 +411,7 @@ public class Main extends TestSuite {
     private static void addTest(
         TestSuite suite,
         Class<? extends TestCase> testClass,
-        Util.Predicate1<Test> predicate)
+        Util.Predicate1<junit.framework.Test> predicate)
     {
         final TestSuite tempSuite = new TestSuite();
         tempSuite.addTestSuite(testClass);
@@ -423,7 +424,7 @@ public class Main extends TestSuite {
 
     private static void addTest(
         TestSuite suite,
-        Test tests,
+        junit.framework.Test tests,
         String testClassName)
     {
         int startTestCount = suite.countTestCases();
@@ -450,7 +451,7 @@ public class Main extends TestSuite {
      * Test that executes last. It can be used to check invariants.
      */
     public static class TerminatorTest extends TestCase {
-        public void testSqlStatementExecuteMatchesClose() {
+        @Test public void testSqlStatementExecuteMatchesClose() {
             // Number of successful calls to SqlStatement.execute
             // should match number of calls to SqlStatement.close
             // (excluding calls to close where close has already been called).

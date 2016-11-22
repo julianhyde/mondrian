@@ -10,7 +10,11 @@
 package mondrian.test;
 
 
+import org.junit.Test;
 import junit.framework.TestCase;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test against Pentaho's Steel Wheels sample database.
@@ -22,11 +26,7 @@ import junit.framework.TestCase;
  * @author jhyde
  * @since 12 March 2009
  */
-public class SteelWheelsTestCase extends TestCase {
-
-    /** Creates a SteelWheelsTestCase. */
-    public SteelWheelsTestCase() {
-    }
+public class SteelWheelsTestCase {
 
     /**
      * Returns the test context. Override this method if you wish to use a

@@ -13,6 +13,8 @@ import mondrian.olap.MondrianProperties;
 import mondrian.rolap.BatchTestCase;
 import mondrian.spi.Dialect.DatabaseProduct;
 
+import org.junit.Test;
+
 /**
  * Test native evaluation of supported set operations.
  *
@@ -659,9 +661,9 @@ public class NativeSetEvaluationTest extends BatchTestCase {
 
     /**
      * Test evaluation loop detection still works after changes to
-     * make it more permissable.
+     * make it more permissible.
      */
-    public void testLoopDetection() {
+    @Test public void testLoopDetection() {
         if (!MondrianProperties.instance().EnableNativeTopCount.get()) {
             return;
         }
@@ -1146,7 +1148,7 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * by the caller, which caused the star column not to be found for the
      * level to evaluate natively as part of the set.
      */
-    public void testNativeVirtualRestrictedSet() throws Exception {
+    @Test public void testNativeVirtualRestrictedSet() throws Exception {
         final TestContext ctx = getTestContext().legacy().create(
             null, null, null, null, null,
             "  <Role name=\"F-MIS-BE-CLIENT\">\n"
@@ -1185,7 +1187,7 @@ public class NativeSetEvaluationTest extends BatchTestCase {
             + "From [Warehouse and Sales]\n");
     }
 
-    public void testNativeHonorsRoleRestrictions() {
+    @Test public void testNativeHonorsRoleRestrictions() {
         // NativeSetEvaluation pushes role restrictions to the where clause
         // (see SqlConstraintUtils.addRoleAccessConstraints) by
         // generating an IN expression based on accessible members.

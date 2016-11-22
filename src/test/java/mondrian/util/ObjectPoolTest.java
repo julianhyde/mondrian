@@ -11,7 +11,10 @@ package mondrian.util;
 
 import mondrian.olap.Util;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.*;
 
@@ -20,14 +23,7 @@ import java.util.*;
  *
  * @author Richard Emberson
  */
-public class ObjectPoolTest extends TestCase {
-    public ObjectPoolTest() {
-        super();
-    }
-    public ObjectPoolTest(String name) {
-        super(name);
-    }
-
+public class ObjectPoolTest {
     static class KeyValue {
         long key;
         Object value;
@@ -48,7 +44,7 @@ public class ObjectPoolTest extends TestCase {
         }
     }
 
-    public void testString() throws Exception {
+    @Test public void testString() throws Exception {
         // for reasons unknown this fails with java4
         if (Util.PreJdk15) {
             return;
@@ -59,13 +55,13 @@ public class ObjectPoolTest extends TestCase {
         for (int i = 0; i < nos; i++) {
             strings.add(ss1[i]);
         }
-        assertEquals("size not equal", nos, strings.size());
+        assertThat("size not equal", strings.size(), is(nos));
 
         // second array of strings, same as the first but different objects
         String[] ss2 = genStringsArray(nos);
         for (int i = 0; i < nos; i++) {
             String s = strings.add(ss2[i]);
-            assertEquals("string not equal: " + s, s, ss2[i]);
+            assertThat("string not equal: " + s, ss2[i], is(s));
             // REVIEW jvs 16-Jan-2008:  This failed for me when
             // I ran with a 1GB JVM heap size on JDK 1.5, probably
             // because of interning (I tried changing genStringsList to add a
@@ -81,14 +77,14 @@ public class ObjectPoolTest extends TestCase {
         }
 
         strings.clear();
-        assertEquals("size not equal", 0, strings.size());
+        assertThat("size not equal", strings.size(), is(0));
 
         nos = 25;
         ss1 = genStringsArray(nos);
         for (int i = 0; i < nos; i++) {
             strings.add(ss1[i]);
         }
-        assertEquals("size not equal", nos, strings.size());
+        assertThat("size not equal", strings.size(), is(nos));
 
         List<String> l = genStringsList(nos);
         Iterator<String> it = strings.iterator();
@@ -96,35 +92,35 @@ public class ObjectPoolTest extends TestCase {
             String s = it.next();
             l.remove(s);
         }
-        assertTrue("list not empty", l.isEmpty());
+        assertThat("list not empty", l.isEmpty(), is(true));
     }
 
-    public void testKeyValue() throws Exception {
+    @Test public void testKeyValue() throws Exception {
         ObjectPool<KeyValue> op = new ObjectPool<KeyValue>();
         int nos = 100000;
         KeyValue[] kv1 = genKeyValueArray(nos);
         for (int i = 0; i < nos; i++) {
             op.add(kv1[i]);
         }
-        assertEquals("size not equal", nos, op.size());
+        assertThat("size not equal", op.size(), is(nos));
 
         // second array of KeyValues, same as the first but different objects
         KeyValue[] kv2 = genKeyValueArray(nos);
         for (int i = 0; i < nos; i++) {
             KeyValue kv = op.add(kv2[i]);
-            assertEquals("KeyValue not equal: " + kv, kv, kv2[i]);
-            assertFalse("same object", (kv == kv2[i]));
+            assertThat("KeyValue not equal: " + kv, kv2[i], is(kv));
+            assertThat("same object", (kv == kv2[i]), is(false));
         }
 
         op.clear();
-        assertEquals("size not equal", 0, op.size());
+        assertThat("size not equal", op.size(), is(0));
 
         nos = 25;
         kv1 = genKeyValueArray(nos);
         for (int i = 0; i < nos; i++) {
             op.add(kv1[i]);
         }
-        assertEquals("size not equal", nos, op.size());
+        assertThat("size not equal", op.size(), is(nos));
 
         List<KeyValue> l = genKeyValueList(nos);
         Iterator<KeyValue> it = op.iterator();
@@ -132,7 +128,7 @@ public class ObjectPoolTest extends TestCase {
             KeyValue kv = it.next();
             l.remove(kv);
         }
-        assertTrue("list not empty", l.isEmpty());
+        assertThat("list not empty", l.isEmpty(), is(true));
     }
 
     /**
@@ -140,7 +136,7 @@ public class ObjectPoolTest extends TestCase {
      * and makes sure they return the same results as HashSet. Optionally
      * measures performance.
      */
-    public void testLarge() {
+    @Test public void testLarge() {
         // Some typical results (2.4 GHz Intel dual-core).
 
         // Key type:        Integer               String
@@ -238,7 +234,7 @@ public class ObjectPoolTest extends TestCase {
 // todo:           assertEquals(expectedDistinct, objectPool.size());
             distinctCount = objectPool.size();
         } else {
-            assertEquals(expectedDistinct, set.size());
+            assertThat(set.size(), is(expectedDistinct));
         }
         if (print) {
             System.out.println(
@@ -251,8 +247,8 @@ public class ObjectPoolTest extends TestCase {
             System.out.println(
                 retrieveCount + " gets took " + (t3 - t2) + " milliseconds");
         }
-        assertEquals(expectedDistinct, distinctCount);
-        assertEquals(expectedHits, hitCount);
+        assertThat(distinctCount, is(expectedDistinct));
+        assertThat(hitCount, is(expectedHits));
     }
 
     /////////////////////////////////////////////////////////////////////////

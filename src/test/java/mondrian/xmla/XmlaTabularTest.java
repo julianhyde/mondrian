@@ -12,6 +12,8 @@ package mondrian.xmla;
 import mondrian.test.DiffRepository;
 import mondrian.test.TestContext;
 
+import org.junit.Test;
+
 /**
  * Test XMLA output in tabular (flattened) format.
  *
@@ -19,38 +21,31 @@ import mondrian.test.TestContext;
  */
 public class XmlaTabularTest extends XmlaBaseTestCase {
 
-    public XmlaTabularTest() {
-    }
-
-    public XmlaTabularTest(String name) {
-        super(name);
-    }
-
-    public void testTabularOneByOne() throws Exception {
+    @Test public void testTabularOneByOne() throws Exception {
         executeMDX();
     }
 
-    public void testTabularOneByTwo() throws Exception {
+    @Test public void testTabularOneByTwo() throws Exception {
         executeMDX();
     }
 
-    public void testTabularTwoByOne() throws Exception {
+    @Test public void testTabularTwoByOne() throws Exception {
         executeMDX();
     }
 
-    public void testTabularTwoByTwo() throws Exception {
+    @Test public void testTabularTwoByTwo() throws Exception {
         executeMDX();
     }
 
-    public void testTabularZeroByZero() throws Exception {
+    @Test public void testTabularZeroByZero() throws Exception {
         executeMDX();
     }
 
-    public void testTabularVoid() throws Exception {
+    @Test public void testTabularVoid() throws Exception {
         executeMDX();
     }
 
-    public void testTabularThreeAxes() throws Exception {
+    @Test public void testTabularThreeAxes() throws Exception {
         executeMDX();
     }
 

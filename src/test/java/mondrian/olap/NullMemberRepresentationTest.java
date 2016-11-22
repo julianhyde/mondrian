@@ -12,6 +12,8 @@ package mondrian.olap;
 import mondrian.rolap.RolapUtil;
 import mondrian.test.*;
 
+import org.junit.Test;
+
 import java.io.IOException;
 
 /**
@@ -22,7 +24,8 @@ import java.io.IOException;
  */
 public class NullMemberRepresentationTest extends FoodMartTestCase {
 
-    public void testClosingPeriodMemberLeafWithCustomNullRepresentation() {
+    @Test public void
+    testClosingPeriodMemberLeafWithCustomNullRepresentation() {
         assertQueryReturns(
             "with member [Measures].[Foo] as ' ClosingPeriod().uniquename '\n"
             + "select {[Measures].[Foo]} on columns,\n"
@@ -46,7 +49,7 @@ public class NullMemberRepresentationTest extends FoodMartTestCase {
             + "");
     }
 
-    public void testItemMemberWithCustomNullMemberRepresentation()
+    @Test public void testItemMemberWithCustomNullMemberRepresentation()
         throws IOException
     {
         assertExprReturns(
@@ -57,7 +60,8 @@ public class NullMemberRepresentationTest extends FoodMartTestCase {
             "[Time].[Time].[" + getNullMemberRepresentation() + "]");
     }
 
-    public void testNullMemberWithCustomRepresentation() throws IOException {
+    @Test public void testNullMemberWithCustomRepresentation()
+            throws IOException {
         assertExprReturns(
             "[Gender].[All Gender].Parent.UniqueName",
             "[Customer].[Gender].[" + getNullMemberRepresentation() + "]");
@@ -66,7 +70,7 @@ public class NullMemberRepresentationTest extends FoodMartTestCase {
             "[Gender].[All Gender].Parent.Name", getNullMemberRepresentation());
     }
 
-    public void testNullMemberWithCompoundOrderKey() {
+    @Test public void testNullMemberWithCompoundOrderKey() {
         TestContext context = getTestContext().replace(
             "<Attribute name='Name' keyColumn='customer_id' nameColumn='full_name' orderByColumn='full_name' hasHierarchy='false'/>",
             "<Attribute name='Name' keyColumn='customer_id' nameColumn='full_name' orderByColumn='full_name' hasHierarchy='false'/>"

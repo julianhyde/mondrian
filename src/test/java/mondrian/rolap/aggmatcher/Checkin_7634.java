@@ -9,10 +9,14 @@
 */
 package mondrian.rolap.aggmatcher;
 
-import mondrian.olap.MondrianProperties;
 import mondrian.olap.Result;
 import mondrian.test.TestContext;
 import mondrian.test.loader.CsvDBTestCase;
+
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Checkin 7634 attempted to correct a problem demonstrated by this
@@ -41,15 +45,7 @@ public class Checkin_7634 extends CsvDBTestCase {
 
     private int crossJoinSize;
 
-    public Checkin_7634() {
-        super();
-    }
-
-    public Checkin_7634(String name) {
-        super(name);
-    }
-
-    public void testCrossJoin() throws Exception {
+    @Test public void testCrossJoin() throws Exception {
         // explicit use of [Product].[Class1]
         String mdx =
         "select {[Measures].[Requested Value]} ON COLUMNS,"+
@@ -76,7 +72,7 @@ public class Checkin_7634 extends CsvDBTestCase {
         String resultString2 = TestContext.toString(result2);
 
         // This succeeds.
-        assertEquals(resultString1, resultString2);
+        assertThat(resultString2, is(resultString1));
     }
 
     protected String getDirectoryName() {

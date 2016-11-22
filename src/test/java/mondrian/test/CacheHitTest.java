@@ -14,8 +14,9 @@ import mondrian.olap.*;
 import mondrian.server.monitor.ServerInfo;
 import mondrian.test.clearview.*;
 
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
+import org.junit.*;
+import org.junit.rules.TestName;
+import org.junit.runner.JUnitCore;
 
 /**
  * The <code>CacheHitTest</code> class contains test suites that return
@@ -26,7 +27,9 @@ import junit.framework.TestSuite;
  *
  * @author kvu
  */
+@Ignore("OPTIONAL_TEST")
 public class CacheHitTest extends FoodMartTestCase {
+    @Rule public final TestName name = new TestName();
 
     /**
      * Runs a set of small MDX queries that targets a small region
@@ -35,15 +38,13 @@ public class CacheHitTest extends FoodMartTestCase {
      *
      * @throws Exception on error
      */
-    public void testSmallSetSequential() throws Exception {
-        TestSuite suite = new TestSuite();
-        suite.addTest(PartialCacheTest.suite());
-        suite.addTest(MultiLevelTest.suite());
-        suite.addTest(MultiDimTest.suite());
-        suite.addTest(QueryAllTest.suite());
-
-        System.out.println("== " + this.getName() + " ==");
-        runTestSuiteInOrder(suite, 50);
+    @Test public void testSmallSetSequential() throws Exception {
+        System.out.println("== " + name.getMethodName() + " ==");
+        runTestSuiteInOrder(50,
+            PartialCacheTest.class,
+            MultiLevelTest.class,
+            MultiDimTest.class,
+            QueryAllTest.class);
         clearCache("Sales");
     }
 
@@ -54,15 +55,13 @@ public class CacheHitTest extends FoodMartTestCase {
      *
      * @throws Exception on error
      */
-    public void testSmallSetRandom() throws Exception {
-        TestSuite suite = new TestSuite();
-        suite.addTest(PartialCacheTest.suite());
-        suite.addTest(MultiLevelTest.suite());
-        suite.addTest(MultiDimTest.suite());
-        suite.addTest(QueryAllTest.suite());
-
-        System.out.println("== " + this.getName() + " ==");
-        runRandomSuite(suite, 200);
+    @Test public void testSmallSetRandom() throws Exception {
+        System.out.println("== " + name.getMethodName() + " ==");
+        runRandomSuite(200,
+            PartialCacheTest.class,
+            MultiLevelTest.class,
+            MultiDimTest.class,
+            QueryAllTest.class);
         clearCache("Sales");
     }
 
@@ -73,15 +72,13 @@ public class CacheHitTest extends FoodMartTestCase {
      *
      * @throws Exception on error
      */
-    public void testSmallSetVCSequential() throws Exception {
-        TestSuite suite = new TestSuite();
-        suite.addTest(PartialCacheVCTest.suite());
-        suite.addTest(MultiLevelVCTest.suite());
-        suite.addTest(MultiDimVCTest.suite());
-        suite.addTest(QueryAllVCTest.suite());
-
-        System.out.println("== " + this.getName() + " ==");
-        runTestSuiteInOrder(suite, 50);
+    @Test public void testSmallSetVCSequential() throws Exception {
+        System.out.println("== " + name.getMethodName() + " ==");
+        runTestSuiteInOrder(50,
+            PartialCacheTest.class,
+            MultiLevelTest.class,
+            MultiDimTest.class,
+            QueryAllTest.class);
         clearCache("Warehouse and Sales");
     }
 
@@ -92,15 +89,13 @@ public class CacheHitTest extends FoodMartTestCase {
      *
      * @throws Exception on error
      */
-    public void testSmallSetVCRandom() throws Exception {
-        TestSuite suite = new TestSuite();
-        suite.addTest(PartialCacheVCTest.suite());
-        suite.addTest(MultiLevelVCTest.suite());
-        suite.addTest(MultiDimVCTest.suite());
-        suite.addTest(QueryAllVCTest.suite());
-
-        System.out.println("== " + this.getName() + " ==");
-        runRandomSuite(suite, 200);
+    @Test public void testSmallSetVCRandom() throws Exception {
+        System.out.println("== " + name.getMethodName() + " ==");
+        runRandomSuite(200,
+            PartialCacheVCTest.class,
+            MultiLevelVCTest.class,
+            MultiDimVCTest.class,
+            QueryAllVCTest.class);
         clearCache("Warehouse and Sales");
     }
 
@@ -112,78 +107,64 @@ public class CacheHitTest extends FoodMartTestCase {
      *
      * @throws Exception on error
      */
-    public void testBigSetRandom() throws Exception {
-        TestSuite suite = new TestSuite();
-        suite.addTest(MemHungryTest.suite());
-        suite.addTest(PartialCacheTest.suite());
-        suite.addTest(MultiLevelTest.suite());
-        suite.addTest(MultiDimTest.suite());
-        suite.addTest(QueryAllTest.suite());
-        suite.addTest(PartialCacheVCTest.suite());
-        suite.addTest(MultiLevelVCTest.suite());
-        suite.addTest(MultiDimVCTest.suite());
-        suite.addTest(QueryAllVCTest.suite());
-        suite.addTest(CVBasicTest.suite());
-        suite.addTest(GrandTotalTest.suite());
-        suite.addTest(MetricFilterTest.suite());
-        suite.addTest(MiscTest.suite());
-        suite.addTest(PredicateFilterTest.suite());
-        suite.addTest(SubTotalTest.suite());
-        suite.addTest(SummaryMetricPercentTest.suite());
-        suite.addTest(SummaryTest.suite());
-        suite.addTest(TopBottomTest.suite());
-
-        System.out.println("== " + this.getName() + " ==");
-        runRandomSuite(suite, 200);
+    @Test public void testBigSetRandom() throws Exception {
+        System.out.println("== " + name.getMethodName() + " ==");
+        runRandomSuite(200,
+            MemHungryTest.class,
+            PartialCacheTest.class,
+            MultiLevelTest.class,
+            MultiDimTest.class,
+            QueryAllTest.class,
+            PartialCacheVCTest.class,
+            MultiLevelVCTest.class,
+            MultiDimVCTest.class,
+            QueryAllVCTest.class,
+            CVBasicTest.class,
+            GrandTotalTest.class,
+            MetricFilterTest.class,
+            MiscTest.class,
+            PredicateFilterTest.class,
+            SubTotalTest.class,
+            SummaryMetricPercentTest.class,
+            SummaryTest.class,
+            TopBottomTest.class);
         clearCache("Sales");
         clearCache("Warehouse and Sales");
     }
 
     /**
-     * Loops <code>n</code> times, each time run a random test case
-     * in the test <code>suite</code>
+     * Loops a given number of iterations, each time run a random test case
+     * in the test suite.
      *
-     * @param suite the suite of test cases
-     * @param n number of times
+     * @param iterationCount number of times
+     * @param classes Classes to run
      * @throws Exception on error
      */
-    public void runRandomSuite(TestSuite suite, int n)
+    public void runRandomSuite(int iterationCount, Class... classes)
         throws Exception
     {
-        final TestResult tres = new TestResult();
+        // TODO: run a random sample of the tests
         final MondrianServer server =
             MondrianServer.forConnection(getTestContext().getConnection());
-
-        for (int i = 0; i < n; i++) {
-            int suiteIdx = (int) (Math.random() * suite.testCount());
-            TestSuite test = (TestSuite) suite.testAt(suiteIdx);
-            int testIdx = (int) (Math.random() * test.testCount());
-            test.testAt(testIdx).run(tres);
-        }
+        JUnitCore.runClasses(classes);
         report(server.getMonitor().getServer());
     }
 
     /**
-     * Loops <code>numIte</code> times, each time run all child test
-     * suite in the <code>suite</code>
+     * Loops <code>numIter</code> times, each time run all child test
+     * suite in the suite.
      *
-     * @param suite the suite of test suites
-     * @param numIter number of iterations
+     * @param iterationCount Number of iterations
+     * @param classes Classes to run
      * @throws Exception on error
      */
-    public void runTestSuiteInOrder(TestSuite suite, int numIter)
+    public void runTestSuiteInOrder(int iterationCount, Class... classes)
         throws Exception
     {
-        final TestResult tres = new TestResult();
+        // TODO: run tests in sequence, looping until we get to iterationCount
         final MondrianServer server =
             MondrianServer.forConnection(getTestContext().getConnection());
-
-        for (int i = 0; i < numIter; i++) {
-            TestSuite test = (TestSuite) suite.testAt(i % suite.testCount());
-            for (int j = 0; j < test.testCount(); j++) {
-                test.testAt(j).run(tres);
-            }
-        }
+        JUnitCore.runClasses(classes);
         report(server.getMonitor().getServer());
     }
 

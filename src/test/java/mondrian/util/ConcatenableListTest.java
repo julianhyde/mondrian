@@ -9,6 +9,7 @@
 */
 package mondrian.util;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class ConcatenableListTest extends TestCase {
      * Tests that basic iteration over multiple backing lists works properly,
      * whether or not there are intervening empty lists.
      */
-    public void testBasicIteration() {
+    @Test public void testBasicIteration() {
         List<String> testList = new ConcatenableList<String>();
         testList.addAll(Arrays.asList(VALUE_1));
         testList.addAll(new ArrayList<String>());
@@ -73,7 +74,7 @@ public class ConcatenableListTest extends TestCase {
      * implementation of ConcatenableList would throw a null pointer exception
      * if hasNext() wasn't called first.)
      */
-    public void testIteratorNextWithoutHasNext() {
+    @Test public void testIteratorNextWithoutHasNext() {
         List<String> testList = new ConcatenableList<String>();
         testList.addAll(Arrays.asList(VALUE_1));
         testList.addAll(new ArrayList<String>());
@@ -104,7 +105,7 @@ public class ConcatenableListTest extends TestCase {
      * IndexOutOfBoundsException when get(0) was called on an instance where the
      * backing lists included two consecutive empty lists.)
      */
-    public void testGetZeroWithMultipleEmptyLists() {
+    @Test public void testGetZeroWithMultipleEmptyLists() {
         List<String> testList = new ConcatenableList<String>();
 
         testList.addAll(new ArrayList<String>());

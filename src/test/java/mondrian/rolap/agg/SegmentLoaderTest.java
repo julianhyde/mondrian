@@ -18,6 +18,11 @@ import mondrian.spi.Dialect;
 import mondrian.test.*;
 import mondrian.util.DelegatingInvocationHandler;
 
+import org.junit.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.sql.*;
@@ -31,6 +36,7 @@ import java.util.concurrent.Future;
  * @author Thiyagu
  * @since 06-Jun-2007
  */
+@Ignore("OPTIONAL_TEST")
 public class SegmentLoaderTest extends BatchTestCase {
 
     private Execution execution;
@@ -38,8 +44,7 @@ public class SegmentLoaderTest extends BatchTestCase {
     private SegmentCacheManager cacheMgr;
     private Statement statement;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         cacheMgr =
             ((RolapConnection) getConnection())
                 .getServer().getAggregationManager().cacheMgr;
@@ -52,8 +57,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         Locus.push(locus);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         super.tearDown();
         Locus.pop(locus);
         try {
@@ -72,7 +76,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         cacheMgr = null;
     }
 
-    public void testRollup() throws Exception {
+    @Test public void testRollup() throws Exception {
         for (boolean rollup : new Boolean[] {true, false}) {
             PrintWriter pw = new PrintWriter(System.out);
             getConnection().getCacheControl(pw).flushSchemaCache();
@@ -104,7 +108,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         }
     }
 
-    public void testLoadWithMockResultsForLoadingSummaryAndDetailedSegments()
+    @Test public void testLoadWithMockResultsForLoadingSummaryAndDetailedSegments()
         throws ExecutionException, InterruptedException
     {
         GroupingSet groupableSetsInfo = getGroupingSetRollupOnGender();
@@ -184,7 +188,7 @@ public class SegmentLoaderTest extends BatchTestCase {
      * Tests load with mock results for loading summary and detailed
      * segments with null in rollup column.
      */
-    public void testLoadWithWithNullInRollupColumn()
+    @Test public void testLoadWithWithNullInRollupColumn()
         throws ExecutionException, InterruptedException
     {
         GroupingSet groupableSetsInfo = getGroupingSetRollupOnGender();
@@ -213,7 +217,7 @@ public class SegmentLoaderTest extends BatchTestCase {
             getFor(
                 segmentFutures,
                 groupingSets.get(0).getSegments().get(0));
-        assertEquals(3, detailedSegment.getCellCount());
+        assertThat(detailedSegment.getCellCount(), is(3));
     }
 
     public void
@@ -297,7 +301,7 @@ public class SegmentLoaderTest extends BatchTestCase {
         };
     }
 
-    public void testLoadWithMockResultsForLoadingOnlyDetailedSegments()
+    @Test public void testLoadWithMockResultsForLoadingOnlyDetailedSegments()
         throws ExecutionException, InterruptedException
     {
         GroupingSet groupingSetsInfo = getDefaultGroupingSet();
@@ -373,31 +377,31 @@ public class SegmentLoaderTest extends BatchTestCase {
                 new GroupingSetsList(groupingSets));
         int totalNoOfRows = 12;
         int lengthOfRowWithBitKey = 6;
-        assertEquals(totalNoOfRows, list.size());
-        assertEquals(lengthOfRowWithBitKey, list.getTypes().size());
+        assertThat(list.size(), is(totalNoOfRows));
+        assertThat(list.getTypes().size(), is(lengthOfRowWithBitKey));
         list.first();
         list.next();
-        assertEquals(BitKey.Factory.makeBitKey(0), list.getObject(5));
+        assertThat(list.getObject(5), is((Object) BitKey.Factory.makeBitKey(0)));
 
         BitKey bitKeyForSummaryRow = BitKey.Factory.makeBitKey(0);
         bitKeyForSummaryRow.set(0);
         list.next();
         list.next();
-        assertEquals(bitKeyForSummaryRow, list.getObject(5));
+        assertThat(list.getObject(5), is((Object) bitKeyForSummaryRow));
 
         SortedSet<Comparable> yearAxis = axisValueSet[0];
-        assertEquals(1, yearAxis.size());
+        assertThat(yearAxis.size(), is(1));
         SortedSet<Comparable> productFamilyAxis = axisValueSet[1];
-        assertEquals(3, productFamilyAxis.size());
+        assertThat(productFamilyAxis.size(), is(3));
         SortedSet<Comparable> productDepartmentAxis = axisValueSet[2];
-        assertEquals(4, productDepartmentAxis.size());
+        assertThat(productDepartmentAxis.size(), is(4));
         SortedSet<Comparable> genderAxis = axisValueSet[3];
-        assertEquals(2, genderAxis.size());
+        assertThat(genderAxis.size(), is(2));
 
-        assertFalse(axisContainsNull[0]);
-        assertFalse(axisContainsNull[1]);
-        assertFalse(axisContainsNull[2]);
-        assertFalse(axisContainsNull[3]);
+        assertThat(axisContainsNull[0], is(false));
+        assertThat(axisContainsNull[1], is(false));
+        assertThat(axisContainsNull[2], is(false));
+        assertThat(axisContainsNull[3], is(false));
     }
 
     private GroupingSet getGroupingSetRollupOnGender() {
@@ -414,7 +418,7 @@ public class SegmentLoaderTest extends BatchTestCase {
                 measureUnitSales);
     }
 
-    public void testProcessDataForSettingNullAxis()
+    @Test public void testProcessDataForSettingNullAxis()
         throws SQLException
     {
         GroupingSet groupingSetsInfo = getDefaultGroupingSet();
@@ -448,13 +452,13 @@ public class SegmentLoaderTest extends BatchTestCase {
             axisValueSet,
             new GroupingSetsList(groupingSets));
 
-        assertFalse(axisContainsNull[0]);
-        assertFalse(axisContainsNull[1]);
-        assertTrue(axisContainsNull[2]);
-        assertFalse(axisContainsNull[3]);
+        assertThat(axisContainsNull[0], is(false));
+        assertThat(axisContainsNull[1], is(false));
+        assertThat(axisContainsNull[2], is(true));
+        assertThat(axisContainsNull[3], is(false));
     }
 
-    public void testProcessDataForNonGroupingSetsScenario()
+    @Test public void testProcessDataForNonGroupingSetsScenario()
         throws SQLException
     {
         GroupingSet groupingSetsInfo = getDefaultGroupingSet();
@@ -490,18 +494,18 @@ public class SegmentLoaderTest extends BatchTestCase {
                 axisValueSet,
                 new GroupingSetsList(groupingSets));
         int totalNoOfRows = 3;
-        assertEquals(totalNoOfRows, list.size());
+        assertThat(list.size(), is(totalNoOfRows));
         int lengthOfRowWithoutBitKey = 5;
-        assertEquals(lengthOfRowWithoutBitKey, list.getTypes().size());
+        assertThat(list.getTypes().size(), is(lengthOfRowWithoutBitKey));
 
         SortedSet<Comparable> yearAxis = axisValueSet[0];
-        assertEquals(1, yearAxis.size());
+        assertThat(yearAxis.size(), is(1));
         SortedSet<Comparable> productFamilyAxis = axisValueSet[1];
-        assertEquals(1, productFamilyAxis.size());
+        assertThat(productFamilyAxis.size(), is(1));
         SortedSet<Comparable> productDepartmentAxis = axisValueSet[2];
-        assertEquals(2, productDepartmentAxis.size());
+        assertThat(productDepartmentAxis.size(), is(2));
         SortedSet<Comparable> genderAxis = axisValueSet[3];
-        assertEquals(2, genderAxis.size());
+        assertThat(genderAxis.size(), is(2));
     }
 
     private void verifyUnitSalesDetailed(SegmentWithData segment) {
@@ -512,7 +516,8 @@ public class SegmentLoaderTest extends BatchTestCase {
         };
         int index = 0;
         for (Map.Entry<CellKey, Object> x : segment.getData()) {
-            assertEquals(unitSalesValues[index++], x.getValue());
+            Object expected = unitSalesValues[index++];
+            assertThat(x.getValue(), is(expected));
         }
     }
 
@@ -544,8 +549,8 @@ public class SegmentLoaderTest extends BatchTestCase {
             6047.0);
 
         for (Map.Entry<CellKey, Object> x : segment.getData()) {
-            assertTrue(cells.containsKey(x.getKey()));
-            assertEquals(cells.get(x.getKey()), x.getValue());
+            assertThat(cells.containsKey(x.getKey()), is(true));
+            assertThat(x.getValue(), is((Object) cells.get(x.getKey())));
         }
     }
 
@@ -565,8 +570,8 @@ public class SegmentLoaderTest extends BatchTestCase {
             4186.0);
 
         for (Map.Entry<CellKey, Object> x : segment.getData()) {
-            assertTrue(cells.containsKey(x.getKey()));
-            assertEquals(cells.get(x.getKey()), x.getValue());
+            assertThat(cells.containsKey(x.getKey()), is(true));
+            assertThat(x.getValue(), is((Object) cells.get(x.getKey())));
         }
     }
 
@@ -577,44 +582,42 @@ public class SegmentLoaderTest extends BatchTestCase {
         };
         int index = 0;
         for (Map.Entry<CellKey, Object> x : segment.getData()) {
-            assertEquals(unitSalesValues[index++], x.getValue());
+            Object expected = unitSalesValues[index++];
+            assertThat(x.getValue(), is(expected));
         }
     }
 
-    public void testGetGroupingBitKey() throws SQLException {
+    @Test public void testGetGroupingBitKey() throws SQLException {
         Object[] data = {
             "1997", "Food", "Deli", "M", "6047", 0, 0, 0, 0
         };
         ResultSet rowList =
             toResultSet(Collections.singletonList(data));
-        assertTrue(rowList.next());
-        assertEquals(
-            BitKey.Factory.makeBitKey(4),
-            new SegmentLoader(cacheMgr).getRollupBitKey(4, rowList, 5));
+        assertThat(rowList.next(), is(true));
+        assertThat(new SegmentLoader(cacheMgr).getRollupBitKey(4, rowList, 5),
+            is(BitKey.Factory.makeBitKey(4)));
 
-        data = new Object[]{
+      data = new Object[]{
             "1997", "Food", "Deli", null, "12037", 0, 0, 0, 1
         };
         rowList = toResultSet(Collections.singletonList(data));
         BitKey key = BitKey.Factory.makeBitKey(4);
         key.set(3);
-        assertEquals(
-            key,
-            new SegmentLoader(cacheMgr).getRollupBitKey(4, rowList, 5));
+        assertThat(new SegmentLoader(cacheMgr).getRollupBitKey(4, rowList, 5),
+            is(key));
 
-        data = new Object[] {
+      data = new Object[] {
             "1997", null, "Deli", null, "12037", 0, 1, 0, 1
         };
         rowList = toResultSet(Collections.singletonList(data));
         key = BitKey.Factory.makeBitKey(4);
         key.set(1);
         key.set(3);
-        assertEquals(
-            key,
-            new SegmentLoader(cacheMgr).getRollupBitKey(4, rowList, 5));
+        assertThat(new SegmentLoader(cacheMgr).getRollupBitKey(4, rowList, 5),
+            is(key));
     }
 
-    public void testGroupingSetsUtilForMissingGroupingBitKeys() {
+    @Test public void testGroupingSetsUtilForMissingGroupingBitKeys() {
         List<GroupingSet> groupingSets = new ArrayList<GroupingSet>();
         groupingSets.add(getDefaultGroupingSet());
         groupingSets.add(getGroupingSetRollupOnGender());
@@ -622,30 +625,24 @@ public class SegmentLoaderTest extends BatchTestCase {
 
         List<BitKey> bitKeysList = detail.getRollupColumnsBitKeyList();
         int columnsCount = 4;
-        assertEquals(
-            BitKey.Factory.makeBitKey(columnsCount),
-            bitKeysList.get(0));
+        assertThat(bitKeysList.get(0), is(BitKey.Factory.makeBitKey(columnsCount)));
         BitKey key = BitKey.Factory.makeBitKey(columnsCount);
         key.set(0);
-        assertEquals(key, bitKeysList.get(1));
+        assertThat(bitKeysList.get(1), is(key));
 
         groupingSets = new ArrayList<GroupingSet>();
         groupingSets.add(getDefaultGroupingSet());
         groupingSets.add(getGroupingSetRollupOnGenderAndProductFamily());
         bitKeysList = new GroupingSetsList(groupingSets)
             .getRollupColumnsBitKeyList();
-        assertEquals(
-            BitKey.Factory.makeBitKey(columnsCount),
-            bitKeysList.get(0));
+        assertThat(bitKeysList.get(0), is(BitKey.Factory.makeBitKey(columnsCount)));
         key = BitKey.Factory.makeBitKey(columnsCount);
         key.set(0);
         key.set(1);
-        assertEquals(key, bitKeysList.get(1));
+        assertThat(bitKeysList.get(1), is(key));
 
-        assertTrue(
-            new GroupingSetsList(
-                new ArrayList<GroupingSet>())
-                .getRollupColumnsBitKeyList().isEmpty());
+        assertThat(new GroupingSetsList(new ArrayList<GroupingSet>())
+            .getRollupColumnsBitKeyList().isEmpty(), is(true));
     }
 
     private GroupingSet getGroupingSetRollupOnGenderAndProductFamily() {
@@ -657,7 +654,7 @@ public class SegmentLoaderTest extends BatchTestCase {
             cubeNameSales, measureUnitSales);
     }
 
-    public void testGroupingSetsUtilSetsDetailForRollupColumns() {
+    @Test public void testGroupingSetsUtilSetsDetailForRollupColumns() {
         RolapStar.Measure measure =
             getMeasure(getTestContext(), cubeNameSales, measureUnitSales);
         RolapStar star = measure.getStar();
@@ -675,32 +672,31 @@ public class SegmentLoaderTest extends BatchTestCase {
         GroupingSetsList detail = new GroupingSetsList(groupingSets);
 
         List<RolapStar.Column> rollupColumnsList = detail.getRollupColumns();
-        assertEquals(2, rollupColumnsList.size());
-        assertEquals(gender, rollupColumnsList.get(0));
-        assertEquals(productDepartment, rollupColumnsList.get(1));
+        assertThat(rollupColumnsList.size(), is(2));
+        assertThat(rollupColumnsList.get(0), is(gender));
+        assertThat(rollupColumnsList.get(1), is(productDepartment));
 
         groupingSets
             .add(getGroupingSetRollupOnGenderAndProductDepartmentAndYear());
         detail = new GroupingSetsList(groupingSets);
         rollupColumnsList = detail.getRollupColumns();
-        assertEquals(3, rollupColumnsList.size());
-        assertEquals(gender, rollupColumnsList.get(0));
-        assertEquals(productDepartment, rollupColumnsList.get(1));
-        assertEquals(year, rollupColumnsList.get(2));
+        assertThat(rollupColumnsList.size(), is(3));
+        assertThat(rollupColumnsList.get(0), is(gender));
+        assertThat(rollupColumnsList.get(1), is(productDepartment));
+        assertThat(rollupColumnsList.get(2), is(year));
 
         groupingSets
             .add(getGroupingSetRollupOnProductFamilyAndProductDepartment());
         detail = new GroupingSetsList(groupingSets);
         rollupColumnsList = detail.getRollupColumns();
-        assertEquals(4, rollupColumnsList.size());
-        assertEquals(gender, rollupColumnsList.get(0));
-        assertEquals(productDepartment, rollupColumnsList.get(1));
-        assertEquals(productFamily, rollupColumnsList.get(2));
-        assertEquals(year, rollupColumnsList.get(3));
+        assertThat(rollupColumnsList.size(), is(4));
+        assertThat(rollupColumnsList.get(0), is(gender));
+        assertThat(rollupColumnsList.get(1), is(productDepartment));
+        assertThat(rollupColumnsList.get(2), is(productFamily));
+        assertThat(rollupColumnsList.get(3), is(year));
 
-        assertTrue(
-            new GroupingSetsList(new ArrayList<GroupingSet>())
-            .getRollupColumns().isEmpty());
+        assertThat(new GroupingSetsList(new ArrayList<GroupingSet>())
+            .getRollupColumns().isEmpty(), is(true));
     }
 
     private GroupingSet getGroupingSetRollupOnGenderAndProductDepartment() {
@@ -748,7 +744,7 @@ public class SegmentLoaderTest extends BatchTestCase {
             measureUnitSales);
     }
 
-    public void testGroupingSetsUtilSetsForDetailForRollupColumns() {
+    @Test public void testGroupingSetsUtilSetsForDetailForRollupColumns() {
         final TestContext testContext = getTestContext();
         RolapStar.Measure measure =
             getMeasure(testContext, cubeNameSales, measureUnitSales);
@@ -767,60 +763,59 @@ public class SegmentLoaderTest extends BatchTestCase {
         GroupingSetsList detail = new GroupingSetsList(groupingSets);
 
         List<RolapStar.Column> rollupColumnsList = detail.getRollupColumns();
-        assertEquals(2, rollupColumnsList.size());
-        assertEquals(gender, rollupColumnsList.get(0));
-        assertEquals(productDepartment, rollupColumnsList.get(1));
+        assertThat(rollupColumnsList.size(), is(2));
+        assertThat(rollupColumnsList.get(0), is(gender));
+        assertThat(rollupColumnsList.get(1), is(productDepartment));
 
         groupingSets
             .add(getGroupingSetRollupOnGenderAndProductDepartmentAndYear());
         detail = new GroupingSetsList(groupingSets);
         rollupColumnsList = detail.getRollupColumns();
-        assertEquals(3, rollupColumnsList.size());
-        assertEquals(gender, rollupColumnsList.get(0));
-        assertEquals(productDepartment, rollupColumnsList.get(1));
-        assertEquals(year, rollupColumnsList.get(2));
+        assertThat(rollupColumnsList.size(), is(3));
+        assertThat(rollupColumnsList.get(0), is(gender));
+        assertThat(rollupColumnsList.get(1), is(productDepartment));
+        assertThat(rollupColumnsList.get(2), is(year));
 
         groupingSets
             .add(getGroupingSetRollupOnProductFamilyAndProductDepartment());
         detail = new GroupingSetsList(groupingSets);
         rollupColumnsList = detail.getRollupColumns();
-        assertEquals(4, rollupColumnsList.size());
-        assertEquals(gender, rollupColumnsList.get(0));
-        assertEquals(productDepartment, rollupColumnsList.get(1));
-        assertEquals(productFamily, rollupColumnsList.get(2));
-        assertEquals(year, rollupColumnsList.get(3));
+        assertThat(rollupColumnsList.size(), is(4));
+        assertThat(rollupColumnsList.get(0), is(gender));
+        assertThat(rollupColumnsList.get(1), is(productDepartment));
+        assertThat(rollupColumnsList.get(2), is(productFamily));
+        assertThat(rollupColumnsList.get(3), is(year));
 
-        assertTrue(
-            new GroupingSetsList(new ArrayList<GroupingSet>())
-            .getRollupColumns().isEmpty());
+        assertThat(new GroupingSetsList(new ArrayList<GroupingSet>())
+              .getRollupColumns().isEmpty(), is(true));
     }
 
-    public void testGroupingSetsUtilSetsForGroupingFunctionIndex() {
+    @Test public void testGroupingSetsUtilSetsForGroupingFunctionIndex() {
         List<GroupingSet> groupingSets = new ArrayList<GroupingSet>();
         groupingSets.add(getDefaultGroupingSet());
         groupingSets.add(getGroupingSetRollupOnProductDepartment());
         groupingSets.add(getGroupingSetRollupOnGenderAndProductDepartment());
         GroupingSetsList detail = new GroupingSetsList(groupingSets);
-        assertEquals(0, detail.findGroupingFunctionIndex(3));
-        assertEquals(1, detail.findGroupingFunctionIndex(2));
+        assertThat(detail.findGroupingFunctionIndex(3), is(0));
+        assertThat(detail.findGroupingFunctionIndex(2), is(1));
 
         groupingSets
             .add(getGroupingSetRollupOnGenderAndProductDepartmentAndYear());
         detail = new GroupingSetsList(groupingSets);
-        assertEquals(0, detail.findGroupingFunctionIndex(3));
-        assertEquals(1, detail.findGroupingFunctionIndex(2));
-        assertEquals(2, detail.findGroupingFunctionIndex(0));
+        assertThat(detail.findGroupingFunctionIndex(3), is(0));
+        assertThat(detail.findGroupingFunctionIndex(2), is(1));
+        assertThat(detail.findGroupingFunctionIndex(0), is(2));
 
         groupingSets
             .add(getGroupingSetRollupOnProductFamilyAndProductDepartment());
         detail = new GroupingSetsList(groupingSets);
-        assertEquals(0, detail.findGroupingFunctionIndex(3));
-        assertEquals(1, detail.findGroupingFunctionIndex(2));
-        assertEquals(2, detail.findGroupingFunctionIndex(1));
-        assertEquals(3, detail.findGroupingFunctionIndex(0));
+        assertThat(detail.findGroupingFunctionIndex(3), is(0));
+        assertThat(detail.findGroupingFunctionIndex(2), is(1));
+        assertThat(detail.findGroupingFunctionIndex(1), is(2));
+        assertThat(detail.findGroupingFunctionIndex(0), is(3));
     }
 
-    public void testGetGroupingColumnsList() {
+    @Test public void testGetGroupingColumnsList() {
         GroupingSet groupingSetsInfo = getDefaultGroupingSet();
 
         GroupingSet groupableSetsInfo = getGroupingSetRollupOnGender();
@@ -836,13 +831,13 @@ public class SegmentLoaderTest extends BatchTestCase {
 
         List<RolapStar.Column[]> groupingColumns =
             new GroupingSetsList(groupingSets).getGroupingSetsColumns();
-        assertEquals(2, groupingColumns.size());
-        assertEquals(detailedColumns, groupingColumns.get(0));
-        assertEquals(summaryColumns, groupingColumns.get(1));
+        assertThat(groupingColumns.size(), is(2));
+        assertThat(groupingColumns.get(0), is(detailedColumns));
+        assertThat(groupingColumns.get(1), is(summaryColumns));
 
         groupingColumns = new GroupingSetsList(
             new ArrayList<GroupingSet>()).getGroupingSetsColumns();
-        assertEquals(0, groupingColumns.size());
+        assertThat(groupingColumns.size(), is(0));
     }
 
     private GroupingSet getDefaultGroupingSet() {
@@ -862,29 +857,29 @@ public class SegmentLoaderTest extends BatchTestCase {
 
     private void verifyYearAxis(SegmentAxis axis) {
         Comparable[] keys = axis.getKeys();
-        assertEquals(1, keys.length);
-        assertEquals("1997", keys[0].toString());
+        assertThat(keys.length, is(1));
+        assertThat(keys[0].toString(), is("1997"));
     }
 
     private void verifyProductFamilyAxis(SegmentAxis axis) {
         Comparable[] keys = axis.getKeys();
-        assertEquals(3, keys.length);
-        assertEquals("Drink", keys[0].toString());
-        assertEquals("Food", keys[1].toString());
-        assertEquals("Non-Consumable", keys[2].toString());
+        assertThat(keys.length, is(3));
+        assertThat(keys[0].toString(), is("Drink"));
+        assertThat(keys[1].toString(), is("Food"));
+        assertThat(keys[2].toString(), is("Non-Consumable"));
     }
 
     private void verifyProductDepartmentAxis(SegmentAxis axis) {
         Comparable[] keys = axis.getKeys();
-        assertEquals(4, keys.length);
-        assertEquals("Canned_Products", keys[0].toString());
+        assertThat(keys.length, is(4));
+        assertThat(keys[0].toString(), is("Canned_Products"));
     }
 
     private void verifyGenderAxis(SegmentAxis axis) {
         Comparable[] keys = axis.getKeys();
-        assertEquals(2, keys.length);
-        assertEquals("F", keys[0].toString());
-        assertEquals("M", keys[1].toString());
+        assertThat(keys.length, is(2));
+        assertThat(keys[0].toString(), is("F"));
+        assertThat(keys[1].toString(), is("M"));
     }
 
     private List<Object[]> getData(boolean incSummaryData) {

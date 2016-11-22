@@ -11,6 +11,7 @@ package mondrian.util;
 
 import mondrian.olap.Util;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.util.Random;
@@ -34,7 +35,7 @@ public class BlockingHashMapTest extends TestCase {
      * 50 milliseconds * 100 Getters, and the test will fail if duration
      * is greater than 2 seconds.
      */
-    public void testBlockingHashMap() throws InterruptedException {
+    @Test public void testBlockingHashMap() throws InterruptedException {
         BlockingHashMap<Integer, Integer> map =
             new BlockingHashMap<Integer, Integer>(100);
 

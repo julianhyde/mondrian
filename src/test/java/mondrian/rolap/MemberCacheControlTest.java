@@ -21,6 +21,16 @@ import mondrian.test.*;
 import org.apache.log4j.*;
 import org.apache.log4j.Level;
 
+import org.junit.*;
+import org.junit.rules.TestName;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
@@ -38,6 +48,8 @@ import java.util.*;
  * @since Jan 2008
  */
 public class MemberCacheControlTest extends FoodMartTestCase {
+    @Rule public final TestName name = new TestName();
+
     private Locus locus;
 
     // TODO: add multi-thread tests.
@@ -46,25 +58,17 @@ public class MemberCacheControlTest extends FoodMartTestCase {
     // TODO: edit a different member not known to be in cache -- will it be
     //       fetched?
 
-    public MemberCacheControlTest() {
-    }
-
-    public MemberCacheControlTest(String name) {
-        super(name);
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         RolapSchemaPool.instance().clear();
 
         final RolapConnection conn = (RolapConnection) getConnection();
         final Statement statement = conn.getInternalStatement();
         final Execution execution = new Execution(statement, 0);
-        locus = new Locus(execution, getName(), null);
+        locus = new Locus(execution, name.getMethodName(), null);
         Locus.push(locus);
     }
 
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         super.tearDown();
         RolapSchemaPool.instance().clear();
         Locus.pop(locus);
@@ -261,7 +265,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
      * Tests operations on member sets, in particular the
      * {@link mondrian.olap.CacheControl#filter} method.
      */
-    public void testFilter() {
+    @Test public void testFilter() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final DiffRepository dr = getDiffRepos();
@@ -278,7 +282,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
     /**
      * Test that edits the properties of a single leaf Member.
      */
-    public void testSetPropertyCommandOnLeafMember() {
+    @Test public void testSetPropertyCommandOnLeafMember() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final DiffRepository dr = getDiffRepos();
@@ -324,16 +328,14 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             "props after",
             "${props after}",
             getRowMemberPropertiesAsString(r));
-        assertEquals(
-            resultString,
-            TestContext.toString(r));
+        assertThat(TestContext.toString(r), is(resultString));
     }
 
     /**
      * Test that edits properties of Members at various Levels (use Retail
      * Dimension), but leaves grouping unchanged, so results not changed.
      */
-    public void testSetPropertyCommandOnNonLeafMember() {
+    @Test public void testSetPropertyCommandOnNonLeafMember() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final DiffRepository dr = getDiffRepos();
@@ -371,9 +373,8 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             command = cc.createSetPropertyCommand(memberSet, propertyValues);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "all members in set must belong to same level",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("all members in set must belong to same level"));
         }
 
         // after we filter set to just members of store level we're ok
@@ -392,12 +393,10 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             "props after",
             "${props after}",
             getRowMemberPropertiesAsString(r));
-        assertEquals(
-            resultString,
-            TestContext.toString(r));
+        assertThat(TestContext.toString(r), is(resultString));
     }
 
-    public void testAddCommand() {
+    @Test public void testAddCommand() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final CacheControl cc = conn.getCacheControl(null);
@@ -489,17 +488,15 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             ((SmartMemberReader) memberReader).getMemberCache();
         List<RolapMember> caChildren =
             memberCache.getChildrenFromCache(caMember, null);
-        assertEquals(5, caChildren.size());
+        assertThat(caChildren.size(), is(5));
 
         // Load cell data and check it is in cache
         executeQuery(
             "select {[Measures].[Unit Sales]} on columns, {[Retail].[CA]} on rows from [Sales]");
         final AggregationManager aggMgr =
             ((RolapConnection) conn).getServer().getAggregationManager();
-        assertEquals(
-            Double.valueOf("74748"),
-            aggMgr.getCellFromAllCaches(
-                AggregationManager.makeRequest(cacheRegionMembers)));
+        assertThat(aggMgr.getCellFromAllCaches(AggregationManager.makeRequest(cacheRegionMembers)),
+            is((Object) Double.valueOf("74748")));
 
         // Now tell the cache that [CA].[Berkeley] is new
         final CacheControl.MemberEditCommand command =
@@ -507,11 +504,10 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         cc.execute(command);
 
         // test that cells have been removed
-        assertNull(
-            aggMgr.getCellFromAllCaches(
-                AggregationManager.makeRequest(cacheRegionMembers)));
+        assertThat(aggMgr.getCellFromAllCaches(AggregationManager.makeRequest(cacheRegionMembers)),
+            nullValue());
 
-        tc.assertAxisReturns(
+      tc.assertAxisReturns(
             "[Retail].[CA].Children",
             "[Retail].[Retail].[CA].[Alameda]\n"
             + "[Retail].[Retail].[CA].[Beverly Hills]\n"
@@ -605,12 +601,11 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         List<RolapMember> rootChildren =
             memberCache.getChildrenFromCache(rootMember, null);
         if (rootChildren != null) { // might be null due to gc
-            assertEquals(
-                10, rootChildren.size());
+            assertThat(rootChildren.size(), is(10));
         }
     }
 
-    public void testDeleteCommand() {
+    @Test public void testDeleteCommand() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final CacheControl cc = conn.getCacheControl(null);
@@ -645,17 +640,15 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             ((SmartMemberReader) memberReader).getMemberCache();
         List<RolapMember> caChildren =
             memberCache.getChildrenFromCache(caMember, null);
-        assertEquals(5, caChildren.size());
+        assertThat(caChildren.size(), is(5));
 
         // Load cell data and check it is in cache
         executeQuery(
             "select {[Measures].[Unit Sales]} on columns, {[Retail].[CA].[Alameda]} on rows from [Sales]");
         final AggregationManager aggMgr =
             ((RolapConnection) conn).getServer().getAggregationManager();
-        assertEquals(
-            Double.valueOf("2117"),
-            aggMgr.getCellFromAllCaches(
-                AggregationManager.makeRequest(cacheRegionMembers)));
+        assertThat(aggMgr.getCellFromAllCaches(AggregationManager.makeRequest(cacheRegionMembers)),
+            is((Object) Double.valueOf("2117")));
 
         // Now tell the cache that [CA].[San Francisco] has been removed.
         final CacheControl.MemberEditCommand command =
@@ -663,14 +656,11 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         cc.execute(command);
 
         // Children of CA should be 4
-        assertEquals(
-            4,
-            memberCache.getChildrenFromCache(caMember, null).size());
+        assertThat(memberCache.getChildrenFromCache(caMember, null).size(), is(4));
 
         // test that cells have been removed
-        assertNull(
-            aggMgr.getCellFromAllCaches(
-                AggregationManager.makeRequest(cacheRegionMembers)));
+        assertThat(aggMgr.getCellFromAllCaches(AggregationManager.makeRequest(cacheRegionMembers)),
+            nullValue());
 
         // The list of children should be updated.
         tc.assertAxisReturns(
@@ -681,7 +671,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             + "[Retail].[Retail].[CA].[San Diego]");
     }
 
-    public void testMoveCommand() {
+    @Test public void testMoveCommand() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final CacheControl cc = conn.getCacheControl(null);
@@ -727,12 +717,11 @@ public class MemberCacheControlTest extends FoodMartTestCase {
 
         List<RolapMember> sfChildren =
             memberCache.getChildrenFromCache(sfMember, null);
-        assertEquals(1, sfChildren.size());
+        assertThat(sfChildren.size(), is(1));
         List<RolapMember> alamedaChildren =
             memberCache.getChildrenFromCache(alamedaMember, null);
-        assertEquals(1, alamedaChildren.size());
-        assertTrue(
-            storeMember.getParentMember().equals(sfMember));
+        assertThat(alamedaChildren.size(), is(1));
+        assertThat(storeMember.getParentMember().equals(sfMember), is(true));
 
         // Now tell the cache that Store 14 moved to Alameda
         final MemberEditCommand command =
@@ -740,15 +729,13 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         cc.execute(command);
 
         // The list of SF children should contain 0 elements
-        assertEquals(
-            0,
-            memberCache.getChildrenFromCache(sfMember, null).size());
+        assertThat(memberCache.getChildrenFromCache(sfMember, null).size(), is(0));
 
         // Check Alameda's children. It should be null as the parent's list
         // should be cleared.
         alamedaChildren =
             memberCache.getChildrenFromCache(alamedaMember, null);
-        assertEquals(2, alamedaChildren.size());
+        assertThat(alamedaChildren.size(), is(2));
 
         // test axis contents
         tc.assertAxisReturns(
@@ -760,11 +747,10 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             + "[Retail].[Retail].[CA].[Alameda].[Store 14]");
 
         // Test parent object
-        assertTrue(
-            storeMember.getParentMember().equals(alamedaMember));
+        assertThat(storeMember.getParentMember().equals(alamedaMember), is(true));
     }
 
-    public void testMoveFailBadLevel() {
+    @Test public void testMoveFailBadLevel() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final CacheControl cc = conn.getCacheControl(null);
@@ -801,9 +787,8 @@ public class MemberCacheControlTest extends FoodMartTestCase {
 
         List<RolapMember> sfChildren =
             memberCache.getChildrenFromCache(sfMember, null);
-        assertEquals(1, sfChildren.size());
-        assertTrue(
-            storeMember.getParentMember().equals(sfMember));
+        assertThat(sfChildren.size(), is(1));
+        assertThat(storeMember.getParentMember().equals(sfMember), is(true));
 
         // Now tell the cache that Store 14 moved to CA
         final MemberEditCommand command =
@@ -812,15 +797,12 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             cc.execute(command);
             fail("Should have failed due to improper level");
         } catch (MondrianException e) {
-            assertEquals(
-                "new parent belongs to different level than old",
-                e.getCause().getMessage());
+            assertThat(e.getCause().getMessage(),
+                is("new parent belongs to different level than old"));
         }
 
         // The list of SF children should still contain 1 element
-        assertEquals(
-            1,
-            memberCache.getChildrenFromCache(sfMember, null).size());
+        assertThat(memberCache.getChildrenFromCache(sfMember, null).size(), is(1));
 
         // test axis contents. should not have been modified
         tc.assertAxisReturns(
@@ -835,8 +817,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             + "[Retail].[Retail].[CA].[San Francisco]");
 
         // Test parent object. should be the same
-        assertTrue(
-            storeMember.getParentMember().equals(sfMember));
+        assertThat(storeMember.getParentMember().equals(sfMember), is(true));
     }
 
     /**
@@ -853,7 +834,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             command = cc.createAddCommand(null);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals("cannot add null member", e.getMessage());
+            assertThat(e.getMessage(), is("cannot add null member"));
         }
 
         final RolapMember alamedaMember =
@@ -869,66 +850,60 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             command = cc.createMoveCommand(null, alamedaMember);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals("cannot move null member", e.getMessage());
+            assertThat(e.getMessage(), is("cannot move null member"));
         }
 
         try {
             command = cc.createMoveCommand(alamedaMember, null);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals("cannot move member to null location", e.getMessage());
+            assertThat(e.getMessage(), is("cannot move member to null location"));
         }
 
         try {
             command = cc.createDeleteCommand((Member) null);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals("cannot delete null member", e.getMessage());
+            assertThat(e.getMessage(), is("cannot delete null member"));
         }
 
         try {
             command = cc.createSetPropertyCommand(null, "foo", 1);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "cannot set properties on null member",
-                e.getMessage());
+            assertThat(e.getMessage(), is("cannot set properties on null member"));
         }
 
         try {
             command = cc.createAddCommand(empMember);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "add member not supported for parent-child hierarchy",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("add member not supported for parent-child hierarchy"));
         }
 
         try {
             command = cc.createMoveCommand(empMember, null);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "move member not supported for parent-child hierarchy",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("move member not supported for parent-child hierarchy"));
         }
 
         try {
             command = cc.createDeleteCommand(empMember);
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "delete member not supported for parent-child hierarchy",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("delete member not supported for parent-child hierarchy"));
         }
 
         try {
             command = cc.createSetPropertyCommand(empMember, "foo", "bar");
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "set properties not supported for parent-child hierarchy",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("set properties not supported for parent-child hierarchy"));
         }
 
         try {
@@ -939,9 +914,8 @@ public class MemberCacheControlTest extends FoodMartTestCase {
                 Collections.<String, Object>emptyMap());
             fail("expected exception, got " + command);
         } catch (IllegalArgumentException e) {
-            assertEquals(
-                "all members in set must belong to same level",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                is("all members in set must belong to same level"));
         }
     }
 
@@ -950,7 +924,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-1076">MONDRIAN-1076,
      * "Add CacheControl API to flush members from dimension cache"</a>.
      */
-    public void testFlushHierarchy() {
+    @Test public void testFlushHierarchy() {
         final TestContext testContext = getTestContext();
         CacheControlTest.flushCache(testContext);
         final CacheControl cacheControl =
@@ -970,7 +944,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
 
             final Hierarchy storeHierarchy =
                 salesCube.getDimensionList().get(1).getHierarchyList().get(0);
-            assertEquals("Store", storeHierarchy.getName());
+            assertThat(storeHierarchy.getName(), is("Store"));
             final CacheControl.MemberSet storeMemberSet =
                 cacheControl.createMemberSet(
                     storeHierarchy.getAllMember(), true);
@@ -1066,7 +1040,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
             // flushing.
             final Hierarchy timeHierarchy =
                 salesCube.getDimensionList().get(4).getHierarchyList().get(0);
-            assertEquals("Time", timeHierarchy.getName());
+            assertThat(timeHierarchy.getName(), is("Time"));
             final CacheControl.MemberSet timeMemberSet =
                 cacheControl.createMemberSet(
                     timeHierarchy.getAllMember(), true);
@@ -1131,7 +1105,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         int length1 = writer.getBuffer().length();
         command.run();
         final String since1 = writer.getBuffer().substring(length1);
-        assertEquals("", since1);
+        assertThat(since1, is(""));
         flusher.run();
 
         // Now cache has been flushed, it should be impossible to execute the
@@ -1140,7 +1114,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
         command.run();
         final String since2 = writer.getBuffer().substring(length2);
         if (affected) {
-            assertNotSame("", since2);
+            assertThat(since2, not(sameInstance("")));
         }
     }
 }

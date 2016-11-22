@@ -103,16 +103,7 @@ public class ResultComparatorTest extends FoodMartTestCase {
 
     private File file;
 
-    public ResultComparatorTest(String name) {
-        super(name);
-        file = new File(name);
-    }
-
-    public ResultComparatorTest() {
-    }
-
     public ResultComparatorTest(File file) {
-        super(file.getName());
         this.file = file;
     }
 
@@ -185,7 +176,7 @@ public class ResultComparatorTest extends FoodMartTestCase {
             files = new File[0];
         }
         for (int idx = 0; idx < files.length; idx++) {
-            suite.addTest(new ResultComparatorTest(files[idx]));
+            suite.addTest((junit.framework.Test) new ResultComparatorTest(files[idx]));
         }
 
         return suite;

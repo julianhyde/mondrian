@@ -11,13 +11,16 @@ package mondrian.olap.fun;
 
 import mondrian.test.PerformanceTest;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * <code>PartialSortTest</code> is a unit test for the partial-sort algorithm
@@ -27,8 +30,7 @@ import java.util.*;
  * @author Marc Berkowitz
  * @since Nov 2008
  */
-public class PartialSortTest extends TestCase
-{
+public class PartialSortTest {
     final Random random = new Random();
 
     // subroutines
@@ -156,7 +158,7 @@ public class PartialSortTest extends TestCase
     }
 
     // validate the predicate isPartiallySorted()
-    public void testPredicate1() {
+    @Test public void testPredicate1() {
         int errct = 0;
         int size = 10 * 1000;
         int[] vec = new int[size];
@@ -221,11 +223,11 @@ public class PartialSortTest extends TestCase
             errct++;
         }
 
-        assertTrue(errct == 0);
+        assertThat(errct, is(0));
     }
 
     // same as testPredicate() but boxed
-    public void testPredicate2() {
+    @Test public void testPredicate2() {
         int errct = 0;
         int size = 10 * 1000;
         Integer[] vec = new Integer[size];
@@ -291,19 +293,19 @@ public class PartialSortTest extends TestCase
             errct++;
         }
 
-        assertTrue(errct == 0);
+        assertThat(errct, is(0));
     }
 
-    public void testQuick() {
+    @Test public void testQuick() {
         final int length = 40;
         final int limit = 4;
         Integer vec[] = newRandomIntegers(length, 0, length);
         // sort descending
         doPartialSort(vec, true, limit);
-        assertTrue(isPartiallySorted(vec, limit, true));
+        assertThat(isPartiallySorted(vec, limit, true), is(true));
     }
 
-    public void testOnAlreadySorted() {
+    @Test public void testOnAlreadySorted() {
         final int length = 200;
         final int limit = 8;
         Integer vec[] = new Integer[length];
@@ -312,10 +314,10 @@ public class PartialSortTest extends TestCase
         }
         // sort ascending
         doPartialSort(vec, false, limit);
-        assertTrue(isPartiallySorted(vec, limit, false));
+        assertThat(isPartiallySorted(vec, limit, false), is(true));
     }
 
-    public void testOnAlreadyReverseSorted() {
+    @Test public void testOnAlreadyReverseSorted() {
         final int length = 200;
         final int limit = 8;
         Integer vec[] = new Integer[length];
@@ -324,7 +326,7 @@ public class PartialSortTest extends TestCase
         }
         // sort ascending
         doPartialSort(vec, false, limit);
-        assertTrue(isPartiallySorted(vec, limit, false));
+        assertThat(isPartiallySorted(vec, limit, false), is(true));
     }
 
     // tests partial sort on arras of random integers
@@ -332,34 +334,34 @@ public class PartialSortTest extends TestCase
         Integer vec[] = newRandomIntegers(length, 0, length);
         // sort descending
         doPartialSort(vec, true, limit);
-        assertTrue(isPartiallySorted(vec, limit, true));
+        assertThat(isPartiallySorted(vec, limit, true), is(true));
 
         // sort ascending
         vec = newRandomIntegers(length, 0, length);
         doPartialSort(vec, false, limit);
-        assertTrue(isPartiallySorted(vec, limit, false));
+        assertThat(isPartiallySorted(vec, limit, false), is(true));
 
         // both again with a wider range of values
         vec = newRandomIntegers(length, 10, 4 * length);
         doPartialSort(vec, true, limit);
-        assertTrue(isPartiallySorted(vec, limit, true));
+        assertThat(isPartiallySorted(vec, limit, true), is(true));
 
         vec = newRandomIntegers(length, 10, 4 * length);
         doPartialSort(vec, false, limit);
-        assertTrue(isPartiallySorted(vec, limit, false));
+        assertThat(isPartiallySorted(vec, limit, false), is(true));
 
         // and again with a narrower range values
         vec = newRandomIntegers(length, 0, length / 10);
         doPartialSort(vec, true, limit);
-        assertTrue(isPartiallySorted(vec, limit, true));
+        assertThat(isPartiallySorted(vec, limit, true), is(true));
 
         vec = newRandomIntegers(length, 0, length / 10);
         doPartialSort(vec, false, limit);
-        assertTrue(isPartiallySorted(vec, limit, false));
+        assertThat(isPartiallySorted(vec, limit, false), is(true));
     }
 
     // test correctness
-    public void testOnRandomIntegers() {
+    @Test public void testOnRandomIntegers() {
         randomIntegerTests(100, 20);
         randomIntegerTests(50000, 10);
         randomIntegerTests(50000, 500);
@@ -367,7 +369,7 @@ public class PartialSortTest extends TestCase
     }
 
     // test with large vector
-    public void testOnManyRandomIntegers() {
+    @Test public void testOnManyRandomIntegers() {
         randomIntegerTests(1000 * 1000, 5000);
         randomIntegerTests(1000 * 1000, 10);
     }
@@ -439,29 +441,29 @@ public class PartialSortTest extends TestCase
         return sorted.toArray(new Item[sorted.size()]);
     }
 
-    public void testPredicateIsStablySorted() {
+    @Test public void testPredicateIsStablySorted() {
         Item[] vec = newPartlySortedItems(24, 4, false);
-        assertTrue(Item.isStablySorted(vec, 4,  false));
-        assertFalse(Item.isStablySorted(vec, 4, true));
+        assertThat(Item.isStablySorted(vec, 4,  false), is(true));
+        assertThat(Item.isStablySorted(vec, 4, true), is(false));
 
         vec = newPartlySortedItems(24, 8, true);
-        assertTrue(Item.isStablySorted(vec, 4,  true));
-        assertFalse(Item.isStablySorted(vec, 4, false));
+        assertThat(Item.isStablySorted(vec, 4,  true), is(true));
+        assertThat(Item.isStablySorted(vec, 4, false), is(false));
 
         vec = newPartlySortedItems(1000, 100, true);
-        assertTrue(Item.isStablySorted(vec, 100, true));
-        assertTrue(Item.isStablySorted(vec, 20,  true));
-        assertTrue(Item.isStablySorted(vec,  4,  true));
+        assertThat(Item.isStablySorted(vec, 100, true), is(true));
+        assertThat(Item.isStablySorted(vec, 20,  true), is(true));
+        assertThat(Item.isStablySorted(vec,  4,  true), is(true));
     }
 
 
-    public void testStableQuick() {
+    @Test public void testStableQuick() {
         final int length = 40;
         final int limit = 4;
         Item vec[] = newRandomItems(length, 0, length);
         // sort descending
         vec = doStablePartialSort(vec, true, limit);
-        assertTrue(Item.isStablySorted(vec, limit, true));
+        assertThat(Item.isStablySorted(vec, limit, true), is(true));
     }
 
     // tests stable partial sort on arras of random Items
@@ -469,33 +471,33 @@ public class PartialSortTest extends TestCase
         Item vec[] = newRandomItems(length, 0, length);
         // sort descending
         vec = doStablePartialSort(vec, true, limit);
-        assertTrue(Item.isStablySorted(vec, limit, true));
+        assertThat(Item.isStablySorted(vec, limit, true), is(true));
 
         // sort ascending
         vec = newRandomItems(length, 0, length);
         vec = doStablePartialSort(vec, false, limit);
-        assertTrue(Item.isStablySorted(vec, limit, false));
+        assertThat(Item.isStablySorted(vec, limit, false), is(true));
 
         // both again with a wider range of values
         vec = newRandomItems(length, 10, 4 * length);
         vec = doStablePartialSort(vec, true, limit);
-        assertTrue(Item.isStablySorted(vec, limit, true));
+        assertThat(Item.isStablySorted(vec, limit, true), is(true));
 
         vec = newRandomItems(length, 10, 4 * length);
         vec = doStablePartialSort(vec, false, limit);
-        assertTrue(Item.isStablySorted(vec, limit, false));
+        assertThat(Item.isStablySorted(vec, limit, false), is(true));
 
         // and again with a narrower range values
         vec = newRandomItems(length, 0, length / 10);
         vec = doStablePartialSort(vec, true, limit);
-        assertTrue(Item.isStablySorted(vec, limit, true));
+        assertThat(Item.isStablySorted(vec, limit, true), is(true));
 
         vec = newRandomItems(length, 0, length / 10);
         vec = doStablePartialSort(vec, false, limit);
-        assertTrue(Item.isStablySorted(vec, limit, false));
+        assertThat(Item.isStablySorted(vec, limit, false), is(true));
     }
 
-    public void testStableOnRandomItems() {
+    @Test public void testStableOnRandomItems() {
         randomItemTests(100, 20);
         randomItemTests(50000, 10);
         randomItemTests(50000, 500);
@@ -548,7 +550,7 @@ public class PartialSortTest extends TestCase
     }
 
     // compare speed on different sizes of input
-    public void testSpeed() {
+    @Test public void testSpeed() {
         if (!PerformanceTest.LOGGER.isDebugEnabled()) {
             return;
         }

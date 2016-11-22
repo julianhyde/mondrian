@@ -13,48 +13,49 @@ package mondrian.test;
 import mondrian.olap.Util;
 import mondrian.test.clearview.*;
 
-import junit.framework.*;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * A copy of {@link ConcurrentMdxTest} with modifications to take
  * as input ref.xml files. This does not fully use {@link DiffRepository}
  * and does not generate log files.
- * This Class is not added to the Main test suite.
- * Purpose of this test is to simulate Concurrent access to Aggregation and data
+ *
+ * <p>This Class is not added to the Main test suite. The
+ * purpose of this test is to simulate Concurrent access to Aggregation and data
  * load. Simulation will be more effective if we run this single test again and
  * again with a fresh connection.
  *
  * @author Khanh Vu
  */
+@Ignore("OPTIONAL_TEST")
 public class CVConcurrentMdxTest extends FoodMartTestCase {
     public CVConcurrentMdxTest() {
         super();
     }
 
-    public void testConcurrentQueriesInRandomOrder() throws Exception {
+    @Test public void testConcurrentQueriesInRandomOrder() throws Exception {
         propSaver.set(propSaver.props.DisableCaching, false);
         propSaver.set(propSaver.props.UseAggregates, false);
         propSaver.set(propSaver.props.ReadAggregates, false);
 
         // test partially filled aggregation cache
         // add test classes
-        List<Class> testList = new ArrayList<Class>();
-        List<TestSuite> suiteList = new ArrayList<TestSuite>();
-
-        testList.add(PartialCacheTest.class);
-        suiteList.add(PartialCacheTest.suite());
-        testList.add(MultiLevelTest.class);
-        suiteList.add(MultiLevelTest.suite());
-        testList.add(QueryAllTest.class);
-        suiteList.add(QueryAllTest.suite());
-        testList.add(MultiDimTest.class);
-        suiteList.add(MultiDimTest.suite());
+        final List<Class> testList =
+            Arrays.<Class>asList(PartialCacheTest.class,
+                MultiLevelTest.class,
+                QueryAllTest.class,
+                MultiDimTest.class);
 
         // sanity check
-        assertTrue(sanityCheck(suiteList));
+        assertThat(sanityCheck(testList), is(true));
 
         // generate list of queries and results
         QueryAndResult[] queryList = generateQueryArray(testList);
@@ -62,10 +63,10 @@ public class CVConcurrentMdxTest extends FoodMartTestCase {
         final List<Throwable> throwables =
             ConcurrentValidatingQueryRunner.runTest(
                 3, 100, true, true, true, queryList);
-        assertEquals(0, throwables.size());
+        assertThat(throwables.size(), is(0));
     }
 
-    public void testConcurrentQueriesInRandomOrderOnVirtualCube()
+    @Test public void testConcurrentQueriesInRandomOrderOnVirtualCube()
         throws Exception
     {
         propSaver.set(propSaver.props.DisableCaching, false);
@@ -74,20 +75,14 @@ public class CVConcurrentMdxTest extends FoodMartTestCase {
 
         // test partially filled aggregation cache
         // add test classes
-        List<Class> testList = new ArrayList<Class>();
-        List<TestSuite> suiteList = new ArrayList<TestSuite>();
-
-        testList.add(PartialCacheVCTest.class);
-        suiteList.add(PartialCacheVCTest.suite());
-        testList.add(MultiLevelTest.class);
-        suiteList.add(MultiLevelTest.suite());
-        testList.add(QueryAllVCTest.class);
-        suiteList.add(QueryAllVCTest.suite());
-        testList.add(MultiDimVCTest.class);
-        suiteList.add(MultiDimVCTest.suite());
+        List<Class> testList =
+            Arrays.<Class>asList(PartialCacheVCTest.class,
+                MultiLevelTest.class,
+                QueryAllVCTest.class,
+                MultiDimVCTest.class);
 
         // sanity check
-        assertTrue(sanityCheck(suiteList));
+        assertThat(sanityCheck(testList), is(true));
 
         // generate list of queries and results
         QueryAndResult[] queryList = generateQueryArray(testList);
@@ -95,10 +90,10 @@ public class CVConcurrentMdxTest extends FoodMartTestCase {
         final List<Throwable> throwables =
             ConcurrentValidatingQueryRunner.runTest(
                 3, 100, true, true, true, queryList);
-        assertEquals(0, throwables.size());
+        assertThat(throwables.size(), is(0));
     }
 
-    public void testConcurrentCVQueriesInRandomOrder() throws Exception {
+    @Test public void testConcurrentCVQueriesInRandomOrder() throws Exception {
         propSaver.set(propSaver.props.DisableCaching, false);
         propSaver.set(propSaver.props.UseAggregates, false);
         propSaver.set(propSaver.props.ReadAggregates, false);
@@ -120,37 +115,23 @@ public class CVConcurrentMdxTest extends FoodMartTestCase {
         // generate list of queries and results
         QueryAndResult[] queryList = generateQueryArray(testList);
 
-        assertEquals(
-            Collections.<Throwable>emptyList(),
-            ConcurrentValidatingQueryRunner.runTest(
-                3, 100, true, true, true, queryList));
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
+        assertThat(
+            ConcurrentValidatingQueryRunner.runTest(3, 100, true, true, true,
+                queryList),
+            is(Collections.<Throwable>emptyList()));
     }
 
     /**
      * Runs one pass of all tests single-threaded using
-     * {@link mondrian.test.clearview.ClearViewBase} mechanism
+     * {@link mondrian.test.clearview.ClearViewBase} mechanism.
+     *
      * @param suiteList list of tests to be checked
      * @return true if all tests pass
      */
-    private boolean sanityCheck(List<TestSuite> suiteList) {
-        TestSuite suite = new TestSuite();
-
-        for (TestSuite suite1 : suiteList) {
-            suite.addTest(suite1);
-        }
-
-        TestResult tres = new TestResult();
-        suite.run(tres);
-
-        return tres.wasSuccessful();
+    private boolean sanityCheck(List<Class> suiteList) {
+        final Class[] classes = suiteList.toArray(new Class[suiteList.size()]);
+        final Result result = JUnitCore.runClasses(classes);
+        return result.wasSuccessful();
     }
 
     /**
@@ -165,12 +146,8 @@ public class CVConcurrentMdxTest extends FoodMartTestCase {
     {
         List<QueryAndResult> queryList = new ArrayList<QueryAndResult>();
         for (Class testClass : testList) {
-            Class[] types = {String.class};
-            Constructor cons = testClass.getConstructor(types);
-            Object[] args = {""};
-            Test newCon = (Test) cons.newInstance(args);
             DiffRepository diffRepos =
-                ((ClearViewBase) newCon).getDiffRepos();
+                ((ClearViewBase) testClass.newInstance()).getDiffRepos();
 
             List<String> testCaseNames = diffRepos.getTestCaseNames();
             for (String testCaseName : testCaseNames) {

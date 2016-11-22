@@ -13,9 +13,14 @@ import mondrian.olap.*;
 import mondrian.olap.fun.Resolver;
 import mondrian.test.TestContext;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.*;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for mondrian type facility.
@@ -23,13 +28,13 @@ import java.util.*;
  * @author jhyde
  * @since Jan 17, 2008
  */
-public class TypeTest extends TestCase {
+public class TypeTest {
 
-    public void testConversions() {
+    @Test public void testConversions() {
         final Connection connection = getTestContext().getConnection();
         Cube salesCube =
             getCubeWithName("Sales", connection.getSchema().getCubes());
-        assertTrue(salesCube != null);
+        assertThat(salesCube, notNullValue());
         Dimension customersDimension = null;
         for (Dimension dimension : salesCube.getDimensionList()) {
             if (dimension.getName().equals("Customer")) {
@@ -37,7 +42,7 @@ public class TypeTest extends TestCase {
             }
         }
 
-        assertTrue(customersDimension != null);
+        assertThat(customersDimension, notNullValue());
         Hierarchy hierarchy = customersDimension.getHierarchy();
         Member member = hierarchy.getDefaultMember();
         Level level = member.getLevel();
@@ -91,20 +96,20 @@ public class TypeTest extends TestCase {
         for (Type type : types) {
             // Check that each type is assignable to itself.
             final String desc = type.toString() + ":" + type.getClass();
-            assertEquals(desc, type, type.computeCommonType(type, null));
+            assertThat(desc, type.computeCommonType(type, null), is(type));
 
             int[] conversionCount = {0};
-            assertEquals(
-                desc, type, type.computeCommonType(type, conversionCount));
-            assertEquals(0, conversionCount[0]);
+            assertThat(desc, type.computeCommonType(type, conversionCount),
+                is(type));
+            assertThat(conversionCount[0], is(0));
 
             // Check that each scalar type is assignable to nullable with zero
             // conversions.
             if (type instanceof ScalarType) {
-                assertEquals(type, type.computeCommonType(nullType, null));
-                assertEquals(
-                    type, type.computeCommonType(nullType, conversionCount));
-                assertEquals(0, conversionCount[0]);
+                assertThat(type.computeCommonType(nullType, null), is(type));
+                assertThat(type.computeCommonType(nullType, conversionCount), is(
+                    type));
+                assertThat(conversionCount[0], is(0));
             }
         }
 
@@ -114,7 +119,7 @@ public class TypeTest extends TestCase {
                 Type type2 = toType.computeCommonType(fromType, null);
                 final String desc =
                     "symmetric, from " + fromType + ", to " + toType;
-                assertEquals(desc, type, type2);
+                assertThat(desc, type2, is(type));
 
                 int[] conversionCount = {0};
                 int[] conversionCount2 = {0};
@@ -123,7 +128,7 @@ public class TypeTest extends TestCase {
                 if (conversionCount[0] == 0
                     && conversionCount2[0] == 0)
                 {
-                    assertEquals(desc, type, type2);
+                    assertThat(desc, type2, is(type));
                 }
 
                 final int toCategory = TypeUtil.typeToCategory(toType);
@@ -140,15 +145,13 @@ public class TypeTest extends TestCase {
                         || fromType == tupleSetType && toType == setType
                         || fromType == setType && toType == tupleSetType))
                     {
-                        fail(
-                            "can convert from " + fromType + " to " + toType
-                            + ", but their most general type is null");
+                        fail("can convert from " + fromType + " to " + toType
+                             + ", but their most general type is null");
                     }
                 }
                 if (!canConvert && type != null && type.equals(toType)) {
-                    fail(
-                        "cannot convert from " + fromType + " to " + toType
-                        + ", but they have a most general type " + type);
+                    fail("cannot convert from " + fromType + " to " + toType
+                         + ", but they have a most general type " + type);
                 }
             }
         }
@@ -158,7 +161,7 @@ public class TypeTest extends TestCase {
         return TestContext.instance();
     }
 
-    public void testCommonTypeWhenSetTypeHavingMemberTypeAndTupleType() {
+    @Test public void testCommonTypeWhenSetTypeHavingMemberTypeAndTupleType() {
         MemberType measureMemberType =
             getMemberTypeHavingMeasureInIt(getUnitSalesMeasure());
 
@@ -176,17 +179,17 @@ public class TypeTest extends TestCase {
 
         Type type1 =
             setTypeWithMember.computeCommonType(setTypeWithTuple, null);
-        assertNotNull(type1);
-        assertTrue(((SetType) type1).getElementType() instanceof TupleType);
+        assertThat(type1, notNullValue());
+        assertThat(((SetType) type1).getElementType() instanceof TupleType, is(true));
 
         Type type2 =
             setTypeWithTuple.computeCommonType(setTypeWithMember, null);
-        assertNotNull(type2);
-        assertTrue(((SetType) type2).getElementType() instanceof TupleType);
-        assertEquals(type1, type2);
+        assertThat(type2, notNullValue());
+        assertThat(((SetType) type2).getElementType() instanceof TupleType, is(true));
+        assertThat(type2, is(type1));
     }
 
-    public void testCommonTypeOfMemberandTupleTypeIsTupleType() {
+    @Test public void testCommonTypeOfMemberandTupleTypeIsTupleType() {
         MemberType measureMemberType =
             getMemberTypeHavingMeasureInIt(getUnitSalesMeasure());
 
@@ -200,16 +203,16 @@ public class TypeTest extends TestCase {
             new Type[] {storeMemberType, genderMemberType});
 
         Type type1 = measureMemberType.computeCommonType(tupleType, null);
-        assertNotNull(type1);
-        assertTrue(type1 instanceof TupleType);
+        assertThat(type1, notNullValue());
+        assertThat(type1 instanceof TupleType, is(true));
 
         Type type2 = tupleType.computeCommonType(measureMemberType, null);
-        assertNotNull(type2);
-        assertTrue(type2 instanceof TupleType);
-        assertEquals(type1, type2);
+        assertThat(type2, notNullValue());
+        assertThat(type2 instanceof TupleType, is(true));
+        assertThat(type2, is(type1));
     }
 
-    public void testCommonTypeBetweenTuplesOfDifferentSizesIsATupleType() {
+    @Test public void testCommonTypeBetweenTuplesOfDifferentSizesIsATupleType() {
         MemberType measureMemberType =
             getMemberTypeHavingMeasureInIt(getUnitSalesMeasure());
 
@@ -226,19 +229,19 @@ public class TypeTest extends TestCase {
             new Type[] {storeMemberType, genderMemberType});
 
         Type type1 = tupleTypeSmaller.computeCommonType(tupleTypeLarger, null);
-        assertNotNull(type1);
-        assertTrue(type1 instanceof TupleType);
-        assertTrue(((TupleType) type1).elementTypes[0] instanceof MemberType);
-        assertTrue(((TupleType) type1).elementTypes[1] instanceof MemberType);
-        assertTrue(((TupleType) type1).elementTypes[2] instanceof ScalarType);
+        assertThat(type1, notNullValue());
+        assertThat(type1 instanceof TupleType, is(true));
+        assertThat(((TupleType) type1).elementTypes[0] instanceof MemberType, is(true));
+        assertThat(((TupleType) type1).elementTypes[1] instanceof MemberType, is(true));
+        assertThat(((TupleType) type1).elementTypes[2] instanceof ScalarType, is(true));
 
         Type type2 = tupleTypeLarger.computeCommonType(tupleTypeSmaller, null);
-        assertNotNull(type2);
-        assertTrue(type2 instanceof TupleType);
-        assertTrue(((TupleType) type2).elementTypes[0] instanceof MemberType);
-        assertTrue(((TupleType) type2).elementTypes[1] instanceof MemberType);
-        assertTrue(((TupleType) type2).elementTypes[2] instanceof ScalarType);
-        assertEquals(type1, type2);
+        assertThat(type2, notNullValue());
+        assertThat(type2 instanceof TupleType, is(true));
+        assertThat(((TupleType) type2).elementTypes[0] instanceof MemberType, is(true));
+        assertThat(((TupleType) type2).elementTypes[1] instanceof MemberType, is(true));
+        assertThat(((TupleType) type2).elementTypes[2] instanceof ScalarType, is(true));
+        assertThat(type2, is(type1));
     }
 
     private MemberType getStoreMemberType(Member storeChild) {

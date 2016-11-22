@@ -14,12 +14,16 @@ import mondrian.spi.Dialect;
 import mondrian.test.SqlPattern;
 import mondrian.test.TestContext;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
  * Test that various values of {@link Dialect#allowsSelectNotInGroupBy}
  * produce correctly optimized SQL.
  *
  * @author Eric McDermid
  */
+@Ignore("OPTIONAL_TEST")
 public class SelectNotInGroupByTest extends BatchTestCase {
 
     public static final String storeDimensionLevelIndependent =
@@ -132,7 +136,7 @@ public class SelectNotInGroupByTest extends BatchTestCase {
         + "    ISNULL(`store`.`store_name`), `store`.`store_name` ASC\n";
 
 
-    public void testDependentPropertySkipped() {
+    @Test public void testDependentPropertySkipped() {
         // Property group by should be skipped only if dialect supports it
         String sqlpat;
         if (dialectAllowsSelectNotInGroupBy()) {
@@ -155,7 +159,7 @@ public class SelectNotInGroupByTest extends BatchTestCase {
         assertQuerySqlOrNot(tc, queryCubeA, sqlPatterns, false, false, true);
     }
 
-    public void testIndependentPropertyNotSkipped() {
+    @Test public void testIndependentPropertyNotSkipped() {
         SqlPattern[] sqlPatterns = {
             new SqlPattern(
                 Dialect.DatabaseProduct.MYSQL,
@@ -174,7 +178,7 @@ public class SelectNotInGroupByTest extends BatchTestCase {
         assertQuerySqlOrNot(tc, queryCubeA, sqlPatterns, false, false, true);
     }
 
-    public void testGroupBySkippedIfUniqueLevel() {
+    @Test public void testGroupBySkippedIfUniqueLevel() {
         // If unique level is included and all properties are level
         // dependent, then group by can be skipped regardless of dialect
         SqlPattern[] sqlPatterns = {
@@ -195,7 +199,7 @@ public class SelectNotInGroupByTest extends BatchTestCase {
         assertQuerySqlOrNot(tc, queryCubeA, sqlPatterns, false, false, true);
     }
 
-    public void testGroupByNotSkippedIfIndependentProperty() {
+    @Test public void testGroupByNotSkippedIfIndependentProperty() {
         SqlPattern[] sqlPatterns = {
             new SqlPattern(
                 Dialect.DatabaseProduct.MYSQL,

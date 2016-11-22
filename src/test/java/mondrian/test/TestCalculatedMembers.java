@@ -14,8 +14,12 @@ import mondrian.olap.*;
 import mondrian.rolap.BatchTestCase;
 import mondrian.spi.Dialect;
 
+import org.junit.Test;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests the expressions used for calculated members. Please keep in sync
@@ -25,14 +29,7 @@ import junit.framework.AssertionFailedError;
  * @since 5 October, 2002
  */
 public class TestCalculatedMembers extends BatchTestCase {
-    public TestCalculatedMembers() {
-        super();
-    }
-    public TestCalculatedMembers(String name) {
-        super(name);
-    }
-
-    public void testCalculatedMemberInCube() {
+    @Test public void testCalculatedMemberInCube() {
         assertExprReturns("[Measures].[Profit]", "$339,610.90");
 
         // Testcase for bug 829012.
@@ -52,7 +49,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: $11,406.75\n");
     }
 
-    public void testCalculatedMemberInCubeViaApi() {
+    @Test public void testCalculatedMemberInCubeViaApi() {
         Cube salesCube = getSalesCube("Sales");
         salesCube.createCalculatedMember(
             "<CalculatedMember name='Profit2'"
@@ -85,7 +82,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Tests a calculated member with spaces in its name against a virtual
      * cube with spaces in its name.
      */
-    public void testCalculatedMemberInCubeWithSpace() {
+    @Test public void testCalculatedMemberInCubeWithSpace() {
         TestContext testContext = TestContext.instance().createSubstitutingCube(
             "Warehouse and Sales",
             null,
@@ -98,7 +95,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         Assert.assertEquals("339,610.90", s.getFormattedValue());
     }
 
-    public void testCalculatedMemberInCubeWithProps() {
+    @Test public void testCalculatedMemberInCubeWithProps() {
         Cube salesCube = getSalesCube("Sales");
 
         // member with a property
@@ -196,7 +193,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         return null;
     }
 
-    public void testCalculatedMemberInCubeAndQuery() {
+    @Test public void testCalculatedMemberInCubeAndQuery() {
         // Profit is defined in the cube.
         // Profit Change is defined in the query.
         assertQueryReturns(
@@ -222,7 +219,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #2: $588.03\n");
     }
 
-    public void testQueryCalculatedMemberOverridesCube() {
+    @Test public void testQueryCalculatedMemberOverridesCube() {
         // Profit is defined in the cube, and has a format string "$#,###".
         // We define it in a query to make sure that the format string in the
         // cube doesn't change.
@@ -255,7 +252,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: $79,702.05\n");
     }
 
-    public void testQueryCalcMemberOverridesShallowerStoredMember() {
+    @Test public void testQueryCalcMemberOverridesShallowerStoredMember() {
         // Does "[Time].[Time2].[1998]" resolve to
         // the stored member "[Time].[Time2].[1998]"
         // or the calculated member "[Time].[Time2].[1997].[1998]"?
@@ -286,7 +283,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * If there are multiple calc members with the same name, the first is
      * chosen, even if it is not the best match.
      */
-    public void testEarlierCalcMember() {
+    @Test public void testEarlierCalcMember() {
         // SSAS returns 2
         assertQueryReturns(
             "with\n"
@@ -411,7 +408,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + " from Sales");
     }
 
-    public void testCalculatedMemberCaption() {
+    @Test public void testCalculatedMemberCaption() {
         String mdx =
             "select {[Measures].[Profit Growth]} on columns from Sales";
         Result result = TestContext.instance().executeQuery(mdx);
@@ -422,7 +419,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         Assert.assertEquals(caption, "Gewinn-Wachstum");
     }
 
-    public void testCalcMemberIsSetFails() {
+    @Test public void testCalcMemberIsSetFails() {
         // A member which is a set, and more important, cannot be converted to
         // a value, is an error.
         String queryString =
@@ -486,7 +483,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Tests that calculated members can have brackets in their names.
      * (Bug 1251683.)
      */
-    public void testBracketInCalcMemberName() {
+    @Test public void testBracketInCalcMemberName() {
         assertQueryReturns(
             "with member [Measures].[has a [bracket]] in it] as \n"
             + "' [Measures].CurrentMember.Name '\n"
@@ -503,7 +500,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Tests that IIf works OK even if its argument returns the NULL
      * value. (Bug 1418689.)
      */
-    public void testNpeInIif() {
+    @Test public void testNpeInIif() {
         assertQueryReturns(
             "WITH MEMBER [Measures].[Foo] AS ' 1 / [Measures].[Unit Sales] ',\n"
             + "  FORMAT_STRING=IIf([Measures].[Foo] < .3, \"|0.0|style=red\",\"0.0\")\n"
@@ -539,7 +536,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-106">MONDRIAN-106,
      * "Problem with square bracket in member name"</a>.</p>
      */
-    public void testBracketInCubeCalcMemberName() {
+    @Test public void testBracketInCubeCalcMemberName() {
         final String cubeName = "Sales_BracketInCubeCalcMemberName";
         String s =
             "<Cube name=\"" + cubeName + "\">\n"
@@ -584,7 +581,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #1: $1,352,150.00\n");
     }
 
-    public void testPropertyReferencesCalcMember() {
+    @Test public void testPropertyReferencesCalcMember() {
         assertQueryReturns(
             "with member [Measures].[Foo] as ' [Measures].[Unit Sales] * 2 ',"
             + " FORMAT_STRING=IIf([Measures].[Foo] < 600000, \"|#,##0|style=red\",\"#,##0\")  "
@@ -598,7 +595,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: |533,546|style=red\n");
     }
 
-    public void testCalcMemberWithQuote() {
+    @Test public void testCalcMemberWithQuote() {
         // MSAS ignores single-quotes
         assertQueryReturns(
             "with member [Measures].[Foo] as '1 + 2'\n"
@@ -738,7 +735,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * MONDRIAN-137, "error if calc member in schema file contains single
      * quotes"</a>.
      */
-    public void testQuoteInCalcMember() {
+    @Test public void testQuoteInCalcMember() {
         final String cubeName = "Sales_Bug1410383";
         String s =
                 "<Cube name=\"" + cubeName + "\">\n"
@@ -811,7 +808,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #1: |$171,162.17|style=green\n");
     }
 
-    public void testChildrenOfCalcMembers() {
+    @Test public void testChildrenOfCalcMembers() {
         assertQueryReturns(
             "with member [Time].[Time].[# Months Product Sold] as 'Count(Descendants([Time].[Time].LastSibling, [Time].[Month]), EXCLUDEEMPTY)'\n"
             + "select Crossjoin([Time].[# Months Product Sold].Children,\n"
@@ -826,7 +823,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "{[Product].[Products].[Non-Consumable]}\n");
     }
 
-    public void testNonCharacterMembers() {
+    @Test public void testNonCharacterMembers() {
         assertQueryReturns(
             "with member [Has Coffee Bar].[Maybe] as \n"
             + "'SUM([Has Coffee Bar].members)' \n"
@@ -842,7 +839,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: 1,143,192\n");
      }
 
-    public void testFormatString() {
+    @Test public void testFormatString() {
         // Verify that
         // (a) a calculated member without a format string does not
         //     override the format string of a base measure
@@ -890,7 +887,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Testcase for <a href="http://jira.pentaho.com/browse/MONDRIAN-263">
      * bug MONDRIAN-263, Negative Solve Orders broken</a>.
      */
-    public void testNegativeSolveOrder() {
+    @Test public void testNegativeSolveOrder() {
         // Negative solve orders are OK.
         assertQueryReturns(
             "with member measures.blah as 'measures.[unit sales]', SOLVE_ORDER = -6 select {measures.[unit sales], measures.blah} on 0 from sales",
@@ -927,7 +924,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #3: 2\n");
     }
 
-    public void testCalcMemberCustomFormatterInQuery() {
+    @Test public void testCalcMemberCustomFormatterInQuery() {
         // calc measure defined in query
         assertQueryReturns(
             "with member [Measures].[Foo] as ' [Measures].[Unit Sales] * 2 ',\n"
@@ -954,7 +951,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #2: foo533546.0bar\n");
     }
 
-    public void testCalcMemberCustomFormatterInQueryNegative() {
+    @Test public void testCalcMemberCustomFormatterInQueryNegative() {
         assertQueryThrows(
             "with member [Measures].[Foo] as ' [Measures].[Unit Sales] * 2 ',\n"
             + " CELL_FORMATTER='mondrian.test.NonExistentCellFormatter' \n"
@@ -964,7 +961,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             "Failed to load formatter class 'mondrian.test.NonExistentCellFormatter' for member '[Measures].[Foo]'.");
     }
 
-    public void testCalcMemberCustomFormatterInQueryNegative2() {
+    @Test public void testCalcMemberCustomFormatterInQueryNegative2() {
         String query =
             "with member [Measures].[Foo] as ' [Measures].[Unit Sales] * 2 ',\n"
             + " CELL_FORMATTER='java.lang.String' \n"
@@ -981,7 +978,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             : "java.lang.ClassCastException: java.lang.String");
     }
 
-    public void testCalcMemberCustomFormatterInNonMeasureInQuery() {
+    @Test public void testCalcMemberCustomFormatterInNonMeasureInQuery() {
         // CELL_FORMATTER is ignored for calc members which are not measures.
         //
         // We could change this behavior if it makes sense. In fact, we would
@@ -1002,7 +999,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: 142,407\n");
     }
 
-    public void testCalcMemberCustomFormatterInSchema() {
+    @Test public void testCalcMemberCustomFormatterInSchema() {
         // calc member defined in schema
         String cubeName = "Sales";
         TestContext testContext = TestContext.instance().createSubstitutingCube(
@@ -1039,7 +1036,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #2: foo339610.89639999997bar\n");
     }
 
-    public void testCalcMemberCustomFormatterInSchemaNegative() {
+    @Test public void testCalcMemberCustomFormatterInSchemaNegative() {
         // calc member defined in schema
         String cubeName = "Sales";
         final TestContext testContext =
@@ -1064,7 +1061,7 @@ public class TestCalculatedMembers extends BatchTestCase {
     /**
      * Testcase for bug 1784617, "Using StrToTuple() in schema errors out".
      */
-    public void testStrToSetInCubeCalcMember() {
+    @Test public void testStrToSetInCubeCalcMember() {
         // calc member defined in schema
         String cubeName = "Sales";
         final TestContext testContext =
@@ -1094,7 +1091,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             desiredResult);
     }
 
-    public void testCreateCalculatedMember() {
+    @Test public void testCreateCalculatedMember() {
         // REVIEW: What is the purpose of this test?
         String query =
             "WITH MEMBER [Product].[Calculated Member] as 'AGGREGATE({})'\n"
@@ -1121,7 +1118,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Tests a calculated member which aggregates over a set which would seem
      * to include the calculated member (but does not).
      */
-    public void testSetIncludesSelf() {
+    @Test public void testSetIncludesSelf() {
         assertQueryReturns(
             "with set [Top Products] as ' [Product].Children '\n"
             + "member [Product].[Top Product Total] as ' Aggregate([Top Products]) '\n"
@@ -1150,7 +1147,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * lower solve order; the filter computation uses the context that contains
      * the other cal members(those with higher solve order).
      */
-    public void testNegativeSolveOrderForCalMemberWithFilter() {
+    @Test public void testNegativeSolveOrderForCalMemberWithFilter() {
         assertQueryReturns(
             "With "
             + "Set [*NATIVE_CJ_SET] as 'NonEmptyCrossJoin([*BASE_MEMBERS_Education Level],[*BASE_MEMBERS_Product])' "
@@ -1191,7 +1188,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Tests that if a filter is associated with input to a cal member with
      * higher solve order; the filter computation ignores the other cal members.
      */
-    public void testNegativeSolveOrderForCalMemberWithFilters2() {
+    @Test public void testNegativeSolveOrderForCalMemberWithFilters2() {
         assertQueryReturns(
             "With "
             + "Set [*NATIVE_CJ_SET] as 'NonEmptyCrossJoin([*BASE_MEMBERS_Education Level],[*BASE_MEMBERS_Product])' "
@@ -1237,7 +1234,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * definition does not throw errors and returns expected
      * results.
      */
-    public void testNonTopLevelCalculatedMember() {
+    @Test public void testNonTopLevelCalculatedMember() {
         assertQueryReturns(
             "with member [Product].[Test] as '[Product].[Food]' "
             + "select {[Measures].[Unit Sales]} on columns, "
@@ -1273,7 +1270,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * returns an empty children list vs. invalid behavior
      * of returning [All Products].Children
      */
-    public void testCalculatedMemberChildren() {
+    @Test public void testCalculatedMemberChildren() {
         assertQueryReturns(
             "with member [Product].[Products].[Test] as '[Product].[Food]' "
             + "select {[Measures].[Unit Sales]} on columns, "
@@ -1296,7 +1293,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Axis #2:\n");
     }
 
-    public void testCalculatedMemberMSASCompatibility() {
+    @Test public void testCalculatedMemberMSASCompatibility() {
         propSaver.set(propSaver.props.CaseSensitive, false);
         assertQueryReturns(
             "with "
@@ -1341,7 +1338,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Query that simulates a compound slicer by creating a calculated member
      * that aggregates over a set and places it in the WHERE clause.
      */
-    public void testSimulatedCompoundSlicer() {
+    @Test public void testSimulatedCompoundSlicer() {
         assertQueryReturns(
             "with\n"
             + "  member [Measures].[Price per Unit] as\n"
@@ -1416,7 +1413,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #3: 2.25\n");
     }
 
-    public void testCompoundSlicerOverTuples() {
+    @Test public void testCompoundSlicerOverTuples() {
         // reference query
         assertQueryReturns(
             "select [Measures].[Unit Sales] on 0,\n"
@@ -1497,7 +1494,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Testcase for bug <a href="http://jira.pentaho.com/browse/MONDRIAN-608">
      * MONDRIAN-608, "Performance issue with large number of measures"</a>.
      */
-    public void testExponentialPerformanceBugMondrian608() {
+    @Test public void testExponentialPerformanceBugMondrian608() {
         // Run variants of the same query with increasing expression complexity.
         // With MONDRIAN-608, running time triples each iteration (for
         // example, i=10 takes 2.7s, i=11 takes 9.6s), so 20 would be very
@@ -1556,7 +1553,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         // member's expression to see whether a cell based on that member can
         // be drilled through.
         final Result result = executeQuery(mdx);
-        assertTrue(result.getCell(new int[] {0, 0}).canDrillThrough());
+        assertThat(result.getCell(new int[] {0, 0}).canDrillThrough(), is(true));
 
         final long t1 = System.currentTimeMillis();
         if (print) {
@@ -1573,7 +1570,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * RolapEvaluator.expandingMember from the parent evaluator, which made it
      * look like two evaluation contexts were expanding the same member.
      */
-    public void testCycleFalsePositive() {
+    @Test public void testCycleFalsePositive() {
         final TestContext testContext = TestContext.instance().legacy().create(
             null,
             "<Cube name=\"Store5\"> \n"
@@ -1677,7 +1674,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * evaluation exception: the cell is in error, but the query as a whole
      * succeeds.
      */
-    public void testBugMondrian852() {
+    @Test public void testBugMondrian852() {
         // Simpler repro case.
         assertQueryReturns(
             "with member [Measures].[Bar] as cast(123 as string)\n"
@@ -1757,7 +1754,7 @@ public class TestCalculatedMembers extends BatchTestCase {
      * Tests referring to a calc member by a name other than its canonical
      * unique name.
      */
-    public void testNonCanonical() {
+    @Test public void testNonCanonical() {
         // define without 'all', refer with 'all'
         final String expected =
             "Axis #0:\n"
@@ -1797,7 +1794,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             expected);
     }
 
-    public void testCalcMemberParentOfCalcMember() {
+    @Test public void testCalcMemberParentOfCalcMember() {
         // SSAS fails with "The X calculated member cannot be used as a parent
         // of another calculated member."
         assertQueryThrows(
@@ -1809,7 +1806,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "a parent of another calculated member.");
     }
 
-    public void testCalcMemberSameNameDifferentHierarchies() {
+    @Test public void testCalcMemberSameNameDifferentHierarchies() {
         assertQueryReturns(
             "with member [Gender].[X] as 4\n"
             + " member [Marital Status].[X] as 5\n"
@@ -1823,7 +1820,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: 5\n");
     }
 
-    public void testCalcMemberTooDeep() {
+    @Test public void testCalcMemberTooDeep() {
         // SSAS fails with "The X calculated member cannot be created because
         // its parent is at the lowest level in the Gender hierarchy."
         assertQueryThrows(

@@ -13,6 +13,11 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.Ignore;
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>MultiDimTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
@@ -21,15 +26,6 @@ import junit.framework.TestSuite;
  * @author Khanh Vu
  */
 public class MultiDimTest extends ClearViewBase {
-
-    public MultiDimTest() {
-        super();
-    }
-
-    public MultiDimTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -38,8 +34,9 @@ public class MultiDimTest extends ClearViewBase {
         return DiffRepository.lookup(MultiDimTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), MultiDimTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(MultiDimTest.class);
     }
 
 }

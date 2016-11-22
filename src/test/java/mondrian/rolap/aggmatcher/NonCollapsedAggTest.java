@@ -11,6 +11,9 @@ package mondrian.rolap.aggmatcher;
 
 import mondrian.test.TestContext;
 
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * Testcase for non-collapsed levels in agg tables.
  *
@@ -154,16 +157,7 @@ public class NonCollapsedAggTest extends AggTableTestCase {
         + "   <Measure name=\"Unit Sales\" column=\"unit_sales\" aggregator=\"sum\" formatString=\"Standard\" />\n"
         + "</Cube>\n";
 
-    public NonCollapsedAggTest() {
-        super();
-    }
-
-    public NonCollapsedAggTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         super.setUp();
         propSaver.set(propSaver.props.UseAggregates, true);
         propSaver.set(propSaver.props.ReadAggregates, true);
@@ -179,7 +173,7 @@ public class NonCollapsedAggTest extends AggTableTestCase {
         return CUBE_1;
     }
 
-    public void testSingleJoin() throws Exception {
+    @Test public void testSingleJoin() throws Exception {
         if (!isApplicable()) {
             return;
         }
@@ -203,7 +197,7 @@ public class NonCollapsedAggTest extends AggTableTestCase {
             + "Row #1: 121\n");
     }
 
-    public void testComplexJoin() throws Exception {
+    @Test public void testComplexJoin() throws Exception {
         if (!isApplicable()) {
             return;
         }

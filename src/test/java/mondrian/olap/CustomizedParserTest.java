@@ -15,8 +15,15 @@ import mondrian.olap.fun.ParenthesesFunDef;
 import mondrian.server.Statement;
 import mondrian.test.FoodMartTestCase;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Tests a customized MDX Parser.
@@ -24,10 +31,6 @@ import java.util.Set;
  * @author Rushan Chen
  */
 public class CustomizedParserTest extends FoodMartTestCase {
-
-    public CustomizedParserTest(String name) {
-        super(name);
-    }
 
     CustomizedFunctionTable getCustomizedFunctionTable(Set<String> funNameSet) {
         Set<FunDef> specialFunctions = new HashSet<FunDef>();
@@ -51,7 +54,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
             e = e.getCause();
         }
         String actualMsg = e.getMessage();
-        assertEquals(expectedErrorMsg, actualMsg);
+        assertThat(actualMsg, is(expectedErrorMsg));
     }
 
     private Query getParsedQueryForExpr(
@@ -78,7 +81,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         return getParsedQueryForExpr(cftab, expr, false);
     }
 
-    public void testAddition() {
+    @Test public void testAddition() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         CustomizedFunctionTable cftab =
@@ -95,7 +98,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testSubtraction() {
+    @Test public void testSubtraction() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("-");
         CustomizedFunctionTable cftab =
@@ -112,7 +115,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testSingleMultiplication() {
+    @Test public void testSingleMultiplication() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("*");
         CustomizedFunctionTable cftab =
@@ -129,7 +132,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testMultipleMultiplication() {
+    @Test public void testMultipleMultiplication() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("*");
         CustomizedFunctionTable cftab =
@@ -146,7 +149,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testLiterals() {
+    @Test public void testLiterals() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         CustomizedFunctionTable cftab =
@@ -163,7 +166,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testMissingObjectFail() {
+    @Test public void testMissingObjectFail() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         CustomizedFunctionTable cftab =
@@ -184,11 +187,11 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testMissingObjectFailWithStrict() {
+    @Test public void testMissingObjectFailWithStrict() {
         testMissingObject(true);
     }
 
-    public void testMissingObjectSucceedWithoutStrict() {
+    @Test public void testMissingObjectSucceedWithoutStrict() {
         testMissingObject(false);
     }
 
@@ -208,8 +211,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
                 strictValidation);
             q.resolve(q.createValidator(cftab, true));
             // Shouldn't reach here if strictValidation
-            fail(
-                "Expected error does not occur when strictValidation is set:"
+            fail("Expected error does not occur when strictValidation is set:"
                 + strictValidation);
         } catch (Throwable e) {
             if (strictValidation) {
@@ -225,7 +227,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testMultiplicationFail() {
+    @Test public void testMultiplicationFail() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         CustomizedFunctionTable cftab =
@@ -246,7 +248,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testMixingAttributesFail() {
+    @Test public void testMixingAttributesFail() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         CustomizedFunctionTable cftab =
@@ -267,7 +269,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testCrossJoinFail() {
+    @Test public void testCrossJoinFail() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         functionNameSet.add("-");
@@ -291,7 +293,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testMeasureSlicerFail() {
+    @Test public void testMeasureSlicerFail() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         functionNameSet.add("-");
@@ -315,7 +317,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
         }
     }
 
-    public void testTupleFail() {
+    @Test public void testTupleFail() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         functionNameSet.add("-");
@@ -347,7 +349,7 @@ public class CustomizedParserTest extends FoodMartTestCase {
      * Its computation is strange: the result is as if the measure is defined as
      *  ([Measures].[Store Cost] + [Measures].[Store Cost])
      */
-    public void testMixingMemberLimitation() {
+    @Test public void testMixingMemberLimitation() {
         Set<String> functionNameSet = new HashSet<String>();
         functionNameSet.add("+");
         CustomizedFunctionTable cftab =

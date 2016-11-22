@@ -23,7 +23,16 @@ import mondrian.test.TestContext;
 import mondrian.util.Bug;
 import mondrian.util.Pair;
 
+import org.junit.Before;
+import org.junit.Test;
 import junit.framework.Assert;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
@@ -52,25 +61,9 @@ public class NonEmptyTest extends BatchTestCase {
         TestContext.levelName(
             "Customer", "Education Level", "Education Level");
 
-    public NonEmptyTest() {
-        super();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public NonEmptyTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
         propSaver.set(propSaver.props.EnableNativeNonEmpty, true);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     @Override
@@ -78,7 +71,7 @@ public class NonEmptyTest extends BatchTestCase {
         return super.getTestContext().withLogger(logger);
     }
 
-    public void testBugMondrian584EnumOrder() {
+    @Test public void testBugMondrian584EnumOrder() {
         // The interpreter results include males before females, which is
         // correct because it is consistent with the explicit order present
         // in the query. Native evaluation returns the females before males,
@@ -96,7 +89,7 @@ public class NonEmptyTest extends BatchTestCase {
         }
     }
 
-    public void testBugCantRestrictSlicerToCalcMember() throws Exception {
+    @Test public void testBugCantRestrictSlicerToCalcMember() throws Exception {
         final TestContext testContext = getTestContext();
         testContext.assertQueryReturns(
             "WITH Member [Time].[Time].[Aggr] AS 'Aggregate({[Time].[1998].[Q1], [Time].[1998].[Q2]})' "
@@ -118,7 +111,7 @@ public class NonEmptyTest extends BatchTestCase {
      * mondrian is doing crossjoins in memory; and the test case throws because
      * the result limit is exceeded.
      */
-    public void testAnalyzerPerformanceIssue() {
+    @Test public void testAnalyzerPerformanceIssue() {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
         propSaver.set(propSaver.props.EnableNativeTopCount, false);
         propSaver.set(propSaver.props.EnableNativeFilter, true);
@@ -518,7 +511,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #49: \n");
     }
 
-    public void testBug1961163() throws Exception {
+    @Test public void testBug1961163() throws Exception {
         assertQueryReturns(
             "with member [Measures].[AvgRevenue] as 'Avg([Store].[Store Name].Members, [Measures].[Store Sales])' "
             + "select NON EMPTY {[Measures].[Store Sales], [Measures].[AvgRevenue]} ON COLUMNS, "
@@ -560,7 +553,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #8: 43,479.86\n");
     }
 
-    public void testTopCountWithCalcMemberInSlicer() {
+    @Test public void testTopCountWithCalcMemberInSlicer() {
         // Internal error: can not restrict SQL to calculated Members
         final TestContext testContext = getTestContext();
         testContext.assertQueryReturns(
@@ -582,7 +575,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #2: 3,926\n");
     }
 
-    public void testTopCountCacheKeyMustIncludeCount() {
+    @Test public void testTopCountCacheKeyMustIncludeCount() {
         // When caching topcount results, the number of elements must
         // be part of the cache key.
         final TestContext testContext = getTestContext();
@@ -618,7 +611,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #2: 8,006\n");
     }
 
-    public void testStrMeasure() {
+    @Test public void testStrMeasure() {
         TestContext ctx = TestContext.instance().legacy().create(
             null,
             "<Cube name=\"StrMeasure\"> \n"
@@ -644,7 +637,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #0: TV\n");
     }
 
-    public void testBug1515302() {
+    @Test public void testBug1515302() {
         TestContext ctx = TestContext.instance().legacy().create(
             null,
             "<Cube name=\"Bug1515302\"> \n"
@@ -725,7 +718,7 @@ public class NonEmptyTest extends BatchTestCase {
      * RolapStar in SqlContextConstraint/SqlConstraintUtils.  Test ensures that
      * no exception is thrown.
      */
-    public void testVirtualCube() {
+    @Test public void testVirtualCube() {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             return;
         }
@@ -739,7 +732,7 @@ public class NonEmptyTest extends BatchTestCase {
         c.run();
     }
 
-    public void testVirtualCubeMembers() throws Exception {
+    @Test public void testVirtualCubeMembers() throws Exception {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             return;
         }
@@ -759,7 +752,7 @@ public class NonEmptyTest extends BatchTestCase {
      *  for example, {[Store].[Store Name].members} and
      *  {{[Store Type].[Store Type].members}}
      */
-    public void testNativeCJWithRedundantSetBraces() {
+    @Test public void testNativeCJWithRedundantSetBraces() {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
 
         // Get a fresh connection; Otherwise the mondrian property setting
@@ -782,7 +775,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verifies that CrossJoins with two non native inputs can be natively
      * evaluated.
      */
-    public void testExpandAllNonNativeInputs() {
+    @Test public void testExpandAllNonNativeInputs() {
         // This query will not run natively unless the <Dimension>.Children
         // expression is expanded to a member list.
         //
@@ -816,7 +809,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verifies that CrossJoins with one non native inputs can be natively
      * evaluated.
      */
-    public void testExpandOneNonNativeInput() {
+    @Test public void testExpandOneNonNativeInput() {
         // This query will not be evaluated natively unless the Filter
         // expression is expanded to a member list.
         propSaver.set(propSaver.props.ExpandNonNative, true);
@@ -846,7 +839,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Check that the ExpandNonNative does not create Joins with input lists
      * containing large number of members.
      */
-    public void testExpandNonNativeResourceLimitFailure() {
+    @Test public void testExpandNonNativeResourceLimitFailure() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
         propSaver.set(propSaver.props.ResultLimit, 2);
@@ -860,7 +853,7 @@ public class NonEmptyTest extends BatchTestCase {
         } catch (Throwable e) {
             String expectedErrorMsg =
                 "Mondrian Error:Size of CrossJoin result (3) exceeded limit (2)";
-            assertEquals(expectedErrorMsg, e.getMessage());
+            assertThat(e.getMessage(), is(expectedErrorMsg));
         }
     }
 
@@ -868,7 +861,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that the presence of All member in all the inputs disables native
      * evaluation, even when ExpandNonNative is true.
      */
-    public void testExpandAllMembersInAllInputs() {
+    @Test public void testExpandAllMembersInAllInputs() {
         // This query will not be evaluated natively, even if the Hierarchize
         // expression is expanded to a member list. The reason is that the
         // expanded list contains ALL members.
@@ -896,7 +889,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verifies that the presence of calculated member in all the inputs
      * disables native evaluation, even when ExpandNonNative is true.
      */
-    public void testExpandCalcMembersInAllInputs() {
+    @Test public void testExpandCalcMembersInAllInputs() {
         // This query will not be evaluated natively, even if the Hierarchize
         // expression is expanded to a member list. The reason is that the
         // expanded list contains ALL members.
@@ -925,7 +918,7 @@ public class NonEmptyTest extends BatchTestCase {
      * or Calcculated member
      * native CJ is not used.
      */
-    public void testExpandCalcMemberInputNECJ() {
+    @Test public void testExpandCalcMemberInputNECJ() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         checkNotNative(
             getTestContext(),
@@ -951,7 +944,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Native evaluation is no longer possible after the fix to
      * {@link #testCjEnumCalcMembersBug()} test.
      */
-    public void testExpandCalcMembers() {
+    @Test public void testExpandCalcMembers() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         checkNotNative(
             getTestContext(),
@@ -992,7 +985,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that evaluation is native for expressions with nested non native
      * inputs that preduce MemberList results.
      */
-    public void testExpandNestedNonNativeInputs() {
+    @Test public void testExpandNestedNonNativeInputs() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
 
@@ -1030,7 +1023,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that a low value for maxConstraints disables native evaluation,
      * even when ExpandNonNative is true.
      */
-    public void testExpandLowMaxConstraints() {
+    @Test public void testExpandLowMaxConstraints() {
         propSaver.set(propSaver.props.MaxConstraints, 2);
         propSaver.set(propSaver.props.ExpandNonNative, true);
         checkNotNative(
@@ -1073,7 +1066,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that native evaluation is not enabled if expanded member list will
      * contain members from different levels, even if ExpandNonNative is set.
      */
-    public void testExpandDifferentLevels() {
+    @Test public void testExpandDifferentLevels() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         checkNotNative(
             getTestContext(),
@@ -1089,7 +1082,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that native evaluation is turned off for tuple inputs, even if
      * ExpandNonNative is set.
      */
-    public void testExpandTupleInputs1() {
+    @Test public void testExpandTupleInputs1() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         checkNotNative(
             getTestContext(),
@@ -1110,7 +1103,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that native evaluation is turned off for tuple inputs, even if
      * ExpandNonNative is set.
      */
-    public void testExpandTupleInputs2() {
+    @Test public void testExpandTupleInputs2() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         checkNotNative(
             getTestContext(),
@@ -1131,7 +1124,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that native evaluation is on when ExpendNonNative is set, even if
      * the input list is empty.
      */
-    public void testExpandWithOneEmptyInput() {
+    @Test public void testExpandWithOneEmptyInput() {
         propSaver.set(propSaver.props.ExpandNonNative, true);
         boolean requestFreshConnection = true;
         // Query should return empty result.
@@ -1159,7 +1152,7 @@ public class NonEmptyTest extends BatchTestCase {
             requestFreshConnection);
     }
 
-    public void testExpandWithTwoEmptyInputs() {
+    @Test public void testExpandWithTwoEmptyInputs() {
         getConnection().getCacheControl(null).flushSchemaCache();
         propSaver.set(propSaver.props.ExpandNonNative, true);
         // Query should return empty result.
@@ -1190,7 +1183,7 @@ public class NonEmptyTest extends BatchTestCase {
      * limitation. If mondrian.rolap.maxConstraints is set too low, native
      * evaluations will be turned off.
      */
-    public void testEnumLowMaxConstraints() {
+    @Test public void testEnumLowMaxConstraints() {
         propSaver.set(propSaver.props.MaxConstraints, 2);
         checkNotNative(
             getTestContext(),
@@ -1244,7 +1237,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that the presence of All member in all the inputs disables native
      * evaluation.
      */
-    public void testAllMembersNECJ1() {
+    @Test public void testAllMembersNECJ1() {
         // This query cannot be evaluated natively because of the "All" member.
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
         checkNotNative(
@@ -1264,7 +1257,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Verify that the native evaluation is possible if one input does not
      * contain the All member.
      */
-    public void testAllMembersNECJ2() {
+    @Test public void testAllMembersNECJ2() {
         // This query can be evaluated natively because there is at least one
         // non "All" member.
         //
@@ -1299,7 +1292,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * getMembersInLevel where Level = (All)
      */
-    public void testAllLevelMembers() {
+    @Test public void testAllLevelMembers() {
         checkNative(
             getTestContext(),
             14,
@@ -1312,7 +1305,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * enum sets {} containing ALL
      */
-    public void testCjDescendantsEnumAllOnly() {
+    @Test public void testCjDescendantsEnumAllOnly() {
         checkNative(
             getTestContext(),
             9,
@@ -1328,7 +1321,7 @@ public class NonEmptyTest extends BatchTestCase {
      * checks that crossjoin returns a modifiable copy from cache
      * because its modified during sort
      */
-    public void testResultIsModifyableCopy() {
+    @Test public void testResultIsModifyableCopy() {
         checkNative(
             getTestContext(),
             3,
@@ -1345,7 +1338,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Checks that TopCount is executed natively unless disabled.
      */
-    public void testNativeTopCount() {
+    @Test public void testNativeTopCount() {
         final TestContext testContext = getTestContext();
         switch (testContext.getDialect().getDatabaseProduct()) {
         case INFOBRIGHT:
@@ -1374,7 +1367,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Checks that TopCount is executed natively with calculated member.
      */
-    public void testCmNativeTopCount() {
+    @Test public void testCmNativeTopCount() {
         final TestContext testContext = getTestContext();
         switch (testContext.getDialect().getDatabaseProduct()) {
         case INFOBRIGHT:
@@ -1398,7 +1391,7 @@ public class NonEmptyTest extends BatchTestCase {
             testContext, 3, 3, query, null, requestFreshConnection);
     }
 
-    public void testMeasureAndAggregateInSlicer() {
+    @Test public void testMeasureAndAggregateInSlicer() {
         assertQueryReturns(
             "with member [Store Type].[All Store Types].[All Types] as 'Aggregate({[Store Type].[All Store Types].[Deluxe Supermarket],  "
             + "[Store Type].[All Store Types].[Gourmet Supermarket],  "
@@ -1425,7 +1418,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #3: 175\n");
     }
 
-    public void testMeasureInSlicer() {
+    @Test public void testMeasureInSlicer() {
         assertQueryReturns(
             "select NON EMPTY {[Time].[1997]} ON COLUMNS,   "
             + "NON EMPTY [Store].[All Stores].[USA].[CA].Children ON ROWS  "
@@ -1450,7 +1443,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Calc Member in TopCount: this topcount can not be calculated native
      * because its set contains calculated members.
      */
-    public void testCmInTopCount() {
+    @Test public void testCmInTopCount() {
         checkNotNative(
             getTestContext(),
             1,
@@ -1463,7 +1456,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Calc member in slicer cannot be executed natively.
      */
-    public void testCmInSlicer() {
+    @Test public void testCmInSlicer() {
         checkNotNative(
             getTestContext(),
             3,
@@ -1474,7 +1467,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "where ([Time].[Jan]) ");
     }
 
-    public void testCjMembersMembersMembers() {
+    @Test public void testCjMembersMembersMembers() {
         checkNative(
             getTestContext(),
             67,
@@ -1490,7 +1483,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersWithHideIfBlankLeafAndNoAll() {
+    @Test public void testCjMembersWithHideIfBlankLeafAndNoAll() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1520,7 +1513,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersWithHideIfBlankLeaf() {
+    @Test public void testCjMembersWithHideIfBlankLeaf() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1551,7 +1544,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersWithHideIfParentsNameLeaf() {
+    @Test public void testCjMembersWithHideIfParentsNameLeaf() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1581,7 +1574,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersWithHideIfBlankNameAncestor() {
+    @Test public void testCjMembersWithHideIfBlankNameAncestor() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1612,7 +1605,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersWithHideIfParentsNameAncestor() {
+    @Test public void testCjMembersWithHideIfParentsNameAncestor() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1643,7 +1636,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjEnumWithHideIfBlankLeaf() {
+    @Test public void testCjEnumWithHideIfBlankLeaf() {
         final TestContext testContext =
             getTestContext().legacy().createSubstitutingCube(
                 "Sales",
@@ -1687,7 +1680,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * use SQL even when all members are known
      */
-    public void testCjEnumEnum() {
+    @Test public void testCjEnumEnum() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 2;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -1705,7 +1698,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Set containing only null member should not prevent usage of native.
      */
-    public void testCjNullInEnum() {
+    @Test public void testCjNullInEnum() {
         propSaver.set(propSaver.props.IgnoreInvalidMembersDuringQuery, true);
         checkNative(
             getTestContext(),
@@ -1720,7 +1713,7 @@ public class NonEmptyTest extends BatchTestCase {
      * enum sets {} containing members from different levels can not be computed
      * natively currently.
      */
-    public void testCjDescendantsEnumAll() {
+    @Test public void testCjDescendantsEnumAll() {
         checkNotNative(
             getTestContext(),
             13,
@@ -1732,7 +1725,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "where ([Promotions].[All Promotions].[Bag Stuffers])");
     }
 
-    public void testCjDescendantsEnum() {
+    @Test public void testCjDescendantsEnum() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 2;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -1750,7 +1743,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "where ([Promotions].[All Promotions].[Bag Stuffers])");
     }
 
-    public void testCjEnumChildren() {
+    @Test public void testCjEnumChildren() {
         // Make sure maxConstraint settting is high enough
         // Make sure maxConstraint settting is high enough
         int minConstraints = 2;
@@ -1773,7 +1766,7 @@ public class NonEmptyTest extends BatchTestCase {
      * {} contains members from different levels, this can not be handled by
      * the current native crossjoin.
      */
-    public void testCjEnumDifferentLevelsChildren() {
+    @Test public void testCjEnumDifferentLevelsChildren() {
         // Don't run the test if we're testing expression dependencies.
         // Expression dependencies cause spurious interval calls to
         // 'level.getMembers()' which create false negatives in this test.
@@ -1794,7 +1787,7 @@ public class NonEmptyTest extends BatchTestCase {
         c.run();
     }
 
-    public void testCjDescendantsMembers() {
+    @Test public void testCjDescendantsMembers() {
         checkNative(
             getTestContext(),
             67,
@@ -1808,7 +1801,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersDescendants() {
+    @Test public void testCjMembersDescendants() {
         checkNative(
             getTestContext(),
             67,
@@ -1823,7 +1816,7 @@ public class NonEmptyTest extends BatchTestCase {
     }
 
     // testcase for bug MONDRIAN-506
-    public void testCjMembersDescendantsWithNumericArgument() {
+    @Test public void testCjMembersDescendantsWithNumericArgument() {
         checkNative(
             getTestContext(),
             67,
@@ -1837,7 +1830,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjChildrenMembers() {
+    @Test public void testCjChildrenMembers() {
         checkNative(
             getTestContext(),
             67,
@@ -1850,7 +1843,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersChildren() {
+    @Test public void testCjMembersChildren() {
         checkNative(
             getTestContext(),
             67,
@@ -1863,7 +1856,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjMembersMembers() {
+    @Test public void testCjMembersMembers() {
         checkNative(
             getTestContext(),
             67,
@@ -1876,7 +1869,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "  [Time].[1997].[Q1].[1])");
     }
 
-    public void testCjChildrenChildren() {
+    @Test public void testCjChildrenChildren() {
         checkNative(
             getTestContext(),
             3,
@@ -1897,7 +1890,7 @@ public class NonEmptyTest extends BatchTestCase {
      * (2) Group members sharing the same parent
      * (3) Only need to compare up to the first unique parent level.
      */
-    public void testMultiLevelMemberConstraintNonNullParent() {
+    @Test public void testMultiLevelMemberConstraintNonNullParent() {
         String query =
             "with "
             + "set [Filtered Store City Set] as "
@@ -1971,7 +1964,7 @@ public class NonEmptyTest extends BatchTestCase {
      * (3) If parent levels include NULLs, comparision includes any unique
      * level.
      */
-    public void testMultiLevelMemberConstraintNullParent() {
+    @Test public void testMultiLevelMemberConstraintNullParent() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -2069,7 +2062,7 @@ public class NonEmptyTest extends BatchTestCase {
      * (4) Can handle predicates correctly if the member list contains both NULL
      * and non NULL parent levels.
      */
-    public void testMultiLevelMemberConstraintMixedNullNonNullParent() {
+    @Test public void testMultiLevelMemberConstraintMixedNullNonNullParent() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -2160,7 +2153,7 @@ public class NonEmptyTest extends BatchTestCase {
      * (4) Can handle predicates correctly if the member list contains both NULL
      * and non NULL child levels.
      */
-    public void testMultiLevelMemberConstraintWithMixedNullNonNullChild() {
+    @Test public void testMultiLevelMemberConstraintWithMixedNullNonNullChild() {
         if (!isDefaultNullMemberRepresentation()) {
             return;
         }
@@ -2237,7 +2230,7 @@ public class NonEmptyTest extends BatchTestCase {
         assertQuerySql(testContext, query, sql);
     }
 
-    public void testNonEmptyUnionQuery() {
+    @Test public void testNonEmptyUnionQuery() {
         Result result = executeQuery(
             "select {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store Sales]} on columns,\n"
             + " NON EMPTY Hierarchize(\n"
@@ -2261,7 +2254,7 @@ public class NonEmptyTest extends BatchTestCase {
      * "[Store].[All Stores].[USA].[CA].[San Francisco]"
      * it shall not lookup additional members.
      */
-    public void testLookupMemberCache() {
+    @Test public void testLookupMemberCache() {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             // Dependency testing causes extra SQL reads, and screws up this
             // test.
@@ -2280,23 +2273,21 @@ public class NonEmptyTest extends BatchTestCase {
         RolapResult result =
             (RolapResult) executeQuery(
                 "select {[Store].[All Stores].[USA].[CA].[San Francisco]} on columns from [Sales]");
-        assertTrue(
-            "no additional members should be read:"
+        assertThat("no additional members should be read:"
             + ssmrch.mapKeyToMember.size(),
-            ssmrch.mapKeyToMember.size() <= 5);
+            ssmrch.mapKeyToMember.size() <= 5, is(true));
         RolapMember sf =
             (RolapMember) result.getAxes()[0].getPositions().get(0).get(0);
         RolapMember ca = sf.getParentMember();
 
         List<RolapMember> list = ssmrch.mapMemberToChildren.get(
             ca, scf.getMemberChildrenConstraint(null));
-        assertNull("children of [CA] are not in cache", list);
-        list = ssmrch.mapMemberToChildren.get(
-            ca, scf.getChildByNameConstraint(
-                ca,
+        assertThat("children of [CA] are not in cache", list, nullValue());
+        list = ssmrch.mapMemberToChildren.get(ca,
+            scf.getChildByNameConstraint(ca,
                 new Id.NameSegment("San Francisco")));
-        assertNotNull("child [San Francisco] of [CA] is in cache", list);
-        assertEquals("[San Francisco] expected", sf, list.get(0));
+        assertThat("child [San Francisco] of [CA] is in cache", list, notNullValue());
+        assertThat("[San Francisco] expected", list.get(0), is(sf));
     }
 
     /**
@@ -2306,7 +2297,7 @@ public class NonEmptyTest extends BatchTestCase {
      * in the WHERE condition is not.  Its probably a bug that Mondrian does not
      * take into account [Time].[1997] when looking up [Month].
      */
-    public void testLookupMember() {
+    @Test public void testLookupMember() {
         // ok if no exception occurs
         executeQuery(
             "SELECT DESCENDANTS([Time].[1997], [Month]) ON COLUMNS FROM [Sales]");
@@ -2318,7 +2309,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Empty(B)).  Verify that there is no crash when the length of B could be
      * non-zero length before the non empty and 0 after the non empty.
      */
-    public void testNonEmptyCrossJoinList() {
+    @Test public void testNonEmptyCrossJoinList() {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, false);
         propSaver.set(propSaver.props.EnableNativeNonEmpty, false);
 
@@ -2331,7 +2322,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * SQL Optimization must be turned off in ragged hierarchies.
      */
-    public void testLookupMember2() {
+    @Test public void testLookupMember2() {
         // ok if no exception occurs
         getTestContext().withSalesRagged().executeQuery(
             "select {[Store].[USA].[Washington]} on columns from [Sales Ragged]");
@@ -2341,7 +2332,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Make sure that the Crossjoin in [Measures].[CustomerCount]
      * is not evaluated in NON EMPTY context.
      */
-    public void testCalcMemberWithNonEmptyCrossJoin() {
+    @Test public void testCalcMemberWithNonEmptyCrossJoin() {
         getConnection().getCacheControl(null).flushSchemaCache();
         Result result = executeQuery(
             "with member [Measures].[CustomerCount] as \n"
@@ -2354,10 +2345,10 @@ public class NonEmptyTest extends BatchTestCase {
         Cell c = result.getCell(new int[] {0, 0});
         // we expect 10281 customers, although there are only 20 non-empty ones
         // @see #testLevelMembers
-        assertEquals("10,281", c.getFormattedValue());
+        assertThat(c.getFormattedValue(), is("10,281"));
     }
 
-    public void testLevelMembers() {
+    @Test public void testLevelMembers() {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             // Dependency testing causes extra SQL reads, and screws up this
             // test.
@@ -2390,14 +2381,14 @@ public class NonEmptyTest extends BatchTestCase {
 
         // make sure that [Customers].[Name].Members is NOT in cache
         TupleConstraint lmc = scf.getLevelMembersConstraint(null);
-        assertNull(smrich.mapLevelToMembers.get((RolapLevel) nameLevel, lmc));
+        assertThat(smrich.mapLevelToMembers.get((RolapLevel) nameLevel, lmc), nullValue());
         // make sure that NON EMPTY [Customers].[Name].Members IS in cache
         context.setNonEmpty(true);
         lmc = scf.getLevelMembersConstraint(context);
         List<RolapMember> list =
             smrich.mapLevelToMembers.get((RolapLevel) nameLevel, lmc);
-        assertNotNull(list);
-        assertEquals(20, list.size());
+        assertThat(list, notNullValue());
+        assertThat(list.size(), is(20));
 
         // make sure that the parent/child for the context are cached
 
@@ -2408,7 +2399,7 @@ public class NonEmptyTest extends BatchTestCase {
 
         // lookup all children of [Burlingame] -> not in cache
         MemberChildrenConstraint mcc = scf.getMemberChildrenConstraint(null);
-        assertNull(ssmrch.mapMemberToChildren.get(parent, mcc));
+        assertThat(ssmrch.mapMemberToChildren.get(parent, mcc), nullValue());
 
         if (!Bug.PopulateChildrenCacheOnLevelMembersFixed) {
             return;
@@ -2417,11 +2408,11 @@ public class NonEmptyTest extends BatchTestCase {
         // lookup NON EMPTY children of [Burlingame] -> yes these are in cache
         mcc = scf.getMemberChildrenConstraint(context);
         list = smrich.mapMemberToChildren.get(parent, mcc);
-        assertNotNull(list);
-        assertTrue(list.contains(member));
+        assertThat(list, notNullValue());
+        assertThat(list.contains(member), is(true));
     }
 
-    public void testLevelMembersWithoutNonEmpty() {
+    @Test public void testLevelMembersWithoutNonEmpty() {
         SmartMemberReader smr = getSmartMemberReader("Customers");
 
         MemberCacheHelper smrch = smr.cacheHelper;
@@ -2450,13 +2441,13 @@ public class NonEmptyTest extends BatchTestCase {
         TupleConstraint lmc = scf.getLevelMembersConstraint(null);
         List<RolapMember> list =
             smrch.mapLevelToMembers.get((RolapLevel) nameLevel, lmc);
-        assertNotNull(list);
-        assertEquals(10281, list.size());
+        assertThat(list, notNullValue());
+        assertThat(list.size(), is(10281));
 
         // make sure that NON EMPTY [Customers].[Name].Members is NOT in cache
         context.setNonEmpty(true);
         lmc = scf.getLevelMembersConstraint(context);
-        assertNull(smrch.mapLevelToMembers.get((RolapLevel) nameLevel, lmc));
+        assertThat(smrch.mapLevelToMembers.get((RolapLevel) nameLevel, lmc), nullValue());
 
         // make sure that the parent/child for the context are cached
 
@@ -2472,20 +2463,20 @@ public class NonEmptyTest extends BatchTestCase {
         MemberChildrenConstraint mcc =
             scf.getMemberChildrenConstraint(null);
         list = ssmrch.mapMemberToChildren.get(parent, mcc);
-        assertNotNull(list);
-        assertTrue(list.contains(member));
+        assertThat(list, notNullValue());
+        assertThat(list.contains(member), is(true));
 
         // lookup NON EMPTY children of [Burlingame] -> not in cache
         mcc = scf.getMemberChildrenConstraint(context);
         list = ssmrch.mapMemberToChildren.get(parent, mcc);
-        assertNull(list);
+        assertThat(list, nullValue());
     }
 
     /**
      * Tests that {@code Dimension.Members} exploits the same optimization as
      * {@code Level.Members}.
      */
-    public void testDimensionMembers() {
+    @Test public void testDimensionMembers() {
         // No query should return more than 20 rows. (1 row at 'all' level,
         // 1 row at nation level, 1 at state level, 20 at city level, and 11
         // at customers level = 34.)
@@ -2504,7 +2495,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Tests non empty children of rolap member
      */
-    public void testMemberChildrenOfRolapMember() {
+    @Test public void testMemberChildrenOfRolapMember() {
         LimitedQuery c = new LimitedQuery(
             getTestContext(),
             50,
@@ -2520,7 +2511,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Tests non empty children of All member
      */
-    public void testMemberChildrenOfAllMember() {
+    @Test public void testMemberChildrenOfAllMember() {
         LimitedQuery c = new LimitedQuery(
             getTestContext(),
             50,
@@ -2534,7 +2525,7 @@ public class NonEmptyTest extends BatchTestCase {
     /**
      * Tests non empty children of All member w/o WHERE clause
      */
-    public void testMemberChildrenNoWhere() {
+    @Test public void testMemberChildrenNoWhere() {
         // The time dimension is joined because there is no (All) level in the
         // Time hierarchy:
         //
@@ -2569,7 +2560,7 @@ public class NonEmptyTest extends BatchTestCase {
      * to be found, because it incorrectly constrains on the level's key column
      * rather than name column.
      */
-    public void testMemberChildrenNameCol() {
+    @Test public void testMemberChildrenNameCol() {
         // Expression dependency testing causes false negatives.
         if (propSaver.props.TestExpDependencies.get() > 0) {
             return;
@@ -2594,7 +2585,7 @@ public class NonEmptyTest extends BatchTestCase {
      * <p>This should behave the same as if <code>[member from left
      * hierarchy]</code> was put into the slicer.
      */
-    public void testCrossjoin() {
+    @Test public void testCrossjoin() {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             // Dependency testing causes extra SQL reads, and makes this
             // test fail.
@@ -2620,7 +2611,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Ensures that Descendants as a side effect collects MemberChildren that
      * may be looked up in the cache.
      */
-    public void testNonEmptyDescendants() {
+    @Test public void testNonEmptyDescendants() {
         // Don't run the test if we're testing expression dependencies.
         // Expression dependencies cause spurious interval calls to
         // 'level.getMembers()' which create false negatives in this test.
@@ -2655,15 +2646,15 @@ public class NonEmptyTest extends BatchTestCase {
 
         // all children of burlingame are not in cache
         MemberChildrenConstraint mcc = scf.getMemberChildrenConstraint(null);
-        assertNull(ssmrch.mapMemberToChildren.get(burlingame, mcc));
+        assertThat(ssmrch.mapMemberToChildren.get(burlingame, mcc), nullValue());
         // but non empty children is
         RolapEvaluator evaluator = getEvaluator(result, new int[] {0, 0});
         evaluator.setNonEmpty(true);
         mcc = scf.getMemberChildrenConstraint(evaluator);
         List<RolapMember> list =
             ssmrch.mapMemberToChildren.get(burlingame, mcc);
-        assertNotNull(list);
-        assertTrue(list.contains(peggy));
+        assertThat(list, notNullValue());
+        assertThat(list.contains(peggy), is(true));
 
         // now we run the same query again, this time everything must come out
         // of the cache
@@ -2687,7 +2678,7 @@ public class NonEmptyTest extends BatchTestCase {
         }
     }
 
-    public void testBug1412384() {
+    @Test public void testBug1412384() {
         // Bug 1412384 causes a NPE in SqlConstraintUtils.
         assertQueryReturns(
             "select NON EMPTY {[Time].[1997]} ON COLUMNS,\n"
@@ -2706,7 +2697,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #1: $339,610.90\n");
     }
 
-    public void testVirtualCubeCrossJoin() {
+    @Test public void testVirtualCubeCrossJoin() {
         checkNative(
             getTestContext(),
             18,
@@ -2718,7 +2709,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testVirtualCubeNonEmptyCrossJoin() {
+    @Test public void testVirtualCubeNonEmptyCrossJoin() {
         checkNative(
             getTestContext(),
             18,
@@ -2730,7 +2721,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testVirtualCubeNonEmptyCrossJoin3Args() {
+    @Test public void testVirtualCubeNonEmptyCrossJoin3Args() {
         checkNative(
             getTestContext(),
             3,
@@ -2743,7 +2734,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testNotNativeVirtualCubeCrossJoin1() {
+    @Test public void testNotNativeVirtualCubeCrossJoin1() {
         final TestContext testContext = getTestContext();
         switch (testContext.getDialect().getDatabaseProduct()) {
         case INFOBRIGHT:
@@ -2767,7 +2758,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testNotNativeVirtualCubeCrossJoin2() {
+    @Test public void testNotNativeVirtualCubeCrossJoin2() {
         // native cross join cannot be used due to the range operator
         // TODO: this query appears to be supported in native
         checkNotNative(
@@ -2780,7 +2771,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testNotNativeVirtualCubeCrossJoinUnsupported() {
+    @Test public void testNotNativeVirtualCubeCrossJoinUnsupported() {
         // TODO: test appears to be supported in native
         final TestContext testContext = getTestContext();
         switch (testContext.getDialect().getDatabaseProduct()) {
@@ -2836,8 +2827,9 @@ public class NonEmptyTest extends BatchTestCase {
             while (t.getCause() != null && t != t.getCause()) {
                 t = t.getCause();
             }
+            org.junit.Assert.assertThat(t, instanceOf(NativeEvaluationUnsupportedException.class));
             if (!(t instanceof NativeEvaluationUnsupportedException)) {
-                fail();
+                fail("expected exception");
             }
             // Expected
         } finally {
@@ -2848,7 +2840,7 @@ public class NonEmptyTest extends BatchTestCase {
         // should have gotten one ERROR
         int nEvents = countFilteredEvents(
             events, org.apache.log4j.Level.ERROR, expectedMessage);
-        assertEquals("logged error count check", 1, nEvents);
+        assertThat("logged error count check", nEvents, is(1));
         events.clear();
 
         // verify that exactly one warning is posted but execution succeeds
@@ -2864,7 +2856,7 @@ public class NonEmptyTest extends BatchTestCase {
         // should have gotten one WARN
         nEvents = countFilteredEvents(
             events, org.apache.log4j.Level.WARN, expectedMessage);
-        assertEquals("logged warning count check", 1, nEvents);
+        assertThat("logged warning count check", nEvents, is(1));
         events.clear();
 
         // verify that no warning is posted if native evaluation is
@@ -2882,7 +2874,7 @@ public class NonEmptyTest extends BatchTestCase {
         // should have gotten no WARN
         nEvents = countFilteredEvents(
             events, org.apache.log4j.Level.WARN, expectedMessage);
-        assertEquals("logged warning count check", 0, nEvents);
+        assertThat("logged warning count check", nEvents, is(0));
         events.clear();
 
         // no biggie if we don't get here for some reason; just being
@@ -2908,7 +2900,7 @@ public class NonEmptyTest extends BatchTestCase {
         return filteredEventCount;
     }
 
-    public void testVirtualCubeCrossJoinCalculatedMember1() {
+    @Test public void testVirtualCubeCrossJoinCalculatedMember1() {
         // calculated member appears in query
         checkNative(
             getTestContext(),
@@ -2923,7 +2915,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testVirtualCubeCrossJoinCalculatedMember2() {
+    @Test public void testVirtualCubeCrossJoinCalculatedMember2() {
         // calculated member defined in schema
         checkNative(
             getTestContext(),
@@ -2936,7 +2928,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testNotNativeVirtualCubeCrossJoinCalculatedMember() {
+    @Test public void testNotNativeVirtualCubeCrossJoinCalculatedMember() {
         // native cross join cannot be used due to CurrentMember in the
         // calculated member
         checkNotNative(
@@ -2951,7 +2943,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void testCjEnumCalcMembers() {
+    @Test public void testCjEnumCalcMembers() {
         // 3 cross joins -- 2 of the 4 arguments to the cross joins are
         // enumerated sets with calculated members
         // should be non-native due to the fix to testCjEnumCalcMembersBug()
@@ -2986,7 +2978,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Sales]");
     }
 
-    public void testCjEnumCalcMembersBug() {
+    @Test public void testCjEnumCalcMembersBug() {
         // make sure NECJ is forced to be non-native
         // before the fix, the query is natively evaluated and result
         // has empty rows for [Store Type].[All Store Types].[HeadQuarters]
@@ -3030,7 +3022,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #8: 50,236\n");
     }
 
-    public void testCjEnumEmptyCalcMembers() {
+    @Test public void testCjEnumEmptyCalcMembers() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 3;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -3060,7 +3052,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "from [Sales]");
     }
 
-    public void testCjUnionEnumCalcMembers() {
+    @Test public void testCjUnionEnumCalcMembers() {
         // non-native due to the fix to testCjEnumCalcMembersBug()
         checkNotNative(
             getTestContext(),
@@ -3084,7 +3076,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Tests the behavior if you have NON EMPTY on both axes, and the default
      * member of a hierarchy is not 'all' or the first child.
      */
-    public void testNonEmptyWithWeirdDefaultMember() {
+    @Test public void testNonEmptyWithWeirdDefaultMember() {
         if (!Bug.BugMondrian229Fixed) {
             return;
         }
@@ -3129,7 +3121,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #1: 21\n");
     }
 
-    public void testCrossJoinNamedSets1() {
+    @Test public void testCrossJoinNamedSets1() {
         checkNative(
             getTestContext(),
             3,
@@ -3142,7 +3134,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "on rows from [Sales]");
     }
 
-    public void testCrossJoinNamedSets2() {
+    @Test public void testCrossJoinNamedSets2() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 3;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -3163,7 +3155,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "[Sales]");
     }
 
-    public void testCrossJoinSetWithDifferentParents() {
+    @Test public void testCrossJoinSetWithDifferentParents() {
         // Verify that only the members explicitly referenced in the set
         // are returned.  Note that different members are referenced in
         // each level in the time dimension.
@@ -3177,7 +3169,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "{[Time].[1997].[Q1], [Time].[1998].[Q2]}) on rows from Sales");
     }
 
-    public void testCrossJoinSetWithCrossProdMembers() {
+    @Test public void testCrossJoinSetWithCrossProdMembers() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 6;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -3197,7 +3189,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "on rows from Sales");
     }
 
-    public void testCrossJoinSetWithSameParent() {
+    @Test public void testCrossJoinSetWithSameParent() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 2;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -3217,7 +3209,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "on rows from Sales");
     }
 
-    public void testCrossJoinSetWithUniqueLevel() {
+    @Test public void testCrossJoinSetWithUniqueLevel() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 2;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -3237,7 +3229,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "on rows from Sales");
     }
 
-    public void testCrossJoinMultiInExprAllMember() {
+    @Test public void testCrossJoinMultiInExprAllMember() {
         checkNative(
             getTestContext(),
             10,
@@ -3250,7 +3242,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "on rows from Sales");
     }
 
-    public void testCrossJoinEvaluatorContext1() {
+    @Test public void testCrossJoinEvaluatorContext1() {
         // This test ensures that the proper measure members context is
         // set when evaluating a non-empty cross join.  The context should
         // not include the calculated measure [*TOP_BOTTOM_SET].  If it
@@ -3308,7 +3300,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #9: 29,959.28\n");
     }
 
-    public void testCrossJoinEvaluatorContext2() {
+    @Test public void testCrossJoinEvaluatorContext2() {
         // Make sure maxConstraint settting is high enough
         int minConstraints = 2;
         if (propSaver.props.MaxConstraints.get() < minConstraints) {
@@ -3378,7 +3370,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #2: 100.00%\n");
     }
 
-    public void testVCNativeCJWithIsEmptyOnMeasure() {
+    @Test public void testVCNativeCJWithIsEmptyOnMeasure() {
         // Don't use checkNative method here because in the case where
         // native cross join isn't used, the query causes a stack overflow.
         //
@@ -3410,7 +3402,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #0: 12,395\n");
     }
 
-    public void testVCNativeCJWithTopPercent() {
+    @Test public void testVCNativeCJWithTopPercent() {
         // The reference to [Store Sales] inside the topPercent function
         // should not prevent native cross joins from being used
         checkNative(
@@ -3423,7 +3415,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "[Warehouse and Sales]");
     }
 
-    public void testVCOrdinalExpression() {
+    @Test public void testVCOrdinalExpression() {
         // [Customers].[Name] is an ordinal expression.  Make sure ordering
         // is done on the column corresponding to that expression.
         checkNative(
@@ -3442,7 +3434,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Test for bug #1696772
      * Modified which calculations are tested for non native, non empty joins
      */
-    public void testNonEmptyWithCalcMeasure() {
+    @Test public void testNonEmptyWithCalcMeasure() {
         checkNative(
             getTestContext(),
             15,
@@ -3473,7 +3465,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "From [Sales]");
     }
 
-    public void testCalculatedSlicerMember() {
+    @Test public void testCalculatedSlicerMember() {
         // This test verifies that members(the FILTER members in the query
         // below) on the slicer are ignored in CrossJoin emptiness check.
         // Otherwise, if they are not ignored, stack over flow will occur
@@ -3507,11 +3499,11 @@ public class NonEmptyTest extends BatchTestCase {
     // slicer is correctly ignored for purposes of evaluating NECJ emptiness,
     // regardless of whether evaluation is native or non-native
 
-    public void testIndependentSlicerMemberNonNative() {
+    @Test public void testIndependentSlicerMemberNonNative() {
         checkIndependentSlicerMemberNative(false);
     }
 
-    public void testIndependentSlicerMemberNative() {
+    @Test public void testIndependentSlicerMemberNative() {
         checkIndependentSlicerMemberNative(true);
     }
 
@@ -3539,7 +3531,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #0: \n");
     }
 
-    public void testDependentSlicerMemberNonNative() {
+    @Test public void testDependentSlicerMemberNonNative() {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, false);
 
         // Get a fresh connection; Otherwise the mondrian property setting
@@ -3557,7 +3549,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Axis #1:\n");
     }
 
-    public void testDependentSlicerMemberNative() {
+    @Test public void testDependentSlicerMemberNative() {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
 
         // Get a fresh connection; Otherwise the mondrian property setting
@@ -3579,7 +3571,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Tests bug 1791609, "CrossJoin non empty optimizer eliminates calculated
      * member".
      */
-    public void testBug1791609NonEmptyCrossJoinEliminatesCalcMember() {
+    @Test public void testBug1791609NonEmptyCrossJoinEliminatesCalcMember() {
         if (!Bug.BugMondrian328Fixed) {
             return;
         }
@@ -3682,7 +3674,7 @@ public class NonEmptyTest extends BatchTestCase {
      * Testcase for bug
      * 1722959, "NON EMPTY Level.MEMBERS fails if nonempty.enable=false"
      */
-    public void testNonEmptyLevelMembers() {
+    @Test public void testNonEmptyLevelMembers() {
         propSaver.set(propSaver.props.EnableNativeNonEmpty, false);
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, true);
         assertQueryReturns(
@@ -3775,7 +3767,7 @@ public class NonEmptyTest extends BatchTestCase {
         }
     }
 
-    public void testNonEmptyResults() {
+    @Test public void testNonEmptyResults() {
         // This unit test was failing with a NullPointerException in JPivot
         // after the highcardinality feature was added, I've included it
         // here to make sure it continues to work.
@@ -3794,7 +3786,7 @@ public class NonEmptyTest extends BatchTestCase {
      * MONDRIAN-412, "NON EMPTY and Filter() breaking aggregate
      * calculations"</a>.
      */
-    public void testBugMondrian412() {
+    @Test public void testBugMondrian412() {
         TestContext ctx = getTestContext();
         ctx.assertQueryReturns(
             "with member [Measures].[AvgRevenue] as 'Avg([Store].[Store Name].Members, [Measures].[Store Sales])' "
@@ -3836,7 +3828,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #8: 43,479.86\n");
     }
 
-    public void testNonEmptyOnVirtualCubeWithNonJoiningDimension() {
+    @Test public void testNonEmptyOnVirtualCubeWithNonJoiningDimension() {
         assertQueryReturns(
             "select non empty {[Warehouse].[Warehouse name].members} on 0,"
             + "{[Measures].[Units Shipped],[Measures].[Unit Sales]} on 1"
@@ -3888,7 +3880,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #1: \n");
     }
 
-    public void testNonEmptyOnNonJoiningValidMeasure() {
+    @Test public void testNonEmptyOnNonJoiningValidMeasure() {
         assertQueryReturns(
             "with member [Measures].[vm] as 'ValidMeasure([Measures].[Unit Sales])'"
             + "select non empty {[Warehouse].[Warehouse name].members} on 0,"
@@ -3941,7 +3933,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #1: 266,773\n");
     }
 
-    public void testCrossjoinWithTwoDimensionsJoiningToOppositeBaseCubes() {
+    @Test public void testCrossjoinWithTwoDimensionsJoiningToOppositeBaseCubes() {
         assertQueryReturns(
             "with member [Measures].[vm] as 'ValidMeasure([Measures].[Unit Sales])'\n"
             + "select non empty Crossjoin([Warehouse].[Warehouse Name].members, [Gender].[Gender].members) on 0,\n"
@@ -3955,7 +3947,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "{[Measures].[vm]}\n");
     }
 
-    public void testCrossjoinWithOneDimensionThatDoesNotJoinToBothBaseCubes() {
+    @Test public void testCrossjoinWithOneDimensionThatDoesNotJoinToBothBaseCubes() {
         assertQueryReturns(
             "with member [Measures].[vm] as 'ValidMeasure([Measures].[Units Shipped])'"
             + "select non empty Crossjoin([Store].[Store Name].members, [Gender].[Gender].members) on 0,"
@@ -4047,7 +4039,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #1: 10589.0\n");
     }
 
-    public void testLeafMembersOfParentChildDimensionAreNativelyEvaluated() {
+    @Test public void testLeafMembersOfParentChildDimensionAreNativelyEvaluated() {
         if (!Bug.ReferenceLinkNotImplementedFixed) {
             return;
         }
@@ -4069,7 +4061,7 @@ public class NonEmptyTest extends BatchTestCase {
             + ") on 0 from hr");
     }
 
-    public void testNonLeafMembersOfPCDimensionAreNotNativelyEvaluated() {
+    @Test public void testNonLeafMembersOfPCDimensionAreNotNativelyEvaluated() {
         if (!Bug.ReferenceLinkNotImplementedFixed) {
             return;
         }
@@ -4091,7 +4083,7 @@ public class NonEmptyTest extends BatchTestCase {
             + ") on 0 from hr");
     }
 
-    public void testNativeWithOverriddenNullMemberRepAndNullConstraint() {
+    @Test public void testNativeWithOverriddenNullMemberRepAndNullConstraint() {
         String preMdx = "SELECT FROM [Sales]";
 
         String mdx =
@@ -4117,7 +4109,7 @@ public class NonEmptyTest extends BatchTestCase {
      * MONDRIAN-321, "CrossJoin has no nulls when
      * EnableNativeNonEmpty=true"</a>.
      */
-    public void testBugMondrian321() {
+    @Test public void testBugMondrian321() {
         assertQueryReturns(
             "WITH SET [#DataSet#] AS 'Crossjoin({Descendants([Customers].[All Customers], 2)}, {[Product].[All Products]})' \n"
             + "SELECT {[Measures].[Unit Sales], [Measures].[Store Sales]} on columns, \n"
@@ -4169,7 +4161,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #12: 263,793.22\n");
     }
 
-    public void testNativeCrossjoinWillConstrainUsingArgsFromAllAxes() {
+    @Test public void testNativeCrossjoinWillConstrainUsingArgsFromAllAxes() {
         final String mdx =
             "select "
             + "non empty Crossjoin({[Gender].[Gender].[F]},{[Measures].[Unit Sales]}) on 0,"
@@ -4214,7 +4206,7 @@ public class NonEmptyTest extends BatchTestCase {
             new SqlPattern[]{mysqlPattern});
     }
 
-    public void testLevelMembersWillConstrainUsingArgsFromAllAxes() {
+    @Test public void testLevelMembersWillConstrainUsingArgsFromAllAxes() {
         if (!Bug.FetchMembersOptimizationFixed) {
             return;
         }
@@ -4254,7 +4246,7 @@ public class NonEmptyTest extends BatchTestCase {
     }
 
 
-    public void testNativeCrossjoinWillExpandFirstLastChild() {
+    @Test public void testNativeCrossjoinWillExpandFirstLastChild() {
         final String mdx = "select "
             + "non empty Crossjoin({[Gender].firstChild,[Gender].lastChild},{[Measures].[Unit Sales]}) on 0,"
             + "non empty Crossjoin({[Time].[1997]},{[Promotions].[All Promotions].[Bag Stuffers],[Promotions].[All Promotions].[Best Savings]}) on 1"
@@ -4294,7 +4286,7 @@ public class NonEmptyTest extends BatchTestCase {
         assertQuerySql(getTestContext(), mdx, new SqlPattern[]{mysqlPattern});
     }
 
-    public void testNativeCrossjoinWillExpandLagInNamedSet() {
+    @Test public void testNativeCrossjoinWillExpandLagInNamedSet() {
         final String mdx =
             "with set [blah] as '{[Gender].lastChild.lag(1),[Gender].[M]}' "
             + "select "
@@ -4336,7 +4328,7 @@ public class NonEmptyTest extends BatchTestCase {
         assertQuerySql(getTestContext(), mdx, new SqlPattern[]{mysqlPattern});
     }
 
-    public void testConstrainedMeasureGetsOptimized() {
+    @Test public void testConstrainedMeasureGetsOptimized() {
         if (!Bug.FetchMembersOptimizationFixed) {
             return;
         }
@@ -4392,7 +4384,7 @@ public class NonEmptyTest extends BatchTestCase {
                     mysqlQuery.length())});
     }
 
-    public void testNestedMeasureConstraintsGetOptimized() {
+    @Test public void testNestedMeasureConstraintsGetOptimized() {
         if (!Bug.FetchMembersOptimizationFixed) {
             return;
         }
@@ -4478,7 +4470,7 @@ public class NonEmptyTest extends BatchTestCase {
             new SqlPattern[]{pattern});
     }
 
-    public void testNonUniformNestedMeasureConstraintsGetOptimized() {
+    @Test public void testNonUniformNestedMeasureConstraintsGetOptimized() {
         if (!Bug.FetchMembersOptimizationFixed) {
             return;
         }
@@ -4540,7 +4532,7 @@ public class NonEmptyTest extends BatchTestCase {
             new SqlPattern[]{pattern});
     }
 
-    public void testNonUniformConstraintsAreNotUsedForOptimization() {
+    @Test public void testNonUniformConstraintsAreNotUsedForOptimization() {
         String mdx =
             "with member [Measures].[unit sales Male] as '([Measures].[Unit Sales],[Gender].[Gender].[M])' "
             + "member [Measures].[unit sales Married] as '([Measures].[Unit Sales],[Marital Status].[Marital Status].[M])' "
@@ -4589,7 +4581,7 @@ public class NonEmptyTest extends BatchTestCase {
             getTestContext(), mdx, new SqlPattern[]{pattern},true, false, true);
     }
 
-    public void testMeasureConstraintsInACrossjoinHaveCorrectResults() {
+    @Test public void testMeasureConstraintsInACrossjoinHaveCorrectResults() {
         //http://jira.pentaho.com/browse/MONDRIAN-715
         propSaver.set(propSaver.props.EnableNativeNonEmpty, true);
         String mdx =
@@ -4619,7 +4611,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Row #1: 15,649.64\n");
     }
 
-    public void testContextAtAllWorksWithConstraint() {
+    @Test public void testContextAtAllWorksWithConstraint() {
         TestContext ctx = TestContext.instance().legacy().create(
             null,
             "<Cube name=\"onlyGender\"> \n"
@@ -4662,7 +4654,7 @@ public class NonEmptyTest extends BatchTestCase {
      * default measure is calculated, it would have already been removed from
      * the list by removeCalculatedMembers, and thus the assumption was wrong.
      */
-    public void testCalculatedDefaultMeasureOnVirtualCubeNoThrowException() {
+    @Test public void testCalculatedDefaultMeasureOnVirtualCubeNoThrowException() {
         propSaver.set(propSaver.props.EnableNativeNonEmpty, true);
         final TestContext context =
             TestContext.instance().withSchema(
@@ -4722,7 +4714,7 @@ public class NonEmptyTest extends BatchTestCase {
      * MONDRIAN-734, "Exception thrown when creating a "New Analysis View" with
      * JPivot"</a>.
      */
-    public void testExpandNonNativeWithEnableNativeCrossJoin() {
+    @Test public void testExpandNonNativeWithEnableNativeCrossJoin() {
         propSaver.set(propSaver.props.EnableNativeCrossJoin, true);
         propSaver.set(propSaver.props.ExpandNonNative, true);
 
@@ -4752,7 +4744,7 @@ public class NonEmptyTest extends BatchTestCase {
      * MONDRIAN-695, "Unexpected data set may returned when MDX slicer contains
      * multiple dimensions"</a>.
      */
-    public void testNonEmptyCJWithMultiPositionSlicer() {
+    @Test public void testNonEmptyCJWithMultiPositionSlicer() {
         final String mdx =
             "select NON EMPTY NonEmptyCrossJoin([Measures].[Sales Count], [Store].[USA].Children) ON COLUMNS, "
             + "       NON EMPTY CrossJoin({[Customers].[All Customers]}, {([Promotions].[Bag Stuffers] : [Promotions].[Bye Bye Baby])}) ON ROWS "
@@ -4821,7 +4813,7 @@ public class NonEmptyTest extends BatchTestCase {
             (RolapCubeHierarchy) cube.lookupHierarchy(
                 new Id.NameSegment(hierName, Id.Quoting.UNQUOTED),
                 false);
-        assertNotNull(hierarchy);
+        assertThat(hierarchy, notNullValue());
         return (SmartMemberReader) RolapSchemaLoader.createMemberReader(
             hierarchy, schemaReader.getRole());
     }
@@ -4840,7 +4832,7 @@ public class NonEmptyTest extends BatchTestCase {
         RolapCubeHierarchy hierarchy =
             (RolapCubeHierarchy) cube.lookupHierarchy(
                 new Id.NameSegment(hierName, Id.Quoting.UNQUOTED), false);
-        assertNotNull(hierarchy);
+        assertThat(hierarchy, notNullValue());
         return (SmartMemberReader) RolapSchemaLoader.createMemberReader(
             hierarchy, schemaReader.getRole());
     }
@@ -4852,7 +4844,7 @@ public class NonEmptyTest extends BatchTestCase {
         return (RolapEvaluator) ((RolapResult) res).getEvaluator(pos);
     }
 
-    public void testFilterChildlessSnowflakeMembers2() {
+    @Test public void testFilterChildlessSnowflakeMembers2() {
         if (propSaver.props.FilterChildlessSnowflakeMembers.get()
             || !Bug.ShowChildlessSnowflakeMembersFixed)
         {
@@ -4869,7 +4861,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "Axis #1:\n");
     }
 
-    public void testFilterChildlessSnowflakeMembers() {
+    @Test public void testFilterChildlessSnowflakeMembers() {
         if (!Bug.ShowChildlessSnowflakeMembersFixed) {
             return;
         }
@@ -4979,7 +4971,7 @@ public class NonEmptyTest extends BatchTestCase {
     * CrossJoinArgFactory.allArgsCheapToExpand when defining a NamedSet as
     * another NamedSet"</a>.
     */
-    public void testBugMondrian897DoubleNamedSetDefinitions() {
+    @Test public void testBugMondrian897DoubleNamedSetDefinitions() {
        TestContext ctx = getTestContext();
        ctx.assertQueryReturns(
            "WITH SET [CustomerSet] as {[Customers].[Canada].[BC].[Burnaby].[Alexandra Wellington], [Customers].[USA].[WA].[Tacoma].[Eric Coleman]} "
@@ -5014,7 +5006,7 @@ public class NonEmptyTest extends BatchTestCase {
      * union to be different
      *
      */
-    public void testMondrian1658() {
+    @Test public void testMondrian1658() {
         propSaver.set(MondrianProperties.instance().ExpandNonNative, true);
         String mdx =
             "Select\n"
@@ -5047,7 +5039,7 @@ public class NonEmptyTest extends BatchTestCase {
      * <p>RolapNativeFilter would force the join to the fact table.
      * Some queries don't need to be joined to it and gain in performance.
      */
-    public void testMondrian1133() {
+    @Test public void testMondrian1133() {
         propSaver.set(
             propSaver.props.UseAggregates,
             false);
@@ -5233,7 +5225,7 @@ public class NonEmptyTest extends BatchTestCase {
      *
      * <p>This one is for agg tables turned on.
      */
-    public void testMondrian1133WithAggs() {
+    @Test public void testMondrian1133WithAggs() {
         propSaver.set(
             propSaver.props.UseAggregates,
             true);

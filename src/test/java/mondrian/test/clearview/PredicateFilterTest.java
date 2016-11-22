@@ -13,6 +13,10 @@ import mondrian.test.DiffRepository;
 
 import junit.framework.TestSuite;
 
+import org.junit.runners.Parameterized;
+
+import java.util.List;
+
 /**
  * <code>PredicateFilterTest</code> is a test suite which tests scenarios of
  * filtering in the FoodMart database.
@@ -23,14 +27,6 @@ import junit.framework.TestSuite;
  */
 public class PredicateFilterTest extends ClearViewBase {
 
-    public PredicateFilterTest() {
-        super();
-    }
-
-    public PredicateFilterTest(String name) {
-        super(name);
-    }
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -39,8 +35,9 @@ public class PredicateFilterTest extends ClearViewBase {
         return DiffRepository.lookup(PredicateFilterTest.class);
     }
 
-    public static TestSuite suite() {
-        return constructSuite(getDiffReposStatic(), PredicateFilterTest.class);
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
+        return DiffRepository.parameters(PredicateFilterTest.class);
     }
 
 }

@@ -24,8 +24,8 @@ import mondrian.spi.*;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
 import mondrian.util.Pair;
 
+import org.junit.Test;
 import junit.framework.*;
-import junit.framework.Test;
 
 import org.apache.log4j.Logger;
 
@@ -42,6 +42,12 @@ import java.sql.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
+
+import static mondrian.test.FoodMartTestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * <code>TestContext</code> is a singleton class which contains the information
@@ -227,10 +233,10 @@ public class TestContext {
      * @param regexp Test case regular expression
      * @return Predicate that accepts tests with the given name
      */
-    public static Util.Predicate1<Test> patternPredicate(final String regexp) {
+    public static Util.Predicate1<junit.framework.Test> patternPredicate(final String regexp) {
         final Pattern pattern = Pattern.compile(regexp);
-        return new Util.Predicate1<Test>() {
-            public boolean test(Test test) {
+        return new Util.Predicate1<junit.framework.Test>() {
+            public boolean test(junit.framework.Test test) {
                 if (!(test instanceof TestCase)) {
                     return true;
                 }
@@ -776,22 +782,22 @@ public class TestContext {
 
             // Check that the dummy value used to represent null cells never
             // leaks into the outside world.
-            Assert.assertNotSame(value, Util.nullValue);
-            Assert.assertFalse(
-                value instanceof Number
-                && ((Number) value).doubleValue() == FunUtil.DoubleNull);
+            assertThat(value, not(sameInstance(Util.nullValue)));
+            assertThat(value instanceof Number
+                && ((Number) value).doubleValue() == FunUtil.DoubleNull,
+                is(false));
 
             // Similarly empty values.
-            Assert.assertNotSame(value, Util.EmptyValue);
-            Assert.assertFalse(
-                value instanceof Number
-                && ((Number) value).doubleValue() == FunUtil.DoubleEmpty);
+            assertThat(Util.EmptyValue, not(sameInstance(value)));
+            assertThat(value instanceof Number
+                && ((Number) value).doubleValue() == FunUtil.DoubleEmpty,
+                is(false));
 
             // Cells should be null if and only if they are null or empty.
             if (cell.getValue() == null) {
-                Assert.assertTrue(cell.isNull());
+                assertTrue(cell.isNull());
             } else {
-                Assert.assertFalse(cell.isNull());
+                assertThat(cell.isNull(), is(false));
             }
         }
 
@@ -1645,7 +1651,7 @@ public class TestContext {
      */
     public static TestSuite copySuite(
         TestSuite suite,
-        Util.Predicate1<Test> testPattern)
+        Util.Predicate1<junit.framework.Test> testPattern)
     {
         TestSuite newSuite = new TestSuite(suite.getName());
         copyTests(newSuite, suite, testPattern);
@@ -1662,10 +1668,10 @@ public class TestContext {
     static void copyTests(
         TestSuite targetSuite,
         TestSuite suite,
-        Util.Predicate1<Test> predicate)
+        Util.Predicate1<junit.framework.Test> predicate)
     {
         //noinspection unchecked
-        for (Test test : Collections.list((Enumeration<Test>) suite.tests())) {
+        for (junit.framework.Test test : Collections.list((Enumeration<junit.framework.Test>) suite.tests())) {
             if (!predicate.test(test)) {
                 continue;
             }

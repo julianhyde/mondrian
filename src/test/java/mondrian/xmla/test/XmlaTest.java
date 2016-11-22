@@ -17,12 +17,19 @@ import mondrian.xmla.*;
 import mondrian.xmla.impl.DefaultXmlaRequest;
 import mondrian.xmla.impl.DefaultXmlaResponse;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import junit.framework.*;
 
 import org.apache.log4j.Logger;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.rules.TestName;
+import org.junit.runners.Parameterized;
+
 import org.w3c.dom.*;
 
 import java.io.*;
@@ -41,9 +48,11 @@ import javax.xml.transform.stream.StreamResult;
  * @author Gang Chen
  */
 public class XmlaTest extends TestCase {
+    @Rule public final TestName name = new TestName();
 
-    private static final Logger LOGGER =
-            Logger.getLogger(XmlaTest.class);
+    @Parameterized.Parameter public String testCaseName;
+
+    private static final Logger LOGGER = Logger.getLogger(XmlaTest.class);
 
     static {
         XMLUnit.setControlParser(
@@ -58,15 +67,9 @@ public class XmlaTest extends TestCase {
     private XmlaHandler handler;
     private MondrianServer server;
 
-    public XmlaTest(String name) {
-        super(name);
-    }
-
-    // implement TestCase
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         DiffRepository diffRepos = getDiffRepos();
-        diffRepos.setCurrentTestCaseName(getName());
+        diffRepos.setCurrentTestCaseName(testCaseName);
         server = MondrianServer.createWithRepository(
             new StringRepositoryContentFinder(
                 context.getDataSourcesString()),
@@ -77,14 +80,12 @@ public class XmlaTest extends TestCase {
         XMLUnit.setIgnoreWhitespace(false);
     }
 
-    // implement TestCase
-    protected void tearDown() throws Exception {
+    @After public void tearDown() throws Exception {
         DiffRepository diffRepos = getDiffRepos();
         diffRepos.setCurrentTestCaseName(null);
         server.shutdown();
         server = null;
         handler = null;
-        super.tearDown();
     }
 
     private static DiffRepository getDiffRepos() {
@@ -176,7 +177,8 @@ public class XmlaTest extends TestCase {
         LOGGER.debug("Found " + testCaseNames.size() + " XML/A test cases");
 
         for (String name : testCaseNames) {
-            suite.addTest(new XmlaTest(name));
+            assert false; // TODO:
+            suite.addTest(new XmlaTest(/*name*/));
         }
 
         suite.addTestSuite(OtherTest.class);
@@ -188,7 +190,7 @@ public class XmlaTest extends TestCase {
      * Non diff-based unit tests for XML/A support.
      */
     public static class OtherTest extends TestCase {
-        public void testEncodeElementName() {
+        @Test public void testEncodeElementName() {
             final XmlaUtil.ElementNameEncoder encoder =
                 XmlaUtil.ElementNameEncoder.INSTANCE;
 
@@ -208,7 +210,7 @@ public class XmlaTest extends TestCase {
         /**
          * Unit test for {@link XmlaUtil#chooseResponseMimeType(String)}.
          */
-        public void testAccept() {
+        @Test public void testAccept() {
             // simple
             assertEquals(
                 Enumeration.ResponseMimeType.SOAP,

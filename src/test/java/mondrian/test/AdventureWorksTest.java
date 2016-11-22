@@ -9,6 +9,8 @@
 */
 package mondrian.test;
 
+import org.junit.Test;
+
 /**
  * Unit test that uses the AdventureWorks schema by default.
  *
@@ -25,7 +27,7 @@ public class AdventureWorksTest extends FoodMartTestCase {
     }
 
     /** Simple query. */
-    public void testFoo() {
+    @Test public void testFoo() {
         assertQueryReturns(
             "select from [Internet Sales]",
             "Axis #0:\n"

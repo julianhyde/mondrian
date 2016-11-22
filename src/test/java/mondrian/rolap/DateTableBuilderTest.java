@@ -12,6 +12,7 @@ package mondrian.rolap;
 import mondrian.test.TestContext;
 import mondrian.util.DelegatingInvocationHandler;
 
+import org.junit.Test;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Proxy;
@@ -27,16 +28,8 @@ import java.util.Locale;
  *
  * @author jhyde
  */
-public class DateTableBuilderTest extends TestCase {
-    public DateTableBuilderTest() {
-        super();
-    }
-
-    public DateTableBuilderTest(String name) {
-        super(name);
-    }
-
-    public void testDatePopulater() throws SQLException {
+public class DateTableBuilderTest {
+    @Test public void testDatePopulater() throws SQLException {
         final StringBuilder buf = new StringBuilder();
         PreparedStatement pstmt = createMockPreparedStatement(buf);
         List<TimeColumnRole.Struct> roles = createStructs(buf);
@@ -120,7 +113,7 @@ public class DateTableBuilderTest extends TestCase {
      *
      * @throws SQLException on error
      */
-    public void testDatePopulater1996() throws SQLException {
+    @Test public void testDatePopulater1996() throws SQLException {
         final StringBuilder buf = new StringBuilder();
         PreparedStatement pstmt = createMockPreparedStatement(buf);
         List<TimeColumnRole.Struct> roles =
@@ -160,7 +153,7 @@ public class DateTableBuilderTest extends TestCase {
         return new Date(year - 1900, month - 1, day);
     }
 
-    public void testDatePopulaterFrench() throws SQLException {
+    @Test public void testDatePopulaterFrench() throws SQLException {
         final StringBuilder buf = new StringBuilder();
         PreparedStatement pstmt = createMockPreparedStatement(buf);
         DateTableBuilder.populate(

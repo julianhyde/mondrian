@@ -16,6 +16,12 @@ import mondrian.spi.SegmentCache;
 import mondrian.spi.SegmentHeader;
 import mondrian.test.BasicQueryTest;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +32,12 @@ import java.util.List;
  * @author LBoudreau
  */
 public class SegmentCacheTest extends BasicQueryTest {
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         getTestContext().getConnection().getCacheControl(null)
             .flushSchemaCache();
     }
 
-    public void testCompoundPredicatesCollision() {
+    @Test public void testCompoundPredicatesCollision() {
         String query =
             "SELECT [Gender].[All Gender] ON 0, [MEASURES].[CUSTOMER COUNT] ON 1 FROM SALES";
         String query2 =
@@ -60,7 +64,7 @@ public class SegmentCacheTest extends BasicQueryTest {
         assertQueryReturns(query2, result2);
     }
 
-    public void testSegmentCacheEvents() throws Exception {
+    @Test public void testSegmentCacheEvents() throws Exception {
         SegmentCache mockCache = new MockSegmentCache();
         SegmentCacheWorker testWorker =
             new SegmentCacheWorker(mockCache, null);
@@ -108,11 +112,11 @@ public class SegmentCacheTest extends BasicQueryTest {
                 "select {[Measures].[Unit Sales]} on columns from [Sales]");
             // Wait for propagation.
             Thread.sleep(2000);
-            assertEquals(2, createdHeaders.size());
-            assertEquals(0, deletedHeaders.size());
-            assertEquals("Sales", createdHeaders.get(0).cubeName);
-            assertEquals("FoodMart", createdHeaders.get(0).schemaName);
-            assertEquals("Unit Sales", createdHeaders.get(0).measureName);
+            assertThat(createdHeaders.size(), is(2));
+            assertThat(deletedHeaders.size(), is(0));
+            assertThat(createdHeaders.get(0).cubeName, is("Sales"));
+            assertThat(createdHeaders.get(0).schemaName, is("FoodMart"));
+            assertThat(createdHeaders.get(0).measureName, is("Unit Sales"));
             createdHeaders.clear();
             deletedHeaders.clear();
 
@@ -121,11 +125,11 @@ public class SegmentCacheTest extends BasicQueryTest {
 
             // Wait for propagation.
             Thread.sleep(2000);
-            assertEquals(0, createdHeaders.size());
-            assertEquals(2, deletedHeaders.size());
-            assertEquals("Sales", deletedHeaders.get(0).cubeName);
-            assertEquals("FoodMart", deletedHeaders.get(0).schemaName);
-            assertEquals("Unit Sales", deletedHeaders.get(0).measureName);
+            assertThat(createdHeaders.size(), is(0));
+            assertThat(deletedHeaders.size(), is(2));
+            assertThat(deletedHeaders.get(0).cubeName, is("Sales"));
+            assertThat(deletedHeaders.get(0).schemaName, is("FoodMart"));
+            assertThat(deletedHeaders.get(0).measureName, is("Unit Sales"));
         } finally {
             MondrianServer
                 .forConnection(getTestContext().getConnection())
