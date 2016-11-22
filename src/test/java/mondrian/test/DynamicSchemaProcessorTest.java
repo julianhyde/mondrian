@@ -147,12 +147,10 @@ public class DynamicSchemaProcessorTest
             Util.PropertyList connectInfo)
             throws Exception
         {
-            if (connectInfo.get("Catalog").indexOf("FoodMart.mondrian.xml")
-                <= 0)
-            {
-                this.replaceToken = "NoFoodmartFoundInCatalogProperty";
-            } else {
+            if (connectInfo.get("Catalog").contains("FoodMart.mondrian.xml")) {
                 this.replaceToken = "FoodmartFoundInCatalogProperty";
+            } else {
+                this.replaceToken = "NoFoodmartFoundInCatalogProperty";
             }
 
             return getSchema();

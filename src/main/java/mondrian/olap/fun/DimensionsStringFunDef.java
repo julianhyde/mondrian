@@ -62,7 +62,7 @@ class DimensionsStringFunDef extends FunDefBase {
      * @return Hierarchy
      */
     Hierarchy findHierarchy(String name, Evaluator evaluator) {
-        if (name.indexOf("[") == -1) {
+        if (!name.contains("[")) {
             name = Util.quoteMdxIdentifier(name);
         }
         OlapElement o = evaluator.getSchemaReader().lookupCompound(

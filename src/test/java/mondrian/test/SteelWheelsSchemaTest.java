@@ -957,16 +957,12 @@ public class SteelWheelsSchemaTest extends SteelWheelsTestCase {
         // TODO: another way to use composite roles
         Role minimal = schema.lookupRole("CUBE_SALES_MINIMAL");
         Role market_800 = RoleImpl.union(
-            Arrays.asList(
-                new Role[]{
-                    minimal,
-                    schema.lookupRole("DIM_MARKETAREA_MARKET_800")}));
+            Arrays.asList(minimal,
+                schema.lookupRole("DIM_MARKETAREA_MARKET_800")));
         Role market_800_850 = RoleImpl.union(
-            Arrays.asList(
-                new Role[]{
-                    minimal,
-                    schema.lookupRole("DIM_MARKETAREA_MARKET_850"),
-                    schema.lookupRole("DIM_MARKETAREA_MARKET_800")}));
+            Arrays.asList(minimal,
+                schema.lookupRole("DIM_MARKETAREA_MARKET_850"),
+                schema.lookupRole("DIM_MARKETAREA_MARKET_800")));
 
         final String nonEmptyMembersQuery =
             "select \n "

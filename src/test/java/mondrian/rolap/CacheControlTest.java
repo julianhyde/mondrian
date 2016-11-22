@@ -14,13 +14,12 @@ import mondrian.olap.CacheControl.CellRegion;
 import mondrian.spi.Dialect;
 import mondrian.test.*;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -670,9 +669,8 @@ public class CacheControlTest extends FoodMartTestCase {
             cacheControl.flush(regionProductXTime);
             fail("expected error");
         } catch (RuntimeException e) {
-            assertContains(
-                "Region of cells to be flushed must contain measures.",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Region of cells to be flushed must contain measures."));
         }
 
         final CellRegion measuresRegion =
@@ -867,17 +865,6 @@ public class CacheControlTest extends FoodMartTestCase {
     }
 
     /**
-     * Asserts that a given string contains a given pattern.
-     *
-     * @param pattern Pattern to find
-     * @param message String
-     * @throws junit.framework.AssertionFailedError if pattern is not found
-     */
-    static void assertContains(String pattern, String message) {
-        assertThat(message, message.indexOf(pattern) > -1, is(true));
-    }
-
-    /**
      * A number of negative tests, trying to do invalid things with cache
      * flushing and getting errors.
      */
@@ -916,10 +903,9 @@ public class CacheControlTest extends FoodMartTestCase {
                     regionProductBeer);
           fail("expected exception, got " + cellRegion);
         } catch (RuntimeException e) {
-            assertContains(
-                "Cannot union cell regions of different dimensionalities. "
-                + "(Dimensionalities are '[[Time].[Time]]', '[[Product].[Products]]'.)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Cannot union cell regions of different dimensionalities. "
+                    + "(Dimensionalities are '[[Time].[Time]]', '[[Product].[Products]]'.)"));
         }
 
         final CellRegion regionTimeXProduct =
@@ -941,10 +927,9 @@ public class CacheControlTest extends FoodMartTestCase {
                     regionTimeQ1);
           fail("expected exception, got " + cellRegion);
         } catch (RuntimeException e) {
-            assertContains(
-                "Cannot union cell regions of different dimensionalities. "
-                + "(Dimensionalities are '[[Time].[Time], [Product].[Products]]', '[[Time].[Time]]'.)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Cannot union cell regions of different dimensionalities. "
+                    + "(Dimensionalities are '[[Time].[Time], [Product].[Products]]', '[[Time].[Time]]'.)"));
         }
 
         // Try to combine ([Time], [Product]) region with ([Product]) region.
@@ -955,11 +940,10 @@ public class CacheControlTest extends FoodMartTestCase {
                     regionProductBeer);
           fail("expected exception, got " + cellRegion);
         } catch (RuntimeException e) {
-            assertContains(
-                "Cannot union cell regions of different dimensionalities. "
-                + "(Dimensionalities are '[[Time].[Time], [Product].[Products]]', "
-                + "'[[Product].[Products]]'.)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Cannot union cell regions of different dimensionalities. "
+                    + "(Dimensionalities are '[[Time].[Time], [Product].[Products]]', "
+                    + "'[[Product].[Products]]'.)"));
         }
 
         // Try to combine ([Time]) region with ([Time], [Product]) region.
@@ -970,10 +954,9 @@ public class CacheControlTest extends FoodMartTestCase {
                     regionTimeXProduct);
           fail("expected exception, got " + cellRegion);
         } catch (RuntimeException e) {
-            assertContains(
-                "Cannot union cell regions of different dimensionalities. "
-                + "(Dimensionalities are '[[Time].[Time]]', '[[Time].[Time], [Product].[Products]]'.)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Cannot union cell regions of different dimensionalities. "
+                    + "(Dimensionalities are '[[Time].[Time]]', '[[Time].[Time], [Product].[Products]]'.)"));
         }
 
         // Union [Time] region with itself -- OK.
@@ -1001,10 +984,9 @@ public class CacheControlTest extends FoodMartTestCase {
                     regionProductDairy);
           fail("expected exception, got " + cellRegion);
         } catch (RuntimeException e) {
-            assertContains(
-                "Cannot crossjoin cell regions which have dimensions in common."
-                + " (Dimensionalities are '[[Product].[Products]]', '[[Product].[Products]]'.)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Cannot crossjoin cell regions which have dimensions in common."
+                    + " (Dimensionalities are '[[Product].[Products]]', '[[Product].[Products]]'.)"));
         }
 
         // Cartesian product [Product] and [Time] x [Product] regions - not OK.
@@ -1015,11 +997,10 @@ public class CacheControlTest extends FoodMartTestCase {
                     regionTimeXProduct);
           fail("expected exception, got " + cellRegion);
         } catch (RuntimeException e) {
-            assertContains(
-                "Cannot crossjoin cell regions which have dimensions in common."
-                + " (Dimensionalities are "
-                + "'[[Product].[Products]]', '[[Time].[Time], [Product].[Products]]'.)",
-                e.getMessage());
+            assertThat(e.getMessage(),
+                containsString("Cannot crossjoin cell regions which have dimensions in common."
+                    + " (Dimensionalities are "
+                    + "'[[Product].[Products]]', '[[Time].[Time], [Product].[Products]]'.)"));
         }
     }
 

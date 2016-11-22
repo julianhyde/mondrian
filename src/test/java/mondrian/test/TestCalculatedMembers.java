@@ -16,7 +16,6 @@ import mondrian.spi.Dialect;
 
 import org.junit.Test;
 import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -65,7 +64,7 @@ public class TestCalculatedMembers extends BatchTestCase {
                 "<CalculatedMember name='Profit2'"
                 + "  dimension='Measures'"
                 + "  formula='[Measures].[Store Sales]-[Measures].[Store Cost]'/>");
-            throw new AssertionFailedError("expected error, got none");
+            fail("expected error, got none");
         } catch (RuntimeException e) {
             final String msg = e.getMessage();
             if (!msg.equals(
@@ -120,7 +119,7 @@ public class TestCalculatedMembers extends BatchTestCase {
                 + "  formula='[Measures].[Store Sales]-[Measures].[Store Cost]'>"
                 + "    <CalculatedMemberProperty name='FORMAT_STRING' />"
                 + "</CalculatedMember>");
-            throw new AssertionFailedError("expected error, got none");
+            fail("expected error, got none");
         } catch (RuntimeException e) {
             final String msg = e.getMessage();
             if (!msg.equals(
@@ -140,7 +139,7 @@ public class TestCalculatedMembers extends BatchTestCase {
                 + "  formula='[Measures].[Store Sales]-[Measures].[Store Cost]'>"
                 + "    <CalculatedMemberProperty name='FORMAT_STRING' value='#' expression='\"#\"' />"
                 + "</CalculatedMember>");
-            throw new AssertionFailedError("expected error, got none");
+            fail("expected error, got none");
         } catch (RuntimeException e) {
             final String msg = e.getMessage();
             if (!msg.equals(
@@ -160,7 +159,7 @@ public class TestCalculatedMembers extends BatchTestCase {
                 + "  formula='[Measures].[Store Sales]-[Measures].[Store Cost]'>"
                 + "    <CalculatedMemberProperty name='FORMAT_STRING' expression='1 + [FooBar]' />"
                 + "</CalculatedMember>");
-            throw new AssertionFailedError("expected error, got none");
+            fail("expected error, got none");
         } catch (RuntimeException e) {
             TestContext.checkThrowable(
                 e,
@@ -180,7 +179,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         result = TestContext.instance().executeQuery(
             "select {[Measures].[Profit4]} on columns from Sales");
         s = result.getCell(new int[]{0}).getFormattedValue();
-        Assert.assertEquals("339,610.90", s);
+        assertThat(s, is("339,610.90"));
     }
 
     private Cube getSalesCube(String cubeName) {

@@ -183,7 +183,7 @@ abstract class MondrianOlap4jCellSet
         try {
             cell = (RolapCell) result.getCell(pos);
         } catch (MondrianException e) {
-            if (e.getMessage().indexOf("coordinates out of range") >= 0) {
+            if (e.getMessage().contains("coordinates out of range")) {
                 int[] dimensions = new int[getAxes().size()];
                 for (int i = 0; i < axisList.size(); i++) {
                     dimensions[i] = axisList.get(i).getPositions().size();
@@ -192,8 +192,8 @@ abstract class MondrianOlap4jCellSet
                     "Cell coordinates (" + getCoordsAsString(pos)
                     + ") fall outside CellSet bounds ("
                     + getCoordsAsString(dimensions) + ")");
-            } else if (e.getMessage().indexOf(
-                    "coordinates should have dimension") >= 0)
+            } else if (e.getMessage()
+                .contains("coordinates should have dimension"))
             {
                 throw new IllegalArgumentException(
                     "Cell coordinates should have dimension "

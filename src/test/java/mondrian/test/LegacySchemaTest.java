@@ -24,6 +24,7 @@ import mondrian.util.Bug;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -1377,7 +1378,7 @@ public class LegacySchemaTest extends FoodMartTestCase {
                 + "Row #0: 192,025\n");
             fail("expected exception");
         } catch (MondrianException e) {
-            assertThat(e.getMessage().indexOf("bad formula") >= 0, is(true));
+            assertThat(e.getMessage(), containsString("bad formula"));
         }
     }
 

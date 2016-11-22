@@ -173,7 +173,7 @@ public class DefaultDataServicesProvider implements DataServicesProvider {
                 .getDriverManagerPoolingDataSource(
                     jdbcConnectString,
                     jdbcProperties,
-                    jdbcConnectString.toLowerCase().indexOf("mysql") > -1);
+                    jdbcConnectString.toLowerCase().contains("mysql"));
 
         } else if (dataSourceName != null) {
             appendKeyValue(

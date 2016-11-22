@@ -266,7 +266,7 @@ public class ParserTest extends FoodMartTestCase {
                 e = (Throwable) e.getCause();
             }
             String message = e.getMessage();
-            if (message == null || message.indexOf(expected) < 0) {
+            if (message == null || !message.contains(expected)) {
                 fail("Actual result [" + message
                      + "] did not contain [" + expected + "]");
             }

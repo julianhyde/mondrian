@@ -20,6 +20,7 @@ import mondrian.util.Pair;
 
 import org.junit.*;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -253,10 +254,9 @@ public class RolapConnectionTest {
                 null);
             fail("expected exception");
         } catch (MondrianException e) {
-            assertThat(e.getMessage().indexOf(
-                          "Connect string must contain property 'Catalog' or "
-                          + "property 'CatalogContent'")
-                     >= 0, is(true));
+            assertThat(e.getMessage(),
+                containsString("Connect string must contain property 'Catalog' or "
+                    + "property 'CatalogContent'"));
         }
     }
 
@@ -346,8 +346,8 @@ public class RolapConnectionTest {
             dataServicesProvider.createDataSource(null, properties, buf);
         final String desc = buf.toString();
         assertThat(desc, desc.startsWith("Jdbc="), is(true));
-        assertThat(desc, desc.indexOf("JdbcUser=bogususer; JdbcPassword=boguspassword")
-                       >= 0, is(true));
+        assertThat(desc,
+            containsString("JdbcUser=bogususer; JdbcPassword=boguspassword"));
         final String jndiName = "jndiDataSource";
         THREAD_INITIAL_CONTEXT.set(
             new InitialContext() {
@@ -410,19 +410,19 @@ public class RolapConnectionTest {
                 fail("Expected exception");
             } catch (MondrianException e) {
                 final String s = TestContext.getStackTrace(e);
-                assertThat(s, s.indexOf(
-                                  "Error while creating SQL connection: "
-                                  + "DataSource=jndiDataSource") >= 0, is(true));
+                assertThat(s,
+                    containsString("Error while creating SQL connection: "
+                        + "DataSource=jndiDataSource"));
                 switch (dialect.getDatabaseProduct()) {
                 case DERBY:
                     assertThat(s,
-                      s.indexOf("Caused by: java.sql.SQLException: "
-                          + "Schema 'BOGUSUSER' does not exist") >= 0, is(true));
+                        containsString("Caused by: java.sql.SQLException: "
+                            + "Schema 'BOGUSUSER' does not exist"));
                     break;
                 case ORACLE:
                     assertThat(s,
-                        s.indexOf("Caused by: java.sql.SQLException: ORA-01017: "
-                            + "invalid username/password; logon denied") >= 0, is(true));
+                        containsString("Caused by: java.sql.SQLException: ORA-01017: "
+                            + "invalid username/password; logon denied"));
                     break;
                 case MYSQL:
                     assertThat(s,
@@ -432,9 +432,9 @@ public class RolapConnectionTest {
                     break;
                 case POSTGRESQL:
                     assertThat(s,
-                        s.indexOf("Caused by: org.postgresql.util.PSQLException: "
+                        containsString("Caused by: org.postgresql.util.PSQLException: "
                             + "FATAL: password authentication failed for "
-                            + "user \"bogususer\"") >= 0, is(true));
+                            + "user \"bogususer\""));
                     break;
                 }
             } finally {

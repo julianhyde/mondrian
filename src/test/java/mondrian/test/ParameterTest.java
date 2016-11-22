@@ -16,6 +16,7 @@ import mondrian.rolap.RolapConnectionProperties;
 import org.junit.Test;
 import junit.framework.Assert;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -47,9 +48,9 @@ public class ParameterTest extends FoodMartTestCase {
           fail("expected exception, trying to set non-overrideable property '"
                + propName + "'");
         } catch (Exception e) {
-            assertThat(e.getMessage().indexOf("Parameter '" + propName
-                + "' (defined at '" + scope + "' scope) is not modifiable") >= 0,
-                is(true));
+            assertThat(e.getMessage(),
+                containsString("Parameter '" + propName
+                    + "' (defined at '" + scope + "' scope) is not modifiable"));
         }
     }
 

@@ -1141,7 +1141,6 @@ public class JdbcSchema {
      * table name.
      *
      * @param tableName Table name
-     * @throws SQLException on error
      */
     private void loadTables(String tableName) {
         Connection conn = null;
@@ -1149,8 +1148,9 @@ public class JdbcSchema {
             conn = getDataSource().getConnection();
             final DatabaseMetaData databaseMetaData = conn.getMetaData();
             List<String> tableTypes = Arrays.asList("TABLE", "VIEW");
-            if (databaseMetaData.getDatabaseProductName().toUpperCase().indexOf(
-                    "VERTICA") >= 0)
+            if (databaseMetaData.getDatabaseProductName()
+                .toUpperCase()
+                .contains("VERTICA"))
             {
                 for (String tableType : tableTypes) {
                     loadTablesOfType(

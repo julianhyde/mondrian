@@ -20,8 +20,6 @@ import mondrian.util.DelegatingInvocationHandler;
 
 import org.junit.*;
 
-import junit.framework.AssertionFailedError;
-
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -125,28 +123,28 @@ public class DialectTest {
             // Dialect has identified that it is PostgreSQL.
             assertThat(dialect instanceof PostgreSqlDialect, is(true));
             assertThat(dialect instanceof NetezzaDialect, is(false));
-            assertThat(databaseMetaData.getDatabaseProductName().contains("PostgreSQL"),
-                is(true));
+            assertThat(databaseMetaData.getDatabaseProductName(),
+                containsString("PostgreSQL"));
             break;
         case MSSQL:
             // Dialect has identified that it is MSSQL.
             assertThat(dialect instanceof MicrosoftSqlServerDialect, is(true));
-            assertThat(databaseMetaData.getDatabaseProductName()
-                .contains("Microsoft"), is(true));
+            assertThat(databaseMetaData.getDatabaseProductName(),
+                containsString("Microsoft"));
             break;
         case NETEZZA:
             // Dialect has identified that it is Netezza and a sub class of
             // PostgreSql.
             assertThat(dialect instanceof PostgreSqlDialect, is(true));
             assertThat(dialect instanceof NetezzaDialect, is(true));
-            assertThat(databaseMetaData.getDatabaseProductName()
-                           .indexOf("Netezza") >= 0, is(true));
+            assertThat(databaseMetaData.getDatabaseProductName(),
+                containsString("Netezza"));
             break;
         case NUODB:
             // Dialect has identified that it is NUODB.
             assertThat(dialect instanceof NuoDbDialect, is(true));
-            assertThat(databaseMetaData.getDatabaseProductName().contains("NuoDB"),
-                is(true));
+            assertThat(databaseMetaData.getDatabaseProductName(),
+                containsString("NuoDB"));
             break;
         default:
             // Neither MySQL nor Infobright.
@@ -1072,8 +1070,7 @@ public class DialectTest {
                         return;
                     }
                 }
-                throw new AssertionFailedError(
-                    "error [" + message
+                throw new AssertionError("error [" + message
                     + "] did not match any of the supplied patterns");
             }
             assertThat(resultSet.next(), is(true));

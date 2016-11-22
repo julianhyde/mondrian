@@ -1072,8 +1072,6 @@ public class TestContext {
      * <p>Since the new naming is now the default, reference logs
      * should be in terms of the new naming.
      *
-     * @see mondrian.olap.MondrianProperties#SsasCompatibleNaming
-     *
      * @param actual Actual result
      * @return Expected result massaged for backwards compatibility
      */
@@ -1192,8 +1190,6 @@ public class TestContext {
      * <p>So, {@code upgradeQuery("[Gender]")} returns
      * "[Gender].[Gender]" for old behavior,
      * "[Gender].[Gender].[Gender]" for new behavior.</p>
-     *
-     * @see mondrian.olap.MondrianProperties#SsasCompatibleNaming
      *
      * @param queryString Original query
      * @return Massaged query for backwards compatibility
@@ -1341,7 +1337,7 @@ public class TestContext {
             Assert.fail("query did not yield an exception");
         }
         String stackTrace = getStackTrace(throwable);
-        if (stackTrace.indexOf(pattern) < 0) {
+        if (!stackTrace.contains(pattern)) {
             Assert.fail(
                 "query's error does not match pattern '" + pattern
                 + "'; error is [" + stackTrace + "]");
@@ -1919,7 +1915,7 @@ public class TestContext {
         if (string == null) {
             return null;
         }
-        if (nl.equals("\n") || string.indexOf(nl) != -1) {
+        if (nl.equals("\n") || string.contains(nl)) {
             return new SafeString(string);
         }
         return new SafeString(Util.replace(string, "\n", nl));
@@ -3065,8 +3061,8 @@ public class TestContext {
             }
             if (xmlLocation == null) {
                 if (posPos >= 0 || errorLoc != null) {
-                    Assert.fail(
-                        "Actual message matched expected message, '"
+                    throw new AssertionError("Actual message matched expected "
+                        + "message, '"
                         + message
                         + "'; but we expected an error location and actual "
                         + "exception had no location");
@@ -3074,10 +3070,9 @@ public class TestContext {
                 return true;
             }
             if (errorLoc == null && testContext.errorStart != -1) {
-                throw new AssertionFailedError(
-                    "Test must specify expected error location. Either use "
-                    + "carets (^) in the schema string, or specify the "
-                    + "errorLoc parameter");
+                throw new AssertionError("Test must specify expected error "
+                    + "location. Either use carets (^) in the schema string, "
+                    + "or specify the errorLoc parameter");
             }
             if (errorLoc != null) {
                 int errorStart = -1;
@@ -3108,9 +3103,9 @@ public class TestContext {
                     return true;
                 }
             }
-            throw new AssertionFailedError(
-                "Actual message matched expected, but actual error "
-                + "location (" + xmlLocation + ") did not match expected (\""
+            throw new AssertionError("Actual message matched expected, "
+                + "but actual error location (" + xmlLocation
+                + ") did not match expected (\""
                 + errorLoc + "\")."
                 + (sw.getBuffer().length() > 0
                    ? " Other info: "
@@ -3244,8 +3239,8 @@ public class TestContext {
                 }
                 buf.append(Util.getErrorMessage(exception));
             }
-            throw new AssertionFailedError(
-                "Exception list did not contain expected exception. Exception is:\n"
+            throw new AssertionError("Exception list did not contain expected "
+                + "exception. Exception is:\n"
                 + predicate.describe()
                 + "\nException list is:\n"
                 + buf

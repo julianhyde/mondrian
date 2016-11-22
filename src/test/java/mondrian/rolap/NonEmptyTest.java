@@ -2892,7 +2892,7 @@ public class NonEmptyTest extends BatchTestCase {
             if (!event.getLevel().equals(level)) {
                 continue;
             }
-            if (event.getMessage().toString().indexOf(pattern) == -1) {
+            if (!event.getMessage().toString().contains(pattern)) {
                 continue;
             }
             filteredEventCount++;

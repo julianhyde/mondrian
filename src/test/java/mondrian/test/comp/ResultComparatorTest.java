@@ -141,7 +141,7 @@ public class ResultComparatorTest extends FoodMartTestCase {
     private boolean resultHasDefaultNullMemberRepresentation(
         Element expectedResult)
     {
-        return XmlUtility.toString(expectedResult).indexOf("#null") != -1;
+        return XmlUtility.toString(expectedResult).contains("#null");
     }
 
     public static TestSuite suite() {

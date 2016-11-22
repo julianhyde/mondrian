@@ -17,7 +17,6 @@ import org.apache.commons.collections.map.ReferenceMap;
 
 import org.eigenbase.xom.XMLOutput;
 
-import org.junit.rules.TestName;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -525,9 +524,8 @@ public class DiffRepository
         String expected2 = expand(tag, expected);
         if (expected2 == null) {
             update(testCaseName, expected, actual);
-            throw new AssertionFailedError(
-                "reference file does not contain resource '" + expected
-                + "' for testcase '" + testCaseName + "'");
+            throw new AssertionError("reference file does not contain resource '"
+                + expected + "' for testcase '" + testCaseName + "'");
         } else {
             final String expected3;
             if (filter != null) {

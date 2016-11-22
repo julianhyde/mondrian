@@ -1053,7 +1053,7 @@ public class JdbcDialectImpl implements Dialect {
                 // DB2 on NT returns "DB2/NT"
                 return DatabaseProduct.DB2;
             }
-        } else if (upperProductName.indexOf("FIREBIRD") >= 0) {
+        } else if (upperProductName.contains("FIREBIRD")) {
             return DatabaseProduct.FIREBIRD;
         } else if (upperProductName.equals("HIVE")
             || upperProductName.equals("APACHE HIVE"))
@@ -1069,15 +1069,15 @@ public class JdbcDialectImpl implements Dialect {
             || upperProductName.equals("OPTIQ"))
         {
             return DatabaseProduct.LUCIDDB;
-        } else if (upperProductName.indexOf("SQL SERVER") >= 0) {
+        } else if (upperProductName.contains("SQL SERVER")) {
             return DatabaseProduct.MSSQL;
         } else if (productName.equals("Oracle")) {
             return DatabaseProduct.ORACLE;
-        } else if (upperProductName.indexOf("PHOENIX") >= 0) {
+        } else if (upperProductName.contains("PHOENIX")) {
             return DatabaseProduct.PHOENIX;
-        } else if (upperProductName.indexOf("POSTGRE") >= 0) {
+        } else if (upperProductName.contains("POSTGRE")) {
             return DatabaseProduct.POSTGRESQL;
-        } else if (upperProductName.indexOf("NETEZZA") >= 0) {
+        } else if (upperProductName.contains("NETEZZA")) {
             return DatabaseProduct.NETEZZA;
         } else if (upperProductName.equals("MYSQL (INFOBRIGHT)")) {
             return DatabaseProduct.INFOBRIGHT;
@@ -1093,19 +1093,19 @@ public class JdbcDialectImpl implements Dialect {
             return DatabaseProduct.VECTORWISE;
         } else if (productName.startsWith("HP Neoview")) {
             return DatabaseProduct.NEOVIEW;
-        } else if (upperProductName.indexOf("SYBASE") >= 0
-            || upperProductName.indexOf("ADAPTIVE SERVER") >= 0)
+        } else if (upperProductName.contains("SYBASE")
+            || upperProductName.contains("ADAPTIVE SERVER"))
         {
             // Sysbase Adaptive Server Enterprise 15.5 via jConnect 6.05 returns
             // "Adaptive Server Enterprise" as a product name.
             return DatabaseProduct.SYBASE;
-        } else if (upperProductName.indexOf("TERADATA") >= 0) {
+        } else if (upperProductName.contains("TERADATA")) {
             return DatabaseProduct.TERADATA;
-        } else if (upperProductName.indexOf("HSQL") >= 0) {
+        } else if (upperProductName.contains("HSQL")) {
             return DatabaseProduct.HSQLDB;
-        } else if (upperProductName.indexOf("VERTICA") >= 0) {
+        } else if (upperProductName.contains("VERTICA")) {
             return DatabaseProduct.VERTICA;
-        } else if (upperProductName.indexOf("VECTORWISE") >= 0) {
+        } else if (upperProductName.contains("VECTORWISE")) {
             return DatabaseProduct.VECTORWISE;
         } else {
             return DatabaseProduct.getDatabaseProduct(upperProductName);

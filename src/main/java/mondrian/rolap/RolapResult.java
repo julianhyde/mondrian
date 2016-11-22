@@ -855,7 +855,7 @@ public class RolapResult extends ResultBase {
             evaluator.setEvalAxes(true);
             final TupleIterable iterable =
                 ((IterCalc) axisCalc).evaluateIterable(evaluator);
-            if (axisCalc.getClass().getName().indexOf("OrderFunDef") != -1) {
+            if (axisCalc.getClass().getName().contains("OrderFunDef")) {
                 queryAxis.setOrdered(true);
             }
             if (iterable instanceof TupleList) {

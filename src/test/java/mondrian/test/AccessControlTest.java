@@ -21,6 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -1165,7 +1166,7 @@ public class AccessControlTest extends FoodMartTestCase {
             fail("expected exception, got " + connection);
         } catch (RuntimeException e) {
             final String message = e.getMessage();
-            assertThat(message, message.indexOf("Role 'Role3' not found") >= 0, is(true));
+            assertThat(message, containsString("Role 'Role3' not found"));
         }
 
         try {
@@ -1173,7 +1174,7 @@ public class AccessControlTest extends FoodMartTestCase {
             fail("expected exception, got " + connection);
         } catch (RuntimeException e) {
             final String message = e.getMessage();
-            assertThat(message, message.indexOf("Role 'Role3' not found") >= 0, is(true));
+            assertThat(message, containsString("Role 'Role3' not found"));
         }
 
         connection = testContext.withRole("Role1,Role2").getConnection();
