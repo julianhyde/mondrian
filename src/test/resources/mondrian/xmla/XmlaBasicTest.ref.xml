@@ -10215,7 +10215,7 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <PROPERTY_NAME>Has coffee bar</PROPERTY_NAME>
                         <PROPERTY_CAPTION>Has coffee bar</PROPERTY_CAPTION>
                         <PROPERTY_TYPE>1</PROPERTY_TYPE>
-                        <DATA_TYPE>130</DATA_TYPE>
+                        <DATA_TYPE>11</DATA_TYPE>
                         <PROPERTY_CONTENT_TYPE>0</PROPERTY_CONTENT_TYPE>
                         <DESCRIPTION>HR Cube - Store Hierarchy - Store Name Level - Has coffee bar Property</DESCRIPTION>
                     </row>
@@ -10411,7 +10411,7 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <PROPERTY_NAME>Has coffee bar</PROPERTY_NAME>
                         <PROPERTY_CAPTION>Has coffee bar</PROPERTY_CAPTION>
                         <PROPERTY_TYPE>1</PROPERTY_TYPE>
-                        <DATA_TYPE>130</DATA_TYPE>
+                        <DATA_TYPE>11</DATA_TYPE>
                         <PROPERTY_CONTENT_TYPE>0</PROPERTY_CONTENT_TYPE>
                         <DESCRIPTION>Sales Cube - Store Hierarchy - Store Name Level - Has coffee bar Property</DESCRIPTION>
                     </row>
@@ -10579,7 +10579,7 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <PROPERTY_NAME>Has coffee bar</PROPERTY_NAME>
                         <PROPERTY_CAPTION>Has coffee bar</PROPERTY_CAPTION>
                         <PROPERTY_TYPE>1</PROPERTY_TYPE>
-                        <DATA_TYPE>130</DATA_TYPE>
+                        <DATA_TYPE>11</DATA_TYPE>
                         <PROPERTY_CONTENT_TYPE>0</PROPERTY_CONTENT_TYPE>
                         <DESCRIPTION>Sales Ragged Cube - Store Hierarchy - Store Name Level - Has coffee bar Property</DESCRIPTION>
                     </row>
@@ -10747,7 +10747,7 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <PROPERTY_NAME>Has coffee bar</PROPERTY_NAME>
                         <PROPERTY_CAPTION>Has coffee bar</PROPERTY_CAPTION>
                         <PROPERTY_TYPE>1</PROPERTY_TYPE>
-                        <DATA_TYPE>130</DATA_TYPE>
+                        <DATA_TYPE>11</DATA_TYPE>
                         <PROPERTY_CONTENT_TYPE>0</PROPERTY_CONTENT_TYPE>
                         <DESCRIPTION>Store Cube - Store Hierarchy - Store Name Level - Has coffee bar Property</DESCRIPTION>
                     </row>
@@ -10859,7 +10859,7 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <PROPERTY_NAME>Has coffee bar</PROPERTY_NAME>
                         <PROPERTY_CAPTION>Has coffee bar</PROPERTY_CAPTION>
                         <PROPERTY_TYPE>1</PROPERTY_TYPE>
-                        <DATA_TYPE>130</DATA_TYPE>
+                        <DATA_TYPE>11</DATA_TYPE>
                         <PROPERTY_CONTENT_TYPE>0</PROPERTY_CONTENT_TYPE>
                         <DESCRIPTION>Warehouse Cube - Store Hierarchy - Store Name Level - Has coffee bar Property</DESCRIPTION>
                     </row>
@@ -11027,7 +11027,7 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <PROPERTY_NAME>Has coffee bar</PROPERTY_NAME>
                         <PROPERTY_CAPTION>Has coffee bar</PROPERTY_CAPTION>
                         <PROPERTY_TYPE>1</PROPERTY_TYPE>
-                        <DATA_TYPE>130</DATA_TYPE>
+                        <DATA_TYPE>11</DATA_TYPE>
                         <PROPERTY_CONTENT_TYPE>0</PROPERTY_CONTENT_TYPE>
                         <DESCRIPTION>Warehouse and Sales Cube - Store Hierarchy - Store Name Level - Has coffee bar Property</DESCRIPTION>
                     </row>
@@ -13474,9 +13474,9 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                                 <xsd:element minOccurs="0" name="Year" sql:field="Year" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="Quarter" sql:field="Quarter" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Month" sql:field="Month" type="xsd:int"/>
+                                <xsd:element minOccurs="0" name="Name" sql:field="Name" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="City" sql:field="City" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="City_0" sql:field="City_0" type="xsd:string"/>
-                                <xsd:element minOccurs="0" name="Name" sql:field="Name" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="Unit_x0020_Sales" sql:field="Unit Sales" type="xsd:decimal"/>
                             </xsd:sequence>
                         </xsd:complexType>
@@ -13485,37 +13485,37 @@ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                         <Year>86</Year>
                         <Quarter>86</Quarter>
                         <Month>86</Month>
+                        <Name>86</Name>
                         <City>86</City>
                         <City_0>86</City_0>
-                        <Name>86</Name>
                         <Unit_x0020_Sales>86</Unit_x0020_Sales>
                     </row>
                     <row>
                         <Year xsi:type="xsd:int">1997</Year>
                         <Quarter xsi:type="xsd:string">Q1</Quarter>
                         <Month xsi:type="xsd:int">3</Month>
+                        <Name xsi:type="xsd:int">8808</Name>
                         <City xsi:type="xsd:string">CA</City>
                         <City_0 xsi:type="xsd:string">Berkeley</City_0>
-                        <Name xsi:type="xsd:int">1066</Name>
-                        <Unit_x0020_Sales xsi:type="xsd:decimal">9</Unit_x0020_Sales>
+                        <Unit_x0020_Sales xsi:type="xsd:decimal">1</Unit_x0020_Sales>
                     </row>
                     <row>
                         <Year xsi:type="xsd:int">1997</Year>
                         <Quarter xsi:type="xsd:string">Q1</Quarter>
                         <Month xsi:type="xsd:int">3</Month>
+                        <Name xsi:type="xsd:int">4617</Name>
                         <City xsi:type="xsd:string">CA</City>
                         <City_0 xsi:type="xsd:string">Berkeley</City_0>
+                        <Unit_x0020_Sales xsi:type="xsd:decimal">14</Unit_x0020_Sales>
+                    </row>
+                    <row>
+                        <Year xsi:type="xsd:int">1997</Year>
+                        <Quarter xsi:type="xsd:string">Q1</Quarter>
+                        <Month xsi:type="xsd:int">3</Month>
                         <Name xsi:type="xsd:int">3944</Name>
-                        <Unit_x0020_Sales xsi:type="xsd:decimal">8</Unit_x0020_Sales>
-                    </row>
-                    <row>
-                        <Year xsi:type="xsd:int">1997</Year>
-                        <Quarter xsi:type="xsd:string">Q1</Quarter>
-                        <Month xsi:type="xsd:int">3</Month>
                         <City xsi:type="xsd:string">CA</City>
                         <City_0 xsi:type="xsd:string">Berkeley</City_0>
-                        <Name xsi:type="xsd:int">4241</Name>
-                        <Unit_x0020_Sales xsi:type="xsd:decimal">3</Unit_x0020_Sales>
+                        <Unit_x0020_Sales xsi:type="xsd:decimal">8</Unit_x0020_Sales>
                     </row>
                 </root>
             </cxmla:return>
@@ -13581,15 +13581,15 @@ FROM Sales
                                 <xsd:element minOccurs="0" name="Year" sql:field="Year" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="Quarter" sql:field="Quarter" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Month" sql:field="Month" type="xsd:int"/>
+                                <xsd:element minOccurs="0" name="Product_x0020_Name" sql:field="Product Name" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory" sql:field="Product Subcategory" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory_0" sql:field="Product Subcategory_0" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory_1" sql:field="Product Subcategory_1" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory_2" sql:field="Product Subcategory_2" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Brand_x0020_Name" sql:field="Brand Name" type="xsd:string"/>
-                                <xsd:element minOccurs="0" name="Product_x0020_Name" sql:field="Product Name" type="xsd:string"/>
+                                <xsd:element minOccurs="0" name="Name" sql:field="Name" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="City" sql:field="City" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="City_0" sql:field="City_0" type="xsd:string"/>
-                                <xsd:element minOccurs="0" name="Name" sql:field="Name" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="Sales_x0020_Count" sql:field="Sales Count" type="xsd:integer"/>
                             </xsd:sequence>
                         </xsd:complexType>
@@ -13598,45 +13598,45 @@ FROM Sales
                         <Year>2</Year>
                         <Quarter>2</Quarter>
                         <Month>2</Month>
+                        <Product_x0020_Name>2</Product_x0020_Name>
                         <Product_x0020_Subcategory>2</Product_x0020_Subcategory>
                         <Product_x0020_Subcategory_0>2</Product_x0020_Subcategory_0>
                         <Product_x0020_Subcategory_1>2</Product_x0020_Subcategory_1>
                         <Product_x0020_Subcategory_2>2</Product_x0020_Subcategory_2>
                         <Brand_x0020_Name>2</Brand_x0020_Name>
-                        <Product_x0020_Name>2</Product_x0020_Name>
+                        <Name>2</Name>
                         <City>2</City>
                         <City_0>2</City_0>
-                        <Name>2</Name>
                         <Sales_x0020_Count>2</Sales_x0020_Count>
                     </row>
                     <row>
                         <Year xsi:type="xsd:int">1997</Year>
                         <Quarter xsi:type="xsd:string">Q1</Quarter>
                         <Month xsi:type="xsd:int">2</Month>
+                        <Product_x0020_Name xsi:type="xsd:string">Skinner Apple Juice</Product_x0020_Name>
                         <Product_x0020_Subcategory xsi:type="xsd:string">Drink</Product_x0020_Subcategory>
                         <Product_x0020_Subcategory_0 xsi:type="xsd:string">Beverages</Product_x0020_Subcategory_0>
                         <Product_x0020_Subcategory_1 xsi:type="xsd:string">Pure Juice Beverages</Product_x0020_Subcategory_1>
                         <Product_x0020_Subcategory_2 xsi:type="xsd:string">Juice</Product_x0020_Subcategory_2>
                         <Brand_x0020_Name xsi:type="xsd:string">Skinner</Brand_x0020_Name>
-                        <Product_x0020_Name xsi:type="xsd:string">Skinner Apple Juice</Product_x0020_Name>
+                        <Name xsi:type="xsd:int">2948</Name>
                         <City xsi:type="xsd:string">CA</City>
                         <City_0 xsi:type="xsd:string">Concord</City_0>
-                        <Name xsi:type="xsd:int">2948</Name>
                         <Sales_x0020_Count xsi:type="xsd:integer">1</Sales_x0020_Count>
                     </row>
                     <row>
                         <Year xsi:type="xsd:int">1997</Year>
                         <Quarter xsi:type="xsd:string">Q3</Quarter>
                         <Month xsi:type="xsd:int">9</Month>
+                        <Product_x0020_Name xsi:type="xsd:string">Excellent Orange Juice</Product_x0020_Name>
                         <Product_x0020_Subcategory xsi:type="xsd:string">Drink</Product_x0020_Subcategory>
                         <Product_x0020_Subcategory_0 xsi:type="xsd:string">Beverages</Product_x0020_Subcategory_0>
                         <Product_x0020_Subcategory_1 xsi:type="xsd:string">Pure Juice Beverages</Product_x0020_Subcategory_1>
                         <Product_x0020_Subcategory_2 xsi:type="xsd:string">Juice</Product_x0020_Subcategory_2>
                         <Brand_x0020_Name xsi:type="xsd:string">Excellent</Brand_x0020_Name>
-                        <Product_x0020_Name xsi:type="xsd:string">Excellent Orange Juice</Product_x0020_Name>
+                        <Name xsi:type="xsd:int">3956</Name>
                         <City xsi:type="xsd:string">CA</City>
                         <City_0 xsi:type="xsd:string">Concord</City_0>
-                        <Name xsi:type="xsd:int">3956</Name>
                         <Sales_x0020_Count xsi:type="xsd:integer">1</Sales_x0020_Count>
                     </row>
                 </root>
@@ -13706,15 +13706,15 @@ FROM Sales
                                 <xsd:element minOccurs="0" name="Quarter" sql:field="Quarter" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="Quarter_0" sql:field="Quarter_0" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Month" sql:field="Month" type="xsd:int"/>
+                                <xsd:element minOccurs="0" name="Product_x0020_Name" sql:field="Product Name" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory" sql:field="Product Subcategory" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory_0" sql:field="Product Subcategory_0" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory_1" sql:field="Product Subcategory_1" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Product_x0020_Subcategory_2" sql:field="Product Subcategory_2" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="Brand_x0020_Name" sql:field="Brand Name" type="xsd:string"/>
-                                <xsd:element minOccurs="0" name="Product_x0020_Name" sql:field="Product Name" type="xsd:string"/>
+                                <xsd:element minOccurs="0" name="Name" sql:field="Name" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="City" sql:field="City" type="xsd:string"/>
                                 <xsd:element minOccurs="0" name="City_0" sql:field="City_0" type="xsd:string"/>
-                                <xsd:element minOccurs="0" name="Name" sql:field="Name" type="xsd:int"/>
                                 <xsd:element minOccurs="0" name="Sales_x0020_Count" sql:field="Sales Count" type="xsd:integer"/>
                             </xsd:sequence>
                         </xsd:complexType>
@@ -13723,30 +13723,30 @@ FROM Sales
                         <Quarter>1</Quarter>
                         <Quarter_0>1</Quarter_0>
                         <Month>1</Month>
+                        <Product_x0020_Name>1</Product_x0020_Name>
                         <Product_x0020_Subcategory>1</Product_x0020_Subcategory>
                         <Product_x0020_Subcategory_0>1</Product_x0020_Subcategory_0>
                         <Product_x0020_Subcategory_1>1</Product_x0020_Subcategory_1>
                         <Product_x0020_Subcategory_2>1</Product_x0020_Subcategory_2>
                         <Brand_x0020_Name>1</Brand_x0020_Name>
-                        <Product_x0020_Name>1</Product_x0020_Name>
+                        <Name>1</Name>
                         <City>1</City>
                         <City_0>1</City_0>
-                        <Name>1</Name>
                         <Sales_x0020_Count>1</Sales_x0020_Count>
                     </row>
                     <row>
                         <Quarter xsi:type="xsd:int">1997</Quarter>
                         <Quarter_0 xsi:type="xsd:string">Q3</Quarter_0>
                         <Month xsi:type="xsd:int">9</Month>
+                        <Product_x0020_Name xsi:type="xsd:string">Excellent Orange Juice</Product_x0020_Name>
                         <Product_x0020_Subcategory xsi:type="xsd:string">Drink</Product_x0020_Subcategory>
                         <Product_x0020_Subcategory_0 xsi:type="xsd:string">Beverages</Product_x0020_Subcategory_0>
                         <Product_x0020_Subcategory_1 xsi:type="xsd:string">Pure Juice Beverages</Product_x0020_Subcategory_1>
                         <Product_x0020_Subcategory_2 xsi:type="xsd:string">Juice</Product_x0020_Subcategory_2>
                         <Brand_x0020_Name xsi:type="xsd:string">Excellent</Brand_x0020_Name>
-                        <Product_x0020_Name xsi:type="xsd:string">Excellent Orange Juice</Product_x0020_Name>
+                        <Name xsi:type="xsd:int">3956</Name>
                         <City xsi:type="xsd:string">CA</City>
                         <City_0 xsi:type="xsd:string">Concord</City_0>
-                        <Name xsi:type="xsd:int">3956</Name>
                         <Sales_x0020_Count xsi:type="xsd:integer">1</Sales_x0020_Count>
                     </row>
                 </root>

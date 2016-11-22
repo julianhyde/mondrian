@@ -89,8 +89,8 @@ public class VbaTest {
         assertThat(Vba.cInt(-1.6), is(-2));
         assertThat(Vba.cInt((double) Integer.MAX_VALUE), is(Integer.MAX_VALUE));
         assertThat(Vba.cInt((double) Integer.MIN_VALUE), is(Integer.MIN_VALUE));
-        assertThat(Vba.cInt(((float) Short.MAX_VALUE) + .4), is((Number) Short.MAX_VALUE));
-        assertThat(Vba.cInt(((float) Short.MIN_VALUE) + .4), is((Number) Short.MIN_VALUE));
+        assertThat(Vba.cInt(((float) Short.MAX_VALUE) + .4), is((int) Short.MAX_VALUE));
+        assertThat(Vba.cInt(((float) Short.MIN_VALUE) + .4), is((int) Short.MIN_VALUE));
         try {
             Object o = Vba.cInt("a");
             fail("expected error, got " + o);

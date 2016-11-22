@@ -1547,11 +1547,13 @@ public class TestAggregationManager extends BatchTestCase {
                 + "<CalculatedColumnDef name='qtr_expression_agg' type='String'>\n"
                 + "    <ExpressionView>\n"
                 + "        <SQL dialect='generic'>lower(time_quarter)</SQL>\n"
+                + "        <SQL dialect='hsqldb'>lower(\"time_quarter\")</SQL>\n"
                 + "    </ExpressionView>\n"
                 + "</CalculatedColumnDef>"
                 + "<CalculatedColumnDef name='unit_sales_negative' type='Integer'>\n"
                 + "    <ExpressionView>\n"
                 + "        <SQL dialect='generic'>unit_sales_sum * -1</SQL>\n"
+                + "        <SQL dialect='hsqldb'>\"unit_sales_sum\" * -1</SQL>\n"
                 + "    </ExpressionView>\n"
                 + "</CalculatedColumnDef>"
                 + "</ColumnDefs></Table>")
@@ -1561,6 +1563,7 @@ public class TestAggregationManager extends BatchTestCase {
                 + "<CalculatedColumnDef name='qtr_expression' type='String'>\n"
                 + "    <ExpressionView>\n"
                 + "        <SQL dialect='generic'>lower(quarter)</SQL>\n"
+                + "        <SQL dialect='hsqldb'>lower(\"quarter\")</SQL>\n"
                 + "    </ExpressionView>\n"
                 + "</CalculatedColumnDef>"
                 + "</ColumnDefs>")
@@ -1598,7 +1601,7 @@ public class TestAggregationManager extends BatchTestCase {
                 + "  </MeasureGroups>"
                 + "</Cube>");
         // the expression for the measure column multiplies by -1,
-        // so we can verifyresults are coming from the agg table.
+        // so we can verify results are coming from the agg table.
         testContext.assertQueryReturns(
             "select "
             + "Time2.qtr.members ON COLUMNS\n"

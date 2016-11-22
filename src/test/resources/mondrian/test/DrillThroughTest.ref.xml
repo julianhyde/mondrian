@@ -3,53 +3,53 @@
     <TestCase name="testTrivialCalcMemberDrillThrough">
         <Resource name="sql">
             <![CDATA[select
-    `time_by_day`.`the_year` as `Year`,
-    `time_by_day`.`quarter` as `Quarter`,
-    `time_by_day`.`month_of_year` as `Month`,
-    `product_class`.`product_family` as `Product Family`,
-    `product_class`.`product_department` as `Product Department`,
-    `product_class`.`product_category` as `Product Category`,
-    `product_class`.`product_subcategory` as `Product Subcategory`,
-    `product`.`brand_name` as `Brand Name`,
-    `product`.`product_name` as `Product Name`,
-    sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
+    "time_by_day"."the_year" as "Year",
+    "time_by_day"."quarter" as "Quarter",
+    "time_by_day"."month_of_year" as "Month",
+    "product"."product_name" as "Product Name",
+    "product_class"."product_family" as "Product Family",
+    "product_class"."product_department" as "Product Department",
+    "product_class"."product_category" as "Product Category",
+    "product_class"."product_subcategory" as "Product Subcategory",
+    "product"."brand_name" as "Brand Name",
+    sum("sales_fact_1997"."unit_sales") as "Unit Sales"
 from
-    `sales_fact_1997` as `sales_fact_1997`,
-    `time_by_day` as `time_by_day`,
-    `product` as `product`,
-    `product_class` as `product_class`
+    "sales_fact_1997" as "sales_fact_1997",
+    "time_by_day" as "time_by_day",
+    "product" as "product",
+    "product_class" as "product_class"
 where
-    `time_by_day`.`the_year` = 1997
+    "time_by_day"."the_year" = 1997
 and
-    `product_class`.`product_family` = 'Drink'
+    "product_class"."product_family" = 'Drink'
 and
-    `sales_fact_1997`.`time_id` = `time_by_day`.`time_id`
+    "sales_fact_1997"."time_id" = "time_by_day"."time_id"
 and
-    `sales_fact_1997`.`product_id` = `product`.`product_id`
+    "sales_fact_1997"."product_id" = "product"."product_id"
 and
-    `product`.`product_class_id` = `product_class`.`product_class_id`
+    "product"."product_class_id" = "product_class"."product_class_id"
 group by
-    `time_by_day`.`the_year`,
-    `time_by_day`.`quarter`,
-    `time_by_day`.`month_of_year`,
-    `product_class`.`product_family`,
-    `product_class`.`product_department`,
-    `product_class`.`product_category`,
-    `product_class`.`product_subcategory`,
-    `product`.`brand_name`,
-    `product`.`product_name`]]>
+    "time_by_day"."the_year",
+    "time_by_day"."quarter",
+    "time_by_day"."month_of_year",
+    "product"."product_name",
+    "product_class"."product_family",
+    "product_class"."product_department",
+    "product_class"."product_category",
+    "product_class"."product_subcategory",
+    "product"."brand_name"]]>
         </Resource>
         <Resource name="sql2">
             <![CDATA[select
     `time_by_day`.`the_year` as `Year`,
     `time_by_day`.`quarter` as `Quarter`,
     `time_by_day`.`month_of_year` as `Month`,
+    `product`.`product_name` as `Product Name`,
     `product_class`.`product_family` as `Product Family`,
     `product_class`.`product_department` as `Product Department`,
     `product_class`.`product_category` as `Product Category`,
     `product_class`.`product_subcategory` as `Product Subcategory`,
     `product`.`brand_name` as `Brand Name`,
-    `product`.`product_name` as `Product Name`,
     sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
 from
     `sales_fact_1997` as `sales_fact_1997`,
@@ -70,33 +70,33 @@ group by
     `time_by_day`.`the_year`,
     `time_by_day`.`quarter`,
     `time_by_day`.`month_of_year`,
+    `product`.`product_name`,
     `product_class`.`product_family`,
     `product_class`.`product_department`,
     `product_class`.`product_category`,
     `product_class`.`product_subcategory`,
-    `product`.`brand_name`,
-    `product`.`product_name`]]>
+    `product`.`brand_name`]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillthroughCompoundSlicer">
         <Resource name="sql">
             <![CDATA[select
-    `time_by_day`.`the_year` as `Year`,
-    sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
+    "time_by_day"."the_year" as "Year",
+    sum("sales_fact_1997"."unit_sales") as "Unit Sales"
 from
-    `sales_fact_1997` as `sales_fact_1997`,
-    `time_by_day` as `time_by_day`,
-    `promotion` as `promotion`
+    "sales_fact_1997" as "sales_fact_1997",
+    "time_by_day" as "time_by_day",
+    "promotion" as "promotion"
 where
-    `time_by_day`.`the_year` = 1997
+    "time_by_day"."the_year" = 1997
 and
-    ((`promotion`.`media_type` in ('Bulk Mail', 'Cash Register Handout')))
+    (("promotion"."media_type" in ('Bulk Mail', 'Cash Register Handout')))
 and
-    `sales_fact_1997`.`time_id` = `time_by_day`.`time_id`
+    "sales_fact_1997"."time_id" = "time_by_day"."time_id"
 and
-    `sales_fact_1997`.`promotion_id` = `promotion`.`promotion_id`
+    "sales_fact_1997"."promotion_id" = "promotion"."promotion_id"
 group by
-    `time_by_day`.`the_year`]]>
+    "time_by_day"."the_year"]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillThrough">
@@ -105,12 +105,12 @@ group by
     `time_by_day`.`the_year` as `Year`,
     `time_by_day`.`quarter` as `Quarter`,
     `time_by_day`.`month_of_year` as `Month`,
+    `product`.`product_name` as `Product Name`,
     `product_class`.`product_family` as `Product Family`,
     `product_class`.`product_department` as `Product Department`,
     `product_class`.`product_category` as `Product Category`,
     `product_class`.`product_subcategory` as `Product Subcategory`,
     `product`.`brand_name` as `Brand Name`,
-    `product`.`product_name` as `Product Name`,
     sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
 from
     `sales_fact_1997` as `sales_fact_1997`,
@@ -131,12 +131,12 @@ group by
     `time_by_day`.`the_year`,
     `time_by_day`.`quarter`,
     `time_by_day`.`month_of_year`,
+    `product`.`product_name`,
     `product_class`.`product_family`,
     `product_class`.`product_department`,
     `product_class`.`product_category`,
     `product_class`.`product_subcategory`,
-    `product`.`brand_name`,
-    `product`.`product_name`]]>
+    `product`.`brand_name`]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillThrough2">
@@ -145,12 +145,12 @@ group by
     `time_by_day`.`the_year` as `Year`,
     `time_by_day`.`quarter` as `Quarter`,
     `time_by_day`.`month_of_year` as `Month`,
+    `product`.`product_name` as `Product Name`,
     `product_class`.`product_family` as `Product Family`,
     `product_class`.`product_department` as `Product Department`,
     `product_class`.`product_category` as `Product Category`,
     `product_class`.`product_subcategory` as `Product Subcategory`,
     `product`.`brand_name` as `Brand Name`,
-    `product`.`product_name` as `Product Name`,
     sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
 from
     `sales_fact_1997` as `sales_fact_1997`,
@@ -171,12 +171,12 @@ group by
     `time_by_day`.`the_year`,
     `time_by_day`.`quarter`,
     `time_by_day`.`month_of_year`,
+    `product`.`product_name`,
     `product_class`.`product_family`,
     `product_class`.`product_department`,
     `product_class`.`product_category`,
     `product_class`.`product_subcategory`,
-    `product`.`brand_name`,
-    `product`.`product_name`]]>
+    `product`.`brand_name`]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillThrough3">
@@ -184,12 +184,12 @@ group by
             <![CDATA[select
     `time_by_day`.`the_year` as `Month`,
     `time_by_day`.`month_of_year` as `Month_0`,
+    `product`.`product_id` as `Product Name`,
     `product_class`.`product_family` as `Product Department`,
     `product_class`.`product_department` as `Product Department_0`,
     `product_class`.`product_category` as `Product Category`,
     `product_class`.`product_subcategory` as `Product Subcategory`,
     `product`.`brand_name` as `Brand Name`,
-    `product`.`product_id` as `Product Name`,
     sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
 from
     `sales_fact_1997` as `sales_fact_1997`,
@@ -213,12 +213,12 @@ and
 group by
     `time_by_day`.`the_year`,
     `time_by_day`.`month_of_year`,
+    `product`.`product_id`,
     `product_class`.`product_family`,
     `product_class`.`product_department`,
     `product_class`.`product_category`,
     `product_class`.`product_subcategory`,
-    `product`.`brand_name`,
-    `product`.`product_id`]]>
+    `product`.`brand_name`]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillThroughBugMondrian180">
@@ -258,12 +258,12 @@ group by
     `time_by_day`.`the_year` as `Year`,
     `time_by_day`.`quarter` as `Quarter`,
     `time_by_day`.`month_of_year` as `Month`,
+    `product`.`product_name` as `Product Name`,
     `product_class`.`product_family` as `Product Family`,
     `product_class`.`product_department` as `Product Department`,
     `product_class`.`product_category` as `Product Category`,
     `product_class`.`product_subcategory` as `Product Subcategory`,
     `product`.`brand_name` as `Brand Name`,
-    `product`.`product_name` as `Product Name`,
     sum(`sales_fact_1997`.`store_sales`) as `Promotion Sales`
 from
     `sales_fact_1997` as `sales_fact_1997`,
@@ -284,12 +284,12 @@ group by
     `time_by_day`.`the_year`,
     `time_by_day`.`quarter`,
     `time_by_day`.`month_of_year`,
+    `product`.`product_name`,
     `product_class`.`product_family`,
     `product_class`.`product_department`,
     `product_class`.`product_category`,
     `product_class`.`product_subcategory`,
-    `product`.`brand_name`,
-    `product`.`product_name`]]>
+    `product`.`brand_name`]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillThroughDupKeys">
@@ -366,28 +366,28 @@ group by
     <TestCase name="testBug1438285">
         <Resource name="sql">
             <![CDATA[select
-    `time_by_day`.`the_year` as `Year`,
-    `time_by_day`.`quarter` as `Quarter`,
-    `time_by_day`.`month_of_year` as `Month`,
-    `store_ragged`.`store_id` as `Store Id`,
-    sum(`sales_fact_1997`.`unit_sales`) as `Unit Sales`
+    "time_by_day"."the_year" as "Year",
+    "time_by_day"."quarter" as "Quarter",
+    "time_by_day"."month_of_year" as "Month",
+    "store_ragged"."store_id" as "Store Id",
+    sum("sales_fact_1997"."unit_sales") as "Unit Sales"
 from
-    `sales_fact_1997` as `sales_fact_1997`,
-    `time_by_day` as `time_by_day`,
-    `store_ragged` as `store_ragged`
+    "sales_fact_1997" as "sales_fact_1997",
+    "time_by_day" as "time_by_day",
+    "store_ragged" as "store_ragged"
 where
-    `time_by_day`.`the_year` = 1997
+    "time_by_day"."the_year" = 1997
 and
-    `store_ragged`.`store_id` = 24
+    "store_ragged"."store_id" = 24
 and
-    `sales_fact_1997`.`time_id` = `time_by_day`.`time_id`
+    "sales_fact_1997"."time_id" = "time_by_day"."time_id"
 and
-    `sales_fact_1997`.`store_id` = `store_ragged`.`store_id`
+    "sales_fact_1997"."store_id" = "store_ragged"."store_id"
 group by
-    `time_by_day`.`the_year`,
-    `time_by_day`.`quarter`,
-    `time_by_day`.`month_of_year`,
-    `store_ragged`.`store_id`]]>
+    "time_by_day"."the_year",
+    "time_by_day"."quarter",
+    "time_by_day"."month_of_year",
+    "store_ragged"."store_id"]]>
         </Resource>
     </TestCase>
     <TestCase name="testDrillThroughMultiPositionCompoundSlicer">

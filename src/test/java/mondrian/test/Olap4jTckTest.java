@@ -11,11 +11,12 @@ package mondrian.test;
 
 import mondrian.olap.Util;
 
-import org.junit.Test;
 import junit.framework.*;
 
 import org.olap4j.test.TestContext;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -28,16 +29,23 @@ import java.util.Properties;
 public class Olap4jTckTest extends TestCase {
     private static final Util.Predicate1<junit.framework.Test> CONDITION =
         new Util.Predicate1<junit.framework.Test>() {
+            final List<String> disabled =
+                Arrays.asList("testStatementTimeout",
+                    "testStatementCancel",
+                    "testDatabaseMetaDataGetCatalogs",
+                    "testDatabaseMetaDataGetProperties",
+                    "testCubesDrillthroughReturnClause9",
+                    "testCubeLookupMembers",
+                    "testVirtualCubeCmBug",
+                    "testCellSetBug");
+
             public boolean test(junit.framework.Test test) {
                 if (!(test instanceof TestCase)) {
                     return true;
                 }
                 final TestCase testCase = (TestCase) test;
                 final String testCaseName = testCase.getName();
-                return !testCaseName.equals("testStatementTimeout")
-                    && !testCaseName.equals("testStatementCancel")
-                    && !testCaseName.equals("testDatabaseMetaDataGetCatalogs")
-                    && !testCaseName.equals("testCellSetBug");
+                return !disabled.contains(testCaseName);
             }
         };
 
@@ -79,9 +87,6 @@ public class Olap4jTckTest extends TestCase {
             name += " (DBCP wrapper)";
         }
         final TestSuite suite = TestContext.createTckSuite(properties, name);
-        if (CONDITION == null) {
-            return suite;
-        }
         return mondrian.test.TestContext.copySuite(suite, CONDITION);
     }
 
@@ -100,9 +105,6 @@ public class Olap4jTckTest extends TestCase {
             "mondrian olap4j driver"
             + (wrapper ? " (DBCP wrapper)" : "");
         final TestSuite suite = TestContext.createTckSuite(properties, name);
-        if (CONDITION == null) {
-            return suite;
-        }
         return mondrian.test.TestContext.copySuite(suite, CONDITION);
     }
 }

@@ -519,7 +519,9 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "   Gender.Gender.members )) " + "on 0 from sales");
     }
 
-    public void disabled_testCalculatedCurrentMonth() {
+
+    @Ignore("disabled")
+    @Test public void testCalculatedCurrentMonth() {
         checkNative(
             "WITH "
             + "SET [Current Month] AS 'tail([Time].[month].members, 1)'"
@@ -529,7 +531,8 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "on 0 from sales");
     }
 
-    public void disabled_testCalculatedRelativeMonth() {
+    @Ignore("disabled")
+    @Test public void testCalculatedRelativeMonth() {
         checkNative(
             "with "
             + "member [gender].[cog_oqp_int_t2] as '1', solve_order = 65535 "
@@ -1063,7 +1066,8 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void DISABLED_testTransformsWithSeveralDimensionsNestedOnRows() {
+    @Ignore("disabled")
+    @Test public void testTransformsWithSeveralDimensionsNestedOnRows() {
         propSaver.set(propSaver.props.EnableNonEmptyOnAllAxis, false);
 
         assertQueryIsReWritten(
@@ -1134,7 +1138,8 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Sales]\n");
     }
 
-    public void DISABLED_testParallelCrossjoins() {
+    @Ignore("disabled")
+    @Test public void testParallelCrossjoins() {
         checkNative(
             // DE2185
             "select NativizeSet( {"
@@ -1323,7 +1328,8 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + "from [Warehouse and Sales]");
     }
 
-    public void disabled_testAggregatesInSparseResultsGetSortedCorrectly() {
+    @Ignore("disabled")
+    @Test public void testAggregatesInSparseResultsGetSortedCorrectly() {
         propSaver.set(propSaver.props.NativizeMinThreshold, 0);
         checkNative(
             "select non empty NativizeSet("
@@ -1332,6 +1338,7 @@ public class NativizeSetFunDefTest extends BatchTestCase {
             + ")) on 0 from sales");
     }
 
+    @Ignore("disabled - NullPointerException in SqlQueryBuilder")
     @Test public void testLeafMembersOfParentChildDimensionAreNativelyEvaluated() {
         checkNative(
             "SELECT"

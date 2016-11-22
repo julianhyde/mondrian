@@ -114,13 +114,26 @@ public class InlineTableTest extends FoodMartTestCase {
             null,
             null,
             null);
+        final String space;
+        switch (getTestContext().getDialect().getDatabaseProduct()) {
+        case HSQLDB:
+            // Hsqldb has an extra space because it treats the literals as CHAR
+            // not VARCHAR, and pads the shorter to the length of the longer.
+            // Not sure whether this is a bug.
+            space = " ";
+            break;
+        default:
+            space = "";
+        }
         testContext.assertQueryReturns(
             "select {[Shared Alternative Promotion].[All Shared Alternative Promotions].children} ON COLUMNS\n"
             + "from [" + cubeName + "] ",
             "Axis #0:\n"
             + "{}\n"
             + "Axis #1:\n"
-            + "{[Shared Alternative Promotion].[Shared Alternative Promotion].[First promo]}\n"
+            + "{[Shared Alternative Promotion].[Shared Alternative Promotion].[First promo"
+            + space
+            + "]}\n"
             + "{[Shared Alternative Promotion].[Shared Alternative Promotion].[Second promo]}\n"
             + "Row #0: 195,448\n"
             + "Row #0: \n");

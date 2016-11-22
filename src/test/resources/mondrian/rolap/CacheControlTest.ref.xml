@@ -74,11 +74,11 @@ Checksum:[06389f41d543e685b98dc75f54237772]
 Cube:[Sales]
 Measure:[Unit Sales]
 Axes:[
-    {`store`.`store_country`=('USA')}
-    {`time_by_day`.`the_year`=('1997')}]
+    {"store"."store_country"=('USA')}
+    {"time_by_day"."the_year"=('1997')}]
 Excluded Regions:[]
 Compound Predicates:[]
-ID:[67dfcfcd3192e8dd49fad3e77677f0316f7a027f5177d4a29deda392338e4bd9]
+ID:[835f12275c6255efc78a7f43bc7e5b23e9d38cbcbfd1e57ca3f9e31dcbdb3443]
 
 
 Cache state after flush:

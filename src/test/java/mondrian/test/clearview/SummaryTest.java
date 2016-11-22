@@ -31,8 +31,6 @@ import java.util.List;
  * @author Khanh Vu
  */
 public class SummaryTest extends ClearViewBase {
-    @Rule public final TestName name = new TestName();
-
     public DiffRepository getDiffRepos() {
         return getDiffReposStatic();
     }
@@ -54,7 +52,7 @@ public class SummaryTest extends ClearViewBase {
             "testCountOverTimeExpandNonNative"
         };
         if (!Bug.BugMondrian785Fixed
-            && Arrays.asList(methods).contains(name.getMethodName())
+            && Arrays.asList(methods).contains(testCaseName)
             && MondrianProperties.instance().EnableNativeCrossJoin.get())
         {
             // Tests give wrong results if native crossjoin is disabled.

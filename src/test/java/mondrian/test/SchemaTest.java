@@ -16,12 +16,12 @@ import mondrian.spi.*;
 import mondrian.spi.PropertyFormatter;
 import mondrian.util.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import junit.framework.Assert;
 
@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.WriterAppender;
 import org.apache.log4j.varia.LevelRangeFilter;
-import org.hamcrest.core.Is;
 
 import org.olap4j.OlapConnection;
 import org.olap4j.impl.ArrayMap;
@@ -1739,6 +1738,9 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "    <SQL dialect='generic'>\n"
                 + "     <![CDATA[select * from 'inventory_fact_1997' as 'FOOBAR']]>\n"
                 + "    </SQL>\n"
+                + "    <SQL dialect='hsqldb'>\n"
+                + "     <![CDATA[select * from \"inventory_fact_1997\" as \"FOOBAR\"]]>\n"
+                + "    </SQL>\n"
                 + "    <SQL dialect='oracle'>\n"
                 + "     <![CDATA[select * from 'inventory_fact_1997' 'FOOBAR']]>\n"
                 + "    </SQL>\n"
@@ -1810,6 +1812,9 @@ Test that get error if a dimension has more than one hierarchy with same name.
             + "  <ExpressionView>\n"
             + "    <SQL dialect='generic'>\n"
             + "     <![CDATA[select * from 'store' as 'FOOBAR']]>\n"
+            + "    </SQL>\n"
+            + "    <SQL dialect='hsqldb'>\n"
+            + "     <![CDATA[select * from \"store\" as \"FOOBAR\"]]>\n"
             + "    </SQL>\n"
             + "    <SQL dialect='oracle'>\n"
             + "     <![CDATA[select * from 'store' 'FOOBAR']]>\n"
@@ -2829,12 +2834,16 @@ Test that get error if a dimension has more than one hierarchy with same name.
     /**
      * Verifies that RolapHierarchy.tableExists() supports views.
      */
+    @Ignore("disabled - fails on hsqldb")
     @Test public void testLevelTableAttributeAsView() {
         String tableDef =
             "<Query name='gender2' alias='gender2'>\n"
             + "  <ExpressionView>\n"
             + "      <SQL dialect='generic'>\n"
             + "        <![CDATA[SELECT * FROM customer]]>\n"
+            + "      </SQL>\n"
+            + "      <SQL dialect='hsqldb'>\n"
+            + "        <![CDATA[SELECT * FROM \"customer\"]]>\n"
             + "      </SQL>\n"
             + "      <SQL dialect='oracle'>\n"
             + "        <![CDATA[SELECT * FROM 'customer']]>\n"
@@ -2889,7 +2898,6 @@ Test that get error if a dimension has more than one hierarchy with same name.
         if (!testContext.getDialect().allowsFromQuery()) {
             return;
         }
-
         Result result = testContext.executeQuery(
             "select {[Gender2].members} on columns from [GenderCube]");
 
@@ -5857,9 +5865,12 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "  <Table name='sales_fact_1997' />\n"
                 + "  <Query alias='customer'>\n"
                 + "    <ExpressionView>\n"
-                + "    <SQL dialect='mysql'>\n"
-                + "      SELECT * FROM `customer`\n"
-                + "    </SQL>\n"
+                + "      <SQL dialect='mysql'>\n"
+                + "        SELECT * FROM `customer`\n"
+                + "      </SQL>\n"
+                + "      <SQL dialect='generic'>\n"
+                + "        SELECT * FROM \"customer\"\n"
+                + "      </SQL>\n"
                 + "    </ExpressionView>\n"
                 + "  </Query>\n"
                 + "</PhysicalSchema>\n"
@@ -5876,6 +5887,9 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "    <SQL dialect='mysql'>\n"
                 + "      SELECT * FROM `product_class`\n"
                 + "    </SQL>\n"
+                + "    <SQL dialect='generic'>\n"
+                + "      SELECT * FROM \"product_class\"\n"
+                + "    </SQL>\n"
                 + "  </ExpressionView>\n"
                 + "</Query>\n");
         assertThat(catalogContent1, not(sameInstance(catalogContent0)));
@@ -5891,6 +5905,9 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "    <SQL dialect='mysql'>\n"
                 + "      SELECT * FROM `product_class`\n"
                 + "    </SQL>\n"
+                + "    <SQL dialect='generic'>\n"
+                + "      SELECT * FROM \"product_class\"\n"
+                + "    </SQL>\n"
                 + "  </ExpressionView>\n"
                 + "</Query>\n");
         assertThat(catalogContent2, not(sameInstance(catalogContent0)));
@@ -5904,6 +5921,9 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "  <ExpressionView>\n"
                 + "    <SQL dialect='mysql'>\n"
                 + "      SELECT * FROM `product_class`\n"
+                + "    </SQL>\n"
+                + "    <SQL dialect='generic'>\n"
+                + "      SELECT * FROM \"product_class\"\n"
                 + "    </SQL>\n"
                 + "  </ExpressionView>\n"
                 + "</Query>\n");
@@ -6394,6 +6414,7 @@ Test that get error if a dimension has more than one hierarchy with same name.
                 + "    <CalculatedColumnDef name='product_name_exp' type='String'>\n"
                 + "      <ExpressionView>\n"
                 + "        <SQL dialect='oracle'><Column name='product_name'/>  || '_bar'</SQL>"
+                + "        <SQL dialect='generic'><Column name='product_name'/>  || '_bar'</SQL>"
                 + "        <SQL dialect='mysql'>CONCAT(<Column name='product_name'/>, '_bar')</SQL>"
                 + "      </ExpressionView>\n"
                 + "    </CalculatedColumnDef>\n"

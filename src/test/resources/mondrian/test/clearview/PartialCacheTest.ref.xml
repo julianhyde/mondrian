@@ -21,11 +21,11 @@ Axis #0:
 Axis #1:
 {[Measures].[Unit Sales]}
 Axis #2:
-{[Customers].[USA].[CA]}
+{[Customer].[Customers].[USA].[CA]}
 Row #0: 74,748
 ]]>
         </Resource>
-        <Resource name="expectedSql" dialect="DERBY">
+        <Resource dialect="DERBY" name="expectedSql">
             <![CDATA[
 select
   "time_by_day"."the_year" as "c0",
@@ -43,7 +43,7 @@ where
 group by
  "time_by_day"."the_year",
  "customer"."state_province"
-]]>        
+]]>
         </Resource>
     </TestCase>
     <TestCase name="testFill1State2">
@@ -67,11 +67,11 @@ Axis #0:
 Axis #1:
 {[Measures].[Unit Sales]}
 Axis #2:
-{[Customers].[USA].[OR]}
+{[Customer].[Customers].[USA].[OR]}
 Row #0: 67,659
 ]]>
         </Resource>
-        <Resource name="expectedSql" dialect="DERBY">
+        <Resource dialect="DERBY" name="expectedSql">
             <![CDATA[
 select
   "time_by_day"."the_year" as "c0",
@@ -89,7 +89,7 @@ where
 group by
  "time_by_day"."the_year",
  "customer"."state_province"
-]]>        
+]]>
         </Resource>
     </TestCase>
     <TestCase name="testFill2States">
@@ -114,13 +114,13 @@ Axis #0:
 Axis #1:
 {[Measures].[Unit Sales]}
 Axis #2:
-{[Customers].[USA].[CA]}
-{[Customers].[USA].[WA]}
+{[Customer].[Customers].[USA].[CA]}
+{[Customer].[Customers].[USA].[WA]}
 Row #0: 74,748
 Row #1: 124,366
 ]]>
         </Resource>
-        <Resource name="expectedSql" dialect="DERBY">
+        <Resource dialect="DERBY" name="expectedSql">
             <![CDATA[
 select
   "time_by_day"."the_year" as "c0",
@@ -138,7 +138,7 @@ where
 group by
  "time_by_day"."the_year",
  "customer"."state_province"
-]]>        
+]]>
         </Resource>
     </TestCase>
 </Root>

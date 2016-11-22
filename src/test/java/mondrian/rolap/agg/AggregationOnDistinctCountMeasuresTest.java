@@ -26,6 +26,7 @@ import mondrian.test.SqlPattern;
 import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -46,7 +47,7 @@ public class AggregationOnDistinctCountMeasuresTest extends BatchTestCase {
     private SchemaReader schemaReader = null;
     private RolapCube salesCube;
 
-    public void setUp() throws Exception {
+    @Before public void setUp() throws Exception {
         schemaReader =
             getTestContext().getConnection().getSchemaReader().withLocus();
         salesCube = (RolapCube) cubeByName(
