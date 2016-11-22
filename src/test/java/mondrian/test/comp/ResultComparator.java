@@ -13,14 +13,15 @@ package mondrian.test.comp;
 import mondrian.olap.*;
 import mondrian.test.TestContext;
 
-import org.junit.Test;
-import junit.framework.Assert;
-
 import org.w3c.dom.*;
 
 import java.util.HashSet;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Compares the {@link Result} produced by a query with the expected result
@@ -86,7 +87,7 @@ class ResultComparator {
                 seenMembers++;
             } else if (defaultDimMembers.contains(expectedMemberName)) {
             } else {
-                Assert.fail("Missing slicer: " + expectedMemberName);
+                fail("Missing slicer: " + expectedMemberName);
             }
         }
 
@@ -131,8 +132,7 @@ class ResultComparator {
         if (axes.length >= 1) {
             compareTuples("Column", columnList, axes[0].getPositions());
         } else {
-            Assert.assertTrue(
-                "Must be no columns", columnList.getLength() == 0);
+            assertThat("Must be no columns", columnList.getLength(), is(0));
         }
     }
 
@@ -144,7 +144,7 @@ class ResultComparator {
         switch (axes.length) {
         case 0:
         case 1:
-            Assert.assertTrue("Must be no rows", rowList.getLength() == 0);
+            assertThat("Must be no rows", rowList.getLength(), is(0));
             break;
 
         case 2:
@@ -152,10 +152,8 @@ class ResultComparator {
             break;
 
         default:
-            Assert.fail(
-                "Too many axes returned. "
-                + "Expected 0, 1 or 2 but got "
-                + axes.length);
+            fail("Too many axes returned. Expected 0, 1 or 2 but got "
+                 + axes.length);
             break;
         }
     }

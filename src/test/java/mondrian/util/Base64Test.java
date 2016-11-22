@@ -10,19 +10,20 @@
 package mondrian.util;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Random;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test case for {@link Base64}.
  *
  * @author Brian Burton, Julian Hyde
  */
-public class Base64Test extends TestCase
-{
+public class Base64Test {
     private static final long SEED = 12345678;
     private static Random s_random = new Random(SEED);
 
@@ -42,7 +43,7 @@ public class Base64Test extends TestCase
         out.close();
         byte[] encoded = out_bytes.toByteArray();
         byte[] decoded = Base64.decode(encoded, 0, encoded.length);
-        assertTrue(Arrays.equals(data, decoded));
+        assertThat(Arrays.equals(data, decoded), is(true));
 
         Base64.InputStream in =
             new Base64.InputStream(new ByteArrayInputStream(encoded));
@@ -54,7 +55,7 @@ public class Base64Test extends TestCase
         out_bytes.close();
         in.close();
         decoded = out_bytes.toByteArray();
-        assertTrue(Arrays.equals(data, decoded));
+        assertThat(Arrays.equals(data, decoded), is(true));
     }
 
     @Test public void testStreams() throws Exception
@@ -90,15 +91,15 @@ public class Base64Test extends TestCase
             + "XRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRo\n"
             + "ZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhc"
             + "m5hbCBwbGVhc3VyZS4=";
-        assertEquals(expected, encoded);
+        assertThat(encoded, is(expected));
         byte[] s1 = Base64.decode(encoded);
         assertEqualsByteArray(s.getBytes(), s1);
     }
 
     private void assertEqualsByteArray(byte[] bytes, byte[] bytes1) {
-        assertEquals(bytes.length, bytes1.length);
+        assertThat(bytes.length, is(bytes1.length));
         for (int i = 0; i < bytes.length; i++) {
-            assertEquals(bytes[i], bytes1[i]);
+            assertThat(bytes[i], is(bytes1[i]));
         }
     }
 }

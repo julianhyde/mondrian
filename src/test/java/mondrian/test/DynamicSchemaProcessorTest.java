@@ -14,7 +14,9 @@ import mondrian.olap.Util;
 import mondrian.spi.DynamicSchemaProcessor;
 
 import org.junit.Test;
-import junit.framework.TestCase;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test for {@link DynamicSchemaProcessor}. Tests availability of
@@ -23,9 +25,7 @@ import junit.framework.TestCase;
  *
  * @author ngoodman
  */
-public class DynamicSchemaProcessorTest
-    extends TestCase
-{
+public class DynamicSchemaProcessorTest {
     private static String schema(String schemaName) {
         return "<?xml version=\"1.0\"?>\n"
             + "<Schema name=\""
@@ -61,7 +61,7 @@ public class DynamicSchemaProcessorTest
         DynamicSchemaProcessor dsp = new BaseDsp();
         Util.PropertyList dummy = new Util.PropertyList();
         String processedSchema = dsp.processSchema("", dummy);
-        assertEquals(schema("REPLACEME"), processedSchema);
+        assertThat(processedSchema, is(schema("REPLACEME")));
     }
 
     /**
@@ -73,7 +73,7 @@ public class DynamicSchemaProcessorTest
             TestContext.instance()
                 .withSchemaProcessor(BaseDsp.class)
                 .getConnection();
-        assertEquals(monConnection.getSchema().getName(), "REPLACEME");
+        assertThat(monConnection.getSchema().getName(), is("REPLACEME"));
     }
 
     /**
@@ -106,7 +106,7 @@ public class DynamicSchemaProcessorTest
             TestContext.instance()
                 .withSchemaProcessor(ProviderTestDSP.class)
                 .getConnection();
-        assertEquals(monConnection.getSchema().getName(), "mondrian");
+        assertThat(monConnection.getSchema().getName(), is("mondrian"));
     }
 
     /**
@@ -132,9 +132,8 @@ public class DynamicSchemaProcessorTest
             TestContext.instance()
                 .withSchemaProcessor(FoodMartCatalogDsp.class)
                 .getConnection();
-        assertEquals(
-            monConnection.getSchema().getName(),
-            "FoodmartFoundInCatalogProperty");
+        assertThat(monConnection.getSchema().getName(),
+            is("FoodmartFoundInCatalogProperty"));
     }
 
     /**
@@ -165,9 +164,8 @@ public class DynamicSchemaProcessorTest
             TestContext.instance()
                 .withSchemaProcessor(CheckJdbcPropertyDsp.class)
                 .getConnection();
-        assertEquals(
-            monConnection.getSchema().getName(),
-            CheckJdbcPropertyDsp.RETURNTRUESTRING);
+        assertThat(monConnection.getSchema().getName(),
+            is(CheckJdbcPropertyDsp.RETURNTRUESTRING));
     }
 
     /**

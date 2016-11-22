@@ -13,6 +13,7 @@ import mondrian.olap.MondrianProperties;
 import mondrian.rolap.BatchTestCase;
 import mondrian.spi.Dialect.DatabaseProduct;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -126,7 +127,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
     /**
      * Simple enumerated aggregate.
      */
-    public void _testNativeTopCountWithAggFlatSet() {
+    @Ignore
+    @Test public void testNativeTopCountWithAggFlatSet() {
         // Disabled pending merge of changes from a3ff303
         final boolean useAgg =
             MondrianProperties.instance().UseAggregates.get()
@@ -162,7 +164,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
     /**
      * Same as above, but using a named set
      */
-    public void _testNativeTopCountWithAggMemberEnumSet() {
+    @Ignore
+    @Test public void testNativeTopCountWithAggMemberEnumSet() {
         // Disabled pending merge of changes from a3ff303
         final boolean useAgg =
             MondrianProperties.instance().UseAggregates.get()
@@ -200,7 +203,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
     /**
      * Same as above, defined as a range.
      */
-    public void _testNativeTopCountWithAggMemberCMRange() {
+    @Ignore
+    @Test public void testNativeTopCountWithAggMemberCMRange() {
         // Disabled pending merge of changes from a3ff303
         final boolean useAgg =
             MondrianProperties.instance().UseAggregates.get()
@@ -234,7 +238,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
           assertQueryReturns(mdx, NativeTopCountWithAgg.result);
     }
 
-    public void _testNativeFilterWithAggDescendants() {
+    @Ignore
+    @Test public void testNativeFilterWithAggDescendants() {
       // Disabled pending merge of changes from a3ff303
       final boolean useAgg =
           MondrianProperties.instance().UseAggregates.get()
@@ -337,7 +342,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Mondrian-1426:</a> Native top count support for Member expressions
      * in Calculated member slicer
      */
-    public void _testNativeTopCountWithMemberOnlySlicer() {
+    @Ignore
+    @Test public void testNativeTopCountWithMemberOnlySlicer() {
         propSaver.set(propSaver.props.GenerateFormattedSql, true);
         final boolean useAggregates =
             MondrianProperties.instance().UseAggregates.get()
@@ -429,7 +435,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Mondrian-1430:</a> Native top count support for + and
      * tuple (Parentheses) expressions in Calculated member slicer
      */
-    public void _testNativeTopCountWithParenthesesMemberSlicer() {
+    @Ignore
+    @Test public void testNativeTopCountWithParenthesesMemberSlicer() {
         propSaver.set(propSaver.props.GenerateFormattedSql, true);
 
         final boolean useAggregates =
@@ -522,7 +529,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Mondrian-1430:</a> Native top count support for + and
      * tuple (Parentheses) expressions in Calculated member slicer
      */
-    public void _testNativeTopCountWithMemberSumSlicer() {
+    @Ignore
+    @Test public void testNativeTopCountWithMemberSumSlicer() {
         propSaver.set(propSaver.props.GenerateFormattedSql, true);
         final boolean useAggregates =
             MondrianProperties.instance().UseAggregates.get()
@@ -612,7 +620,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
     /**
      * Aggregate with default measure and TopCount without measure argument.
      */
-    public void _testAggTCNoExplicitMeasure() {
+    @Ignore
+    @Test public void testAggTCNoExplicitMeasure() {
         propSaver.set(propSaver.props.GenerateFormattedSql, true);
         final String mdx =
             "WITH\n"
@@ -637,7 +646,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Crossjoin that uses same dimension as slicer but is independent from it,
      * evaluated via a named set. No loop should happen here.
      */
-    public void _testCJSameDimAsSlicerNamedSet() {
+    @Ignore
+    @Test public void testCJSameDimAsSlicerNamedSet() {
         String mdx =
             "WITH\n"
             + "SET ST AS 'TopCount([Store Type].[Store Type].CurrentMember, 5)'\n"
@@ -685,7 +695,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Check if getSlicerMembers in native evaluation context
      * doesn't break the results as in MONDRIAN-1187
      */
-    public void _testSlicerTuplesPartialCrossJoin() {
+    @Ignore
+    @Test public void testSlicerTuplesPartialCrossJoin() {
         final String mdx =
             "with\n"
             + "set TSET as {NonEmptyCrossJoin({[Time].[1997].[Q1], [Time].[1997].[Q2]}, {[Store Type].[Supermarket]}),\n"
@@ -716,7 +727,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
     /**
      * Same as before but without combinations missing in the crossjoin
      */
-    public void _testSlicerTuplesFullCrossJoin() {
+    @Ignore
+    @Test public void testSlicerTuplesFullCrossJoin() {
         final String mdx =
             "with\n"
             + "set TSET as NonEmptyCrossJoin({[Time].[1997].[Q1], [Time].[1997].[Q2]}, {[Store Type].[Supermarket], [Store Type].[Deluxe Supermarket], [Store Type].[Gourmet Supermarket]})\n"
@@ -749,7 +761,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Now that some native evaluation is supporting aggregated members, we
      * need to push that logic down to the AggStar selection
      */
-    public void _testTopCountWithAggregatedMemberAggStar() {
+    @Ignore
+    @Test public void testTopCountWithAggregatedMemberAggStar() {
         propSaver.set(
             propSaver.props.UseAggregates,
             true);
@@ -825,7 +838,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
      * Mondrian-1291:</a> NPE on native set with at least two elements and
      * two all members for same dimension in slicer
      */
-    public void _testMultipleAllWithInExpr() {
+    @Ignore
+    @Test public void testMultipleAllWithInExpr() {
         // set up three hierarchies on same dimension
         final String multiHierarchyCube =
             " <Cube name=\"3StoreHCube\">\n"
@@ -885,7 +899,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
     }
 
 
-    public void _testCompoundSlicerNativeEval() {
+    @Ignore
+    @Test public void testCompoundSlicerNativeEval() {
         // MONDRIAN-1404
         propSaver.set(
             propSaver.props.GenerateFormattedSql,
@@ -965,7 +980,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
             + "Row #0: 1\n");
     }
 
-    public void _testSnowflakeDimInSlicerBug1407() {
+    @Ignore
+    @Test public void testSnowflakeDimInSlicerBug1407() {
         // MONDRIAN-1407
         propSaver.set(
             propSaver.props.GenerateFormattedSql,
@@ -1053,7 +1069,8 @@ public class NativeSetEvaluationTest extends BatchTestCase {
             + "Row #0: 324\n");
     }
 
-    public void _testCompoundSlicerNonUniqueMemberNames1413() {
+    @Ignore
+    @Test public void testCompoundSlicerNonUniqueMemberNames1413() {
         // MONDRIAN-1413
         propSaver.set(
             propSaver.props.GenerateFormattedSql,

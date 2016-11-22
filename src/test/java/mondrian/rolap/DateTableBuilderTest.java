@@ -13,7 +13,6 @@ import mondrian.test.TestContext;
 import mondrian.util.DelegatingInvocationHandler;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.lang.reflect.Proxy;
 import java.sql.Date;

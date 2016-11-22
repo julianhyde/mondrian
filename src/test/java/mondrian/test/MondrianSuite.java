@@ -31,8 +31,6 @@ import mondrian.xmla.impl.DynamicDatasourceXmlaServletTest;
 import mondrian.xmla.test.XmlaTest;
 
 import junit.framework.TestSuite;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -42,11 +40,8 @@ import static org.junit.Assert.assertThat;
 /**
  * Search for uses of:<ul>
  * <li>{@link String#indexOf(String)}
- * <li>{@link junit.framework.Assert}
  * <li>{@link junit.framework.AssertionFailedError}
  * <li>{@link junit.framework.Test}
- * <li>{@link junit.framework.TestCase}
- * <li>{@link junit.framework.TestCase} constructors
  * <li>methods that return {@link TestSuite} especitally "suite()"
  * <li>"Testcase"
  * <li>test names prefixed "_test" and "disabled_"
@@ -219,7 +214,7 @@ import static org.junit.Assert.assertThat;
 //    }
 
     // Must be the last test.
-    Main.TerminatorTest.class
+    TerminatorTest.class
 })
 public class MondrianSuite {
   

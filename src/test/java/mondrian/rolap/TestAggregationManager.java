@@ -18,6 +18,7 @@ import mondrian.server.*;
 import mondrian.spi.Dialect;
 import mondrian.test.*;
 
+import org.junit.Ignore;
 import org.olap4j.impl.Olap4jUtil;
 
 import org.junit.After;
@@ -2247,7 +2248,8 @@ public class TestAggregationManager extends BatchTestCase {
      * Tests that, if the lowest level of a hierarchy uses the same column
      * for name as for key, then mondrian does not do a join.
      */
-    public void _testSpuriousJoin() {
+    @Ignore
+    @Test public void testSpuriousJoin() {
         final TestContext testContext =
             TestContext.instance().createSubstitutingCube(
                 "Sales",

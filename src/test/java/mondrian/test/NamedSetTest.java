@@ -14,6 +14,7 @@ import mondrian.olap.Result;
 import mondrian.olap.Util;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -314,7 +315,8 @@ public class NamedSetTest extends FoodMartTestCase {
     // Disabled because fails with error '<Value> = <String> is not a function'
     // Also, don't know whether [oNormal] will correctly resolve to
     // [Store Type].[oNormal].
-    public void _testXxx() {
+    @Ignore
+    @Test public void testXxx() {
         assertQueryReturns(
             "WITH MEMBER [Store Type].[All Store Type].[oNormal] AS 'Aggregate(Filter([Customers].[Name].Members, [Customers].CurrentMember.Properties(\"Member Card\") = \"Normal\") * {[Store Type].[All Store Type]})'\n"
             + "MEMBER [Store Type].[All Store Type].[oBronze] AS 'Aggregate(Filter([Customers].[Name].Members, [Customers].CurrentMember.Properties(\"Member Card\") = \"Bronze\") * {[Store Type].[All Store Type]})'\n"

@@ -12,7 +12,8 @@ package mondrian.test;
 import mondrian.olap.*;
 
 import org.junit.Test;
-import junit.framework.Assert;
+
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for automatic detection of schema version.
@@ -36,7 +37,7 @@ public class SchemaVersionTest extends FoodMartTestCase {
         try {
             Connection conn = DriverManager.getConnection(connectionInfo, null);
             conn.close();
-            Assert.fail();
+            fail();
         } catch (Throwable t) {
             TestContext.checkThrowable(t, "metamodelVersion");
         }
@@ -60,7 +61,7 @@ public class SchemaVersionTest extends FoodMartTestCase {
         try {
             Connection conn = DriverManager.getConnection(connectionInfo, null);
             conn.close();
-            Assert.fail();
+            fail();
         } catch (Throwable t) {
             TestContext.checkThrowable(
                 t,

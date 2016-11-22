@@ -33,7 +33,6 @@ import mondrian.xmla.impl.DynamicDatasourceXmlaServletTest;
 import mondrian.xmla.test.XmlaTest;
 
 import org.junit.Test;
-import org.junit.Test;
 import junit.framework.*;
 
 import org.apache.log4j.Logger;
@@ -170,7 +169,7 @@ public class Main extends TestSuite {
                 // e.g. testClass = "mondrian.olap.fun.BuiltinFunTable". Class
                 // does not implement Test, so look for a 'public [static]
                 // Test suite()' method.
-                Method method = clazz.getMethod("suite", new Class[0]);
+                Method method = clazz.getMethod("suite");
                 TestCase target;
                 if (Modifier.isStatic(method.getModifiers())) {
                     target = null;
@@ -355,8 +354,8 @@ public class Main extends TestSuite {
         if (testName != null && !testName.equals("")) {
             // Filter the suite,  so that only tests whose names match
             // "testName" (in its entirety) will be run.
-            suite = TestContext.copySuite(
-                suite, TestContext.patternPredicate(testName));
+            suite = Junit3Tests.copySuite(suite,
+                Junit3Tests.patternPredicate(testName));
         }
 
         String testInfo = testSuiteInfo.get(suite);
@@ -410,20 +409,6 @@ public class Main extends TestSuite {
 
     private static void addTest(
         TestSuite suite,
-        Class<? extends TestCase> testClass,
-        Util.Predicate1<junit.framework.Test> predicate)
-    {
-        final TestSuite tempSuite = new TestSuite();
-        tempSuite.addTestSuite(testClass);
-
-        int startTestCount = suite.countTestCases();
-        TestContext.copyTests(suite, tempSuite, predicate);
-        int endTestCount = suite.countTestCases();
-        printTestInfo(suite, testClass.getName(), startTestCount, endTestCount);
-    }
-
-    private static void addTest(
-        TestSuite suite,
         junit.framework.Test tests,
         String testClassName)
     {
@@ -447,23 +432,6 @@ public class Main extends TestSuite {
         testSuiteInfo.put(suite, testInfo);
     }
 
-    /**
-     * Test that executes last. It can be used to check invariants.
-     */
-    public static class TerminatorTest extends TestCase {
-        @Test public void testSqlStatementExecuteMatchesClose() {
-            // Number of successful calls to SqlStatement.execute
-            // should match number of calls to SqlStatement.close
-            // (excluding calls to close where close has already been called).
-            // If there is a mismatch, try debugging by adding SqlStatement.id
-            // values to a Set<Long>.
-            assertEquals(
-                "SqlStatement instances still open: "
-                + Counters.SQL_STATEMENT_EXECUTING_IDS,
-                Counters.SQL_STATEMENT_EXECUTE_COUNT.get(),
-                Counters.SQL_STATEMENT_CLOSE_COUNT.get());
-        }
-    }
 }
 
 // End Main.java

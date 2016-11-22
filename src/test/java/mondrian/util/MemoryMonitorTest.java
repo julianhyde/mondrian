@@ -216,7 +216,7 @@ Does not work without the notify on add feature.
      *
      * @throws Exception
      */
-    public void _testQuery() throws Exception {
+    @Ignore @Test public void testQuery() throws Exception {
         if (Util.PreJdk15 || !enabled) {
             return;
         }

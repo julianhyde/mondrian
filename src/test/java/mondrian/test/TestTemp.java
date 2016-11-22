@@ -9,15 +9,12 @@
 */
 package mondrian.test;
 
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.hamcrest.core.CombinableMatcher;
 import org.junit.Assert;
 
 import junit.framework.TestSuite;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -29,8 +26,6 @@ import static org.junit.Assert.assertThat;
  * Temporary; remove before committing to lagunitas.
  *
  * <p>Search for uses of:<ul>
- * <li>{@link String#indexOf(String)}
- * <li>{@link junit.framework.Assert}
  * <li>{@link junit.framework.Assert#assertNull}
  * <li>{@link junit.framework.AssertionFailedError}
  * <li>{@link junit.framework.Test}

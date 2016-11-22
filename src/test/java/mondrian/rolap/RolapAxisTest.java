@@ -17,10 +17,12 @@ import mondrian.olap.fun.TestMember;
 import mondrian.test.FoodMartTestCase;
 
 import org.junit.Test;
-import junit.framework.Assert;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test for lists and iterators over members and tuples.
@@ -58,13 +60,11 @@ public class RolapAxisTest extends FoodMartTestCase {
         }
         String s = buf.toString();
         String e = "{a,b,c},{d,e,f},{g,h,i}";
-//System.out.println("s=" +s);
-        Assert.assertEquals(s, e);
+        assertThat(s, is(e));
 
         positions = axis.getPositions();
         int size = positions.size();
-//System.out.println("size=" +size);
-        Assert.assertEquals(size, 3);
+        assertThat(size, is(3));
 
         buf.setLength(0);
         for (int i = 0; i < size; i++) {
@@ -76,8 +76,7 @@ public class RolapAxisTest extends FoodMartTestCase {
         }
         s = buf.toString();
         e = "{a,b,c},{d,e,f},{g,h,i}";
-//System.out.println("s=" +s);
-        Assert.assertEquals(s, e);
+        assertThat(s, is(e));
     }
 
     protected String toString(List<Member> position) {

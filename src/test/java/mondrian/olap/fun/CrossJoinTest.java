@@ -18,10 +18,12 @@ import mondrian.test.FoodMartTestCase;
 
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.Assert;
 
 import java.io.PrintWriter;
 import java.util.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * <code>CrossJoint</code> tests the collation order of positive and negative
@@ -68,13 +70,13 @@ public class CrossJoinTest extends FoodMartTestCase {
     ////////////////////////////////////////////////////////////////////////
 
     @Test public void testListTupleListTupleIterCalc() {
-if (! Util.Retrowoven) {
-        CrossJoinFunDef.CrossJoinIterCalc calc =
-            crossJoinFunDef.new CrossJoinIterCalc(
-                getResolvedFunCall(), null);
+        if (! Util.Retrowoven) {
+            CrossJoinFunDef.CrossJoinIterCalc calc =
+                crossJoinFunDef.new CrossJoinIterCalc(
+                    getResolvedFunCall(), null);
 
-        doTupleTupleIterTest(calc);
-}
+            doTupleTupleIterTest(calc);
+        }
     }
 
     protected void doTupleTupleIterTest(
@@ -83,19 +85,19 @@ if (! Util.Retrowoven) {
         TupleList l4 = makeListTuple(m4);
         String s4 = toString(l4);
         String e4 = "{[U, V], [W, X], [Y, Z]}";
-        Assert.assertEquals(e4, s4);
+        assertThat(s4, is(e4));
 
         TupleList l3 = makeListTuple(m3);
         String s3 = toString(l3);
         String e3 = "{[k, l], [m, n]}";
-        Assert.assertEquals(e3, s3);
+        assertThat(s3, is(e3));
 
         TupleIterable iterable = calc.makeIterable(l4, l3);
         String s = toString(iterable);
         String e =
             "{[U, V, k, l], [U, V, m, n], [W, X, k, l], "
             + "[W, X, m, n], [Y, Z, k, l], [Y, Z, m, n]}";
-        Assert.assertEquals(e, s);
+        assertThat(s, is(e));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -116,71 +118,71 @@ if (! Util.Retrowoven) {
         TupleList l4 = makeListTuple(m4);
         String s4 = toString(l4);
         String e4 = "{[U, V], [W, X], [Y, Z]}";
-        Assert.assertEquals(e4, s4);
+        assertThat(s4, is(e4));
 
         TupleList l3 = makeListTuple(m3);
         String s3 = toString(l3);
         String e3 = "{[k, l], [m, n]}";
-        Assert.assertEquals(e3, s3);
+        assertThat(s3, is(e3));
 
         TupleList list = calc.makeList(l4, l3);
         String s = toString(list);
         String e =
             "{[U, V, k, l], [U, V, m, n], [W, X, k, l], "
             + "[W, X, m, n], [Y, Z, k, l], [Y, Z, m, n]}";
-        Assert.assertEquals(e, s);
+        assertThat(s, is(e));
 
         TupleList subList = list.subList(0, 6);
         s = toString(subList);
-        Assert.assertEquals(6, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(6));
+        assertThat(s, is(e));
 
         subList = subList.subList(0, 6);
         s = toString(subList);
-        Assert.assertEquals(6, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(6));
+        assertThat(s, is(e));
 
         subList = subList.subList(1, 5);
         s = toString(subList);
         e = "{[U, V, m, n], [W, X, k, l], [W, X, m, n], [Y, Z, k, l]}";
-        Assert.assertEquals(4, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(4));
+        assertThat(s, is(e));
 
         subList = subList.subList(2, 4);
         s = toString(subList);
         e = "{[W, X, m, n], [Y, Z, k, l]}";
-        Assert.assertEquals(2, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(2));
+        assertThat(s, is(e));
 
         subList = subList.subList(1, 2);
         s = toString(subList);
         e = "{[Y, Z, k, l]}";
-        Assert.assertEquals(1, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(1));
+        assertThat(s, is(e));
 
         subList = list.subList(1, 4);
         s = toString(subList);
         e = "{[U, V, m, n], [W, X, k, l], [W, X, m, n]}";
-        Assert.assertEquals(3, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(3));
+        assertThat(s, is(e));
 
         subList = list.subList(2, 4);
         s = toString(subList);
         e = "{[W, X, k, l], [W, X, m, n]}";
-        Assert.assertEquals(2, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(2));
+        assertThat(s, is(e));
 
         subList = list.subList(2, 3);
         s = toString(subList);
         e = "{[W, X, k, l]}";
-        Assert.assertEquals(1, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(1));
+        assertThat(s, is(e));
 
         subList = list.subList(4, 4);
         s = toString(subList);
         e = "{}";
-        Assert.assertEquals(0, subList.size());
-        Assert.assertEquals(e, s);
+        assertThat(subList.size(), is(0));
+        assertThat(s, is(e));
     }
 
 
@@ -203,18 +205,18 @@ if (! Util.Retrowoven) {
         TupleList l1 = makeListTuple(m3);
         String s1 = toString(l1);
         String e1 = "{[k, l], [m, n]}";
-        Assert.assertEquals(e1, s1);
+        assertThat(s1, is(e1));
 
         TupleList l2 = makeListTuple(m4);
         String s2 = toString(l2);
         String e2 = "{[U, V], [W, X], [Y, Z]}";
-        Assert.assertEquals(e2, s2);
+        assertThat(s2, is(e2));
 
         TupleList list = calc.makeList(l1, l2);
         String s = toString(list);
         String e = "{[k, l, U, V], [k, l, W, X], [k, l, Y, Z], "
             + "[m, n, U, V], [m, n, W, X], [m, n, Y, Z]}";
-        Assert.assertEquals(e, s);
+        assertThat(s, is(e));
 
         if (false) {
             // Cannot apply Collections.reverse to TupleList
@@ -225,7 +227,7 @@ if (! Util.Retrowoven) {
             s = toString(list);
             e = "{[m, n, Y, Z], [m, n, W, X], [m, n, U, V], "
                 + "[k, l, Y, Z], [k, l, W, X], [k, l, U, V]}";
-            Assert.assertEquals(e, s);
+            assertThat(s, is(e));
         }
 
         // sort
@@ -233,13 +235,13 @@ if (! Util.Retrowoven) {
         s = toString(list);
         e = "{[k, l, U, V], [k, l, W, X], [k, l, Y, Z], "
             + "[m, n, U, V], [m, n, W, X], [m, n, Y, Z]}";
-        Assert.assertEquals(e, s);
+        assertThat(s, is(e));
 
         List<Member> members = list.remove(1);
         s = toString(list);
         e = "{[k, l, U, V], [k, l, Y, Z], [m, n, U, V], "
             + "[m, n, W, X], [m, n, Y, Z]}";
-        Assert.assertEquals(e, s);
+        assertThat(s, is(e));
     }
 
     ////////////////////////////////////////////////////////////////////////

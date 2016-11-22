@@ -15,7 +15,6 @@ import mondrian.server.UrlRepositoryContentFinder;
 import mondrian.xmla.test.XmlaTestContext;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import org.olap4j.OlapConnection;
 import org.olap4j.metadata.Catalog;
@@ -24,13 +23,17 @@ import org.olap4j.metadata.NamedList;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Test suite for server functionality in {@link MondrianServer}.
  *
  * @author jhyde
  * @since 2010/11/22
  */
-public class MondrianServerTest extends TestCase {
+public class MondrianServerTest {
     /**
      * Tests an embedded server.
      */
@@ -39,7 +42,7 @@ public class MondrianServerTest extends TestCase {
         final MondrianServer server =
             MondrianServer.forConnection(testContext.getConnection());
         final int id = server.getId();
-        assertNotNull(id);
+        assertThat(id, notNullValue());
         server.shutdown();
     }
 
@@ -52,7 +55,7 @@ public class MondrianServerTest extends TestCase {
                 new StringRepositoryContentFinder("foo bar"),
                 null);
         final int id = server.getId();
-        assertNotNull(id);
+        assertThat(id, notNullValue());
         server.shutdown();
     }
 
@@ -67,13 +70,13 @@ public class MondrianServerTest extends TestCase {
                     "inline:" + xmlaTestContext.getDataSourcesString()),
                 null);
         final int id = server.getId();
-        assertNotNull(id);
+        assertThat(id, notNullValue());
         OlapConnection connection =
             server.getConnection("FoodMart", "FoodMart", null);
         final NamedList<Catalog> catalogs =
             connection.getOlapCatalogs();
-        assertEquals(1, catalogs.size());
-        assertEquals("FoodMart", catalogs.get(0).getName());
+        assertThat(catalogs.size(), is(1));
+        assertThat(catalogs.get(0).getName(), is("FoodMart"));
         server.shutdown();
     }
 }

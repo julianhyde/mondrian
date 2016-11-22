@@ -22,8 +22,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-
-import junit.framework.Assert;
+import static org.junit.Assert.fail;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Appender;
@@ -3095,7 +3094,7 @@ Test that get error if a dimension has more than one hierarchy with same name.
             "<Role name='Role3'>");
     }
 
-    public void _testValidatorFindsNumericLevel() {
+    @Ignore @Test public void testValidatorFindsNumericLevel() {
         // In the real foodmart, the level has type="Numeric"
         final TestContext testContext =
             getTestContext().createSubstitutingCube(
@@ -3380,10 +3379,11 @@ Test that get error if a dimension has more than one hierarchy with same name.
         Position pos0 = axis0.getPositions().get(0);
         Member allGender = pos0.get(0);
         String caption = allGender.getCaption();
-        Assert.assertEquals(caption, "Frauen und Maenner");
+        assertThat("Frauen und Maenner", is(caption));
     }
 
-    public void _testAttributeHierarchy() {
+    @Ignore
+    @Test public void testAttributeHierarchy0() {
         // from email from peter tran dated 2008/9/8
         // TODO: schema syntax to create attribute hierarchy
         assertQueryReturns(
@@ -3686,7 +3686,7 @@ Test that get error if a dimension has more than one hierarchy with same name.
     // TODO: enable this test as part of PhysicalSchema work
     // TODO: also add a test that Table.alias, Join.leftAlias and
     // Join.rightAlias cannot be the empty string.
-    public void _testNonUniqueAlias() {
+    @Ignore @Test public void testNonUniqueAlias() {
         final TestContext testContext =
             getTestContext().createSubstitutingCube(
                 "Sales",
@@ -7032,7 +7032,7 @@ Test that get error if a dimension has more than one hierarchy with same name.
      * measure groups and they do not specify an explicit key; see
      * {@link #testDimensionMissingKey()}.)
      */
-    public void _testKeyAttributeMissing() {
+    @Ignore @Test public void testKeyAttributeMissing() {
         // disabling as a part of queryBuilder merge.  TODO:  Jira case.
         getTestContext().insertDimension(
             "Sales",

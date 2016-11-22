@@ -15,7 +15,6 @@ import mondrian.util.Pair;
 import mondrian.xmla.DataSourcesConfig;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import org.eigenbase.xom.*;
 import org.eigenbase.xom.Parser;
@@ -26,13 +25,16 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Unit test for DynamicDatasourceXmlaServlet
  *
  * @author Thiyagu, Ajit
  * @since Mar 30, 2007
  */
-public class DynamicDatasourceXmlaServletTest extends TestCase {
+public class DynamicDatasourceXmlaServletTest {
 
     private static final String CATALOG_0_NAME = "FoodMart0";
     private static final String CATALOG_1_NAME = "FoodMart1";
@@ -71,7 +73,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             new MockDynamicContentFinder(
                 "inline:" + getDataSourceContent(CATALOG_0_DEFINITION));
         finder.flushObsoleteCatalogs(newDataSources);
-        assertTrue(finder.flushCatalogList().isEmpty());
+        assertThat(finder.flushCatalogList().isEmpty(), is(true));
         finder.shutdown();
     }
 
@@ -82,7 +84,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             new MockDynamicContentFinder(
                 "inline:" + getDataSourceContent(CATALOG_0_DEFINITION));
         finder.flushObsoleteCatalogs(newDataSources);
-        assertTrue(finder.flushCatalogList().contains(CATALOG_0_NAME));
+        assertThat(finder.flushCatalogList().contains(CATALOG_0_NAME), is(true));
         finder.shutdown();
     }
 
@@ -94,7 +96,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             new MockDynamicContentFinder(
                 "inline:" + getDataSourceContent(CATALOG_0_DEFINITION));
         finder.flushObsoleteCatalogs(newDataSources);
-        assertFalse(finder.flushCatalogList().contains(CATALOG_0_NAME));
+        assertThat(finder.flushCatalogList().contains(CATALOG_0_NAME), is(false));
         finder.shutdown();
     }
 
@@ -105,7 +107,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             new MockDynamicContentFinder(
                 "inline:" + getDataSourceContent(CATALOG_0_DEFINITION));
         finder.flushObsoleteCatalogs(newDataSources);
-        assertTrue(finder.flushCatalogList().contains(CATALOG_0_NAME));
+        assertThat(finder.flushCatalogList().contains(CATALOG_0_NAME), is(true));
         finder.shutdown();
     }
 
@@ -126,7 +128,7 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             new MockDynamicContentFinder(
                 "inline:" + getDataSourceContent(CATALOG_0_DEFINITION));
         finder.flushObsoleteCatalogs(newDataSources);
-        assertTrue(finder.flushCatalogList().contains(CATALOG_0_NAME));
+        assertThat(finder.flushCatalogList().contains(CATALOG_0_NAME), is(true));
         finder.shutdown();
     }
 
@@ -143,15 +145,12 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             datasource.catalogs.catalogs[1];
         DataSourcesConfig.Catalog catalog1 = datasource.catalogs.catalogs[2];
         DataSourcesConfig.Catalog catalog2 = datasource.catalogs.catalogs[3];
-        assertFalse(
-            DynamicContentFinder.areCatalogsEqual(
-                datasource, catalog0, datasource, catalog0Updated));
-        assertTrue(
-            DynamicContentFinder.areCatalogsEqual(
-                datasource, catalog0, datasource, catalog0));
-        assertFalse(
-            DynamicContentFinder.areCatalogsEqual(
-                datasource, catalog1, datasource, catalog2));
+        assertThat(DynamicContentFinder.areCatalogsEqual(
+                datasource, catalog0, datasource, catalog0Updated), is(false));
+        assertThat(DynamicContentFinder.areCatalogsEqual(
+                datasource, catalog0, datasource, catalog0), is(true));
+        assertThat(DynamicContentFinder.areCatalogsEqual(
+                datasource, catalog1, datasource, catalog2), is(false));
     }
 
     private static DataSourcesConfig.DataSources getDataSources(
@@ -238,24 +237,18 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         out.close();
 
         finder.reloadDataSources();
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME));
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME));
-        assertFalse(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME), is(false));
 
         out = new FileOutputStream(dsFile);
         out.write(ds1.toXML().getBytes());
         out.flush();
 
         finder.reloadDataSources();
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME));
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME));
-        assertFalse(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME), is(false));
         finder.shutdown();
     }
 
@@ -282,12 +275,9 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
         out.close();
 
         finder.reloadDataSources();
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME));
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME));
-        assertFalse(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME), is(false));
 
         out = new FileOutputStream(dsFile);
         out.write(ds1.toXML().getBytes());
@@ -302,12 +292,9 @@ public class DynamicDatasourceXmlaServletTest extends TestCase {
             interval.right.toMillis(interval.left)
             + 1000);
 
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME));
-        assertTrue(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME));
-        assertFalse(
-            finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_0_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_1_NAME), is(true));
+        assertThat(finder.containsCatalog(DATASOURCE_1_NAME, CATALOG_2_NAME), is(false));
         finder.shutdown();
     }
 

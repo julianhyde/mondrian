@@ -28,8 +28,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import junit.framework.Assert;
-
 import org.olap4j.mdx.IdentifierNode;
 
 import java.util.*;
@@ -203,7 +201,7 @@ public class AccessControlTest extends FoodMartTestCase {
             schemaReader.getMemberByUniqueName(
                 Util.parseIdentifier(memberName), true);
         final Access actualAccess = role.getAccess(member);
-        Assert.assertEquals(memberName, expectedAccess, actualAccess);
+        assertThat(memberName, expectedAccess, is(actualAccess));
     }
 
     private void assertCubeAccess(
@@ -216,7 +214,7 @@ public class AccessControlTest extends FoodMartTestCase {
         final boolean fail = true;
         Cube cube = schema.lookupCube(cubeName, fail);
         final Access actualAccess = role.getAccess(cube);
-        Assert.assertEquals(cubeName, expectedAccess, actualAccess);
+        assertThat(cubeName, expectedAccess, is(actualAccess));
     }
 
     private void assertHierarchyAccess(
@@ -237,7 +235,7 @@ public class AccessControlTest extends FoodMartTestCase {
                 Category.Hierarchy);
 
         final Access actualAccess = role.getAccess(hierarchy);
-        Assert.assertEquals(cubeName, expectedAccess, actualAccess);
+        assertThat(cubeName, expectedAccess, is(actualAccess));
     }
 
     private Role.HierarchyAccess getHierarchyAccess(
@@ -403,7 +401,7 @@ public class AccessControlTest extends FoodMartTestCase {
             "");
         Axis axis = testContext.executeAxis("[Customers].members");
         // 13 states, 109 cities
-        Assert.assertEquals(122, axis.getPositions().size());
+        assertThat(axis.getPositions().size(), is(122));
     }
 
     @Test public void testGrantHierarchy8AllMembers() {
@@ -418,7 +416,7 @@ public class AccessControlTest extends FoodMartTestCase {
             "");
         Axis axis = testContext.executeAxis("[Customers].allmembers");
         // 13 states, 109 cities
-        Assert.assertEquals(122, axis.getPositions().size());
+        assertThat(axis.getPositions().size(), is(122));
     }
 
     /**
@@ -667,7 +665,7 @@ public class AccessControlTest extends FoodMartTestCase {
             + "Row #1: 74,748\n");
     }
 
-    public void _testSharedObjectsInGrantMappingsBug() {
+    @Ignore @Test public void testSharedObjectsInGrantMappingsBug() {
         final TestContext testContext = new TestContext() {
             public Connection getConnection() {
                 boolean mustGet = true;

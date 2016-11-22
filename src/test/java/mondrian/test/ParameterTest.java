@@ -13,8 +13,8 @@ package mondrian.test;
 import mondrian.olap.*;
 import mondrian.rolap.RolapConnectionProperties;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import junit.framework.Assert;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -124,7 +124,7 @@ public class ParameterTest extends FoodMartTestCase {
     @Test public void testNumericParameter() {
         String s =
             executeExpr("Parameter(\"N\",NUMERIC,2+3,\"A numeric parameter\")");
-        Assert.assertEquals("5", s);
+        assertThat(s, is("5"));
     }
 
     @Test public void testStringParameter() {
@@ -132,7 +132,7 @@ public class ParameterTest extends FoodMartTestCase {
             executeExpr(
                 "Parameter(\"S\",STRING,\"x\" || \"y\","
                 + "\"A string parameter\")");
-        Assert.assertEquals("xy", s);
+        assertThat(s, is("xy"));
     }
 
     @Test public void testStringParameterNull() {
@@ -489,7 +489,8 @@ public class ParameterTest extends FoodMartTestCase {
      * Parameter in slicer and expression on columns axis are both of [Gender]
      * hierarchy, which is illegal.
      */
-    public void _testParameterDuplicateDimensionFails() {
+    @Ignore
+    @Test public void testParameterDuplicateDimensionFails() {
         assertQueryThrows(
             "select {[Measures].[Unit Sales]} on rows,\n"
             + " {[Gender].[F]} on columns\n"
@@ -505,7 +506,7 @@ public class ParameterTest extends FoodMartTestCase {
             + "\".\" ||"
             + "ParamRef(\"X\") || "
             + "Parameter(\"Y\",STRING,\"y\" || \"Y\",\"Other string\")");
-        Assert.assertEquals("xyY.xyY", s);
+        assertThat(s, is("xyY.xyY"));
     }
 
     @Test public void testParamRefWithoutParamFails() {
@@ -552,11 +553,11 @@ public class ParameterTest extends FoodMartTestCase {
             + "  Parameter(\"Q\",[Gender],[Gender].DefaultMember,\"Another gender?\")} on columns\n"
             + "from Sales");
         Parameter[] parameters = query.getParameters();
-        Assert.assertEquals(4, parameters.length);
-        Assert.assertEquals("S", parameters[0].getName());
-        Assert.assertEquals("N", parameters[1].getName());
-        Assert.assertEquals("P", parameters[2].getName());
-        Assert.assertEquals("Q", parameters[3].getName());
+        assertThat(parameters.length, is(4));
+        assertThat(parameters[0].getName(), is("S"));
+        assertThat(parameters[1].getName(), is("N"));
+        assertThat(parameters[2].getName(), is("P"));
+        assertThat(parameters[3].getName(), is("Q"));
         final Member member =
             query.getSchemaReader(true).getMemberByUniqueName(
                 Id.Segment.toList("Gender", "M"), true);

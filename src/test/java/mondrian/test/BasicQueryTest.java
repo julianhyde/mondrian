@@ -29,7 +29,6 @@ import mondrian.util.Bug;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import junit.framework.Assert;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -1288,7 +1287,7 @@ public class BasicQueryTest extends FoodMartTestCase {
             6);
     }
 
-    public void _testEver() {
+    @Ignore @Test public void testEver() {
         assertQueryReturns(
             "select\n"
             + " {[Measures].[Unit Sales], [Measures].[Ever]} on columns,\n"
@@ -1296,7 +1295,7 @@ public class BasicQueryTest extends FoodMartTestCase {
             + "from Sales", "xxx");
     }
 
-    public void _testDairy() {
+    @Ignore @Test public void testDairy() {
         assertQueryReturns(
             "with\n"
             + "  member [Product].[Non dairy] as '[Product].[All Products] - [Product].[Food].[Dairy]'\n"
@@ -1647,7 +1646,7 @@ public class BasicQueryTest extends FoodMartTestCase {
                 + " WHERE ([Measures].[ProfitPercent])"));
     }
 
-    public void _testHalfYearsTrickyCase() {
+    @Ignore @Test public void testHalfYearsTrickyCase() {
         Util.discard(
             executeQuery(
                 "WITH MEMBER MEASURES.ProfitPercent AS\n"
@@ -1749,7 +1748,7 @@ public class BasicQueryTest extends FoodMartTestCase {
                 + "from [Sales]"));
     }
 
-    public void _testMembersFunction() {
+    @Ignore @Test public void testMembersFunction() {
         Util.discard(
             executeQuery(
                 "select {[Measures].[Unit Sales]} on columns,\n"
@@ -1757,7 +1756,7 @@ public class BasicQueryTest extends FoodMartTestCase {
                 + "from [Sales]"));
     }
 
-    public void _testProduct2() {
+    @Ignore @Test public void testProduct2() {
         final Axis axis = getTestContext().executeAxis("{[Product2].members}");
         System.out.println(TestContext.toString(axis.getPositions()));
     }
@@ -3051,7 +3050,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * (Problem was that each argument of a function was validated twice, hence
      * the validation time was <code>O(2 ^ depth)</code>.)
      */
-    public void _testBug793616() {
+    @Ignore @Test public void testBug793616() {
         if (propSaver.props.TestExpDependencies.get() > 0) {
             // Don't run this test if dependency-checking is enabled.
             // Dependency checking will hugely slow down evaluation, and give
@@ -3478,7 +3477,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * presenting it side by side with the budget information from the Budget
      * cube.
      */
-    public void _testLookupCube() {
+    @Ignore @Test public void testLookupCube() {
         assertQueryReturns(
             "WITH MEMBER Measures.[Store Unit Sales] AS \n"
             + " 'LookupCube(\"Sales\", \"(\" + MemberToStr(Stores.CurrentMember) + \", Measures.[Unit Sales])\")'\n"
@@ -3800,7 +3799,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * respect to its use in the Sum function. Since the named set is only
      * evaluated once, it would not satisfy the needs of this query.
      */
-    public void _testCumlativeSums() {
+    @Ignore @Test public void testCumlativeSums() {
         assertQueryReturns(
             // todo: "[Store].[USA].[CA]" should be "Store.CA"; implement "AS"
             "WITH MEMBER Measures.[Cumulative No of Employees] AS\n"
@@ -3927,7 +3926,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * sales totals only to those stores that have sold both Good products and
      * Pearl products.
      */
-    public void _testSet() {
+    @Ignore @Test public void testSet() {
         assertQueryReturns(
             "WITH SET [Good AND Pearl Stores] AS\n"
             + "  'FILTER(Store.Members,\n"
@@ -4031,7 +4030,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * member is readily apparent and easily accessible in client applications
      * that do not support member properties.
      */
-    public void _testMemberPropertyAsCalcMember() {
+    @Ignore @Test public void testMemberPropertyAsCalcMember() {
         assertQueryReturns(
             // todo: implement <member>.PROPERTIES
             "WITH MEMBER Measures.[Store SqFt] AS '[Stores].CURRENTMEMBER.PROPERTIES(\"Store SQFT\")'\n"
@@ -4092,7 +4091,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * members at the Country and City levels, the Country, State Province,
      * and City levels determine the order of the members.
      */
-    public void _testDrillingDownMoreThanOneLevel() {
+    @Ignore @Test public void testDrillingDownMoreThanOneLevel() {
         assertQueryReturns(
             // todo: implement "GENERATE"
             "SELECT  {[Measures].[Unit Sales]} ON COLUMNS,\n"
@@ -4127,7 +4126,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * functions are used to create a set containing the top stores in unit
      * sales for each country.
      */
-    public void _testTopmost() {
+    @Ignore @Test public void testTopmost() {
         assertQueryReturns(
             // todo: implement "GENERATE"
             "WITH MEMBER Measures.[Country Name] AS \n"
@@ -4418,7 +4417,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * number of units shipped per month, as demonstrated in the following MDX
      * query.
      */
-    public void _testDifferentCalculationsForDifferentDimensions() {
+    @Ignore @Test public void testDifferentCalculationsForDifferentDimensions() {
         assertQueryReturns(
             // todo: implement "NONEMPTYCROSSJOIN"
             "WITH MEMBER [Measures].[Avg Units Shipped] AS\n"
@@ -4443,7 +4442,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * calculated measure to supply the value of inventory on hand, as
      * demonstrated in the following MDX query.
      */
-    public void _testDifferentCalculationsForDifferentDimensions2() {
+    @Ignore @Test public void testDifferentCalculationsForDifferentDimensions2() {
         assertQueryReturns(
             "WITH MEMBER Measures.[Closing Balance] AS\n"
             + "  '([Measures].[Units Ordered], \n"
@@ -4485,7 +4484,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * Quarter, and Month levels. To add a six-month and nine-month total, two
      * calculated members are created in the following MDX query.
      */
-    public void _testDateRange() {
+    @Ignore @Test public void testDateRange() {
         assertQueryReturns(
             // todo: implement "AddCalculatedMembers"
             "WITH Member [Time].[Time].[1997].[Six Month] AS\n"
@@ -4525,7 +4524,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * The LastPeriods function, finally, is then used to retrieve the last 12
      * periods at this level, including the current period.
      */
-    public void _testRolling() {
+    @Ignore @Test public void testRolling() {
         assertQueryReturns(
             "WITH SET Rolling12 AS\n"
             + "  'LASTPERIODS(12, TAIL(FILTER([Time].[Month].MEMBERS, \n"
@@ -4691,7 +4690,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * same MDX query, for example, could be rewritten to use a member property
      * named [Dynamic Forecast Multiplier] as shown in the following MDX query.
      */
-    public void _testDc4dtp2() {
+    @Ignore @Test public void testDc4dtp2() {
         assertQueryReturns(
             "WITH MEMBER [Product].[Products].[Drink Forecast - Standard] AS\n"
             + "  '[Product].[Drink] * 2'\n"
@@ -4704,7 +4703,7 @@ public class BasicQueryTest extends FoodMartTestCase {
             "");
     }
 
-    public void _testWarehouseProfit() {
+    @Ignore @Test public void testWarehouseProfit() {
         assertQueryReturns(
             "select \n"
             + "{[Measures].[Warehouse Cost], [Measures].[Warehouse Sales], [Measures].[Warehouse Profit]}\n"
@@ -4730,7 +4729,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * how to use the YTD and ParallelPeriod functions in combination to compare
      * time periods.
      */
-    public void _testYtdGrowth() {
+    @Ignore @Test public void testYtdGrowth() {
         assertQueryReturns(
             // todo: implement "ParallelPeriod"
             "WITH MEMBER [Measures].[YTD Unit Sales] AS\n"
@@ -5100,7 +5099,7 @@ public class BasicQueryTest extends FoodMartTestCase {
      * of the [Store] shared dimension, and another usage called [Other Store]
      * which is connected to the [Unit Sales] column
      */
-    public void _testCubeWhichUsesSameSharedDimTwice() {
+    @Ignore @Test public void testCubeWhichUsesSameSharedDimTwice() {
         // Create a second usage of the "Store" shared dimension called "Other
         // Store". Attach it to the "unit_sales" column (which has values [1,
         // 6] whereas store has values [1, 24].
@@ -5462,7 +5461,7 @@ public class BasicQueryTest extends FoodMartTestCase {
             + "from [Sales]");
     }
 
-    public void _testSetArgToTupleFails() {
+    @Ignore @Test public void testSetArgToTupleFails() {
         assertQueryThrows(
             "select CrossJoin(\n"
             + "    {[Product].children},\n"
@@ -5764,9 +5763,7 @@ public class BasicQueryTest extends FoodMartTestCase {
             timer.schedule(task, waitMillis);
         }
         if (throwables[0] != null) {
-            Assert.fail(
-                "Cancel request failed:  "
-                + throwables[0]);
+            fail("Cancel request failed:  " + throwables[0]);
         }
         Throwable throwable = null;
         try {
@@ -5775,9 +5772,7 @@ public class BasicQueryTest extends FoodMartTestCase {
             throwable = ex;
         }
         if (throwables[0] != null) {
-            Assert.fail(
-                "Cancel request failed:  "
-                + throwables[0]);
+            fail("Cancel request failed:  " + throwables[0]);
         }
         TestContext.checkThrowable(throwable, "canceled");
     }

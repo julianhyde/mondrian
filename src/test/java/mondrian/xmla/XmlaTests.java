@@ -13,10 +13,12 @@ import mondrian.olap.Util;
 import mondrian.test.FoodMartTestCase;
 
 import org.junit.Test;
-import junit.framework.Assert;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 // Only in Java5 and above
 //import java.math.MathContext;
 
@@ -265,7 +267,7 @@ System.out.println("    value=" +value);
         throws Exception
     {
         String actual = XmlaUtil.normalizeNumericString(vin);
-        Assert.assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
     protected void doXmlaHandlerGetValueTypeHint(
@@ -274,7 +276,7 @@ System.out.println("    value=" +value);
         throws Exception
     {
         String actual = XmlaHandler.ValueInfo.getValueTypeHint(dataType);
-        Assert.assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
     protected void doXmlaHandlerValueInfo(
@@ -287,9 +289,9 @@ System.out.println("    value=" +value);
     {
         XmlaHandler.ValueInfo vi =
             new XmlaHandler.ValueInfo(dataType, inputValue);
-        Assert.assertEquals("valueType:", valueType, vi.valueType);
-        Assert.assertEquals("value:", value, vi.value);
-        Assert.assertEquals("isDecimal:", isDecimal, vi.isDecimal);
+        assertThat("valueType:", vi.valueType, is(valueType));
+        assertThat("value:", vi.value, is(value));
+        assertThat("isDecimal:", vi.isDecimal, is(isDecimal));
     }
 
 }

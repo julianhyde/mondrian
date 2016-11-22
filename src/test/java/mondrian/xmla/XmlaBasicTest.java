@@ -18,6 +18,7 @@ import mondrian.test.TestContext;
 import mondrian.tui.XmlUtil;
 import mondrian.tui.XmlaSupport;
 
+import org.junit.Ignore;
 import org.olap4j.metadata.XmlaConstants;
 
 import org.junit.Before;
@@ -137,18 +138,21 @@ public class XmlaBasicTest extends XmlaBaseTestCase {
         doTestRT(requestType, getTestContext());
     }
     // passes 2/25 - I think that this is good but not sure
-    public void _testDBColumns() throws Exception {
+    @Ignore
+    @Test public void testDBColumns() throws Exception {
         String requestType = "DBSCHEMA_COLUMNS";
         doTestRT(requestType, getTestContext());
     }
     // passes 2/25 - I think that this is good but not sure
-    public void _testDBProviderTypes() throws Exception {
+    @Ignore
+    @Test public void testDBProviderTypes() throws Exception {
         String requestType = "DBSCHEMA_PROVIDER_TYPES";
         doTestRT(requestType, getTestContext());
     }
     // passes 2/25 - I think that this is good but not sure
     // Should this even be here
-    public void _testDBTablesInfo() throws Exception {
+    @Ignore
+    @Test public void testDBTablesInfo() throws Exception {
         String requestType = "DBSCHEMA_TABLES_INFO";
         doTestRT(requestType, getTestContext());
     }

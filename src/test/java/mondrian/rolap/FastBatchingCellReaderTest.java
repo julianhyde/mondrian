@@ -23,8 +23,8 @@ import mondrian.util.DelegatingInvocationHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.Assert;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -2316,16 +2316,12 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
             new Integer[] {3, 7};
 
         // Test with double
-        Assert.assertEquals(
-            3.5,
-            RolapAggregator.Sum.aggregate(
-                Arrays.asList(dblSet1),
-                Dialect.Datatype.Numeric));
-        Assert.assertEquals(
-            null,
-            RolapAggregator.Sum.aggregate(
-                Arrays.asList(dblSet2),
-                Dialect.Datatype.Numeric));
+        assertThat(
+            RolapAggregator.Sum.aggregate(Arrays.asList(dblSet1),
+                Dialect.Datatype.Numeric), is((Object) 3.5));
+        assertThat(
+            RolapAggregator.Sum.aggregate( Arrays.asList(dblSet2),
+                Dialect.Datatype.Numeric), nullValue());
         try {
             RolapAggregator.Sum.aggregate(
                 Arrays.asList(dblSet3),
@@ -2334,23 +2330,17 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
         } catch (AssertionError e) {
             // ok.
         }
-        Assert.assertEquals(
-            4.6,
-            RolapAggregator.Sum.aggregate(
-                Arrays.asList(dblSet4),
-                Dialect.Datatype.Numeric));
+        assertThat(
+            RolapAggregator.Sum.aggregate(Arrays.asList(dblSet4),
+                Dialect.Datatype.Numeric), is((Object) 4.6));
 
         // test with int
-        Assert.assertEquals(
-            5,
-            RolapAggregator.Sum.aggregate(
-                Arrays.asList(intSet1),
-                Dialect.Datatype.Integer));
-        Assert.assertEquals(
-            null,
-            RolapAggregator.Sum.aggregate(
-                Arrays.asList(intSet2),
-                Dialect.Datatype.Integer));
+        assertThat(
+            RolapAggregator.Sum.aggregate(Arrays.asList(intSet1),
+                Dialect.Datatype.Integer), is((Object) 5));
+        assertThat(
+            RolapAggregator.Sum.aggregate( Arrays.asList(intSet2),
+                Dialect.Datatype.Integer), nullValue());
         try {
             RolapAggregator.Sum.aggregate(
                 Arrays.asList(intSet3),
@@ -2359,11 +2349,9 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
         } catch (AssertionError e) {
             // ok.
         }
-        Assert.assertEquals(
-            10,
-            RolapAggregator.Sum.aggregate(
-                Arrays.asList(intSet4),
-                Dialect.Datatype.Integer));
+        assertThat(
+            RolapAggregator.Sum.aggregate(Arrays.asList(intSet4),
+                Dialect.Datatype.Integer), is((Object) 10));
     }
 
     @Test public void testInMemoryAggMin() throws Exception {
@@ -2388,54 +2376,42 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
             new Integer[] {3, 7};
 
         // Test with double
-        Assert.assertEquals(
-            0.0,
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(dblSet1),
-                Dialect.Datatype.Numeric));
-        Assert.assertEquals(
-            null,
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(dblSet2),
-                Dialect.Datatype.Numeric));
+        assertThat(
+            RolapAggregator.Min.aggregate(Arrays.asList(dblSet1),
+                Dialect.Datatype.Numeric), is((Object) 0.0));
+        assertThat(
+            RolapAggregator.Min.aggregate(Arrays.asList(dblSet2),
+                Dialect.Datatype.Numeric), nullValue());
         try {
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(dblSet3),
-                Dialect.Datatype.Numeric);
-            fail("expected error");
+            final Object o =
+                RolapAggregator.Min.aggregate(Arrays.asList(dblSet3),
+                    Dialect.Datatype.Numeric);
+            fail("expected error, got " + o);
         } catch (AssertionError e) {
             // ok.
         }
-        Assert.assertEquals(
-            1.9,
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(dblSet4),
-                Dialect.Datatype.Numeric));
+        assertThat(
+            RolapAggregator.Min.aggregate(Arrays.asList(dblSet4),
+                Dialect.Datatype.Numeric), is((Object) 1.9));
 
         // test with int
-        Assert.assertEquals(
-            0,
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(intSet1),
-                Dialect.Datatype.Integer));
-        Assert.assertEquals(
-            null,
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(intSet2),
-                Dialect.Datatype.Integer));
+        assertThat(
+            RolapAggregator.Min.aggregate(Arrays.asList(intSet1),
+                Dialect.Datatype.Integer), is((Object) 0));
+        assertThat(
+            RolapAggregator.Min.aggregate(Arrays.asList(intSet2),
+                Dialect.Datatype.Integer), nullValue());
         try {
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(intSet3),
-                Dialect.Datatype.Integer);
-            fail("expected error");
+            final Object o =
+                RolapAggregator.Min.aggregate(Arrays.asList(intSet3),
+                    Dialect.Datatype.Integer);
+            fail("expected error, got " + o);
         } catch (AssertionError e) {
             // ok.
         }
-        Assert.assertEquals(
-            3,
-            RolapAggregator.Min.aggregate(
-                Arrays.asList(intSet4),
-                Dialect.Datatype.Integer));
+        assertThat(
+            RolapAggregator.Min.aggregate(Arrays.asList(intSet4),
+                Dialect.Datatype.Integer), is((Object) 3));
     }
 
     @Test public void testInMemoryAggMax() throws Exception {
@@ -2460,54 +2436,40 @@ public class FastBatchingCellReaderTest extends BatchTestCase {
             new Integer[] {3, 7};
 
         // Test with double
-        Assert.assertEquals(
-            2.4,
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(dblSet1),
-                Dialect.Datatype.Numeric));
-        Assert.assertEquals(
-            null,
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(dblSet2),
-                Dialect.Datatype.Numeric));
+        assertThat(
+            RolapAggregator.Max.aggregate(Arrays.asList(dblSet1),
+                Dialect.Datatype.Numeric), is((Object) 2.4));
+        assertThat(
+            RolapAggregator.Max.aggregate(Arrays.asList(dblSet2),
+                Dialect.Datatype.Numeric), nullValue());
         try {
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(dblSet3),
+            Object o = RolapAggregator.Max.aggregate(Arrays.asList(dblSet3),
                 Dialect.Datatype.Numeric);
-            fail("expected error");
+            fail("expected error, got " + o);
         } catch (AssertionError e) {
             // ok.
         }
-        Assert.assertEquals(
-            2.7,
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(dblSet4),
-                Dialect.Datatype.Numeric));
+        assertThat(
+            RolapAggregator.Max.aggregate(Arrays.asList(dblSet4),
+                Dialect.Datatype.Numeric), is((Object) 2.7));
 
         // test with int
-        Assert.assertEquals(
-            4,
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(intSet1),
-                Dialect.Datatype.Integer));
-        Assert.assertEquals(
-            null,
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(intSet2),
-                Dialect.Datatype.Integer));
+        assertThat(
+            RolapAggregator.Max.aggregate(Arrays.asList(intSet1),
+                Dialect.Datatype.Integer), is((Object) 4));
+        assertThat(
+            RolapAggregator.Max.aggregate(Arrays.asList(intSet2),
+                Dialect.Datatype.Integer), nullValue());
         try {
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(intSet3),
+            Object o = RolapAggregator.Max.aggregate(Arrays.asList(intSet3),
                 Dialect.Datatype.Integer);
-            fail("expected error");
+            fail("expected error, got " + o);
         } catch (AssertionError e) {
             // ok.
         }
-        Assert.assertEquals(
-            7,
-            RolapAggregator.Max.aggregate(
-                Arrays.asList(intSet4),
-                Dialect.Datatype.Integer));
+        assertThat(
+            RolapAggregator.Max.aggregate(Arrays.asList(intSet4),
+                Dialect.Datatype.Integer), is((Object) 7));
     }
 
     private static class Bacon {

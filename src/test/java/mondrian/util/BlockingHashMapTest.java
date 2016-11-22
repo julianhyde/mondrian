@@ -12,17 +12,19 @@ package mondrian.util;
 import mondrian.olap.Util;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.util.Random;
 import java.util.concurrent.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Testcase for {@link BlockingHashMap}.
  *
  * @author mcampbell
  */
-public class BlockingHashMapTest extends TestCase {
+public class BlockingHashMapTest {
 
     private final Random random = Util.createRandom(-1);
     private static final int SLEEP_TIME = 100;
@@ -42,25 +44,24 @@ public class BlockingHashMapTest extends TestCase {
         ExecutorService exec = Executors.newFixedThreadPool(20);
         try {
             for (int i = 0; i < 100; i++) {
-                exec.submit(new Puter(i, i, map));
+                exec.submit(new Putter(i, i, map));
                 exec.submit(new Getter(i, map));
             }
         } finally {
             exec.shutdown();
             boolean finished = exec.awaitTermination(
                 2, TimeUnit.SECONDS);
-            assertTrue(finished);
+            assertThat(finished, is(true));
         }
     }
 
 
-    private class Puter implements Runnable {
+    private class Putter implements Runnable {
         private final Integer key;
         private final Integer value;
         private final BlockingHashMap<Integer, Integer> map;
 
-        public Puter(
-            Integer key, Integer value,
+        public Putter(Integer key, Integer value,
             BlockingHashMap<Integer, Integer> response)
         {
             this.key = key;
@@ -93,7 +94,7 @@ public class BlockingHashMapTest extends TestCase {
                 Thread.sleep(random.nextInt(SLEEP_TIME));
                 Integer val = map.get(key);
                 // System.out.println("getting key: " + key);
-                assertEquals(key, val);
+                assertThat(val, is(key));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -33,49 +33,6 @@ import java.util.*;
  * @since 29 March, 2002
  */
 public class FoodMartTestCase {
-    protected static <T> void assertEquals(T expected, T actual) {
-        assertThat(actual, is(expected));
-    }
-    protected static <T> void assertEquals(String s, T expected, T actual) {
-        assertThat(s, actual, is(expected));
-    }
-    protected static void assertEquals(double expected, double actual, double delta) {
-        assertThat(actual, TestTemp.range(expected, delta));
-    }
-    protected static void assertEquals(String s, double expected, double actual, double delta) {
-        assertThat(s, actual, TestTemp.range(expected, delta));
-    }
-
-    protected static <T> void assertSame(T expected, T actual) {
-        assertThat(actual, sameInstance(expected));
-    }
-
-    protected static void assertTrue(boolean b) {
-        assertThat(b, is(true));
-    }
-    protected static void assertTrue(String s, boolean b) {
-        assertThat(s, b, is(true));
-    }
-
-    protected static void assertFalse(String s, boolean b) {
-        assertThat(s, b, is(false));
-    }
-    protected static <T> void assertNull(T t) {
-        assertThat(t, nullValue());
-    }
-    protected static <T> void assertNull(String s, T t) {
-        assertThat(s, t, nullValue());
-    }
-    protected static <T> void assertNotNull(T t) {
-        assertThat(t, notNullValue());
-    }
-    protected static <T> void assertNotNull(String s, T t) {
-        assertThat(s, t, notNullValue());
-    }
-    protected static void fail(String t) {
-        Assert.fail(t);
-    }
-
   /**
      * Access properties via this object and their values will be reset on
      * {@link #tearDown()}.
@@ -110,9 +67,9 @@ public class FoodMartTestCase {
     {
         Result result = executeQuery(queryString);
         Axis[] axes = result.getAxes();
-        assertTrue(axes.length == 2);
-        assertTrue(axes[0].getPositions().size() == columnCount);
-        assertTrue(axes[1].getPositions().size() == rowCount);
+        assertThat(axes.length, is(2));
+        assertThat(axes[0].getPositions().size(), is(columnCount));
+        assertThat(axes[1].getPositions().size(), is(rowCount));
     }
 
     /**

@@ -12,6 +12,7 @@ package mondrian.xmla;
 
 import mondrian.test.DiffRepository;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -116,7 +117,8 @@ public class XmlaExcelXPTest extends XmlaBaseTestCase {
     // The xml schema returned by SQL Server is not the version 1.0
     // schema returned by Mondrian.
     // Values are correct.
-    public void _test18() {
+    @Ignore
+    @Test public void test18() {
         helperTest(true);
     }
 
@@ -129,12 +131,12 @@ public class XmlaExcelXPTest extends XmlaBaseTestCase {
     }
 
     // Same issue as test18: slicerAxis
-    public void _test21() {
+    @Ignore @Test public void test21() {
         helperTest(true);
     }
 
     // Same issue as test18: slicerAxis
-    public void _test22() {
+    @Ignore @Test public void test22() {
         helperTest(true);
     }
 

@@ -14,6 +14,7 @@ import mondrian.olap.Util.ByteMatcher;
 import mondrian.rolap.RolapUtil;
 import mondrian.util.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.sql.Driver;
@@ -1348,7 +1349,7 @@ public class UtilTestCase {
      * Unit test for {@link mondrian.olap.Util#newIdentityHashSet()}.
      */
     @SuppressWarnings("UnnecessaryBoxing")
-    public void _testIdentityHashSet() {
+    @Test public void testIdentityHashSet() {
         final Set<Integer> set = Util.newIdentityHashSet();
         assertThat(set.isEmpty(), is(true));
         assertThat(set.size(), is(0));

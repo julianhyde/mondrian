@@ -17,6 +17,7 @@ import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
 import org.eigenbase.util.property.BooleanProperty;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -106,15 +107,15 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    // disabled because runs out of memory/hangs
-    public void _testCognosMDXSuiteConvertedAdventureWorksToFoodMart_009()
+    @Ignore("disabled because runs out of memory/hangs")
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_009()
         throws Exception
     {
         executeMDX();
     }
 
-    // disabled because runs out of memory/hangs
-    public void _testCognosMDXSuiteConvertedAdventureWorksToFoodMart_012()
+    @Ignore("disabled because runs out of memory/hangs")
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_012()
         throws Exception
     {
         executeMDX();
@@ -126,8 +127,8 @@ public class XmlaCognosTest extends XmlaBaseTestCase {
         executeMDX();
     }
 
-    // disabled because runs out of memory/hangs
-    public void _testCognosMDXSuiteConvertedAdventureWorksToFoodMart_014()
+    @Ignore("disabled because runs out of memory/hangs")
+    @Test public void testCognosMDXSuiteConvertedAdventureWorksToFoodMart_014()
         throws Exception
     {
         executeMDX();

@@ -14,11 +14,12 @@ import mondrian.olap.*;
 import mondrian.rolap.BatchTestCase;
 import mondrian.spi.Dialect;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import junit.framework.Assert;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the expressions used for calculated members. Please keep in sync
@@ -56,7 +57,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "  formula='[Measures].[Store Sales]-[Measures].[Store Cost]'/>");
 
         String s = executeExpr("[Measures].[Profit2]");
-        Assert.assertEquals("339,610.90", s);
+        assertThat(s, is("339,610.90"));
 
         // should fail if member of same name exists
         try {
@@ -91,7 +92,7 @@ public class TestCalculatedMembers extends BatchTestCase {
             .withCube("Warehouse and Sales");
 
         Cell s = testContext.executeExprRaw("[Measures].[Profit With Spaces]");
-        Assert.assertEquals("339,610.90", s.getFormattedValue());
+        assertThat(s.getFormattedValue(), is("339,610.90"));
     }
 
     @Test public void testCalculatedMemberInCubeWithProps() {
@@ -109,7 +110,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         Result result = TestContext.instance().executeQuery(
             "select {[Measures].[Profit3]} on columns from Sales");
         String s = result.getCell(new int[]{0}).getFormattedValue();
-        Assert.assertEquals("339611", s);
+        assertThat(s, is("339611"));
 
         // should fail if member property has expr and value
         try {
@@ -299,7 +300,8 @@ public class TestCalculatedMembers extends BatchTestCase {
             + "Row #0: 2\n");
     }
 
-    public void _testWhole() {
+    @Ignore
+    @Test public void testWhole() {
         // "allmembers" tests compatibility with MSAS
         executeQuery(
             "with\n"
@@ -415,7 +417,7 @@ public class TestCalculatedMembers extends BatchTestCase {
         Position pos0 = axis0.getPositions().get(0);
         Member profGrowth = pos0.get(0);
         String caption = profGrowth.getCaption();
-        Assert.assertEquals(caption, "Gewinn-Wachstum");
+        assertThat("Gewinn-Wachstum", is(caption));
     }
 
     @Test public void testCalcMemberIsSetFails() {

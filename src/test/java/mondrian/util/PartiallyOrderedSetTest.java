@@ -12,14 +12,16 @@ package mondrian.util;
 import mondrian.test.TestContext;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.util.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test for {@link PartiallyOrderedSet}.
  */
-public class PartiallyOrderedSetTest extends TestCase {
+public class PartiallyOrderedSetTest {
     private static final boolean debug = false;
     private final int SCALE = 250; // 100, 1000, 3000 are also reasonable values
     final long seed = new Random().nextLong();
@@ -78,7 +80,7 @@ public class PartiallyOrderedSetTest extends TestCase {
         String abcd = "'abcd'";
         PartiallyOrderedSet<String> poset =
             new PartiallyOrderedSet<String>(stringSubsetOrdering);
-        assertEquals(0, poset.size());
+        assertThat(poset.size(), is(0));
 
         final StringBuilder buf = new StringBuilder();
         poset.out(buf);
@@ -93,34 +95,34 @@ public class PartiallyOrderedSetTest extends TestCase {
         printValidate(poset);
 
         poset.clear();
-        assertEquals(0, poset.size());
+        assertThat(poset.size(), is(0));
         poset.add(empty);
         printValidate(poset);
         poset.add(abcd);
         printValidate(poset);
-        assertEquals(2, poset.size());
-        assertEquals("['abcd']", poset.getNonChildren().toString());
-        assertEquals("['']", poset.getNonParents().toString());
+        assertThat(poset.size(), is(2));
+        assertThat(poset.getNonChildren().toString(), is("['abcd']"));
+        assertThat(poset.getNonParents().toString(), is("['']"));
 
         final String ab = "'ab'";
         poset.add(ab);
         printValidate(poset);
-        assertEquals(3, poset.size());
-        assertEquals("[]", poset.getChildren(empty).toString());
-        assertEquals("['ab']", poset.getParents(empty).toString());
-        assertEquals("['ab']", poset.getChildren(abcd).toString());
-        assertEquals("[]", poset.getParents(abcd).toString());
-        assertEquals("['']", poset.getChildren(ab).toString());
-        assertEquals("['abcd']", poset.getParents(ab).toString());
+        assertThat(poset.size(), is(3));
+        assertThat(poset.getChildren(empty).toString(), is("[]"));
+        assertThat(poset.getParents(empty).toString(), is("['ab']"));
+        assertThat(poset.getChildren(abcd).toString(), is("['ab']"));
+        assertThat(poset.getParents(abcd).toString(), is("[]"));
+        assertThat(poset.getChildren(ab).toString(), is("['']"));
+        assertThat(poset.getParents(ab).toString(), is("['abcd']"));
 
         // "bcd" is child of "abcd" and parent of ""
         final String bcd = "'bcd'";
         poset.add(bcd);
         printValidate(poset);
-        assertTrue(poset.isValid(false));
-        assertEquals("['']", poset.getChildren(bcd).toString());
-        assertEquals("['abcd']", poset.getParents(bcd).toString());
-        assertEquals("['ab', 'bcd']", poset.getChildren(abcd).toString());
+        assertThat(poset.isValid(false), is(true));
+        assertThat(poset.getChildren(bcd).toString(), is("['']"));
+        assertThat(poset.getParents(bcd).toString(), is("['abcd']"));
+        assertThat(poset.getChildren(abcd).toString(), is("['ab', 'bcd']"));
 
         buf.setLength(0);
         poset.out(buf);
@@ -136,30 +138,31 @@ public class PartiallyOrderedSetTest extends TestCase {
         final String b = "'b'";
 
         // ancestors of an element not in the set
-        assertEqualsList("['ab', 'abcd', 'bcd']", poset.getAncestors(b));
+        assertThat(sortedStr(poset.getAncestors(b)),
+            is("['ab', 'abcd', 'bcd']"));
 
         poset.add(b);
         printValidate(poset);
-        assertEquals("['abcd']", poset.getNonChildren().toString());
-        assertEquals("['']", poset.getNonParents().toString());
-        assertEquals("['']", poset.getChildren(b).toString());
-        assertEqualsList("['ab', 'bcd']", poset.getParents(b));
-        assertEquals("['']", poset.getChildren(b).toString());
-        assertEquals("['ab', 'bcd']", poset.getChildren(abcd).toString());
-        assertEquals("['b']", poset.getChildren(bcd).toString());
-        assertEquals("['b']", poset.getChildren(ab).toString());
-        assertEqualsList("['ab', 'abcd', 'bcd']", poset.getAncestors(b));
+        assertThat(poset.getNonChildren().toString(), is("['abcd']"));
+        assertThat(poset.getNonParents().toString(), is("['']"));
+        assertThat(poset.getChildren(b).toString(), is("['']"));
+        assertThat(sortedStr(poset.getParents(b)), is("['ab', 'bcd']"));
+        assertThat(poset.getChildren(b).toString(), is("['']"));
+        assertThat(poset.getChildren(abcd).toString(), is("['ab', 'bcd']"));
+        assertThat(poset.getChildren(bcd).toString(), is("['b']"));
+        assertThat(poset.getChildren(ab).toString(), is("['b']"));
+        assertThat(sortedStr(poset.getAncestors(b)),
+            is("['ab', 'abcd', 'bcd']"));
 
         // descendants and ancestors of an element with no descendants
-        assertEquals("[]", poset.getDescendants(empty).toString());
-        assertEqualsList(
-            "['ab', 'abcd', 'b', 'bcd']",
-            poset.getAncestors(empty));
+        assertThat(poset.getDescendants(empty).toString(), is("[]"));
+        assertThat(sortedStr(poset.getAncestors(empty)),
+            is("['ab', 'abcd', 'b', 'bcd']"));
 
         // some more ancestors of missing elements
-        assertEqualsList("['abcd']", poset.getAncestors("'ac'"));
-        assertEqualsList("[]", poset.getAncestors("'z'"));
-        assertEqualsList("['ab', 'abcd']", poset.getAncestors("'a'"));
+        assertThat(sortedStr(poset.getAncestors("'ac'")), is("['abcd']"));
+        assertThat(sortedStr(poset.getAncestors("'z'")), is("[]"));
+        assertThat(sortedStr(poset.getAncestors("'a'")), is("['ab', 'abcd']"));
     }
 
     @Test public void testPosetTricky() {
@@ -207,17 +210,13 @@ public class PartiallyOrderedSetTest extends TestCase {
     @Test public void testDivisorPoset() {
         PartiallyOrderedSet<Integer> integers =
             new PartiallyOrderedSet<Integer>(isDivisor, range(1, 1000));
-        assertEquals(
-            "[1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60]",
-            new TreeSet<Integer>(integers.getDescendants(120)).toString());
-        assertEquals(
-            "[240, 360, 480, 600, 720, 840, 960]",
-            new TreeSet<Integer>(integers.getAncestors(120)).toString());
-        assertTrue(integers.getDescendants(1).isEmpty());
-        assertEquals(
-            998,
-            integers.getAncestors(1).size());
-        assertTrue(integers.isValid(true));
+        assertThat(new TreeSet<Integer>(integers.getDescendants(120)).toString(),
+            is("[1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60]"));
+        assertThat(new TreeSet<Integer>(integers.getAncestors(120)).toString(),
+            is("[240, 360, 480, 600, 720, 840, 960]"));
+        assertThat(integers.getDescendants(1).isEmpty(), is(true));
+        assertThat(integers.getAncestors(1).size(), is(998));
+        assertThat(integers.isValid(true), is(true));
     }
 
     @Test public void testDivisorSeries() {
@@ -303,7 +302,7 @@ public class PartiallyOrderedSetTest extends TestCase {
         if (debug) {
             dump(poset);
         }
-        assertTrue(poset.isValid(debug));
+        assertThat(poset.isValid(debug), is(true));
     }
 
     public void checkPoset(
@@ -337,19 +336,20 @@ public class PartiallyOrderedSetTest extends TestCase {
             if (debug) {
                 dump(poset);
             }
-            assertEquals(++n, poset.size());
+            Integer expected = ++n;
+            assertThat(poset.size(), is(expected));
             if (i < 100) {
                 if (!poset.isValid(false)) {
                     dump(poset);
                 }
-                assertTrue(poset.isValid(true));
+                assertThat(poset.isValid(true), is(true));
             }
         }
-        assertTrue(poset.isValid(true));
+        assertThat(poset.isValid(true), is(true));
 
         final StringBuilder buf = new StringBuilder();
         poset.out(buf);
-        assertTrue(buf.length() > 0);
+        assertThat(buf.length() > 0, is(true));
     }
 
     private <E> void dump(PartiallyOrderedSet<E> poset) {
@@ -384,10 +384,8 @@ public class PartiallyOrderedSetTest extends TestCase {
         return set;
     }
 
-    private static void assertEqualsList(String expected, List<String> ss) {
-        assertEquals(
-            expected,
-            new TreeSet<String>(ss).toString());
+    private static String sortedStr(List<String> ss) {
+        return new TreeSet<String>(ss).toString();
     }
 }
 

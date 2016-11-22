@@ -13,10 +13,12 @@ import mondrian.olap.Util;
 import mondrian.test.I18nTest;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.math.BigDecimal;
 import java.util.*;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test for {@link Format}.
@@ -24,7 +26,7 @@ import java.util.*;
  * @author jhyde
  * @since May 26, 2006
  */
-public class FormatTest extends TestCase {
+public class FormatTest {
 
     private final Format.FormatLocale localeFra = Format.createLocale(
         '.', // thousandSeparator = ',' in en
@@ -554,29 +556,25 @@ public class FormatTest extends TestCase {
 
     @Test public void testFrenchLocale() {
         Format.FormatLocale fr = Format.createLocale(Locale.FRANCE);
-        assertEquals("#,##0.00 " + I18nTest.Euro, fr.currencyFormat);
-        assertEquals(I18nTest.Euro + "", fr.currencySymbol);
-        assertEquals("/", fr.dateSeparator);
-        assertEquals(
-            "[, dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]",
-            Arrays.toString(fr.daysOfWeekLong));
-        assertEquals(
-            "[, dim., lun., mar., mer., jeu., ven., sam.]",
-            Arrays.toString(fr.daysOfWeekShort));
-        assertEquals(
-            "[janvier, f" + I18nTest.EA + "vrier, mars, avril, mai, juin,"
-            + " juillet, ao" + I18nTest.UC
-            + "t, septembre, octobre, novembre, d"
-            + I18nTest.EA + "cembre, ]",
-            Arrays.toString(fr.monthsLong));
-        assertEquals(
-            "[janv., f" + I18nTest.EA + "vr., mars, avr., mai, juin,"
-            + " juil., ao" + I18nTest.UC + "t, sept., oct., nov., d"
-            + I18nTest.EA + "c., ]",
-            Arrays.toString(fr.monthsShort));
-        assertEquals(',', fr.decimalPlaceholder);
-        assertEquals(I18nTest.Nbsp, fr.thousandSeparator);
-        assertEquals(":", fr.timeSeparator);
+        assertThat(fr.currencyFormat, is("#,##0.00 " + I18nTest.Euro));
+        assertThat(fr.currencySymbol, is(I18nTest.Euro + ""));
+        assertThat(fr.dateSeparator, is("/"));
+        assertThat(Arrays.toString(fr.daysOfWeekLong),
+            is("[, dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]"));
+        assertThat(Arrays.toString(fr.daysOfWeekShort),
+            is("[, dim., lun., mar., mer., jeu., ven., sam.]"));
+        assertThat(Arrays.toString(fr.monthsLong),
+            is("[janvier, f" + I18nTest.EA + "vrier, mars, avril, mai, juin,"
+               + " juillet, ao" + I18nTest.UC
+               + "t, septembre, octobre, novembre, d"
+               + I18nTest.EA + "cembre, ]"));
+        assertThat(Arrays.toString(fr.monthsShort),
+            is("[janv., f" + I18nTest.EA + "vr., mars, avr., mai, juin,"
+               + " juil., ao" + I18nTest.UC + "t, sept., oct., nov., d"
+               + I18nTest.EA + "c., ]"));
+        assertThat(fr.decimalPlaceholder, is(','));
+        assertThat(fr.thousandSeparator, is(I18nTest.Nbsp));
+        assertThat(fr.timeSeparator, is(":"));
     }
 
     private void checkFormat(
@@ -604,7 +602,7 @@ public class FormatTest extends TestCase {
     {
         Format format = new Format(formatString, locale);
         String actualResult = format.format(o);
-        assertEquals(expectedResult, actualResult);
+        assertThat(actualResult, is(expectedResult));
         if (o instanceof BigDecimal) {
             BigDecimal bigDecimal = (BigDecimal) o;
             checkFormat(
@@ -623,7 +621,7 @@ public class FormatTest extends TestCase {
         for (int i = 0; i < Format.CacheLimit * 2; ++i) {
             final Format format = Format.get(buf.toString(), null);
             final String s = format.format(i);
-            assertEquals(i + ".", s);
+            assertThat(s, is(i + "."));
             buf.append("#");
         }
     }

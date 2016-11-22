@@ -11,8 +11,8 @@ package mondrian.util;
 
 import mondrian.test.TestContext;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,7 +23,7 @@ import java.io.StringWriter;
  * @author jhyde
  * @since Feb 4, 2007
  */
-public class PrimeFinderTest extends TestCase {
+public class PrimeFinderTest {
 
     private void assertStatistics(int from, int to, String expected) {
         StringWriter sw = new StringWriter();
@@ -68,8 +68,8 @@ public class PrimeFinderTest extends TestCase {
             + "maxDeviation = 39.898987 %\n");
     }
 
-    // disabled because it takes a LONG time
-    public void _testFour() {
+    @Ignore("disabled because it takes a LONG time")
+    @Test public void testFour() {
         assertStatistics(1000, Integer.MAX_VALUE, "");
     }
 }

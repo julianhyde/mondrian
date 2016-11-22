@@ -15,14 +15,18 @@ import mondrian.test.PerformanceTest;
 import mondrian.test.PerformanceTest.Statistician;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.util.*;
+
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * Unit and performance test for {@link ChunkList}.
  */
-public class ChunkListTest extends TestCase {
+public class ChunkListTest {
     public static final Factory FACTORY = new Factory() {
         public <E> List<E> create() {
             return new ChunkList<E>();
@@ -56,9 +60,9 @@ public class ChunkListTest extends TestCase {
 
     private void checkChunkList(Factory factory) {
         final List<Integer> list = factory.create();
-        assertEquals(0, list.size());
-        assertTrue(list.isEmpty());
-        assertEquals("[]", list.toString());
+        assertThat(list.size(), is(0));
+        assertThat(list.isEmpty(), is(true));
+        assertThat(list.toString(), is("[]"));
 
         try {
             list.remove(0);
@@ -82,50 +86,49 @@ public class ChunkListTest extends TestCase {
         }
 
         list.add(7);
-        assertEquals(1, list.size());
-        assertEquals(7, (int) list.get(0));
-        assertFalse(list.isEmpty());
-        assertEquals("[7]", list.toString());
+        assertThat(list.size(), is(1));
+        assertThat(list.get(0), is(7));
+        assertThat(list.isEmpty(), is(false));
+        assertThat(list.toString(), is("[7]"));
 
         list.add(9);
         list.add(null);
         list.add(11);
-        assertEquals(4, list.size());
-        assertEquals(7, (int) list.get(0));
-        assertEquals(9, (int) list.get(1));
-        assertNull(list.get(2));
-        assertEquals(11, (int) list.get(3));
-        assertFalse(list.isEmpty());
-        assertEquals("[7, 9, null, 11]", list.toString());
+        assertThat(list.size(), is(4));
+        assertThat(list.get(0), is(7));
+        assertThat(list.get(1), is(9));
+        assertThat(list.get(2), nullValue());
+        assertThat(list.get(3), is(11));
+        assertThat(list.isEmpty(), is(false));
+        assertThat(list.toString(), is("[7, 9, null, 11]"));
 
-        assertTrue(list.contains(9));
-        assertFalse(list.contains(8));
+        assertThat(list.contains(9), is(true));
+        assertThat(list.contains(8), is(false));
 
         list.addAll(Collections.nCopies(40, 1));
-        assertEquals(44, list.size());
-        assertEquals(1, (int) list.get(40));
+        assertThat(list.size(), is(44));
+        assertThat(list.get(40), is(1));
 
         int n = 0;
         for (Integer integer : list) {
             ++n;
         }
-        assertEquals(n, list.size());
+        assertThat(list.size(), is(n));
 
         int i = list.indexOf(null);
-        assertEquals(2, i);
+        assertThat(i, is(2));
 
         // can't sort if null is present
         list.set(2, 123);
 
         i = list.indexOf(null);
-        assertEquals(-1, i);
+        assertThat(i, is(-1));
 
         Collections.sort(list);
-        assertEquals(
+        assertThat(list.toString(), is(
             "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, "
             + "1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 9, "
-            + "11, 123]",
-            list.toString());
+            + "11, 123]"));
 
         // sort a multi-chunk list
         Collections.sort(
@@ -135,43 +138,43 @@ public class ChunkListTest extends TestCase {
 
         list.remove((Integer) 7);
         Collections.sort(list);
-        assertEquals(1, (int) list.get(3));
+        assertThat(list.get(3), is(1));
 
         // remove all instances of a value that exists
         boolean b = list.removeAll(Arrays.asList(9));
-        assertTrue(b);
+        assertThat(b, is(true));
 
         // remove all instances of a non-existent value
         b = list.removeAll(Arrays.asList(99));
-        assertFalse(b);
+        assertThat(b, is(false));
 
         // remove all instances of a value that occurs in the last chunk
         list.add(12345);
         b = list.removeAll(Arrays.asList(12345));
-        assertTrue(b);
+        assertThat(b, is(true));
 
         // remove all instances of a value that occurs in the last chunk but
         // not as the last value
         list.add(12345);
         list.add(123);
         b = list.removeAll(Arrays.asList(12345));
-        assertTrue(b);
+        assertThat(b, is(true));
 
         final List<Integer> list1 =
             factory.create(Collections.nCopies(1000, 77));
-        assertEquals(1000, list1.size());
+        assertThat(list1.size(), is(1000));
         list1.add(1234);
-        assertTrue(list1.contains(1234));
+        assertThat(list1.contains(1234), is(true));
 
         // add to an empty list via iterator
         //noinspection MismatchedQueryAndUpdateOfCollection
         final List<String> list2 = factory.create();
         list2.listIterator(0).add("x");
-        assertEquals("[x]", list2.toString());
+        assertThat(list2.toString(), is("[x]"));
 
         // add at start
         list2.add(0, "y");
-        assertEquals("[y, x]", list2.toString());
+        assertThat(list2.toString(), is("[y, x]"));
     }
 
     @Test public void testClear() {
@@ -185,9 +188,9 @@ public class ChunkListTest extends TestCase {
         final List<Integer> list =
             factory.create(Arrays.asList(1, 2, 3, 4));
         list.subList(0, list.size()).clear();
-        assertTrue(list.isEmpty());
+        assertThat(list.isEmpty(), is(true));
         list.subList(0, list.size()).clear();
-        assertTrue(list.isEmpty());
+        assertThat(list.isEmpty(), is(true));
     }
 
     @Test public void testContainsAll() {
@@ -197,33 +200,24 @@ public class ChunkListTest extends TestCase {
     }
 
     private void checkContainsAll(Factory factory) {
-        assertTrue(
-            factory.create(Arrays.asList(1, 2, 3))
-                .containsAll(Collections.singletonList(1)));
-        assertTrue(
-            factory.create(Arrays.asList(1, 2, 3))
-                .containsAll(Collections.emptyList()));
-        assertTrue(
-            factory.create()
-                .containsAll(Collections.emptyList()));
-        assertFalse(
-            factory.create()
-                .containsAll(Collections.singletonList(1)));
-        assertTrue(
-            factory.create(Arrays.asList(1, 2, null, 3))
-                .containsAll(Collections.singletonList(null)));
-        assertFalse(
-            factory.create(Arrays.asList(1, 2, null, 3))
-                .containsAll(Collections.singletonList(4)));
-        assertFalse(
-            factory.create(Arrays.asList(1, 2, null, 3))
-                .containsAll(Arrays.asList(4, null)));
-        assertFalse(
-            factory.create(Arrays.asList(1, 2, 3))
-                .containsAll(Collections.singletonList(null)));
-        assertFalse(
-            factory.create(Arrays.asList(1, 2, null, 3))
-                .containsAll(Collections.singletonList("xxx")));
+        assertThat(factory.create(Arrays.asList(1, 2, 3))
+                .containsAll(Collections.singletonList(1)), is(true));
+        assertThat(factory.create(Arrays.asList(1, 2, 3))
+                .containsAll(Collections.emptyList()), is(true));
+        assertThat(factory.create()
+                .containsAll(Collections.emptyList()), is(true));
+        assertThat(factory.create()
+                .containsAll(Collections.singletonList(1)), is(false));
+        assertThat(factory.create(Arrays.asList(1, 2, null, 3))
+                .containsAll(Collections.singletonList(null)), is(true));
+        assertThat(factory.create(Arrays.asList(1, 2, null, 3))
+                .containsAll(Collections.singletonList(4)), is(false));
+        assertThat(factory.create(Arrays.asList(1, 2, null, 3))
+                .containsAll(Arrays.asList(4, null)), is(false));
+        assertThat(factory.create(Arrays.asList(1, 2, 3))
+                .containsAll(Collections.singletonList(null)), is(false));
+        assertThat(factory.create(Arrays.asList(1, 2, null, 3))
+                .containsAll(Collections.singletonList("xxx")), is(false));
     }
 
     @Test public void testIndexOf() {
@@ -233,18 +227,15 @@ public class ChunkListTest extends TestCase {
     }
 
     public void checkIndexOf(Factory factory) {
-        assertEquals(
-            1, factory.create(Arrays.asList(1, 2, 3, 4, 5)).indexOf(2));
-        assertEquals(
-            1, factory.create(Arrays.asList(1, 2, 3, 4, null, 2)).indexOf(2));
-        assertEquals(
-            3, factory.create(Arrays.asList(1, 2, 3, null, 2)).indexOf(null));
-        assertEquals(
-            -1, factory.create(Arrays.asList(1, 2, 3)).indexOf(5));
-        assertEquals(-1, factory.create().indexOf(5));
-        assertEquals(
-            3,
-            factory.create(Arrays.asList(1, 2, 3, 2)).lastIndexOf(2));
+        assertThat(factory.create(Arrays.asList(1, 2, 3, 4, 5)).indexOf(2), is(1));
+        assertThat(factory.create(Arrays.asList(1, 2, 3, 4, null, 2)).indexOf(2), is(
+            1));
+        assertThat(factory.create(Arrays.asList(1, 2, 3, null, 2)).indexOf(null), is(
+            3));
+        assertThat(factory.create(Arrays.asList(1, 2, 3)).indexOf(5), is(-1));
+        assertThat(factory.create().indexOf(5), is(-1));
+        assertThat(factory.create(Arrays.asList(1, 2, 3, 2)).lastIndexOf(2), is(
+            3));
     }
 
     @Test public void testContains() {
@@ -254,53 +245,47 @@ public class ChunkListTest extends TestCase {
     }
 
     public void checkContains(Factory factory) {
-        assertTrue(factory.create(Arrays.asList(1, 2)).contains(1));
-        assertFalse(factory.create(Arrays.asList(1, 2)).contains(11));
-        assertFalse(factory.create(Arrays.asList(1, 2)).contains(null));
-        assertTrue(
-            factory.create(Arrays.asList(1, null, 2)).contains(null));
-        assertFalse(factory.create().contains(null));
-        assertFalse(factory.create().contains(123));
+        assertThat(factory.create(Arrays.asList(1, 2)).contains(1), is(true));
+        assertThat(factory.create(Arrays.asList(1, 2)).contains(11), is(false));
+        assertThat(factory.create(Arrays.asList(1, 2)).contains(null), is(false));
+        assertThat(factory.create(Arrays.asList(1, null, 2)).contains(null), is(true));
+        assertThat(factory.create().contains(null), is(false));
+        assertThat(factory.create().contains(123), is(false));
 
         final List<Integer> list =
             factory.create(Collections.nCopies(10000, 7));
-        assertFalse(list.contains(null));
-        assertFalse(list.contains(99));
+        assertThat(list.contains(null), is(false));
+        assertThat(list.contains(99), is(false));
         list.add(99);
         list.add(98);
-        assertTrue(list.contains(99));
-        assertFalse(list.contains(null));
+        assertThat(list.contains(99), is(true));
+        assertThat(list.contains(null), is(false));
         list.add(null);
-        assertTrue(list.contains(null));
+        assertThat(list.contains(null), is(true));
     }
 
     @Test public void testFragmentation() {
         final ChunkList<Integer> list =
             new ChunkList<Integer>(Arrays.asList(1, 2, 3, 4));
-        assertEquals(
-            "size: 4, distribution: [4:1], chunks: 1, elements per chunk: 4.0",
-            list.chunkSizeDistribution());
+        assertThat(list.chunkSizeDistribution(), is(
+            "size: 4, distribution: [4:1], chunks: 1, elements per chunk: 4.0"));
         list.add(0, 5);
-        assertEquals(
-            "size: 5, distribution: [5:1], chunks: 1, elements per chunk: 5.0",
-            list.chunkSizeDistribution());
+        assertThat(list.chunkSizeDistribution(), is(
+            "size: 5, distribution: [5:1], chunks: 1, elements per chunk: 5.0"));
         list.addAll(Collections.nCopies(100, 6));
-        assertEquals(
-            "size: 105, distribution: [41:1, 64:1], chunks: 2, elements per chunk: 52.5",
-            list.chunkSizeDistribution());
+        assertThat(list.chunkSizeDistribution(), is(
+            "size: 105, distribution: [41:1, 64:1], chunks: 2, elements per chunk: 52.5"));
 
         // Adding element at 0 causes the 64 block to split into 33 + 32.
         list.add(0, 7);
-        assertEquals(7, (int) list.get(0));
-        assertEquals(
-            "size: 106, distribution: [32:1, 33:1, 41:1], chunks: 3, elements per chunk: 35.333332",
-            list.chunkSizeDistribution());
+        assertThat(list.get(0), is(7));
+        assertThat(list.chunkSizeDistribution(), is(
+            "size: 106, distribution: [32:1, 33:1, 41:1], chunks: 3, elements per chunk: 35.333332"));
 
         // Adding another element at 0 causes no further split.
         list.add(0, 8);
-        assertEquals(
-            "size: 107, distribution: [32:1, 34:1, 41:1], chunks: 3, elements per chunk: 35.666668",
-            list.chunkSizeDistribution());
+        assertThat(list.chunkSizeDistribution(), is(
+            "size: 107, distribution: [32:1, 34:1, 41:1], chunks: 3, elements per chunk: 35.666668"));
     }
 
     /** Unit test for {@link mondrian.util.ChunkList} that applies random
@@ -353,7 +338,8 @@ public class ChunkListTest extends TestCase {
                 int n = 0;
                 final int size = list.size();
                 for (Integer integer : list) {
-                    assertTrue(n++ < size);
+                    boolean b = n++ < size;
+                    assertThat(b, is(true));
                 }
                 break;
             case 3:
@@ -362,9 +348,9 @@ public class ChunkListTest extends TestCase {
                 boolean b = list.removeAll(
                     Collections.singletonList(random.nextInt(500)));
                 if (b) {
-                    assertTrue(list.size() < sizeBefore);
+                    assertThat(list.size() < sizeBefore, is(true));
                 } else {
-                    assertTrue(list.size() == sizeBefore);
+                    assertThat(list.size() == sizeBefore, is(true));
                 }
                 removeCount += (sizeBefore - list.size());
                 break;
@@ -391,7 +377,7 @@ public class ChunkListTest extends TestCase {
                 ++addCount;
                 break;
             }
-            assertEquals(list.size(), initialCount + addCount - removeCount);
+            assertThat(initialCount + addCount - removeCount, is(list.size()));
         }
         assertValid(list, true);
     }

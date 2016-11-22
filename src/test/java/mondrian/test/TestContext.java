@@ -24,8 +24,7 @@ import mondrian.spi.*;
 import mondrian.spi.impl.FilterDynamicSchemaProcessor;
 import mondrian.util.Pair;
 
-import org.junit.Test;
-import junit.framework.*;
+import org.junit.ComparisonFailure;
 
 import org.apache.log4j.Logger;
 
@@ -43,11 +42,12 @@ import java.util.*;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
 
-import static mondrian.test.FoodMartTestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * <code>TestContext</code> is a singleton class which contains the information
@@ -224,42 +224,6 @@ public class TestContext {
         MondrianResource.setThreadLocale(Locale.US);
 
         this.pw = new PrintWriter(System.out, true);
-    }
-
-    /**
-     * Creates a predicate that accepts tests whose name matches the given
-     * regular expression.
-     *
-     * @param regexp Test case regular expression
-     * @return Predicate that accepts tests with the given name
-     */
-    public static Util.Predicate1<junit.framework.Test> patternPredicate(final String regexp) {
-        final Pattern pattern = Pattern.compile(regexp);
-        return new Util.Predicate1<junit.framework.Test>() {
-            public boolean test(junit.framework.Test test) {
-                if (!(test instanceof TestCase)) {
-                    return true;
-                }
-                final TestCase testCase = (TestCase) test;
-                final String testCaseName = testCase.getName();
-                return pattern.matcher(testCaseName).matches();
-            }
-        };
-    }
-
-    /**
-     * Creates a predicate that accepts tests with the given name.
-     *
-     * @param name Test case name
-     * @return Predicate that accepts tests with the given name
-     */
-    public static Util.Predicate1<Test> namePredicate(final String name) {
-        return new Util.Predicate1<Test>() {
-            public boolean test(Test test) {
-                return !(test instanceof TestCase)
-                    || ((TestCase) test).getName().equals(name);
-            }
-        };
     }
 
     static Util.PropertyList replaceProperties(
@@ -795,7 +759,7 @@ public class TestContext {
 
             // Cells should be null if and only if they are null or empty.
             if (cell.getValue() == null) {
-                assertTrue(cell.isNull());
+                assertThat(cell.isNull(), is(true));
             } else {
                 assertThat(cell.isNull(), is(false));
             }
@@ -805,7 +769,7 @@ public class TestContext {
         for (Axis axis : result.getAxes()) {
             for (Position position : axis.getPositions()) {
                 for (Member member : position) {
-                    Assert.assertNotNull(member);
+                    assertThat(member, notNullValue());
                 }
             }
         }
@@ -822,22 +786,22 @@ public class TestContext {
 
             // Check that the dummy value used to represent null cells never
             // leaks into the outside world.
-            Assert.assertNotSame(value, Util.nullValue);
-            Assert.assertFalse(
-                value instanceof Number
-                && ((Number) value).doubleValue() == FunUtil.DoubleNull);
+            assertThat(value, not(sameInstance(Util.nullValue)));
+            assertThat(value instanceof Number
+                && ((Number) value).doubleValue() == FunUtil.DoubleNull,
+                is(false));
 
             // Similarly empty values.
-            Assert.assertNotSame(value, Util.EmptyValue);
-            Assert.assertFalse(
-                value instanceof Number
-                && ((Number) value).doubleValue() == FunUtil.DoubleEmpty);
+            assertThat(value, not(sameInstance(Util.EmptyValue)));
+            assertThat(value instanceof Number
+                && ((Number) value).doubleValue() == FunUtil.DoubleEmpty,
+                is(false));
 
             // Cells should be null if and only if they are null or empty.
             if (cell.getValue() == null) {
-                Assert.assertTrue(cell.isNull());
+                assertThat(cell.isNull(), is(true));
             } else {
-                Assert.assertFalse(cell.isNull());
+                assertThat(cell.isNull(), is(false));
             }
         }
 
@@ -846,7 +810,7 @@ public class TestContext {
             for (org.olap4j.Position position : axis.getPositions()) {
                 for (org.olap4j.metadata.Member member : position.getMembers())
                 {
-                    Assert.assertNotNull(member);
+                    assertThat(member, notNullValue());
                 }
             }
         }
@@ -1334,12 +1298,11 @@ public class TestContext {
 
     public static void checkThrowable(Throwable throwable, String pattern) {
         if (throwable == null) {
-            Assert.fail("query did not yield an exception");
+            fail("query did not yield an exception");
         }
         String stackTrace = getStackTrace(throwable);
         if (!stackTrace.contains(pattern)) {
-            Assert.fail(
-                "query's error does not match pattern '" + pattern
+            fail("query's error does not match pattern '" + pattern
                 + "'; error is [" + stackTrace + "]");
         }
     }
@@ -1638,52 +1601,6 @@ public class TestContext {
         return buf.toString();
     }
 
-    /**
-     * Makes a copy of a suite, filtering certain tests.
-     *
-     * @param suite Test suite
-     * @param testPattern Regular expression of name of tests to include
-     * @return copy of test suite
-     */
-    public static TestSuite copySuite(
-        TestSuite suite,
-        Util.Predicate1<junit.framework.Test> testPattern)
-    {
-        TestSuite newSuite = new TestSuite(suite.getName());
-        copyTests(newSuite, suite, testPattern);
-        return newSuite;
-    }
-
-    /**
-     * Copies tests that match a given predicate into a target sourceSuite.
-     *
-     * @param targetSuite Target test suite
-     * @param suite Source test suite
-     * @param predicate Predicate that determines whether to copy a test
-     */
-    static void copyTests(
-        TestSuite targetSuite,
-        TestSuite suite,
-        Util.Predicate1<junit.framework.Test> predicate)
-    {
-        //noinspection unchecked
-        for (junit.framework.Test test : Collections.list((Enumeration<junit.framework.Test>) suite.tests())) {
-            if (!predicate.test(test)) {
-                continue;
-            }
-            if (test instanceof TestCase) {
-                targetSuite.addTest(test);
-            } else if (test instanceof TestSuite) {
-                TestSuite subSuite = copySuite((TestSuite) test, predicate);
-                if (subSuite.countTestCases() > 0) {
-                    targetSuite.addTest(subSuite);
-                }
-            } else {
-                // some other kind of test
-                targetSuite.addTest(test);
-            }
-        }
-    }
 
     public void close() {
         // nothing
@@ -1969,7 +1886,7 @@ public class TestContext {
         String transformedExpectedSql = removeQuotes(dialectize(expectedSql));
         String transformedActualSql = removeQuotes(actualSql);
 
-        Assert.assertEquals(transformedExpectedSql, transformedActualSql);
+        assertThat(transformedActualSql, is(transformedExpectedSql));
 
         if (expectedRows >= 0) {
             checkSqlAgainstDatasource(actualSql, expectedRows);
@@ -2166,7 +2083,7 @@ public class TestContext {
                 rows++;
             }
 
-            Assert.assertEquals("row count", expectedRows, rows);
+            assertThat("row count", rows, is(expectedRows));
         } catch (SQLException e) {
             throw new RuntimeException(
                 "ERROR in SQL - invalid for database: "
@@ -2704,8 +2621,7 @@ public class TestContext {
             }
             buf.append(exception.getMessage());
         }
-        Assert.fail(
-            "Exception list did not contain expected exception '"
+        fail("Exception list did not contain expected exception '"
             + expected
             + "'. Exception list is:"
             + Util.nl
@@ -3267,8 +3183,8 @@ public class TestContext {
 
         /** Checks that list is empty. */
         public void isEmpty() {
-            Assert.assertTrue(
-                exceptionList.toString(), exceptionList.isEmpty());
+            assertThat(exceptionList.toString(), exceptionList.isEmpty(),
+                is(true));
         }
     }
 }

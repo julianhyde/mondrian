@@ -25,7 +25,6 @@ import mondrian.util.Pair;
 
 import org.junit.Before;
 import org.junit.Test;
-import junit.framework.Assert;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -2246,7 +2245,7 @@ public class NonEmptyTest extends BatchTestCase {
             + "         [Product].[All Products].children) ) )) on rows\n"
             + "from Sales where ([Time].[1997])");
         final Axis rowsAxis = result.getAxes()[1];
-        Assert.assertEquals(21, rowsAxis.getPositions().size());
+        assertThat(rowsAxis.getPositions().size(), is(21));
     }
 
     /**

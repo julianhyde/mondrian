@@ -11,12 +11,16 @@
 package mondrian.util;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.sql.Time;
 import java.util.*;
 
-public class ScheduleTest extends TestCase {
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+public class ScheduleTest {
     public static final Time time0827 = ScheduleUtil.createTime(8, 27, 00);
     public static final Time time1600 = ScheduleUtil.createTime(16, 00, 0);
     public static final Time time0000 = ScheduleUtil.createTime(00, 00, 0);
@@ -41,35 +45,12 @@ public class ScheduleTest extends TestCase {
 
     static void assertEquals(Calendar c1, Calendar c2) {
         if (c1 == null || c2 == null) {
-            assertEquals((Object) c1, (Object) c2);
+            assertThat(c2, is((Object) c1));
         } else {
             // do the checks on 'smaller' objects -- otherwise the
             // failure message is too long to see in the debugger
-            assertEquals(c1.getTimeZone(), c2.getTimeZone());
-            assertEquals(c1.getTime(), c2.getTime());
-        }
-    }
-
-    static void assertEquals(Date expected, Calendar actual) {
-        if (expected == null || actual == null) {
-            assertEquals((Object) expected, (Object) actual);
-        } else {
-            assertEquals(expected, actual.getTime());
-        }
-    }
-
-    static void assertEquals(
-        int year, int month, int day, String dow,
-        int hour, int minute, Date actual)
-    {
-        assertEquals(toDate(year, month, day, dow, hour, minute), actual);
-    }
-
-    static void assertEquals(Calendar expected, Date actual) {
-        if (expected == null || actual == null) {
-            assertEquals((Object) expected, (Object) actual);
-        } else {
-            assertEquals(expected.getTime(), actual);
+            assertThat(c2.getTimeZone(), is(c1.getTimeZone()));
+            assertThat(c2.getTime(), is(c1.getTime()));
         }
     }
 
@@ -91,8 +72,8 @@ public class ScheduleTest extends TestCase {
                 break; // we're looping
             }
         }
-        assertEquals(last, d); // last occurrence
-        assertEquals("schedule count", expectedCount, count);
+        assertThat(d, is(last));
+        assertThat("schedule count", count, is(expectedCount));
     }
 
     static Date toDate(
@@ -118,7 +99,7 @@ public class ScheduleTest extends TestCase {
         Calendar calendar =
             ScheduleUtil.createCalendar(year, month, day, hour, minute, 0);
         calendar.setTimeZone(tz);
-        assertEquals(daysOfWeek[calendar.get(Calendar.DAY_OF_WEEK)], dow);
+        assertThat(dow, is(daysOfWeek[calendar.get(Calendar.DAY_OF_WEEK)]));
         return calendar.getTime();
     }
     // --------------------------------------------------------------------
@@ -146,17 +127,17 @@ public class ScheduleTest extends TestCase {
             Schedule.createOnce(toDate(2002, 04, 23, "Tue", 8, 27), gmtTz);
         Date d;
         d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 04, 23, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 23, "Tue", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 23, "Tue", 8, 27), false);
-        assertEquals(2002, 04, 23, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 23, "Tue", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 23, "Tue", 8, 27), true);
-        assertEquals(null, d);
+        assertThat(d, nullValue());
         d = schedule.nextOccurrence(toDate(2002, 06, 03, "Mon", 16, 00), false);
-        assertEquals(null, d);
+        assertThat(d, nullValue());
         d = schedule.nextOccurrence(toDate(2002, 04, 20, "Sat", 23, 00), true);
-        assertEquals(2002, 04, 23, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 23, "Tue", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 20, "Sat", 23, 00), false);
-        assertEquals(2002, 04, 23, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 23, "Tue", 8, 27)));
     }
 
     @Test public void testDaily() {
@@ -167,17 +148,17 @@ public class ScheduleTest extends TestCase {
             gmtTz, time0827, period);
         Date d;
         d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 4, 20, "Sat", 8, 27, d);
+        assertThat(d, is(toDate(2002, 4, 20, "Sat", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 20, "Sat", 8, 27), false);
-        assertEquals(2002, 4, 20, "Sat", 8, 27, d);
+        assertThat(d, is(toDate(2002, 4, 20, "Sat", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 20, "Sat", 23, 00), false);
-        assertEquals(2002, 04, 21, "Sun", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 21, "Sun", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 06, 03, "Mon", 8, 27), false);
-        assertEquals(null, d); // upper-bound is closed
+        assertThat(d, nullValue()); // upper-bound is closed
         d = schedule.nextOccurrence(toDate(2002, 06, 03, "Mon", 16, 00), false);
-        assertEquals(null, d);
+        assertThat(d, nullValue());
         d = schedule.nextOccurrence(toDate(2002, 06, 04, "Tue", 8, 27), false);
-        assertEquals(null, d);
+        assertThat(d, nullValue());
     }
 
     @Test public void testDailyNoUpperLimit() {
@@ -186,9 +167,9 @@ public class ScheduleTest extends TestCase {
             toDate(2002, 4, 20, "Sat", 8, 27), null, gmtTz, time0827,
             period);
         Date d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 4, 20, "Sat", 8, 27, d);
+        assertThat(d, is(toDate(2002, 4, 20, "Sat", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 06, 03, "Mon", 16, 00), false);
-        assertEquals(2002, 06, 04, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 06, 04, "Tue", 8, 27)));
     }
 
     @Test public void testDailyPeriodic() {
@@ -198,31 +179,30 @@ public class ScheduleTest extends TestCase {
             toDate(2002, 06, 03, "Mon", 8, 27),
             gmtTz, time0827, period);
         Date d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 4, 20, "Sat", 8, 27, d);
+        assertThat(d, is(toDate(2002, 4, 20, "Sat", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 4, 20, "Sat", 8, 27), true);
-        assertEquals(2002, 04, 30, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 30, "Tue", 8, 27)));
     }
 
     @Test public void testWeeklyEmptyBitmapFails() {
-        boolean failed = false;
         try {
-            Schedule.createWeekly(null, null, gmtTz, time0827, 1, 0);
+            Schedule o =
+                Schedule.createWeekly(null, null, gmtTz, time0827, 1, 0);
+            fail("expected error, got " + o);
         } catch (Throwable e) {
-            failed = true;
+            // ok
         }
-        assertTrue(failed);
     }
 
     @Test public void testWeeklyBadBitmapFails() {
-        boolean failed = false;
         try {
             int period = 1;
-            Schedule.createWeekly(
-                null, null, gmtTz, time0827, period, (1 << 8));
+            Schedule o = Schedule.createWeekly(null, null, gmtTz, time0827,
+                period, (1 << 8));
+            fail("expected error, got " + o);
         } catch (Throwable e) {
-            failed = true;
+            // ok
         }
-        assertTrue(failed);
     }
 
     @Test public void testWeekly() {
@@ -236,9 +216,9 @@ public class ScheduleTest extends TestCase {
             gmtTz, time0827, period, thuesday);
         Date d;
         d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 04, 23, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 23, "Tue", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 23, "Tue", 8, 27), false);
-        assertEquals(2002, 04, 23, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 23, "Tue", 8, 27)));
         assertScheduleCount(
             schedule, d, toDate(2002, 06, 04, "Tue", 8, 27), 12);
     }
@@ -254,15 +234,15 @@ public class ScheduleTest extends TestCase {
                 gmtTz, time0827, period, daysOfMonth);
         Date d;
         d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 04, 21, "Sun", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 21, "Sun", 8, 27)));
         d = schedule.nextOccurrence(d, true);
-        assertEquals(2002, 04, 30, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 30, "Tue", 8, 27)));
         d = schedule.nextOccurrence(d, false);
-        assertEquals(2002, 04, 30, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 30, "Tue", 8, 27)));
         d = schedule.nextOccurrence(d, true);
-        assertEquals(2002, 05, 12, "Sun", 8, 27, d);
+        assertThat(d, is(toDate(2002, 05, 12, "Sun", 8, 27)));
         d = schedule.nextOccurrence(d, false);
-        assertEquals(2002, 05, 12, "Sun", 8, 27, d);
+        assertThat(d, is(toDate(2002, 05, 12, "Sun", 8, 27)));
         assertScheduleCount(schedule, d, toDate(2002, 6, 30, "Sun", 8, 27), 5);
     }
 
@@ -280,13 +260,13 @@ public class ScheduleTest extends TestCase {
         // strictly greater than the start time (apr30), so apr30 is
         // correct
         d = schedule.nextOccurrence(null, true);
-        assertEquals(2002, 04, 30, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 30, "Tue", 8, 27)));
         d = schedule.nextOccurrence(d, false);
-        assertEquals(2002, 04, 30, "Tue", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 30, "Tue", 8, 27)));
         d = schedule.nextOccurrence(d, true);
-        assertEquals(2002, 06, 12, "Wed", 8, 27, d);
+        assertThat(d, is(toDate(2002, 06, 12, "Wed", 8, 27)));
         d = schedule.nextOccurrence(d, false);
-        assertEquals(2002, 06, 12, "Wed", 8, 27, d);
+        assertThat(d, is(toDate(2002, 06, 12, "Wed", 8, 27)));
         assertScheduleCount(schedule, d, toDate(2002, 6, 30, "Sun", 8, 27), 2);
     }
 
@@ -301,13 +281,13 @@ public class ScheduleTest extends TestCase {
                 gmtTz, time0827, period, daysOfWeek, weeksOfMonth);
         Date d;
         d = schedule.nextOccurrence(null, false);
-        assertEquals(2002, 04, 25, "Thu", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 25, "Thu", 8, 27)));
         d = schedule.nextOccurrence(toDate(2002, 04, 23, "Tue", 8, 27), false);
-        assertEquals(2002, 04, 25, "Thu", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 25, "Thu", 8, 27)));
         d = schedule.nextOccurrence(d, true);
-        assertEquals(2002, 04, 28, "Sun", 8, 27, d);
+        assertThat(d, is(toDate(2002, 04, 28, "Sun", 8, 27)));
         d = schedule.nextOccurrence(d, true);
-        assertEquals(2002, 7, 11, "Thu", 8, 27, d);
+        assertThat(d, is(toDate(2002, 7, 11, "Thu", 8, 27)));
         assertScheduleCount(schedule, d, toDate(2004, 4, 11, "Sun", 8, 27), 29);
     }
 
@@ -326,26 +306,26 @@ public class ScheduleTest extends TestCase {
         // Thu 28 Mar 08:27 JST, which is
         // Wed 27 Mar 23:27 GMT (9 hours difference) and
         // Wed 27 Mar 15:27 PST (a further 8 hours)
-        assertEquals(2002, 03, 27, "Wed", 23, 27, d);
+        assertThat(d, is(toDate(2002, 03, 27, "Wed", 23, 27)));
         d = schedule.nextOccurrence(d, true);
         // 2nd occurrence is
         // Thu 25 Apr 08:27 JST, which is
         // Wed 24 Apr 23:27 GMT (Japan does not have daylight savings)
-        assertEquals(2002, 04, 24, "Wed", 23, 27, d);
+        assertThat(d, is(toDate(2002, 04, 24, "Wed", 23, 27)));
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
         // 5th occurrence is
         // Thu 25 Jul 08:27 JST, which is
         // Wed 24 Jul 23:27 GMT
-        assertEquals(2002, 07, 24, "Wed", 23, 27, d);
+        assertThat(d, is(toDate(2002, 07, 24, "Wed", 23, 27)));
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
         // 8th occurrence is
         // Thu 31 Oct 08:27 JST, which is
         // Wed 30 Oct 23:27 GMT
-        assertEquals(2002, 10, 30, "Wed", 23, 27, d);
+        assertThat(d, is(toDate(2002, 10, 30, "Wed", 23, 27)));
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
@@ -364,7 +344,7 @@ public class ScheduleTest extends TestCase {
         // Thu 25 Dec 08:27 JST, 2003, which is
         // Wed 24 Dec 23:27 GMT. Note that
         // this is NOT the last Wednesday in the month.
-        assertEquals(2003, 12, 24, "Wed", 23, 27, d);
+        assertThat(d, is(toDate(2003, 12, 24, "Wed", 23, 27)));
     }
 
     @Test public void testTimeZoneChange
@@ -379,48 +359,48 @@ public class ScheduleTest extends TestCase {
         // 1st occurrence is
         // Thu 04 Apr 02:33 PST which is
         // Thu 04 Apr 10:33 GMT (no daylight savings yet)
-        assertEquals(toDate(2002, 04, 04, "Thu", 02, 33, tz), d);
+        assertThat(d, is(toDate(2002, 04, 04, "Thu", 02, 33, tz)));
         d = schedule.nextOccurrence(d, true);
         d = schedule.nextOccurrence(d, true);
         // 3rd occurrence is
         // Sat 06 Apr 02:33 PST which is
         // Sat 06 Apr 10:33 GMT (still no daylight savings)
-        assertEquals(2002, 04, 06, "Sat", 10, 33, d);
+        assertThat(d, is(toDate(2002, 04, 06, "Sat", 10, 33)));
         d = schedule.nextOccurrence(d, true);
         // 4th occurrence occurs during the switch to daylight savings,
         // Sun 07 Apr 01:33 PST which is equivalent to
         // Sun 07 Apr 02:33 PDT which is
         // Sun 07 Apr 09:33 GMT
-        assertEquals(2002, 04, 07, "Sun", 9, 33, d);
+        assertThat(d, is(toDate(2002, 04, 07, "Sun", 9, 33)));
         d = schedule.nextOccurrence(d, true);
         // 5th occurrence is
         // Mon 08 Apr 02:33 PDT which is
         // Mon 08 Apr 09:33 GMT (daylight savings has started)
-        assertEquals(2002, 04, 8, "Mon", 9, 33, d);
+        assertThat(d, is(toDate(2002, 04, 8, "Mon", 9, 33)));
         for (int i = 5; i < 206; i++) {
             d = schedule.nextOccurrence(d, true);
         }
         // 206th occurrence is
         // Sat 26 Oct 02:33 PDT which is
         // Sat 26 Oct 09:33 GMT
-        assertEquals(2002, 10, 26, "Sat", 9, 33, d);
+        assertThat(d, is(toDate(2002, 10, 26, "Sat", 9, 33)));
         d = schedule.nextOccurrence(d, true);
         // 207th occurrence occurs during the 'fall back',
         // don't care what time we fire as long as we only fire once
         // Sun 27 Oct 01:33 PDT which is equivalent to
         // Sun 27 Oct 02:33 PST which is
         // Sat 27 Oct 10:33 GMT
-        assertEquals(toDate(2002, 10, 27, "Sun", 02, 33, tz), d);
+        assertThat(d, is(toDate(2002, 10, 27, "Sun", 02, 33, tz)));
         d = schedule.nextOccurrence(d, true);
         // 208th occurrence is
         // Mon 28 Oct 02:33 PST which is
         // Mon 28 Oct 10:33 GMT
-        assertEquals(2002, 10, 28, "Mon", 10, 33, d);
+        assertThat(d, is(toDate(2002, 10, 28, "Mon", 10, 33)));
         d = schedule.nextOccurrence(d, true);
         // 209th occurrence is
         // Tue 29 Oct 02:33 PST which is
         // Tue 29 Oct 10:33 GMT
-        assertEquals(2002, 10, 29, "Tue", 10, 33, d);
+        assertThat(d, is(toDate(2002, 10, 29, "Tue", 10, 33)));
     }
 }
 

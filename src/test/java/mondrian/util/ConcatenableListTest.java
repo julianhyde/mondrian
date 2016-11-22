@@ -10,12 +10,14 @@
 package mondrian.util;
 
 import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test cases for {@link ConcatenableList}.
@@ -23,7 +25,7 @@ import java.util.List;
  * <p>Currently oriented at testing fixes for a couple of known bugs;
  * these should not be considered to be otherwise comprehensive.</p>
  */
-public class ConcatenableListTest extends TestCase {
+public class ConcatenableListTest {
 
     // Just some placeholder constants for expected values in backing lists
     private final String NON_EMPTY_MARKER = "Not empty",
@@ -51,21 +53,20 @@ public class ConcatenableListTest extends TestCase {
         testList.addAll(Arrays.asList(VALUE_5, VALUE_6));
 
         Iterator<String> iterator = testList.iterator();
-        assertTrue("iterator.hasNext() should be true", iterator.hasNext());
-        assertEquals("first value should be A", VALUE_1, iterator.next());
-        assertTrue("iterator.hasNext() should be true", iterator.hasNext());
-        assertEquals("first value should be B", VALUE_2, iterator.next());
-        assertTrue("iterator.hasNext() should be true", iterator.hasNext());
-        assertEquals("first value should be C", VALUE_3, iterator.next());
-        assertTrue("iterator.hasNext() should be true", iterator.hasNext());
-        assertEquals("first value should be D", VALUE_4, iterator.next());
-        assertTrue("iterator.hasNext() should be true", iterator.hasNext());
-        assertEquals("first value should be E", VALUE_5, iterator.next());
-        assertTrue("iterator.hasNext() should be true", iterator.hasNext());
-        assertEquals("first value should be F", VALUE_6, iterator.next());
-        assertFalse(
-            "iterator.hasNext() should be false, since there are no more values",
-            iterator.hasNext());
+        assertThat("iterator.hasNext() should be true", iterator.hasNext(), is(true));
+        assertThat("first value should be A", iterator.next(), is(VALUE_1));
+        assertThat("iterator.hasNext() should be true", iterator.hasNext(), is(true));
+        assertThat("first value should be B", iterator.next(), is(VALUE_2));
+        assertThat("iterator.hasNext() should be true", iterator.hasNext(), is(true));
+        assertThat("first value should be C", iterator.next(), is(VALUE_3));
+        assertThat("iterator.hasNext() should be true", iterator.hasNext(), is(true));
+        assertThat("first value should be D", iterator.next(), is(VALUE_4));
+        assertThat("iterator.hasNext() should be true", iterator.hasNext(), is(true));
+        assertThat("first value should be E", iterator.next(), is(VALUE_5));
+        assertThat("iterator.hasNext() should be true", iterator.hasNext(), is(true));
+        assertThat("first value should be F", iterator.next(), is(VALUE_6));
+        assertThat("iterator.hasNext() should be false, since no more values",
+            iterator.hasNext(), is(false));
     }
 
     /**
@@ -87,15 +88,14 @@ public class ConcatenableListTest extends TestCase {
         testList.addAll(Arrays.asList(VALUE_5, VALUE_6));
 
         Iterator<String> iterator = testList.iterator();
-        assertEquals("first value should be A", VALUE_1, iterator.next());
-        assertEquals("first value should be B", VALUE_2, iterator.next());
-        assertEquals("first value should be C", VALUE_3, iterator.next());
-        assertEquals("first value should be D", VALUE_4, iterator.next());
-        assertEquals("first value should be E", VALUE_5, iterator.next());
-        assertEquals("first value should be F", VALUE_6, iterator.next());
-        assertFalse(
-            "iterator.hasNext() should be false, since there are no more values",
-            iterator.hasNext());
+        assertThat("first value should be A", iterator.next(), is(VALUE_1));
+        assertThat("first value should be B", iterator.next(), is(VALUE_2));
+        assertThat("first value should be C", iterator.next(), is(VALUE_3));
+        assertThat("first value should be D", iterator.next(), is(VALUE_4));
+        assertThat("first value should be E", iterator.next(), is(VALUE_5));
+        assertThat("first value should be F", iterator.next(), is(VALUE_6));
+        assertThat("iterator.hasNext() should be false, since no more values",
+            iterator.hasNext(), is(false));
     }
 
     /**
@@ -112,13 +112,11 @@ public class ConcatenableListTest extends TestCase {
         testList.addAll(new ArrayList<String>());
         testList.addAll(Arrays.asList(NON_EMPTY_MARKER));
 
-        assertFalse(
-            "ConcatenableList testList should not be empty",
-            testList.isEmpty());
+        assertThat("ConcatenableList testList should not be empty",
+            testList.isEmpty(), is(false));
 
-        assertEquals(
-            "testList.get(0) should return NON_EMPTY_MARKER", NON_EMPTY_MARKER,
-            testList.get(0));
+        assertThat("testList.get(0) should return NON_EMPTY_MARKER",
+            testList.get(0), is(NON_EMPTY_MARKER));
     }
 }
 

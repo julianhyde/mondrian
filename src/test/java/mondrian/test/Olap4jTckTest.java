@@ -87,7 +87,7 @@ public class Olap4jTckTest extends TestCase {
             name += " (DBCP wrapper)";
         }
         final TestSuite suite = TestContext.createTckSuite(properties, name);
-        return mondrian.test.TestContext.copySuite(suite, CONDITION);
+        return Junit3Tests.copySuite(suite, CONDITION);
     }
 
     private static TestSuite createMondrianSuite(
@@ -105,7 +105,7 @@ public class Olap4jTckTest extends TestCase {
             "mondrian olap4j driver"
             + (wrapper ? " (DBCP wrapper)" : "");
         final TestSuite suite = TestContext.createTckSuite(properties, name);
-        return mondrian.test.TestContext.copySuite(suite, CONDITION);
+        return Junit3Tests.copySuite(suite, CONDITION);
     }
 }
 

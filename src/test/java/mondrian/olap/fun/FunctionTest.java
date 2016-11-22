@@ -17,9 +17,10 @@ import mondrian.test.TestContext;
 import mondrian.udf.*;
 import mondrian.util.Bug;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import junit.framework.Assert;
 import junit.framework.ComparisonFailure;
+
 import static mondrian.test.TestTemp.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -744,7 +745,8 @@ public class FunctionTest extends FoodMartTestCase {
             + "Row #2: 266,773\n");
     }
 
-    public void _testValidMeasureNonEmpty() {
+    @Ignore
+    @Test public void testValidMeasureNonEmpty() {
         // Note that [with VM2] is NULL where it needs to be - and therefore
         // does not prevent NON EMPTY from eliminating empty rows.
         assertQueryReturns(
@@ -2652,7 +2654,7 @@ public class FunctionTest extends FoodMartTestCase {
     @Test public void testFirstSiblingNull() {
         Member member =
             executeSingletonAxis("[Gender].[F].FirstChild.FirstSibling");
-        Assert.assertNull(member);
+        assertThat(member, nullValue());
     }
 
     @Test public void testLag() {
@@ -2662,12 +2664,12 @@ public class FunctionTest extends FoodMartTestCase {
 
     @Test public void testLagFirstInLevel() {
         Member member = executeSingletonAxis("[Gender].[F].Lag(1)");
-        Assert.assertNull(member);
+        assertThat(member, nullValue());
     }
 
     @Test public void testLagAll() {
         Member member = executeSingletonAxis("[Gender].DefaultMember.Lag(2)");
-        Assert.assertNull(member);
+        assertThat(member, nullValue());
     }
 
     @Test public void testLagRoot() {
@@ -2677,7 +2679,7 @@ public class FunctionTest extends FoodMartTestCase {
 
     @Test public void testLagRootTooFar() {
         Member member = executeSingletonAxis("[Time].[1998].Lag(2)");
-        Assert.assertNull(member);
+        assertThat(member, nullValue());
     }
 
     @Test public void testLastChild() {
@@ -2697,7 +2699,7 @@ public class FunctionTest extends FoodMartTestCase {
 
     @Test public void testLastChildOfChildless() {
         Member member = executeSingletonAxis("[Gender].[M].LastChild");
-        Assert.assertNull(member);
+        assertThat(member, nullValue());
     }
 
     @Test public void testLastSibling() {
@@ -6090,7 +6092,8 @@ public class FunctionTest extends FoodMartTestCase {
         }
     }
 
-    public void _testParallelPeriodThrowsException() {
+    @Ignore
+    @Test public void testParallelPeriodThrowsException() {
         assertQueryThrows(
             "select {parallelperiod([Time].[Year], 1)} on columns "
             + "from [Sales] where ([Time].[1998].[Q1].[2])",
@@ -9771,10 +9774,9 @@ public class FunctionTest extends FoodMartTestCase {
     /**
      * As {@link #testRankHuge()}, but for the 3-argument form of the
      * <code>RANK</code> function.
-     *
-     * <p>Disabled by jhyde, 2006/2/14. Bug 1431316 logged.
      */
-    public void _testRank3Huge() {
+    @Ignore("Disabled by jhyde, 2006/2/14. Bug 1431316 logged.")
+    @Test public void testRank3Huge() {
         // If caching is disabled, don't even try -- it will take too long.
         if (!MondrianProperties.instance().EnableExpCache.get()) {
             return;
@@ -9867,7 +9869,8 @@ public class FunctionTest extends FoodMartTestCase {
      * <a href="http://support.microsoft.com/kb/q307276/">a Microsoft knowledge
      * base article</a>.
      */
-    public void _testLinRegAll() {
+    @Ignore
+    @Test public void testLinRegAll() {
         // We have not implemented the LastPeriods function, so we use
         //   [Time].CurrentMember.Lag(9) : [Time].CurrentMember
         // is equivalent to
@@ -10152,7 +10155,8 @@ public class FunctionTest extends FoodMartTestCase {
         }
     }
 
-    public void _testLinRegR2() {
+    @Ignore
+    @Test public void testLinRegR2() {
         // Why would R2 equal the slope
         if (false) {
             assertExprReturns(
@@ -10186,7 +10190,8 @@ public class FunctionTest extends FoodMartTestCase {
         }
     }
 
-    public void _testLinRegVariance() {
+    @Ignore
+    @Test public void testLinRegVariance() {
         assertExprReturns(
             "LinRegVariance([Time].[Month].members,"
             + " [Measures].[Unit Sales], [Measures].[Store Sales])",

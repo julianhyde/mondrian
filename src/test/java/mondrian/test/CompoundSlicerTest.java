@@ -11,6 +11,7 @@ package mondrian.test;
 
 import mondrian.util.Bug;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -244,7 +245,8 @@ public class CompoundSlicerTest extends FoodMartTestCase {
             + "Row #0: 261.80\n");
     }
 
-     public void _testMondrian1226Variation() {
+     @Ignore
+     @Test public void testMondrian1226Variation() {
          // Currently broke.  Below are two queries with two dimensions
          // in the compound slicer.
          //  The first has a measure which overrides the Time context,

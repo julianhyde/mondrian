@@ -9,13 +9,6 @@
 */
 package mondrian.test;
 
-
-import org.junit.Test;
-import junit.framework.TestCase;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 /**
  * Unit test against Pentaho's Steel Wheels sample database.
  *

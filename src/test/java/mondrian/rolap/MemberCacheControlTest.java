@@ -824,7 +824,7 @@ public class MemberCacheControlTest extends FoodMartTestCase {
      * Tests a variety of negative cases including add/delete/move null members
      * add/delete/move members in parent-child hierarchies.
      */
-    public void _testAddCommandNegative() {
+    @Ignore @Test public void testAddCommandNegative() {
         final TestContext tc = getTestContext();
         final Connection conn = tc.getConnection();
         final CacheControl cc = conn.getCacheControl(null);

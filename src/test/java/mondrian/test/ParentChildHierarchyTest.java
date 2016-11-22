@@ -17,7 +17,6 @@ import mondrian.util.Bug;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import junit.framework.Assert;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -209,7 +208,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             + "Row #0: $64.01\n");
     }
 
-    public void _testSharedClosureParentChildHierarchy() {
+    @Ignore @Test public void testSharedClosureParentChildHierarchy() {
         TestContext context = getEmpSharedClosureTestContext();
         context.assertQueryReturns(
             "Select "
@@ -231,7 +230,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-284">MONDRIAN-284,
      * "Parent child hierarchies without closures are broken"</a>.
      */
-    public void _testNonClosureParentChildHierarchy() {
+    @Ignore @Test public void testNonClosureParentChildHierarchy() {
         getEmpNonClosureTestContext().assertQueryReturns(
             "Select "
             + "{[EmployeesNonClosure].[Sheri Nowmer].children} on columns,"
@@ -763,7 +762,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
             "(?s).*Row #0: #ERR: mondrian.olap.fun.MondrianEvaluationException.*: Infinite loop while evaluating calculated member \\'\\[Measures\\].\\[Foo\\]\\'; context stack is.*";
         if (!resultString.matches(expectedPattern)) {
             System.out.println(resultString);
-            Assert.assertEquals(expectedPattern, resultString);
+            assertThat(resultString, is(expectedPattern));
         }
     }
 
@@ -1064,7 +1063,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.org/browse/MONDRIAN-488">MONDRIAN-488,
      * "Closure Tables not working with Virtual Cubes"</a>.
      */
-    public void _testClosureTableInVirtualCube() {
+    @Ignore @Test public void testClosureTableInVirtualCube() {
         final TestContext testContext = getTestContext().legacy().create(
             "<Dimension name=\"Employees\" >"
             + "   <Hierarchy hasAll=\"true\" allMemberName=\"All Employees\""
@@ -1123,7 +1122,7 @@ public class ParentChildHierarchyTest extends FoodMartTestCase {
      * <a href="http://jira.pentaho.com/browse/MONDRIAN-519">MONDRIAN-519</a>,
      * a class cast exception when using non-closure parent child hierarchies.
      */
-    public void _testClosureVsNoClosure() {
+    @Ignore @Test public void testClosureVsNoClosure() {
         // If parts of this test fail, re-apply change 13552 to the main branch.
         // I chose not to merge some of its changes. -- jhyde, 2010/6/28.
 

@@ -13,18 +13,18 @@ import mondrian.olap.*;
 import mondrian.spi.DynamicSchemaProcessor;
 
 import org.junit.Test;
-import junit.framework.Assert;
-import org.junit.Test;
-import junit.framework.TestCase;
 
 import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit test special "caption" settings.
  *
  * @author hhaas
  */
-public class CaptionTest extends TestCase {
+public class CaptionTest {
 
     /**
      * set caption "Anzahl Verkauf" for measure "Unit Sales"
@@ -43,7 +43,7 @@ public class CaptionTest extends TestCase {
         List<Position> positions = axes[0].getPositions();
         Member m0 = positions.get(0).get(0);
         String caption = m0.getCaption();
-        Assert.assertEquals("Anzahl Verkauf", caption);
+        assertThat(caption, is("Anzahl Verkauf"));
     }
 
     /**
@@ -63,8 +63,8 @@ public class CaptionTest extends TestCase {
         List<Position> positions = axes[1].getPositions();
         Member mall = positions.get(0).get(0);
 
-        Assert.assertEquals("Werbemedium", mall.getDimension().getCaption());
-        Assert.assertEquals("Werbemedium", mall.getHierarchy().getCaption());
+        assertThat(mall.getDimension().getCaption(), is("Werbemedium"));
+        assertThat(mall.getHierarchy().getCaption(), is("Werbemedium"));
     }
 
     /**
@@ -86,7 +86,7 @@ public class CaptionTest extends TestCase {
         Member mall = positions.get(0).get(0);
 
         String caption = mall.getHierarchy().getCaption();
-        Assert.assertEquals("Quadrat-Fuesse:-)", caption);
+        assertThat(caption, is("Quadrat-Fuesse:-)"));
     }
 
 
@@ -123,7 +123,7 @@ public class CaptionTest extends TestCase {
         Member mall = positions.get(0).get(0);
 
         String caption = mall.getCaption();
-        Assert.assertEquals("1997-12-31", caption);
+        assertThat(caption, is("1997-12-31"));
     }
 
 

@@ -14,7 +14,6 @@ import mondrian.olap.*;
 import mondrian.spi.Dialect;
 
 import org.junit.Test;
-import junit.framework.Assert;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -273,8 +272,7 @@ public class CompatibilityTest extends FoodMartTestCase {
     }
 
     private void checkAxis(String result, String expression) {
-        Assert.assertEquals(
-            result, executeSingletonAxis(expression).toString());
+        assertThat(executeSingletonAxis(expression).toString(), is(result));
     }
 
 

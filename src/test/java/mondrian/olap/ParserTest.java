@@ -22,6 +22,7 @@ import mondrian.test.TestContext;
 import mondrian.util.Bug;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.PrintWriter;
@@ -751,7 +752,8 @@ public class ParserTest extends FoodMartTestCase {
     /**
      * Test case for SELECT in the FROM clause.
      */
-    public void _testInnerSelect() {
+    @Ignore
+    @Test public void testInnerSelect() {
         assertParseQuery(
             "SELECT FROM "
             + "(SELECT ({[ProductDim].[Product Group].&[Mobile Phones]}) "

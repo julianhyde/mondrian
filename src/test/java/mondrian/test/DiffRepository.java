@@ -25,6 +25,9 @@ import java.net.URL;
 import java.util.*;
 import javax.xml.parsers.*;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * A collection of resources used by tests.
  *
@@ -542,9 +545,7 @@ public class DiffRepository
                 String expected2Canonical =
                     Util.replace(expected3, Util.nl, "\n");
                 String actualCanonical = Util.replace(actual, Util.nl, "\n");
-                Assert.assertEquals(
-                    expected2Canonical,
-                    actualCanonical);
+                assertThat(actualCanonical, is(expected2Canonical));
             } catch (ComparisonFailure e) {
                 amend(expected, actual);
                 throw e;
