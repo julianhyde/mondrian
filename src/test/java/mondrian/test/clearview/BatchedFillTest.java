@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * <code>BatchedFillTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in BatchedFillTest.ref.xml file.
+ * expected results are maintained separately in BatchedFillTest.xml file.
  *
  * @author Khanh Vu
  */

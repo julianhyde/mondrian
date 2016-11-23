@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * <code>MiscTest</code> is a test suite which tests miscellaneous
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in MiscTest.ref.xml file.
+ * expected results are maintained separately in MiscTest.xml file.
  *
  * @author Khanh Vu
  */

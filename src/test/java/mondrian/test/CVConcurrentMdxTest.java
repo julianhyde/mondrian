@@ -25,10 +25,10 @@ import static org.junit.Assert.assertThat;
 
 /**
  * A copy of {@link ConcurrentMdxTest} with modifications to take
- * as input ref.xml files. This does not fully use {@link DiffRepository}
+ * as input .xml files. This does not fully use {@link DiffRepository}
  * and does not generate log files.
  *
- * <p>This Class is not added to the Main test suite. The
+ * <p>This Class is not added to {@link MondrianSuite}. The
  * purpose of this test is to simulate Concurrent access to Aggregation and data
  * load. Simulation will be more effective if we run this single test again and
  * again with a fresh connection.

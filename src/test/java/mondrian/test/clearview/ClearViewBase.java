@@ -22,9 +22,9 @@ import org.junit.runners.Parameterized;
 
 /**
  * <code>ClearViewBase</code> is the base class to build test cases which test
- * queries against the FoodMart database. A concrete sub class and
- * a ref.xml file will be needed for each test suites to be added. MDX queries
- * and their expected results are maintained separately in *.ref.xml files.
+ * queries against the FoodMart database. A concrete sub class and a .xml
+ * reference file will be needed for each test suites to be added. MDX queries
+ * and their expected results are maintained separately in .xml files.
  *
  * @author John Sichi
  * @author Richard Emberson

@@ -27,7 +27,7 @@ import java.util.List;
  * for syntax rules.
  *
  * <p>MDX queries and their expected results are maintained separately in
- * OrderTest.ref.xml file.</p>
+ * OrderTest.xml file.
  *
  * @author Khanh Vu
  */

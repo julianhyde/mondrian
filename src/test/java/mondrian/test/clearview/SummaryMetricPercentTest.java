@@ -21,7 +21,7 @@ import java.util.List;
  * <code>SummaryMetricPercentTest</code> is a test suite which tests scenarios
  * of computing sums and percentages against the FoodMart database.
  * MDX queries and their expected results are maintained separately in
- * SummaryMetricPercentTest.ref.xml file.
+ * SummaryMetricPercentTest.xml file.
  *
  * @author Khanh Vu
  */

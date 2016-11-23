@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * <code>SubTotalTest</code> is a test suite which tests scenarios of
  * using sub totals against the FoodMart database. MDX queries and their
- * expected results are maintained separately in SubTotalTest.ref.xml file.
+ * expected results are maintained separately in SubTotalTest.xml file.
  *
  * @author Khanh Vu
  */

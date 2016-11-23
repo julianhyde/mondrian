@@ -19,7 +19,7 @@ import java.util.List;
  * <code>TopBottomTest</code> is a test suite which tests scenarios of
  * selecting top and bottom records against the FoodMart database.
  * MDX queries and their expected results are maintained separately in
- * TopBottomTest.ref.xml file.
+ * TopBottomTest.xml file.
  *
  * @author Khanh Vu
  */

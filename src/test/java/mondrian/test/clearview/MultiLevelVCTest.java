@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * <code>MultiLevelVCTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in MultiLevelVCTest.ref.xml file.
+ * expected results are maintained separately in MultiLevelVCTest.xml file.
  *
  * @author Khanh Vu
  */

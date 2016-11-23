@@ -21,7 +21,7 @@ import java.util.List;
  * <code>MetricFilterTest</code> is a test suite which tests scenarios of
  * filtering out measures' values in the FoodMart database.
  * MDX queries and their expected results are maintained separately in
- * MetricFilterTest.ref.xml file.
+ * MetricFilterTest.xml file.
  *
  * @author Khanh Vu
  */

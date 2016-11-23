@@ -22,7 +22,7 @@ import java.util.List;
  * the fact table, and which only contains calculated members).
  *
  * <p>MDX queries and their expected results are maintained separately in
- * HangerDimensionClearViewTest.ref.xml file.</p>
+ * HangerDimensionClearViewTest.xml file.
  *
  * @author Khanh Vu
  */

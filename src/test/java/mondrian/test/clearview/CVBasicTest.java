@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * <code>CVBasicTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in CVBasicTest.ref.xml file.
+ * expected results are maintained separately in CVBasicTest.xml file.
  *
  * @author Khanh Vu
  */

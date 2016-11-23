@@ -21,7 +21,7 @@ import java.util.List;
  * <code>PredicateFilterTest</code> is a test suite which tests scenarios of
  * filtering in the FoodMart database.
  * MDX queries and their expected results are maintained separately in
- * PredicateFilterTest.ref.xml file.
+ * PredicateFilterTest.xml file.
  *
  * @author Khanh Vu
  */

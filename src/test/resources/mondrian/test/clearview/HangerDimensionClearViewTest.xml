@@ -56,7 +56,7 @@ From [Sales]
         </Resource>
         <Resource name="result">
             <![CDATA[
-Axis #0:
+Axis #0:x
 {}
 Axis #1:
 {[Measures].[*FORMATTED_MEASURE_1]}

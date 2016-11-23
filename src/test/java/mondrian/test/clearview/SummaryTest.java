@@ -26,7 +26,7 @@ import java.util.List;
  * <code>SummaryTest</code> is a test suite which tests scenarios of
  * summing unit sales against the FoodMart database.
  * MDX queries and their expected results are maintained separately in
- * SummaryTest.ref.xml file.
+ * SummaryTest.xml file.
  *
  * @author Khanh Vu
  */

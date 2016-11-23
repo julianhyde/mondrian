@@ -148,10 +148,10 @@ System.out.println("requestText=" + requestText);
         try {
             XMLAssert.assertXMLEqual(expectedStr, gotStr);
         } catch (AssertionFailedError e) {
-            // Let DiffRepository do the comparison. It will output
-            // a textual difference, and will update the logfile,
-            // XmlaBasicTest.log.xml. If you agree with the change,
-            // copy this file to XmlaBasicTest.ref.xml.
+            // Let DiffRepository do the comparison. It will output a textual
+            // difference, and will update the log file (under target/surefire).
+            // If you agree with the change, copy this file to the reference
+            // file (under src/test/resource).
             if (replace) {
                 gotStr =
                     gotStr.replaceAll(
@@ -559,10 +559,10 @@ System.out.println("Got CONTINUE");
      * @param content Content type
      * @param role Role in which to execute query, or null
      * @param replace Whether to generate a replacement reference log into
-     *    TestName.log.xml if there is an exception. If you are running the same
-     *    request with different content types and the same reference log, you
-     *    should pass {@code true} for the content type that has the most
-     *    information (generally
+     *    target/surefire/.../TestName.xml if there is an exception. If you are
+     *    running the same request with different content types and the same
+     *    reference log, you should pass {@code true} for the content type that
+     *         has the most information (generally
      *    {@link org.olap4j.metadata.XmlaConstants.Content#SchemaData})
      * @throws Exception on error
      */
@@ -698,10 +698,21 @@ System.out.println("Got CONTINUE");
         gotStr = maskVersion(gotStr);
         gotStr = testContext.upgradeActual(gotStr);
         if (expectedStr != null) {
-            // Let DiffRepository do the comparison. It will output
-            // a textual difference, and will update the logfile,
-            // XmlaBasicTest.log.xml. If you agree with the change,
-            // copy this file to XmlaBasicTest.ref.xml.
+            // Let DiffRepository do the comparison. For a test
+            //
+            //   src/test/java/org/foo/Baz.java
+            //
+            // the reference file is
+            //
+            //   src/test/resources/org/foo/Baz.xml
+            //
+            // and the log file is
+            //
+            //   target/surefire/org/foo/Baz.xml
+            //
+            // If there is a difference, DiffRepository will output a textual
+            // difference, and will update the log file. If you agree with the
+            // change, overwrite the reference file with the log file.
             getDiffRepos().assertEquals(
                 "response",
                 "${response}",

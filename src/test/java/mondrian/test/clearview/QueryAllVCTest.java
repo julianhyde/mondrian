@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * <code>QueryAllVCTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in QueryAllVCTest.ref.xml file.
+ * expected results are maintained separately in QueryAllVCTest.xml file.
  *
  * @author Khanh Vu
  */

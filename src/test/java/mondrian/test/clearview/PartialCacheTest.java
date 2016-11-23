@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * <code>PartialCacheTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in PartialCacheTest.ref.xml file.
+ * expected results are maintained separately in PartialCacheTest.xml file.
  *
  * @author Khanh Vu
  */

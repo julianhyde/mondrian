@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * <code>MultiDimTest</code> is a test suite which tests
  * complex queries against the FoodMart database. MDX queries and their
- * expected results are maintained separately in MultiDimTest.ref.xml file.
+ * expected results are maintained separately in MultiDimTest.xml file.
  *
  * @author Khanh Vu
  */

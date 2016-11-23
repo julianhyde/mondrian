@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * <code>GrandTotalTest</code> is a test suite which tests scenarios of
  * using grand total against the FoodMart database. MDX queries and their
- * expected results are maintained separately in GrandTotalTest.ref.xml file.
+ * expected results are maintained separately in GrandTotalTest.xml file.
  *
  * @author Khanh Vu
  */

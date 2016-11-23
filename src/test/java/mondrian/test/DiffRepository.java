@@ -17,6 +17,7 @@ import org.apache.commons.collections.map.ReferenceMap;
 
 import org.eigenbase.xom.XMLOutput;
 
+import org.hamcrest.Matcher;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -55,7 +56,7 @@ import static org.junit.Assert.assertThat;
  * }</pre></code></blockquote>
  *
  * There is an accompanying reference file named after the class,
- * <code>com/acme/test/MyTest.ref.xml</code>:
+ * <code>src/test/resources/com/acme/test/MyTest.xml</code>:
  * <blockquote><code><pre>
  * &lt;Root&gt;
  *     &lt;TestCase name="testToUpper"&gt;
@@ -75,11 +76,11 @@ import static org.junit.Assert.assertThat;
  * &lt;/Root&gt;
  * </pre></code></blockquote>
  *
- * <p>If any of the testcases fails, a log file is generated, called
- * <code>com/acme/test/MyTest.log.xml</code> containing the actual output.
- * The log file is otherwise identical to the reference log, so once the
+ * <p>If any of the test cases fails, a log file is generated, called
+ * <code>target/surefire/com/acme/test/MyTest.xml</code> containing the actual
+ * output. The log file is otherwise identical to the reference log, so once the
  * log file has been verified, it can simply be copied over to become the new
- * reference log.</p>
+ * reference log.
  *
  * <p>If a resource or testcase does not exist, <code>DiffRepository</code>
  * creates them in the log file. Because DiffRepository is so forgiving, it is
@@ -87,7 +88,7 @@ import static org.junit.Assert.assertThat;
  *
  * <p>The {@link #lookup} method ensures that all test cases share the same
  * instance of the repository. This is important more than one one test case
- * fails. The shared instance ensures that the generated <code>.log.xml</code>
+ * fails. The shared instance ensures that the generated <code>.xml</code>
  * file contains the actual for <em>both</em> test cases.
  *
  * @author jhyde
@@ -155,7 +156,7 @@ public class DiffRepository
         Class clazz, List<String> javaPrefixes, List<String> resourcePrefixes,
         String suffix)
     {
-        // The reference file for class "com.foo.Bar" is "com/foo/Bar.ref.xml"
+        // The reference file for class "com.foo.Bar" is "com/foo/Bar.xml"
         String rest =
             clazz.getName().replace('.', File.separatorChar) + suffix;
         File fileBase = getFileBase(clazz, javaPrefixes, resourcePrefixes);
@@ -536,19 +537,21 @@ public class DiffRepository
             } else {
                 expected3 = expected2;
             }
+            // TODO jvs 25-Apr-2006:  reuse bulk of
+            // DiffTestCase.diffTestLog here; besides newline
+            // insensitivity, it can report on the line
+            // at which the first diff occurs, which is useful
+            // for largish snippets
+            String expected2Canonical =
+                Util.replace(expected3, Util.nl, "\n");
+            String actualCanonical = Util.replace(actual, Util.nl, "\n");
+            final Matcher<String> matcher = is(expected2Canonical);
             try {
-                // TODO jvs 25-Apr-2006:  reuse bulk of
-                // DiffTestCase.diffTestLog here; besides newline
-                // insensitivity, it can report on the line
-                // at which the first diff occurs, which is useful
-                // for largish snippets
-                String expected2Canonical =
-                    Util.replace(expected3, Util.nl, "\n");
-                String actualCanonical = Util.replace(actual, Util.nl, "\n");
-                assertThat(actualCanonical, is(expected2Canonical));
-            } catch (ComparisonFailure e) {
-                amend(expected, actual);
-                throw e;
+                assertThat(actualCanonical, matcher);
+            } finally {
+                if (!matcher.matches(actualCanonical)) {
+                    amend(expected, actual);
+                }
             }
         }
     }
@@ -802,9 +805,15 @@ public class DiffRepository
                 prefixes = JAVA_PREFIXES;
             }
             final File refFile =
-                findFile(clazz, prefixes, resourcePrefixes, ".ref.xml");
-            final File logFile =
-                findFile(clazz, prefixes, resourcePrefixes, ".log.xml");
+                findFile(clazz, prefixes, resourcePrefixes, ".xml");
+            final String p =
+                refFile.getAbsolutePath()
+                    .replace(File.separatorChar, '/')
+                    .replace("src/test/resources", "target/surefire")
+                    .replace('/', File.separatorChar);
+            final File logFile = new File(p);
+            final boolean b = logFile.getParentFile().mkdirs();
+            Util.discard(b);
             diffRepos = new DiffRepository(refFile, logFile, baseRepos);
             mapClassToRepos.put(clazz, diffRepos);
         }
