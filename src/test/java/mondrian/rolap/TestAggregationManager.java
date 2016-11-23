@@ -207,13 +207,10 @@ public class TestAggregationManager extends BatchTestCase {
             patterns);
     }
 
-    /**
-     * As {@link #testFemaleUnitSalesSql()}, but with aggregate tables switched
-     * on.
-     *
-     * TODO: Enable this test.
-     */
-    private void _testFemaleUnitSalesSql_withAggs() {
+    /** As {@link #testFemaleUnitSalesSql()}, but with aggregate tables switched
+     * on. */
+    @Ignore("disabled; TODO: enable")
+    @Test public void testFemaleUnitSalesSql_withAggs() {
         final TestContext testContext = getTestContext();
         CellRequest request = createRequest(
             testContext,
@@ -302,13 +299,10 @@ public class TestAggregationManager extends BatchTestCase {
         assertRequestSql(testContext, requests, patterns);
     }
 
-    /**
-     * As {@link #testMultipleMeasures()}, but with aggregate tables switched
-     * on.
-     *
-     * TODO: Enable this test.
-     */
-    private void _testMultipleMeasures_withAgg() {
+    /** As {@link #testMultipleMeasures()}, but with aggregate tables switched
+     * on. */
+    @Ignore("disabled; TODO: enable")
+    @Test public void testMultipleMeasures_withAgg() {
         final TestContext testContext = getTestContext();
         CellRequest[] requests = {
             createRequest(

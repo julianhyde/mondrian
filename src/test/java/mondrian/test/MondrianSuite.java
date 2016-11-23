@@ -35,8 +35,6 @@ import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import static org.junit.Assert.assertThat;
-
 /**
  * Search for uses of:<ul>
  * <li>{@link String#indexOf(String)}
@@ -49,6 +47,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    /*
     // if (RUN_OPTIONAL_TESTS) {
     SegmentLoaderTest.class,
     AggGenTest.class,
@@ -131,6 +130,7 @@ import static org.junit.Assert.assertThat;
     XmlaTests.class,
     DynamicDatasourceXmlaServletTest.class,
     XmlaTest.class,
+    XmlaTest.OtherTest.class,
 //    if (isRunOnce()) {
     TestCalculatedMembers.class,
 //    }
@@ -204,6 +204,7 @@ import static org.junit.Assert.assertThat;
 //    logger.warn("skipping NonEmptyTests");
 //    }
 
+    */
     FastBatchingCellReaderTest.class,
     SqlQueryTest.class,
 

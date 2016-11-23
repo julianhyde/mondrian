@@ -182,7 +182,8 @@ public class SolveOrderScopeIsolationTest extends FoodMartTestCase {
      * Test for future capability: SCOPE_ISOLATION=CUBE which is implemented in
      * Analysis Services but not yet in Mondrian.
      */
-    public void _future_testOverrideCubeMemberHappensWithScopeIsolation() {
+    @Ignore("disabled; a test for functionality not yet implemented")
+    @Test public void testOverrideCubeMemberHappensWithScopeIsolation() {
         setSolveOrderMode(SCOPED);
         assertQueryReturns(
             "with\n"

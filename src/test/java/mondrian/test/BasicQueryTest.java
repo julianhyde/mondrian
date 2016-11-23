@@ -4743,11 +4743,8 @@ public class BasicQueryTest extends FoodMartTestCase {
             + "FROM Sales ", "");
     }
 
-
-    /**
-     * Disabled, because takes quite a long time.
-     */
-    public void dont_testParallelMutliple() {
+    @Ignore("disabled, because takes a long time")
+    @Test public void testParallelMultiple() {
         for (int i = 0; i < 5; i++) {
             runParallelQueries(1, 1, false);
             runParallelQueries(3, 2, false);
@@ -4756,19 +4753,23 @@ public class BasicQueryTest extends FoodMartTestCase {
         }
     }
 
-    public void dont_testParallelNot() {
+    @Ignore("disabled, because takes a long time")
+    @Test public void testParallelNot() {
         runParallelQueries(1, 1, false);
     }
 
-    public void dont_testParallelSomewhat() {
+    @Ignore("disabled, because takes a long time")
+    @Test public void testParallelSomewhat() {
         runParallelQueries(3, 2, false);
     }
 
-    public void dont_testParallelFlushCache() {
+    @Ignore("disabled, because takes a long time")
+    @Test public void testParallelFlushCache() {
         runParallelQueries(4, 6, true);
     }
 
-    public void dont_testParallelVery() {
+    @Ignore("disabled, because takes a long time")
+    @Test public void testParallelVery() {
         runParallelQueries(6, 10, false);
     }
 

@@ -13,13 +13,16 @@ package mondrian.test.comp;
 import mondrian.olap.*;
 import mondrian.test.FoodMartTestCase;
 
-import junit.framework.TestSuite;
-
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -99,19 +102,15 @@ import javax.xml.parsers.DocumentBuilder;
  * &lt;/mdbTest&gt;
  * </blockquote>
  */
+@RunWith(Parameterized.class)
 public class ResultComparatorTest extends FoodMartTestCase {
+    @Parameterized.Parameter public String fileName;
 
-    private File file;
-
-    public ResultComparatorTest(File file) {
-        this.file = file;
-    }
-
-    protected void runTest() throws Exception {
+    @Test public void runTest() throws Exception {
         DocumentBuilder db = XmlUtility.createDomParser(
             false, true, false, new XmlUtility.UtilityErrorHandler());
 
-        Document doc = db.parse(file);
+        Document doc = db.parse(fileName);
 
         Element queryNode =
             (Element) doc.getElementsByTagName("mdxQuery").item(0);
@@ -144,8 +143,8 @@ public class ResultComparatorTest extends FoodMartTestCase {
         return XmlUtility.toString(expectedResult).contains("#null");
     }
 
-    public static TestSuite suite() {
-        TestSuite suite = new TestSuite();
+    @Parameterized.Parameters(name = "{index} {0}")
+    public static List<Object[]> parameters() {
         MondrianProperties properties = MondrianProperties.instance();
         String filePattern = properties.QueryFilePattern.get();
         String fileDirectory = properties.QueryFileDirectory.get();
@@ -154,32 +153,42 @@ public class ResultComparatorTest extends FoodMartTestCase {
             filePattern == null
                 ? null
                 : Pattern.compile(filePattern);
-        final String directory =
-            fileDirectory == null
-                ? "target/test-classes" + File.separatorChar + "queryFiles"
-                : fileDirectory;
+        final File directory;
+        if (fileDirectory == null) {
+            final File src = new File("src");
+            final File test = new File(src, "test");
+            final File resources = new File(test, "resources");
+            directory = new File(resources, "queryFiles");
+        } else {
+            directory = new File(fileDirectory);
+        }
 
-        File[] files = new File(directory).listFiles(
+        File[] files = directory.listFiles(
             new FilenameFilter() {
                 public boolean accept(File dir, String name) {
-                    if (name.startsWith("query") && name.endsWith(".xml")) {
-                        if (pattern == null) {
-                            return true;
-                        } else {
-                            return pattern.matcher(name).matches();
-                        }
-                    }
-                    return false;
+                    return name.startsWith("query")
+                        && name.endsWith(".xml")
+                        && (pattern == null
+                            || pattern.matcher(name).matches());
                 }
             });
         if (files == null) {
             files = new File[0];
         }
-        for (int idx = 0; idx < files.length; idx++) {
-            suite.addTest((junit.framework.Test) new ResultComparatorTest(files[idx]));
+        List<Object[]> list = new ArrayList<Object[]>();
+        for (File file : files) {
+            list.add(new Object[]{relative(new File(""), file)});
         }
+        return list;
+    }
 
-        return suite;
+    private static String relative(File directory, File file) {
+        final String f = file.getAbsolutePath();
+        final String d = directory.getAbsolutePath() + File.separator;
+        if (f.startsWith(d)) {
+            return f.substring(d.length());
+        }
+        return f;
     }
 }
 

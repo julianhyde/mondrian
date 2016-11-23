@@ -90,7 +90,7 @@
     <maven-jar-plugin.version>2.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
     <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
     <mockito-all.version>1.8.5</mockito-all.version>
     <mysql-connector-java.version>5.1.31</mysql-connector-java.version>
     <olap4j.version>1.2.0</olap4j.version>
@@ -646,8 +646,12 @@
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <includes>
-            <include>mondrian/test/Main.java</include>
+            <include>mondrian/test/MondrianSuite.java</include>
           </includes>
+          <configuration>
+            <threadCount>1</threadCount>
+            <argLine>-Xmx1536m -Duser.timezone=${user.timezone}</argLine>
+          </configuration>
           <systemPropertyVariables>
             <log4j.configuration>${log4j.configuration}</log4j.configuration>
             <mondrian.jdbcDrivers>${mondrian.jdbcDrivers}</mondrian.jdbcDrivers>
