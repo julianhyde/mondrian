@@ -47,7 +47,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    /*
     // if (RUN_OPTIONAL_TESTS) {
     SegmentLoaderTest.class,
     AggGenTest.class,
@@ -204,7 +203,6 @@ import org.junit.runners.Suite;
 //    logger.warn("skipping NonEmptyTests");
 //    }
 
-    */
     FastBatchingCellReaderTest.class,
     SqlQueryTest.class,
 
